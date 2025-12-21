@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self Referential Category Theoretic Structures | The Index</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79b8ff;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --experimental: #a371f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .breadcrumb {
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: var(--text-secondary);
+        }
+
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .system-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            background-color: rgba(163, 113, 247, 0.15);
+            color: var(--experimental);
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .description {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .description p {
+            margin-bottom: 1rem;
+        }
+
+        .description p:last-child {
+            margin-bottom: 0;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .concept-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+            color: var(--accent);
+        }
+
+        .concept-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .structure-tree {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .tree-item {
+            color: var(--text-secondary);
+            padding: 0.2rem 0;
+        }
+
+        .tree-item.folder {
+            color: var(--accent);
+        }
+
+        .tree-item.file {
+            color: var(--text-primary);
+        }
+
+        .tree-comment {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .references {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .references ul {
+            list-style: none;
+        }
+
+        .references li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .references li:last-child {
+            border-bottom: none;
+        }
+
+        .references .ref-title {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .references .ref-author {
+            font-style: italic;
+        }
+
+        .diagram-placeholder {
+            background-color: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .diagram-placeholder .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../index.html">The Index</a>
+            <span> / </span>
+            <span>Self Referential Category Theoretic Structures</span>
+        </nav>
+
+        <header>
+            <div class="system-icon">&#128736;</div>
+            <h1>Self Referential Category Theoretic Structures</h1>
+            <div class="meta">
+                <div class="meta-item">
+                    <span>Author:</span>
+                    <strong>Kael</strong>
+                </div>
+                <div class="meta-item">
+                    <span class="status-badge">Experimental</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="section">
+                <h2 class="section-title">&#128220; Overview</h2>
+                <div class="description">
+                    <p>An exploration of category theoretic structures that exhibit self-reference, recursion, and fixed-point semantics. This system investigates the mathematical foundations where categories can model their own structure, leading to insights in type theory, logic, and foundational mathematics.</p>
+                    <p>Key areas of investigation include endofunctors, fixed-point combinators, recursive types, and the categorical semantics of self-referential systems.</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#129520; Core Concepts</h2>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>Endofunctors</h4>
+                        <p>Functors from a category to itself, enabling self-mapping structures.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Fixed Points</h4>
+                        <p>Solutions to F(X) = X; the heart of recursive definitions.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Initial Algebras</h4>
+                        <p>Categorical semantics for inductive data types.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Terminal Coalgebras</h4>
+                        <p>Dual structures modeling coinductive and infinite data.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Recursive Types</h4>
+                        <p>Type systems with self-referential type definitions.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Y Combinator</h4>
+                        <p>Fixed-point combinator enabling anonymous recursion.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#128193; Structure</h2>
+                <div class="structure-tree">
+                    <div class="tree-item folder">self-referential-category-theoretic-structures/</div>
+                    <div class="tree-item file">&nbsp;&nbsp;README.md <span class="tree-comment"># Project overview</span></div>
+                    <div class="tree-item folder">&nbsp;&nbsp;foundations/</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;categories.md <span class="tree-comment"># Basic category theory</span></div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;functors.md <span class="tree-comment"># Functor definitions</span></div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;natural-transformations.md</div>
+                    <div class="tree-item folder">&nbsp;&nbsp;self-reference/</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;endofunctors.md</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;fixed-points.md</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;recursive-types.md</div>
+                    <div class="tree-item folder">&nbsp;&nbsp;applications/</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;type-theory.md</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;programming-languages.md</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;logic.md</div>
+                    <div class="tree-item folder">&nbsp;&nbsp;diagrams/</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;commutative-diagrams.svg</div>
+                    <div class="tree-item file">&nbsp;&nbsp;&nbsp;&nbsp;functor-composition.svg</div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#128200; Diagrams</h2>
+                <div class="diagram-placeholder">
+                    <div class="icon">&#128736;</div>
+                    <p>Commutative diagrams and visualizations coming soon</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#128218; References</h2>
+                <div class="references">
+                    <ul>
+                        <li>
+                            <span class="ref-title">Categories for the Working Mathematician</span><br>
+                            <span class="ref-author">Saunders Mac Lane</span>
+                        </li>
+                        <li>
+                            <span class="ref-title">Category Theory for Programmers</span><br>
+                            <span class="ref-author">Bartosz Milewski</span>
+                        </li>
+                        <li>
+                            <span class="ref-title">Practical Foundations for Programming Languages</span><br>
+                            <span class="ref-author">Robert Harper</span>
+                        </li>
+                        <li>
+                            <span class="ref-title">Categorical Semantics of Recursive Types</span><br>
+                            <span class="ref-author">Various authors</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p><a href="../index.html">&larr; Back to The Index</a></p>
+        </footer>
+    </div>
+</body>
+</html>
