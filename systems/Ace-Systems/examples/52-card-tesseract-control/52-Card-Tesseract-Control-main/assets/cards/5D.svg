@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 400 600" 
+     width="400" height="600">
+  
+  <!-- Holographic Card Data (Base64 Compressed) -->
+  <metadata>
+    <holographic-data>eJxlk0+L2zAQxb/K4l53g/xHst1biAkmoYfQU6Fg1FibiLWlrCxv2S757tWMxq1Lb/qN3sx7kuyP5Cxd3+k++fyQ8CZ5fEimWXugP9Bp82xD5SMxclS4peVoTT+h4n38YQeofp8zIQTUzldpjMLi7ss3rNjBOuBP+31TMga1Xo/KTNoaqEtn50kOyT1sOGleQo3T8n//vX5T/3pzwDc5zLDP7+hoXa+N9ApbvRpv1kkQP7ENE2XUK3NWVOLYZM5O+aWU549/k2Epz3MY/jK7cAPedpNfDG5XOcEq34isqIMmWAfV0D079ToHn/ewmW6yaDPfBm0uod0pc/HXsMU2Iq2zsBliK9fdZHAISRxusbB1Xzf+VPpy9RM6b7+ihqfQnRFwOGAeQbAqQEEgIAGPUEKLoDUvApQEBRy9opYahtUEoEoZ2VQw7ECQg+wUoahh50jAIcC2jTIGt5MRoGneUk4BOQkEJODtKietOUwu23VOakHPmgDTpIx8KphwIMB3PbUUFHLSGtNsm6jC18giCA6yvFmZFhEqDiDWUK5l1XpAvR6dsmZ1b4eG4qSQjQDHHQmgZ7ujOwRVRlDgHRLUmG1HbwWTeYQSewRBAVDu1kEXGTxCTQMwQMqW2fCMh8UVDnRa8kDTMUIhKvyL7aS8lx3+iPFL7dXgJf4jKZ7mF+phjh3VReIPwu7339otE0Y=</holographic-data>
+  </metadata>
+  
+  <defs>
+    <!-- Background gradient based on suit -->
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="50%" style="stop-color:#16213e"/>
+      <stop offset="100%" style="stop-color:#0f0f1a"/>
+    </linearGradient>
+    
+    <!-- Suit-specific glow -->
+    <filter id="suitGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#FFD700" flood-opacity="0.6"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Phase ring animation -->
+    <filter id="phaseRing">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+    
+    <!-- Quantum shimmer -->
+    <linearGradient id="shimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0"/>
+      <animate attributeName="x1" values="-100%;100%" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="0%;200%" dur="3s" repeatCount="indefinite"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Card Background -->
+  <rect x="10" y="10" width="380" height="580" rx="15" ry="15"
+        fill="url(#cardGradient)" stroke="#FFD700" stroke-width="3"/>
+  
+  <!-- Shimmer overlay -->
+  <rect x="10" y="10" width="380" height="580" rx="15" ry="15"
+        fill="url(#shimmer)" opacity="0.5"/>
+  
+  <!-- Inner border -->
+  <rect x="20" y="20" width="360" height="560" rx="12" ry="12"
+        fill="none" stroke="#FFD700" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Phase Ring (Kuramoto visualization) -->
+  <circle cx="200" cy="280" r="103.07692307692307" 
+          fill="none" stroke="#FFD700" stroke-width="2" 
+          opacity="0.4" filter="url(#phaseRing)"
+          stroke-dasharray="288.46153846153845 211.53846153846155" stroke-dashoffset="72.4982920059183"/>
+  
+  <!-- Top-left rank and suit -->
+  <g transform="translate(35, 50)">
+    <text x="0" y="0" font-family="Georgia, serif" font-size="36" 
+          fill="#FFD700" filter="url(#suitGlow)">5</text>
+    <text x="0" y="40" font-family="Georgia, serif" font-size="32" 
+          fill="#FFD700" filter="url(#suitGlow)">♦</text>
+  </g>
+  
+  <!-- Bottom-right rank and suit (inverted) -->
+  <g transform="translate(365, 550) rotate(180)">
+    <text x="0" y="0" font-family="Georgia, serif" font-size="36" 
+          fill="#FFD700" filter="url(#suitGlow)">5</text>
+    <text x="0" y="40" font-family="Georgia, serif" font-size="32" 
+          fill="#FFD700" filter="url(#suitGlow)">♦</text>
+  </g>
+  
+  <!-- Center suit symbol (large) -->
+  <text x="200" y="300" font-family="Georgia, serif" font-size="120" 
+        fill="#FFD700" text-anchor="middle" dominant-baseline="middle"
+        filter="url(#suitGlow)" opacity="0.9">♦</text>
+  
+  <!-- Card ID -->
+  <text x="200" y="380" font-family="monospace" font-size="24" 
+        fill="#FFD700" text-anchor="middle" opacity="0.8">5D</text>
+  
+  <!-- 4D Coordinates Display -->
+  <g transform="translate(30, 440)" font-family="monospace" font-size="12" fill="#FFD700">
+    <text x="0" y="0" opacity="0.7">Temporal: -0.07</text>
+    <text x="0" y="20" opacity="0.7">Valence: -0.05</text>
+    <text x="0" y="40" opacity="0.7">Concrete: -0.03</text>
+    <text x="0" y="60" opacity="0.7">Arousal: -0.33</text>
+  </g>
+  
+  <!-- Kuramoto Phase -->
+  <text x="30" y="540" font-family="monospace" font-size="12" 
+        fill="#FFD700" opacity="0.7">Phase: 3.625</text>
+  
+  <!-- Channel indicator -->
+  <g transform="translate(300, 440)">
+    <rect x="0" y="0" width="70" height="70" rx="5" ry="5" 
+          fill="none" stroke="#FFD700" stroke-width="1" opacity="0.5"/>
+    <text x="35" y="25" font-family="monospace" font-size="10" 
+          fill="#FFD700" text-anchor="middle" opacity="0.6">Channel</text>
+    <text x="35" y="50" font-family="monospace" font-size="18" 
+          fill="#FFD700" text-anchor="middle">CMY</text>
+  </g>
+  
+  <!-- Rosetta coordinates (small, bottom) -->
+  <text x="200" y="575" font-family="monospace" font-size="9" 
+        fill="#FFD700" text-anchor="middle" opacity="0.5">
+    Δ=3.142 z=0.9 Ω=1.0
+  </text>
+  
+</svg>

@@ -1,0 +1,394 @@
+---
+layout: default
+title: Factions Guide
+description: Complete guide to all four factions in Quantum Resonance
+permalink: /factions/
+---
+
+<style>
+  .faction-detail {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border-top: 4px solid;
+  }
+
+  .faction-detail.spades { border-color: var(--spades); }
+  .faction-detail.hearts { border-color: var(--hearts); }
+  .faction-detail.diamonds { border-color: var(--diamonds); }
+  .faction-detail.clubs { border-color: var(--clubs); }
+
+  .faction-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .faction-symbol {
+    font-size: 3rem;
+  }
+
+  .faction-title h2 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+
+  .faction-subtitle {
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  .faction-quote {
+    font-style: italic;
+    color: var(--text-secondary);
+    padding: 1rem;
+    border-left: 3px solid;
+    margin: 1rem 0;
+    background: rgba(0,0,0,0.2);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .faction-detail.spades .faction-quote { border-color: var(--spades); }
+  .faction-detail.hearts .faction-quote { border-color: var(--hearts); }
+  .faction-detail.diamonds .faction-quote { border-color: var(--diamonds); }
+  .faction-detail.clubs .faction-quote { border-color: var(--clubs); }
+
+  .ability-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .ability-table th,
+  .ability-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .ability-table th {
+    color: var(--accent);
+  }
+
+  .passive-box {
+    background: var(--bg-lighter);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .passive-box h4 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .bonus-box {
+    background: rgba(153, 102, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border: 1px solid rgba(153, 102, 255, 0.3);
+  }
+
+  .bonus-box h4 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .strategy-tips {
+    list-style: none;
+    padding: 0;
+  }
+
+  .strategy-tips li {
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    position: relative;
+  }
+
+  .strategy-tips li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.9rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+  }
+
+  .faction-detail.spades .strategy-tips li::before { background: var(--spades); }
+  .faction-detail.hearts .strategy-tips li::before { background: var(--hearts); }
+  .faction-detail.diamonds .strategy-tips li::before { background: var(--diamonds); }
+  .faction-detail.clubs .strategy-tips li::before { background: var(--clubs); }
+
+  .dimension-info {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-left: 1rem;
+  }
+
+  .dimension-info.spades { background: var(--spades); color: #000; }
+  .dimension-info.hearts { background: var(--hearts); color: #fff; }
+  .dimension-info.diamonds { background: var(--diamonds); color: #000; }
+  .dimension-info.clubs { background: var(--clubs); color: #000; }
+</style>
+
+<!-- SPADES -->
+<div class="faction-detail spades">
+  <div class="faction-header">
+    <span class="faction-symbol" style="color: var(--spades);">{{ site.suits.S.symbol }}</span>
+    <div class="faction-title">
+      <h2 style="color: var(--spades);">{{ site.suits.S.faction }}</h2>
+      <span class="faction-subtitle">{{ site.suits.S.name }} Faction</span>
+      <span class="dimension-info spades">{{ site.suits.S.dimension | capitalize }} Dimension</span>
+    </div>
+  </div>
+
+  <div class="faction-quote">
+    "We do not predict the future. We remember it."
+  </div>
+
+  <div class="passive-box">
+    <h4>Passive - {{ site.suits.S.passive }}</h4>
+    <p>{{ site.suits.S.passive_desc }}. You may put it on the bottom.</p>
+  </div>
+
+  <h3>Active Abilities</h3>
+  <table class="ability-table">
+    <tr>
+      <th>Ability</th>
+      <th>Cost</th>
+      <th>Cooldown</th>
+      <th>Effect</th>
+    </tr>
+    <tr>
+      <td><strong>Rewind</strong></td>
+      <td>Discard 2</td>
+      <td>2 turns</td>
+      <td>Return the last card you played this turn to your hand</td>
+    </tr>
+    <tr>
+      <td><strong>Foresight</strong></td>
+      <td>Discard 1</td>
+      <td>1 turn</td>
+      <td>Look at top 3 cards of your deck, put them back in any order</td>
+    </tr>
+    <tr>
+      <td><strong>Time Lock</strong></td>
+      <td>Discard 3</td>
+      <td>3 turns</td>
+      <td>Choose a card in opponent's hand. They cannot play it next turn</td>
+    </tr>
+  </table>
+
+  <div class="bonus-box">
+    <h4>Faction Bonus</h4>
+    <ul>
+      <li>+3 points for each Spades card beyond the first in your formation</li>
+      <li>+5 if your formation spans both Ace and King of any suit (temporal range)</li>
+    </ul>
+  </div>
+
+  <h3>Strategy Tips</h3>
+  <ul class="strategy-tips">
+    <li>Build momentum with sequential Spades chains</li>
+    <li>Use Foresight to set up perfect draws</li>
+    <li>Time Lock opponent's key combo pieces</li>
+  </ul>
+</div>
+
+<!-- HEARTS -->
+<div class="faction-detail hearts">
+  <div class="faction-header">
+    <span class="faction-symbol" style="color: var(--hearts);">{{ site.suits.H.symbol }}</span>
+    <div class="faction-title">
+      <h2 style="color: var(--hearts);">{{ site.suits.H.faction }}</h2>
+      <span class="faction-subtitle">{{ site.suits.H.name }} Faction</span>
+      <span class="dimension-info hearts">{{ site.suits.H.dimension | capitalize }} Dimension</span>
+    </div>
+  </div>
+
+  <div class="faction-quote">
+    "Every heart beats in resonance with another."
+  </div>
+
+  <div class="passive-box">
+    <h4>Passive - {{ site.suits.H.passive }}</h4>
+    <p>{{ site.suits.H.passive_desc }}.</p>
+  </div>
+
+  <h3>Active Abilities</h3>
+  <table class="ability-table">
+    <tr>
+      <th>Ability</th>
+      <th>Cost</th>
+      <th>Cooldown</th>
+      <th>Effect</th>
+    </tr>
+    <tr>
+      <td><strong>Inspire</strong></td>
+      <td>Discard 1</td>
+      <td>1 turn</td>
+      <td>Choose up to 3 cards in your formation. They each gain +3 to base points</td>
+    </tr>
+    <tr>
+      <td><strong>Drain</strong></td>
+      <td>Discard 2</td>
+      <td>2 turns</td>
+      <td>Steal points equal to opponent's last Resonance Bonus (max 20)</td>
+    </tr>
+    <tr>
+      <td><strong>Emotional Surge</strong></td>
+      <td>Discard 3</td>
+      <td>3 turns</td>
+      <td>Double all bonuses from Hearts cards this turn</td>
+    </tr>
+  </table>
+
+  <div class="bonus-box">
+    <h4>Faction Bonus</h4>
+    <ul>
+      <li>+2 points for each Hearts card with positive valence (ranks 8-K)</li>
+      <li>+10 if all cards in formation are Hearts (pure emotion)</li>
+    </ul>
+  </div>
+
+  <h3>Strategy Tips</h3>
+  <ul class="strategy-tips">
+    <li>Stack high-rank Hearts for valence synergy</li>
+    <li>Use Drain reactively after opponent scores big</li>
+    <li>Empathic Bond punishes opponent for splashing Hearts</li>
+  </ul>
+</div>
+
+<!-- DIAMONDS -->
+<div class="faction-detail diamonds">
+  <div class="faction-header">
+    <span class="faction-symbol" style="color: var(--diamonds);">{{ site.suits.D.symbol }}</span>
+    <div class="faction-title">
+      <h2 style="color: var(--diamonds);">{{ site.suits.D.faction }}</h2>
+      <span class="faction-subtitle">{{ site.suits.D.name }} Faction</span>
+      <span class="dimension-info diamonds">{{ site.suits.D.dimension | capitalize }} Dimension</span>
+    </div>
+  </div>
+
+  <div class="faction-quote">
+    "Burn bright. Burn fast. Burn everything."
+  </div>
+
+  <div class="passive-box">
+    <h4>Passive - {{ site.suits.D.passive }}</h4>
+    <p>{{ site.suits.D.passive_desc }}.</p>
+  </div>
+
+  <h3>Active Abilities</h3>
+  <table class="ability-table">
+    <tr>
+      <th>Ability</th>
+      <th>Cost</th>
+      <th>Cooldown</th>
+      <th>Effect</th>
+    </tr>
+    <tr>
+      <td><strong>Flare</strong></td>
+      <td>Discard 1</td>
+      <td>0 turns</td>
+      <td>Opponent loses points equal to discarded card's rank</td>
+    </tr>
+    <tr>
+      <td><strong>Overcharge</strong></td>
+      <td>Discard 2</td>
+      <td>2 turns</td>
+      <td>Your next card played scores triple its rank</td>
+    </tr>
+    <tr>
+      <td><strong>Supernova</strong></td>
+      <td>Discard ALL</td>
+      <td>4 turns</td>
+      <td>Discard your entire hand. Score 3x the total ranks discarded</td>
+    </tr>
+  </table>
+
+  <div class="bonus-box">
+    <h4>Faction Bonus</h4>
+    <ul>
+      <li>+5 points for each Diamond card that is Ace, Jack, Queen, or King (extremes)</li>
+      <li>+15 if you play 4+ cards in one formation (burst)</li>
+    </ul>
+  </div>
+
+  <h3>Strategy Tips</h3>
+  <ul class="strategy-tips">
+    <li>All-in aggression - race to 100 before opponent stabilizes</li>
+    <li>Overcharge into King of Diamonds for massive single-card score</li>
+    <li>Supernova as desperation comeback or finishing blow</li>
+  </ul>
+</div>
+
+<!-- CLUBS -->
+<div class="faction-detail clubs">
+  <div class="faction-header">
+    <span class="faction-symbol" style="color: var(--clubs);">{{ site.suits.C.symbol }}</span>
+    <div class="faction-title">
+      <h2 style="color: var(--clubs);">{{ site.suits.C.faction }}</h2>
+      <span class="faction-subtitle">{{ site.suits.C.name }} Faction</span>
+      <span class="dimension-info clubs">{{ site.suits.C.dimension | capitalize }} Dimension</span>
+    </div>
+  </div>
+
+  <div class="faction-quote">
+    "What we plant today, we harvest forever."
+  </div>
+
+  <div class="passive-box">
+    <h4>Passive - {{ site.suits.C.passive }}</h4>
+    <p>{{ site.suits.C.passive_desc }} (Time Lock, Drain, etc.).</p>
+  </div>
+
+  <h3>Active Abilities</h3>
+  <table class="ability-table">
+    <tr>
+      <th>Ability</th>
+      <th>Cost</th>
+      <th>Cooldown</th>
+      <th>Effect</th>
+    </tr>
+    <tr>
+      <td><strong>Fortify</strong></td>
+      <td>Discard 1</td>
+      <td>1 turn</td>
+      <td>Your cards gain +2 to all bonuses this turn</td>
+    </tr>
+    <tr>
+      <td><strong>Growth</strong></td>
+      <td>Discard 2</td>
+      <td>2 turns</td>
+      <td>Draw 3 cards immediately</td>
+    </tr>
+    <tr>
+      <td><strong>Unshakeable</strong></td>
+      <td>Discard 3</td>
+      <td>3 turns</td>
+      <td>Your Resonance Points cannot decrease this turn (blocks Flare, Drain)</td>
+    </tr>
+  </table>
+
+  <div class="bonus-box">
+    <h4>Faction Bonus</h4>
+    <ul>
+      <li>+2 points for each Clubs card in your formation</li>
+      <li>+3 for each card that matches the suit of a card you played last turn (continuity)</li>
+    </ul>
+  </div>
+
+  <h3>Strategy Tips</h3>
+  <ul class="strategy-tips">
+    <li>Slow and steady - build unassailable point leads</li>
+    <li>Rooted passive counters Spades and Hearts disruption</li>
+    <li>Growth keeps your hand full for consistent plays</li>
+  </ul>
+</div>

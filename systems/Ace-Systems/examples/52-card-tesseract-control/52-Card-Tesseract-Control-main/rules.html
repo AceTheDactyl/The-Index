@@ -1,0 +1,319 @@
+---
+layout: default
+title: Game Rules
+description: Complete rulebook for Quantum Resonance
+permalink: /rules/
+---
+
+<style>
+  .rules-section {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+  }
+
+  .rules-section h2 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.5rem;
+  }
+
+  .rules-section h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .phase-list li {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    background: var(--bg-lighter);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .phase-list li strong {
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .scoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .scoring-table th,
+  .scoring-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .scoring-table th {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .scoring-table tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .bonus-card {
+    background: var(--bg-lighter);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+  }
+
+  .bonus-card h4 {
+    color: var(--diamonds);
+    margin-bottom: 0.5rem;
+  }
+
+  .formula {
+    font-family: monospace;
+    background: var(--bg-dark);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+</style>
+
+<div class="rules-section">
+  <h2>Setup</h2>
+
+  <h3>1. Choose Factions</h3>
+  <p>Each player selects one of the four factions. Each faction has unique abilities tied to a suit:</p>
+  <div class="faction-grid">
+    <div class="faction-card spades">
+      <h3 style="color: var(--spades);">Spades - Temporal Weavers</h3>
+      <p>Control time, see the future, reorder fate</p>
+    </div>
+    <div class="faction-card hearts">
+      <h3 style="color: var(--hearts);">Hearts - Valence Shapers</h3>
+      <p>Emotional manipulation, buff/debuff, healing</p>
+    </div>
+    <div class="faction-card diamonds">
+      <h3 style="color: var(--diamonds);">Diamonds - Radiant Catalysts</h3>
+      <p>Burst damage, high risk/reward, volatility</p>
+    </div>
+    <div class="faction-card clubs">
+      <h3 style="color: var(--clubs);">Clubs - Foundation Builders</h3>
+      <p>Stability, defense, resource accumulation</p>
+    </div>
+  </div>
+
+  <h3>2. Build Decks</h3>
+  <ul>
+    <li><strong>{{ site.game_config.deck_min }}-{{ site.game_config.deck_max }} cards</strong> per deck</li>
+    <li><strong>{{ site.game_config.faction_min }}-{{ site.game_config.faction_max }} cards</strong> must be from your faction's suit</li>
+    <li><strong>Maximum {{ site.game_config.max_copies }} copies</strong> of any single card</li>
+  </ul>
+
+  <h3>3. Start the Game</h3>
+  <ul>
+    <li>Shuffle your deck</li>
+    <li>Draw {{ site.game_config.starting_hand }} cards</li>
+    <li>Spades player goes first (then Hearts, Diamonds, Clubs)</li>
+  </ul>
+</div>
+
+<div class="rules-section">
+  <h2>Turn Structure</h2>
+  <p>Each turn consists of 5 phases:</p>
+
+  <ol class="phase-list">
+    <li>
+      <strong>Phase 1: DRAW</strong>
+      Draw {{ site.game_config.draw_per_turn }} cards from your deck. If your deck is empty, shuffle your discard pile.
+    </li>
+    <li>
+      <strong>Phase 2: MAIN</strong>
+      Play 1-5 cards from your hand to form a <em>Formation</em>. Activate faction abilities if available.
+    </li>
+    <li>
+      <strong>Phase 3: RESONANCE</strong>
+      Calculate your score: Base + Cluster + Chain + Resonance + Faction bonuses.
+    </li>
+    <li>
+      <strong>Phase 4: DISCARD</strong>
+      If you have more than {{ site.game_config.hand_limit }} cards in hand, discard down to {{ site.game_config.hand_limit }}.
+    </li>
+    <li>
+      <strong>Phase 5: END</strong>
+      Clear modifiers, move played cards to discard, pass turn.
+    </li>
+  </ol>
+</div>
+
+<div class="rules-section">
+  <h2>Scoring System</h2>
+
+  <h3>Base Points</h3>
+  <p>Each card scores its rank value:</p>
+  <table class="scoring-table">
+    <tr><th>Card</th><th>Points</th></tr>
+    <tr><td>Ace</td><td>1</td></tr>
+    <tr><td>2-10</td><td>Face value</td></tr>
+    <tr><td>Jack</td><td>11</td></tr>
+    <tr><td>Queen</td><td>12</td></tr>
+    <tr><td>King</td><td>13</td></tr>
+  </table>
+
+  <h3>Cluster Bonus (4D Proximity)</h3>
+  <div class="bonus-card">
+    <h4>Quick Reference</h4>
+    <ul>
+      <li>Same suit, adjacent ranks: <strong>+5 per pair</strong></li>
+      <li>Same rank, different suits: <strong>+3 per pair</strong></li>
+      <li>Within 2 ranks AND same suit group: <strong>+2 per pair</strong></li>
+    </ul>
+    <p><em>Suit Groups: Dark (Spades + Clubs), Light (Hearts + Diamonds)</em></p>
+  </div>
+  <div class="formula">
+    Cluster Bonus = (1 - average_distance) x {{ site.scoring.cluster_multiplier }} x number_of_cards
+  </div>
+
+  <h3>Chain Bonus (Coupling Network)</h3>
+  <div class="bonus-card">
+    <h4>Chain Rules</h4>
+    <ul>
+      <li>Sequential ranks in same suit: <strong>+8 per link</strong></li>
+      <li>Parallel ranks across suits: <strong>+4 per link</strong></li>
+      <li>Unbroken chain of 3+: <strong>+{{ site.scoring.unbroken_chain_bonus }} bonus</strong></li>
+    </ul>
+    <p><em>Example: AS, 2S, 3S = +16 chain + {{ site.scoring.unbroken_chain_bonus }} unbroken = +31</em></p>
+  </div>
+
+  <h3>Resonance Bonus (Phase Coherence)</h3>
+  <table class="scoring-table">
+    <tr><th>Coherence Level</th><th>Bonus</th></tr>
+    <tr><td>Perfect (0.9)</td><td>+30</td></tr>
+    <tr><td>Strong (0.7)</td><td>+20</td></tr>
+    <tr><td>Moderate (0.5)</td><td>+10</td></tr>
+    <tr><td>Below 0.5</td><td>+0</td></tr>
+  </table>
+  <p><em>Tip: Cards from the same suit tend to have better phase alignment.</em></p>
+</div>
+
+<div class="rules-section">
+  <h2>Special Formations</h2>
+
+  <div class="bonus-card">
+    <h4>Perfect Center (All Four 7s)</h4>
+    <p>Playing 7 + 7 + 7 + 7 = <strong>+40 bonus points</strong></p>
+    <p>The four 7s sit at coordinate (0,0,0,0) - the center of the tesseract.</p>
+  </div>
+
+  <div class="bonus-card">
+    <h4>Full Axis (Ace + King of same suit)</h4>
+    <p>Playing A + K = <strong>+20 bonus points</strong></p>
+    <p>Represents spanning the entire dimension from origin (-1.0) to apex (+1.0).</p>
+  </div>
+</div>
+
+<div class="rules-section">
+  <h2>Win Condition</h2>
+  <p style="font-size: 1.2rem; text-align: center;">
+    First player to reach <strong style="color: var(--accent); font-size: 1.5rem;">{{ site.game_config.win_condition }}</strong> Resonance Points wins!
+  </p>
+
+  <h3>Sudden Death</h3>
+  <p>If both players reach {{ site.game_config.win_condition }}+ on the same turn, play continues until one player is ahead at the end of a full round.</p>
+
+  <h3>Exhaustion</h3>
+  <p>If you must draw but your deck AND discard are empty, you lose 5 points instead of drawing.</p>
+</div>
+
+<div class="rules-section">
+  <h2>Game Formats</h2>
+
+  <h3>Format A: Constructed (20-30 cards)</h3>
+  <p>Players bring pre-built decks following deck construction rules. Best for experienced players with curated collections.</p>
+
+  <h3>Format B: Shared Deck (52 cards)</h3>
+  <p>Both players draw from a single shuffled 52-card deck. Great for learning or casual play. No deck construction required.</p>
+
+  <h3>Format C: Dual Tesseract (104 cards)</h3>
+  <p>The competitive standard. Each player owns a complete 52-card holographic deck and secretly constructs their play deck before the match.</p>
+
+  <div class="bonus-card">
+    <h4>Dual Tesseract Setup</h4>
+    <ol>
+      <li><strong>Both players bring 52</strong> - Each player has their own complete holographic deck</li>
+      <li><strong>Declare factions simultaneously</strong> - Faction choice is public information</li>
+      <li><strong>Discrete build phase</strong> - Secretly select 20-30 cards; remainder is your sideboard</li>
+      <li><strong>Reveal deck size only</strong> - Don't reveal contents, just card count</li>
+      <li><strong>Shuffle and draw 5</strong> - Standard game start</li>
+    </ol>
+  </div>
+
+  <div class="bonus-card">
+    <h4>Tesseract Collision Rules</h4>
+    <ul>
+      <li>Both players operate in <strong>parallel 4D coordinate spaces</strong></li>
+      <li>Cards never physically mix between decks</li>
+      <li>Interaction occurs only through <strong>scoring</strong> and <strong>faction abilities</strong></li>
+      <li>Each player's discard pile remains separate</li>
+      <li><strong>Mirror matches allowed</strong> - both can play the same faction</li>
+    </ul>
+  </div>
+
+  <div class="bonus-card">
+    <h4>Sideboard Rules</h4>
+    <ul>
+      <li>Sideboard = the 22-32 cards not selected for your play deck</li>
+      <li>Sideboard stays <strong>face-down and out of play</strong> during a game</li>
+      <li>Between games in a match: swap up to <strong>5 cards</strong> (1-for-1 exchanges only)</li>
+      <li>Deck must still follow construction rules after sideboarding</li>
+    </ul>
+  </div>
+
+  <div class="bonus-card">
+    <h4>Best-of-Three Match Structure</h4>
+    <ul>
+      <li><strong>Game 1:</strong> Play with initial build</li>
+      <li><strong>Sideboard Window:</strong> 3 minutes to make swaps</li>
+      <li><strong>Game 2:</strong> Adapted strategies</li>
+      <li><strong>Game 3 (if needed):</strong> Final sideboard, final game</li>
+      <li><strong>Match Winner:</strong> First to 2 game wins</li>
+    </ul>
+  </div>
+
+  <h3>Why Dual Tesseract?</h3>
+  <table class="scoring-table">
+    <tr>
+      <th>Advantage</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>Normalized Start</td>
+      <td>Both players have identical card pools - pure skill differential</td>
+    </tr>
+    <tr>
+      <td>Hidden Information</td>
+      <td>Opponent can't know which cards you left in sideboard</td>
+    </tr>
+    <tr>
+      <td>Meta Reads</td>
+      <td>Faction declaration creates mind games during build phase</td>
+    </tr>
+    <tr>
+      <td>Adaptability</td>
+      <td>Sideboard allows counter-strategy between games</td>
+    </tr>
+    <tr>
+      <td>No Collection Advantage</td>
+      <td>Everyone has access to exactly 52 cards</td>
+    </tr>
+  </table>
+</div>

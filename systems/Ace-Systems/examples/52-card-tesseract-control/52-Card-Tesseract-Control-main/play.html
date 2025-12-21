@@ -1,0 +1,1367 @@
+---
+layout: default
+title: Playing Field
+description: Simulate a full game turn with the Quantum Resonance playing field
+permalink: /play/
+---
+
+<style>
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-overlay.hidden {
+    display: none;
+  }
+
+  .modal-content {
+    background: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 90%;
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 60px rgba(153, 102, 255, 0.3);
+  }
+
+  .modal-content h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-content .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .deck-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .deck-option {
+    background: var(--bg-dark);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+
+  .deck-option:hover {
+    transform: translateY(-3px);
+  }
+
+  .deck-option.spades:hover, .deck-option.spades.selected { border-color: var(--spades); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+  .deck-option.hearts:hover, .deck-option.hearts.selected { border-color: var(--hearts); box-shadow: 0 0 20px rgba(255, 51, 102, 0.3); }
+  .deck-option.diamonds:hover, .deck-option.diamonds.selected { border-color: var(--diamonds); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+  .deck-option.clubs:hover, .deck-option.clubs.selected { border-color: var(--clubs); box-shadow: 0 0 20px rgba(51, 255, 102, 0.3); }
+
+  .deck-option .symbol {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .deck-option.spades .symbol { color: var(--spades); }
+  .deck-option.hearts .symbol { color: var(--hearts); }
+  .deck-option.diamonds .symbol { color: var(--diamonds); }
+  .deck-option.clubs .symbol { color: var(--clubs); }
+
+  .deck-option h3 {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 1rem;
+  }
+
+  .deck-option .strategy {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .start-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--accent), #6633cc);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .start-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 25px rgba(153, 102, 255, 0.5);
+  }
+
+  .start-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Game Field Styles */
+  .game-container {
+    display: none;
+  }
+
+  .game-container.active {
+    display: block;
+  }
+
+  /* Phase Bar */
+  .phase-bar {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .phase-indicator {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .phase-step {
+    padding: 0.5rem 1rem;
+    background: var(--bg-dark);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .phase-step:hover {
+    background: var(--bg-lighter);
+  }
+
+  .phase-step.active {
+    background: var(--accent);
+    color: #000;
+    font-weight: bold;
+    border-color: var(--accent);
+  }
+
+  .phase-step.completed {
+    background: rgba(51, 255, 102, 0.2);
+    color: var(--clubs);
+    border-color: var(--clubs);
+  }
+
+  .phase-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .phase-btn {
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .phase-btn.advance {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .phase-btn.advance:hover {
+    background: #b388ff;
+  }
+
+  .phase-btn.reset {
+    background: var(--bg-lighter);
+    color: var(--text-primary);
+    border: 1px solid var(--text-secondary);
+  }
+
+  .phase-btn.reset:hover {
+    background: var(--bg-card);
+  }
+
+  /* Score Display */
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .score-box {
+    background: var(--bg-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .score-box label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    display: block;
+  }
+
+  .score-box .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  /* Playing Field Grid */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr 200px;
+    gap: 1.5rem;
+    min-height: 500px;
+  }
+
+  @media (max-width: 900px) {
+    .field-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Zone Styles */
+  .zone {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .zone h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .zone h4 .count {
+    background: var(--bg-lighter);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+  }
+
+  /* Deck Zone */
+  .deck-zone {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .deck-pile {
+    position: relative;
+    width: 80px;
+    height: 112px;
+    margin: 1rem auto;
+  }
+
+  .deck-card-back {
+    position: absolute;
+    width: 80px;
+    height: 112px;
+    background: linear-gradient(135deg, #2a2a4a, #1a1a2e);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--accent);
+  }
+
+  .deck-card-back:nth-child(1) { top: 0; left: 0; }
+  .deck-card-back:nth-child(2) { top: 2px; left: 2px; }
+  .deck-card-back:nth-child(3) { top: 4px; left: 4px; }
+
+  .draw-btn {
+    margin-top: auto;
+    padding: 0.75rem;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .draw-btn:hover:not(:disabled) {
+    background: #b388ff;
+  }
+
+  .draw-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Discard Zone */
+  .discard-zone .discard-pile {
+    min-height: 112px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .discard-card {
+    width: 40px;
+    height: 56px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    opacity: 0.6;
+  }
+
+  /* Hand Zone */
+  .hand-zone {
+    background: linear-gradient(180deg, var(--bg-card), var(--bg-dark));
+    border: 2px solid var(--accent);
+  }
+
+  .hand-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    min-height: 120px;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .hand-card {
+    width: 70px;
+    height: 98px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .hand-card:hover:not(.disabled) {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  }
+
+  .hand-card.selected {
+    transform: translateY(-15px);
+    box-shadow: 0 0 0 3px var(--accent), 0 15px 30px rgba(0,0,0,0.5);
+  }
+
+  .hand-card.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .hand-card .rank { font-size: 1.3rem; }
+  .hand-card .suit { font-size: 1.8rem; }
+
+  .hand-card.S { background: linear-gradient(135deg, #1a3a4a, #0a1a2a); color: var(--spades); border: 2px solid var(--spades); }
+  .hand-card.H { background: linear-gradient(135deg, #4a1a2a, #2a0a1a); color: var(--hearts); border: 2px solid var(--hearts); }
+  .hand-card.D { background: linear-gradient(135deg, #4a3a1a, #2a1a0a); color: var(--diamonds); border: 2px solid var(--diamonds); }
+  .hand-card.C { background: linear-gradient(135deg, #1a4a2a, #0a2a1a); color: var(--clubs); border: 2px solid var(--clubs); }
+
+  /* Play Area */
+  .play-zone {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formation-area {
+    flex: 1;
+    min-height: 200px;
+    background: var(--bg-dark);
+    border-radius: 12px;
+    border: 2px dashed rgba(153, 102, 255, 0.3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+  }
+
+  .formation-area.can-play {
+    border-color: var(--accent);
+    background: rgba(153, 102, 255, 0.05);
+  }
+
+  .formation-area .placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .formation-card {
+    width: 90px;
+    height: 126px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    animation: cardPlay 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  @keyframes cardPlay {
+    from { transform: scale(0.5) translateY(-50px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .formation-card .rank { font-size: 1.6rem; }
+  .formation-card .suit { font-size: 2.2rem; }
+
+  .formation-card.S { background: linear-gradient(135deg, #1a3a4a, #0a1a2a); color: var(--spades); border: 3px solid var(--spades); }
+  .formation-card.H { background: linear-gradient(135deg, #4a1a2a, #2a0a1a); color: var(--hearts); border: 3px solid var(--hearts); }
+  .formation-card.D { background: linear-gradient(135deg, #4a3a1a, #2a1a0a); color: var(--diamonds); border: 3px solid var(--diamonds); }
+  .formation-card.C { background: linear-gradient(135deg, #1a4a2a, #0a2a1a); color: var(--clubs); border: 3px solid var(--clubs); }
+
+  .play-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .play-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .play-btn.confirm {
+    background: var(--clubs);
+    color: #000;
+  }
+
+  .play-btn.clear {
+    background: var(--bg-lighter);
+    color: var(--text-primary);
+  }
+
+  .play-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Score Breakdown Panel */
+  .score-panel {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    display: none;
+  }
+
+  .score-panel.visible {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .score-panel h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .score-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .score-item {
+    background: var(--bg-dark);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .score-item label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .score-item .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .score-item .value.positive { color: var(--clubs); }
+  .score-item .value.zero { color: var(--text-secondary); }
+
+  .score-item.total {
+    background: linear-gradient(135deg, rgba(153, 102, 255, 0.2), rgba(0, 212, 255, 0.2));
+    border: 1px solid var(--accent);
+  }
+
+  .score-item.total .value {
+    color: var(--accent);
+    font-size: 2rem;
+  }
+
+  /* Phase Instructions */
+  .phase-instructions {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent);
+  }
+
+  .phase-instructions h3 {
+    color: var(--accent);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .phase-instructions p {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  /* Turn Summary */
+  .turn-summary {
+    background: linear-gradient(135deg, rgba(51, 255, 102, 0.1), rgba(0, 212, 255, 0.1));
+    border: 1px solid var(--clubs);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    display: none;
+  }
+
+  .turn-summary.visible {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .turn-summary h3 {
+    color: var(--clubs);
+    margin-bottom: 1rem;
+  }
+
+  .turn-summary .final-score {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .turn-summary .progress {
+    margin-top: 1rem;
+    color: var(--text-secondary);
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 20px;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--clubs));
+    transition: width 0.5s ease;
+  }
+</style>
+
+<!-- Deck Selection Modal -->
+<div class="modal-overlay" id="deckModal">
+  <div class="modal-content">
+    <h2>Choose Your Deck</h2>
+    <p class="subtitle">Select a default deck to simulate a first turn</p>
+
+    <div class="deck-options">
+      <div class="deck-option spades" onclick="selectDeck('spades')">
+        <div class="symbol">♠</div>
+        <h3>Temporal Assault</h3>
+        <div class="strategy">Fast tempo, sequential chains</div>
+      </div>
+      <div class="deck-option hearts" onclick="selectDeck('hearts')">
+        <div class="symbol">♥</div>
+        <h3>Emotional Tide</h3>
+        <div class="strategy">Control, center clustering</div>
+      </div>
+      <div class="deck-option diamonds" onclick="selectDeck('diamonds')">
+        <div class="symbol">♦</div>
+        <h3>Solar Flare</h3>
+        <div class="strategy">High-risk burst damage</div>
+      </div>
+      <div class="deck-option clubs" onclick="selectDeck('clubs')">
+        <div class="symbol">♣</div>
+        <h3>Growing Bastion</h3>
+        <div class="strategy">Steady fortress build</div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="startBtn" onclick="startGame()" disabled>
+      Select a Deck to Begin
+    </button>
+  </div>
+</div>
+
+<!-- Game Container -->
+<div class="game-container" id="gameContainer">
+
+  <!-- Phase Bar -->
+  <div class="phase-bar">
+    <div class="phase-indicator">
+      <div class="phase-step" data-phase="draw" onclick="goToPhase('draw')">1. DRAW</div>
+      <div class="phase-step" data-phase="main" onclick="goToPhase('main')">2. MAIN</div>
+      <div class="phase-step" data-phase="resonance" onclick="goToPhase('resonance')">3. RESONANCE</div>
+      <div class="phase-step" data-phase="discard" onclick="goToPhase('discard')">4. DISCARD</div>
+      <div class="phase-step" data-phase="end" onclick="goToPhase('end')">5. END</div>
+    </div>
+
+    <div class="score-display">
+      <div class="score-box">
+        <label>Turn Score</label>
+        <div class="value" id="turnScore">0</div>
+      </div>
+      <div class="score-box">
+        <label>Total</label>
+        <div class="value" id="totalScore">0</div>
+      </div>
+    </div>
+
+    <div class="phase-controls">
+      <button class="phase-btn advance" id="advanceBtn" onclick="advancePhase()">
+        Next Phase →
+      </button>
+      <button class="phase-btn reset" onclick="resetGame()">
+        New Game
+      </button>
+    </div>
+  </div>
+
+  <!-- Phase Instructions -->
+  <div class="phase-instructions" id="phaseInstructions">
+    <h3 id="phaseTitle">DRAW Phase</h3>
+    <p id="phaseDesc">Draw cards to fill your starting hand.</p>
+  </div>
+
+  <!-- Playing Field -->
+  <div class="field-grid">
+
+    <!-- Left Column: Deck & Discard -->
+    <div class="left-zones">
+      <div class="zone deck-zone">
+        <h4>Draw Pile <span class="count" id="deckCount">22</span></h4>
+        <div class="deck-pile" id="deckPile">
+          <div class="deck-card-back">✦</div>
+          <div class="deck-card-back">✦</div>
+          <div class="deck-card-back">✦</div>
+        </div>
+        <button class="draw-btn" id="drawBtn" onclick="drawCard()">
+          Draw Card
+        </button>
+      </div>
+
+      <div class="zone discard-zone" style="margin-top: 1rem;">
+        <h4>Discard <span class="count" id="discardCount">0</span></h4>
+        <div class="discard-pile" id="discardPile"></div>
+      </div>
+    </div>
+
+    <!-- Center: Play Area -->
+    <div class="zone play-zone">
+      <h4>Formation (Play Area)</h4>
+      <div class="formation-area" id="formationArea">
+        <div class="placeholder">Select cards from your hand to play</div>
+      </div>
+      <div class="play-controls">
+        <button class="play-btn confirm" id="confirmPlay" onclick="confirmFormation()" disabled>
+          Confirm Formation
+        </button>
+        <button class="play-btn clear" id="clearPlay" onclick="clearFormation()" disabled>
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Column: Info -->
+    <div class="right-zones">
+      <div class="zone" id="factionInfo">
+        <h4>Faction</h4>
+        <div id="factionDisplay"></div>
+      </div>
+
+      <div class="zone" style="margin-top: 1rem;">
+        <h4>Quick Tips</h4>
+        <div id="tipDisplay" style="font-size: 0.85rem; color: var(--text-secondary);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hand Zone -->
+  <div class="zone hand-zone" style="margin-top: 1.5rem;">
+    <h4>Your Hand <span class="count" id="handCount">0</span> / 7</h4>
+    <div class="hand-cards" id="handCards">
+      <div class="placeholder" style="color: var(--text-secondary);">Draw cards to begin</div>
+    </div>
+  </div>
+
+  <!-- Score Panel -->
+  <div class="score-panel" id="scorePanel">
+    <h3>Score Breakdown</h3>
+    <div class="score-breakdown">
+      <div class="score-item">
+        <label>Base Points</label>
+        <div class="value" id="baseScore">0</div>
+      </div>
+      <div class="score-item">
+        <label>Cluster Bonus</label>
+        <div class="value" id="clusterScore">0</div>
+      </div>
+      <div class="score-item">
+        <label>Chain Bonus</label>
+        <div class="value" id="chainScore">0</div>
+      </div>
+      <div class="score-item">
+        <label>Resonance</label>
+        <div class="value" id="resonanceScore">0</div>
+      </div>
+      <div class="score-item">
+        <label>Faction Bonus</label>
+        <div class="value" id="factionScore">0</div>
+      </div>
+      <div class="score-item total">
+        <label>Turn Total</label>
+        <div class="value" id="totalTurnScore">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Turn Summary -->
+  <div class="turn-summary" id="turnSummary">
+    <h3>Turn Complete!</h3>
+    <div class="final-score" id="finalScore">0</div>
+    <p>Resonance Points earned this turn</p>
+    <div class="progress">
+      <span id="progressText">0 / 1,000 to victory</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Game State
+const gameState = {
+  selectedDeck: null,
+  currentPhase: 'draw',
+  phases: ['draw', 'main', 'resonance', 'discard', 'end'],
+  completedPhases: [],
+  deck: [],
+  hand: [],
+  formation: [],
+  discard: [],
+  selectedCards: [],
+  turnScore: 0,
+  totalScore: 0,
+  hasDrawn: false,
+  formationLocked: false
+};
+
+// Default deck configurations
+const defaultDecks = {
+  spades: {
+    name: "Temporal Assault",
+    faction: "Temporal Weavers",
+    factionSuit: "S",
+    passive: "Temporal Echo",
+    passiveDesc: "When you play a Spades card, look at the top card of your deck.",
+    color: "#00D4FF",
+    cards: [
+      "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "JS", "QS",
+      "2H", "3H", "4H", "2C", "3C", "2D", "3D", "4D", "5D", "6D",
+      "KS", "KH"
+    ],
+    tips: [
+      "Play sequential Spades for chain bonuses",
+      "AS→2S→3S gives +16 chain + 15 unbroken",
+      "Use low-cost cards to keep tempo high"
+    ]
+  },
+  hearts: {
+    name: "Emotional Tide",
+    faction: "Valence Shapers",
+    factionSuit: "H",
+    passive: "Empathic Bond",
+    passiveDesc: "+2 points when opponent plays a Hearts card.",
+    color: "#FF3366",
+    cards: [
+      "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AH", "3H",
+      "7S", "7C", "7D", "6S", "6C", "6D", "8S", "8C",
+      "KS", "KC", "QS", "QC"
+    ],
+    tips: [
+      "7s cluster perfectly at tesseract center",
+      "High-rank Hearts give valence bonus",
+      "Stack 8-K Hearts for +2 each"
+    ]
+  },
+  diamonds: {
+    name: "Solar Flare",
+    faction: "Radiant Catalysts",
+    factionSuit: "D",
+    passive: "Brilliance",
+    passiveDesc: "+5 points when playing 3+ cards in one formation.",
+    color: "#FFD700",
+    cards: [
+      "AD", "JD", "QD", "KD", "2D", "3D", "10D", "9D", "8D", "7D",
+      "KH", "KS", "KC", "QH", "QS", "JH", "JS", "JC", "AH", "AS"
+    ],
+    tips: [
+      "Play 3+ cards to trigger Brilliance",
+      "Kings give 13 base points each",
+      "Go all-in for burst damage"
+    ]
+  },
+  clubs: {
+    name: "Growing Bastion",
+    faction: "Foundation Builders",
+    factionSuit: "C",
+    passive: "Rooted",
+    passiveDesc: "Your cards cannot be affected by opponent abilities.",
+    color: "#33FF66",
+    cards: [
+      "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC",
+      "5S", "5H", "5D", "6S", "6H", "6D", "7S", "7H", "7D", "8S", "8H", "8D"
+    ],
+    tips: [
+      "Mid-range cards cluster tightly",
+      "5-6-7-8 chains are very efficient",
+      "Every Clubs card gives +2 faction bonus"
+    ]
+  }
+};
+
+// Card data
+const cardData = {};
+const suits = ['S', 'H', 'D', 'C'];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+const rankValues = {A: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, J: 11, Q: 12, K: 13};
+const suitSymbols = {S: '♠', H: '♥', D: '♦', C: '♣'};
+
+// Initialize card data
+suits.forEach(suit => {
+  ranks.forEach(rank => {
+    const cardId = rank + suit;
+    const numRank = rankValues[rank];
+    const coordinate = (numRank - 7) / 6;
+    const suitOffset = {S: 0, H: Math.PI/2, D: Math.PI, C: 3*Math.PI/2};
+    const phase = (suitOffset[suit] + (numRank - 1) * Math.PI / 6.5) % (2 * Math.PI);
+
+    cardData[cardId] = {
+      id: cardId,
+      rank: rank,
+      suit: suit,
+      value: numRank,
+      coordinate: coordinate,
+      phase: phase
+    };
+  });
+});
+
+// Phase instructions
+const phaseInstructions = {
+  draw: {
+    title: "DRAW Phase",
+    desc: "Draw 5 cards to form your starting hand. Click 'Draw Card' or the deck."
+  },
+  main: {
+    title: "MAIN Phase",
+    desc: "Select cards from your hand to form a formation (1-5 cards). Click cards to select, then confirm."
+  },
+  resonance: {
+    title: "RESONANCE Phase",
+    desc: "Your formation is scored. Review the breakdown of base points, cluster, chain, resonance, and faction bonuses."
+  },
+  discard: {
+    title: "DISCARD Phase",
+    desc: "If you have more than 7 cards, discard down to 7. (Tutorial: hand limit not enforced)"
+  },
+  end: {
+    title: "END Phase",
+    desc: "Turn complete! Your played cards go to discard. In a real game, you'd draw 2 next turn."
+  }
+};
+
+// Deck Selection
+function selectDeck(deckId) {
+  document.querySelectorAll('.deck-option').forEach(el => el.classList.remove('selected'));
+  document.querySelector(`.deck-option.${deckId}`).classList.add('selected');
+  gameState.selectedDeck = deckId;
+
+  const btn = document.getElementById('startBtn');
+  btn.disabled = false;
+  btn.textContent = `Start with ${defaultDecks[deckId].name}`;
+}
+
+// Start Game
+function startGame() {
+  if (!gameState.selectedDeck) return;
+
+  const deckConfig = defaultDecks[gameState.selectedDeck];
+
+  // Initialize deck
+  gameState.deck = [...deckConfig.cards].sort(() => Math.random() - 0.5);
+  gameState.hand = [];
+  gameState.formation = [];
+  gameState.discard = [];
+  gameState.selectedCards = [];
+  gameState.turnScore = 0;
+  gameState.totalScore = 0;
+  gameState.hasDrawn = false;
+  gameState.formationLocked = false;
+  gameState.currentPhase = 'draw';
+  gameState.completedPhases = [];
+
+  // Update UI
+  document.getElementById('deckModal').classList.add('hidden');
+  document.getElementById('gameContainer').classList.add('active');
+
+  // Display faction info
+  document.getElementById('factionDisplay').innerHTML = `
+    <div style="color: ${deckConfig.color}; font-size: 1.5rem; margin-bottom: 0.5rem;">${suitSymbols[deckConfig.factionSuit]} ${deckConfig.faction}</div>
+    <div style="font-size: 0.85rem; color: var(--accent);">Passive: ${deckConfig.passive}</div>
+    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">${deckConfig.passiveDesc}</div>
+  `;
+
+  // Display tips
+  document.getElementById('tipDisplay').innerHTML = deckConfig.tips.map(t => `<p style="margin: 0.5rem 0;">• ${t}</p>`).join('');
+
+  updatePhaseUI();
+  updateFieldUI();
+}
+
+// Go to specific phase
+function goToPhase(phase) {
+  const phaseIndex = gameState.phases.indexOf(phase);
+  const currentIndex = gameState.phases.indexOf(gameState.currentPhase);
+
+  // Can only go to completed phases or current phase
+  if (phaseIndex <= currentIndex || gameState.completedPhases.includes(phase)) {
+    gameState.currentPhase = phase;
+    updatePhaseUI();
+  }
+}
+
+// Advance to next phase
+function advancePhase() {
+  const currentIndex = gameState.phases.indexOf(gameState.currentPhase);
+
+  // Validate phase completion
+  if (gameState.currentPhase === 'draw' && gameState.hand.length < 5) {
+    alert('Draw 5 cards before advancing!');
+    return;
+  }
+
+  if (gameState.currentPhase === 'main' && gameState.formation.length === 0) {
+    alert('Play at least 1 card before advancing!');
+    return;
+  }
+
+  // Mark current as completed
+  if (!gameState.completedPhases.includes(gameState.currentPhase)) {
+    gameState.completedPhases.push(gameState.currentPhase);
+  }
+
+  // Handle phase transitions
+  if (gameState.currentPhase === 'main') {
+    gameState.formationLocked = true;
+    calculateScore();
+  }
+
+  if (gameState.currentPhase === 'end') {
+    // Move formation to discard
+    gameState.discard.push(...gameState.formation);
+    gameState.formation = [];
+    document.getElementById('turnSummary').classList.add('visible');
+    document.getElementById('finalScore').textContent = gameState.turnScore;
+    document.getElementById('progressText').textContent = `${gameState.totalScore} / 1,000 to victory`;
+    document.getElementById('progressFill').style.width = `${Math.min(100, gameState.totalScore / 10)}%`;
+  }
+
+  // Advance phase
+  if (currentIndex < gameState.phases.length - 1) {
+    gameState.currentPhase = gameState.phases[currentIndex + 1];
+    updatePhaseUI();
+  }
+}
+
+// Update phase UI
+function updatePhaseUI() {
+  const phase = gameState.currentPhase;
+
+  // Update phase steps
+  document.querySelectorAll('.phase-step').forEach(el => {
+    el.classList.remove('active', 'completed');
+    const stepPhase = el.dataset.phase;
+    if (stepPhase === phase) {
+      el.classList.add('active');
+    } else if (gameState.completedPhases.includes(stepPhase)) {
+      el.classList.add('completed');
+    }
+  });
+
+  // Update instructions
+  const instructions = phaseInstructions[phase];
+  document.getElementById('phaseTitle').textContent = instructions.title;
+  document.getElementById('phaseDesc').textContent = instructions.desc;
+
+  // Update button text
+  const advBtn = document.getElementById('advanceBtn');
+  if (phase === 'end') {
+    advBtn.textContent = 'Turn Complete';
+    advBtn.disabled = true;
+  } else {
+    advBtn.textContent = 'Next Phase →';
+    advBtn.disabled = false;
+  }
+
+  // Update draw button
+  document.getElementById('drawBtn').disabled = phase !== 'draw' || gameState.hand.length >= 5;
+
+  // Update hand card interactivity
+  const canSelectCards = phase === 'main' && !gameState.formationLocked;
+  document.querySelectorAll('.hand-card').forEach(el => {
+    el.classList.toggle('disabled', !canSelectCards);
+  });
+
+  // Show/hide formation controls
+  document.getElementById('confirmPlay').disabled = phase !== 'main' || gameState.selectedCards.length === 0 || gameState.formationLocked;
+  document.getElementById('clearPlay').disabled = phase !== 'main' || gameState.selectedCards.length === 0 || gameState.formationLocked;
+
+  // Update formation area state
+  document.getElementById('formationArea').classList.toggle('can-play', phase === 'main' && !gameState.formationLocked);
+
+  // Show score panel in resonance phase
+  document.getElementById('scorePanel').classList.toggle('visible',
+    gameState.completedPhases.includes('main') || phase === 'resonance' || phase === 'discard' || phase === 'end');
+}
+
+// Update field UI
+function updateFieldUI() {
+  // Deck count
+  document.getElementById('deckCount').textContent = gameState.deck.length;
+
+  // Deck visual
+  const deckPile = document.getElementById('deckPile');
+  if (gameState.deck.length === 0) {
+    deckPile.innerHTML = '<div style="color: var(--text-secondary);">Empty</div>';
+  }
+
+  // Hand
+  const handContainer = document.getElementById('handCards');
+  document.getElementById('handCount').textContent = gameState.hand.length;
+
+  if (gameState.hand.length === 0) {
+    handContainer.innerHTML = '<div class="placeholder" style="color: var(--text-secondary);">Draw cards to begin</div>';
+  } else {
+    handContainer.innerHTML = gameState.hand.map((cardId, idx) => {
+      const card = cardData[cardId];
+      const isSelected = gameState.selectedCards.includes(cardId);
+      const canSelect = gameState.currentPhase === 'main' && !gameState.formationLocked;
+      return `
+        <div class="hand-card ${card.suit} ${isSelected ? 'selected' : ''} ${!canSelect ? 'disabled' : ''}"
+             onclick="toggleCardSelection('${cardId}')"
+             title="${card.rank} of ${getSuitName(card.suit)} | Value: ${card.value}">
+          <span class="rank">${card.rank}</span>
+          <span class="suit">${suitSymbols[card.suit]}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Formation
+  const formationArea = document.getElementById('formationArea');
+  if (gameState.formation.length === 0 && gameState.selectedCards.length === 0) {
+    formationArea.innerHTML = '<div class="placeholder">Select cards from your hand to play</div>';
+  } else {
+    const cardsToShow = gameState.formationLocked ? gameState.formation : gameState.selectedCards;
+    formationArea.innerHTML = cardsToShow.map(cardId => {
+      const card = cardData[cardId];
+      return `
+        <div class="formation-card ${card.suit}">
+          <span class="rank">${card.rank}</span>
+          <span class="suit">${suitSymbols[card.suit]}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Discard
+  const discardPile = document.getElementById('discardPile');
+  document.getElementById('discardCount').textContent = gameState.discard.length;
+  discardPile.innerHTML = gameState.discard.map(cardId => {
+    const card = cardData[cardId];
+    return `<div class="discard-card ${card.suit}">${card.rank}${suitSymbols[card.suit]}</div>`;
+  }).join('');
+
+  // Scores
+  document.getElementById('turnScore').textContent = gameState.turnScore;
+  document.getElementById('totalScore').textContent = gameState.totalScore;
+}
+
+function getSuitName(suit) {
+  return {S: 'Spades', H: 'Hearts', D: 'Diamonds', C: 'Clubs'}[suit];
+}
+
+// Draw card
+function drawCard() {
+  if (gameState.currentPhase !== 'draw' || gameState.deck.length === 0 || gameState.hand.length >= 5) return;
+
+  const card = gameState.deck.pop();
+  gameState.hand.push(card);
+
+  updateFieldUI();
+  updatePhaseUI();
+}
+
+// Toggle card selection
+function toggleCardSelection(cardId) {
+  if (gameState.currentPhase !== 'main' || gameState.formationLocked) return;
+
+  const idx = gameState.selectedCards.indexOf(cardId);
+  if (idx === -1) {
+    if (gameState.selectedCards.length < 5) {
+      gameState.selectedCards.push(cardId);
+    }
+  } else {
+    gameState.selectedCards.splice(idx, 1);
+  }
+
+  updateFieldUI();
+  updatePhaseUI();
+}
+
+// Confirm formation
+function confirmFormation() {
+  if (gameState.selectedCards.length === 0 || gameState.formationLocked) return;
+
+  // Move selected cards to formation
+  gameState.formation = [...gameState.selectedCards];
+  gameState.hand = gameState.hand.filter(c => !gameState.selectedCards.includes(c));
+  gameState.selectedCards = [];
+  gameState.formationLocked = true;
+
+  // Calculate and display score
+  calculateScore();
+
+  updateFieldUI();
+  updatePhaseUI();
+}
+
+// Clear formation
+function clearFormation() {
+  if (gameState.formationLocked) return;
+  gameState.selectedCards = [];
+  updateFieldUI();
+  updatePhaseUI();
+}
+
+// Calculate score
+function calculateScore() {
+  const cards = gameState.formation.map(id => cardData[id]);
+  const deckConfig = defaultDecks[gameState.selectedDeck];
+
+  // Base score
+  const baseScore = cards.reduce((sum, c) => sum + c.value, 0);
+
+  // Cluster bonus
+  const clusterBonus = calculateClusterBonus(cards);
+
+  // Chain bonus
+  const chainBonus = calculateChainBonus(cards);
+
+  // Resonance bonus
+  const resonanceBonus = calculateResonanceBonus(cards);
+
+  // Faction bonus
+  const factionBonus = calculateFactionBonus(deckConfig, cards);
+
+  // Total
+  const total = baseScore + clusterBonus + chainBonus + resonanceBonus + factionBonus;
+
+  gameState.turnScore = total;
+  gameState.totalScore += total;
+
+  // Update UI
+  updateScoreValue('baseScore', baseScore);
+  updateScoreValue('clusterScore', clusterBonus);
+  updateScoreValue('chainScore', chainBonus);
+  updateScoreValue('resonanceScore', resonanceBonus);
+  updateScoreValue('factionScore', factionBonus);
+  updateScoreValue('totalTurnScore', total);
+
+  updateFieldUI();
+}
+
+function updateScoreValue(elementId, value) {
+  const el = document.getElementById(elementId);
+  el.textContent = value > 0 ? `+${value}` : value;
+  el.className = 'value ' + (value > 0 ? 'positive' : 'zero');
+}
+
+function calculateClusterBonus(cards) {
+  if (cards.length < 2) return 0;
+
+  let bonus = 0;
+  const sorted = [...cards].sort((a, b) => a.value - b.value);
+
+  // Same suit adjacent: +5 per pair
+  for (let i = 0; i < sorted.length - 1; i++) {
+    if (sorted[i].suit === sorted[i+1].suit && Math.abs(sorted[i].value - sorted[i+1].value) === 1) {
+      bonus += 5;
+    }
+  }
+
+  // Same rank different suits: +3 per pair
+  for (let i = 0; i < cards.length; i++) {
+    for (let j = i + 1; j < cards.length; j++) {
+      if (cards[i].value === cards[j].value && cards[i].suit !== cards[j].suit) {
+        bonus += 3;
+      }
+    }
+  }
+
+  // Distance-based bonus
+  let totalDist = 0, pairs = 0;
+  for (let i = 0; i < cards.length; i++) {
+    for (let j = i + 1; j < cards.length; j++) {
+      totalDist += Math.abs(cards[i].coordinate - cards[j].coordinate);
+      pairs++;
+    }
+  }
+  if (pairs > 0) {
+    const avgDist = totalDist / pairs;
+    if (avgDist < 0.5) bonus += Math.floor((1 - avgDist) * 10);
+  }
+
+  return bonus;
+}
+
+function calculateChainBonus(cards) {
+  if (cards.length < 2) return 0;
+
+  let bonus = 0;
+  let chainLength = 1;
+  const sorted = [...cards].sort((a, b) => a.value - b.value);
+
+  for (let i = 0; i < sorted.length - 1; i++) {
+    if (sorted[i].suit === sorted[i+1].suit && sorted[i+1].value - sorted[i].value === 1) {
+      bonus += 8;
+      chainLength++;
+    } else if (sorted[i].value === sorted[i+1].value) {
+      bonus += 4;
+    }
+  }
+
+  if (chainLength >= 3) bonus += 15;
+
+  return bonus;
+}
+
+function calculateResonanceBonus(cards) {
+  if (cards.length < 2) return 0;
+
+  const sumCos = cards.reduce((s, c) => s + Math.cos(c.phase), 0);
+  const sumSin = cards.reduce((s, c) => s + Math.sin(c.phase), 0);
+  const coherence = Math.sqrt(sumCos * sumCos + sumSin * sumSin) / cards.length;
+
+  if (coherence >= 0.9) return 30;
+  if (coherence >= 0.7) return 20;
+  if (coherence >= 0.5) return 10;
+  return 0;
+}
+
+function calculateFactionBonus(deckConfig, cards) {
+  const factionSuit = deckConfig.factionSuit;
+  const factionCards = cards.filter(c => c.suit === factionSuit);
+
+  switch (factionSuit) {
+    case 'S': // Spades: +3 per beyond first
+      return Math.max(0, (factionCards.length - 1) * 3);
+    case 'H': // Hearts: +2 per high-rank (8+)
+      return factionCards.filter(c => c.value >= 8).length * 2;
+    case 'D': // Diamonds: +5 if 3+ cards
+      return cards.length >= 3 ? 5 : 0;
+    case 'C': // Clubs: +2 per clubs
+      return factionCards.length * 2;
+  }
+  return 0;
+}
+
+// Reset game
+function resetGame() {
+  document.getElementById('gameContainer').classList.remove('active');
+  document.getElementById('deckModal').classList.remove('hidden');
+  document.getElementById('scorePanel').classList.remove('visible');
+  document.getElementById('turnSummary').classList.remove('visible');
+
+  // Reset selections
+  document.querySelectorAll('.deck-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('startBtn').textContent = 'Select a Deck to Begin';
+
+  gameState.selectedDeck = null;
+}
+
+// Click on deck to draw
+document.getElementById('deckPile')?.addEventListener('click', () => {
+  if (gameState.currentPhase === 'draw' && gameState.hand.length < 5) {
+    drawCard();
+  }
+});
+</script>

@@ -1,0 +1,853 @@
+---
+layout: default
+title: Tutorial Builds
+description: Default deck builds and first-turn simulations for new players
+permalink: /tutorial/
+---
+
+<style>
+  .tutorial-intro {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .tutorial-intro h2 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .deck-section {
+    background: var(--bg-card);
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .deck-header {
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .deck-header:hover {
+    background: var(--bg-lighter);
+  }
+
+  .deck-header.spades { border-left: 4px solid var(--spades); }
+  .deck-header.hearts { border-left: 4px solid var(--hearts); }
+  .deck-header.diamonds { border-left: 4px solid var(--diamonds); }
+  .deck-header.clubs { border-left: 4px solid var(--clubs); }
+
+  .deck-symbol {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+
+  .deck-symbol.spades { background: rgba(0, 212, 255, 0.2); color: var(--spades); }
+  .deck-symbol.hearts { background: rgba(255, 51, 102, 0.2); color: var(--hearts); }
+  .deck-symbol.diamonds { background: rgba(255, 215, 0, 0.2); color: var(--diamonds); }
+  .deck-symbol.clubs { background: rgba(51, 255, 102, 0.2); color: var(--clubs); }
+
+  .deck-info {
+    flex: 1;
+  }
+
+  .deck-info h3 {
+    margin: 0 0 0.25rem 0;
+  }
+
+  .deck-info p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .deck-toggle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    transition: transform 0.3s;
+  }
+
+  .deck-section.expanded .deck-toggle {
+    transform: rotate(180deg);
+  }
+
+  .deck-content {
+    display: none;
+    padding: 0 2rem 2rem;
+  }
+
+  .deck-section.expanded .deck-content {
+    display: block;
+  }
+
+  .deck-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--bg-dark);
+    border-radius: 8px;
+  }
+
+  .deck-card {
+    width: 45px;
+    height: 63px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+
+  .deck-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 10;
+  }
+
+  .deck-card.S { background: linear-gradient(135deg, #1a3a4a, #0a1a2a); color: var(--spades); border: 1px solid var(--spades); }
+  .deck-card.H { background: linear-gradient(135deg, #4a1a2a, #2a0a1a); color: var(--hearts); border: 1px solid var(--hearts); }
+  .deck-card.D { background: linear-gradient(135deg, #4a3a1a, #2a1a0a); color: var(--diamonds); border: 1px solid var(--diamonds); }
+  .deck-card.C { background: linear-gradient(135deg, #1a4a2a, #0a2a1a); color: var(--clubs); border: 1px solid var(--clubs); }
+
+  .deck-card.selected {
+    box-shadow: 0 0 0 3px var(--accent);
+    transform: translateY(-8px);
+  }
+
+  .deck-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .stat-box {
+    background: var(--bg-lighter);
+    padding: 0.75rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .stat-box label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-box value {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--accent);
+  }
+
+  .passive-box {
+    background: var(--bg-lighter);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border-left: 3px solid var(--accent);
+  }
+
+  .passive-box h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+  }
+
+  .simulate-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--accent), #6633cc);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1rem;
+  }
+
+  .simulate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(153, 102, 255, 0.4);
+  }
+
+  .simulation-area {
+    display: none;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-dark);
+    border-radius: 12px;
+    border: 1px solid var(--accent);
+  }
+
+  .simulation-area.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .sim-phase {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sim-phase:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .sim-phase h4 {
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .phase-num {
+    background: var(--accent);
+    color: #000;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+
+  .hand-display {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+
+  .hand-card {
+    width: 60px;
+    height: 84px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+
+  .hand-card.S { background: linear-gradient(135deg, #1a3a4a, #0a1a2a); color: var(--spades); border: 2px solid var(--spades); }
+  .hand-card.H { background: linear-gradient(135deg, #4a1a2a, #2a0a1a); color: var(--hearts); border: 2px solid var(--hearts); }
+  .hand-card.D { background: linear-gradient(135deg, #4a3a1a, #2a1a0a); color: var(--diamonds); border: 2px solid var(--diamonds); }
+  .hand-card.C { background: linear-gradient(135deg, #1a4a2a, #0a2a1a); color: var(--clubs); border: 2px solid var(--clubs); }
+
+  .hand-card .rank {
+    font-size: 1.2rem;
+  }
+
+  .hand-card .suit {
+    font-size: 1.5rem;
+  }
+
+  .hand-card.played {
+    box-shadow: 0 0 0 3px var(--accent), 0 10px 30px rgba(0,0,0,0.3);
+    transform: translateY(-10px);
+  }
+
+  .hand-card.dimmed {
+    opacity: 0.4;
+  }
+
+  .score-breakdown {
+    background: var(--bg-card);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .score-row:last-child {
+    border-bottom: none;
+    font-weight: bold;
+    color: var(--accent);
+    font-size: 1.1rem;
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--accent);
+  }
+
+  .score-row .label {
+    color: var(--text-secondary);
+  }
+
+  .score-row .value {
+    font-weight: bold;
+  }
+
+  .score-row .value.positive {
+    color: var(--clubs);
+  }
+
+  .explanation {
+    background: rgba(153, 102, 255, 0.1);
+    border: 1px solid var(--accent);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .explanation h5 {
+    color: var(--accent);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .reset-btn {
+    background: var(--bg-lighter);
+    border: 1px solid var(--text-secondary);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+
+  .reset-btn:hover {
+    background: var(--bg-card);
+  }
+</style>
+
+<div class="tutorial-intro">
+  <h2>Tutorial Builds</h2>
+  <p>Learn each faction's playstyle with these pre-built starter decks. Click a faction to see its default build, then simulate a first turn to understand the scoring mechanics.</p>
+</div>
+
+<!-- Spades Deck -->
+<div class="deck-section" id="spades-deck">
+  <div class="deck-header spades" onclick="toggleDeck('spades')">
+    <div class="deck-symbol spades">♠</div>
+    <div class="deck-info">
+      <h3 style="color: var(--spades);">Temporal Assault</h3>
+      <p>Spades - Temporal Weavers | Fast tempo, sequential chains</p>
+    </div>
+    <span class="deck-toggle">▼</span>
+  </div>
+  <div class="deck-content">
+    <div class="passive-box">
+      <h4>Passive: Temporal Echo</h4>
+      <p>When you play a Spades card, look at the top card of your deck. You may put it on the bottom.</p>
+    </div>
+
+    <h4>Deck Contents (22 cards)</h4>
+    <div class="deck-cards" id="spades-cards">
+      <!-- Filled by JS -->
+    </div>
+
+    <div class="deck-stats">
+      <div class="stat-box"><label>Total Cards</label><value>22</value></div>
+      <div class="stat-box"><label>Faction Cards</label><value>10</value></div>
+      <div class="stat-box"><label>Avg Rank</label><value>5.8</value></div>
+      <div class="stat-box"><label>Strategy</label><value>Tempo</value></div>
+    </div>
+
+    <button class="simulate-btn" onclick="simulateTurn('spades')">Simulate First Turn</button>
+
+    <div class="simulation-area" id="spades-sim"></div>
+  </div>
+</div>
+
+<!-- Hearts Deck -->
+<div class="deck-section" id="hearts-deck">
+  <div class="deck-header hearts" onclick="toggleDeck('hearts')">
+    <div class="deck-symbol hearts">♥</div>
+    <div class="deck-info">
+      <h3 style="color: var(--hearts);">Emotional Tide</h3>
+      <p>Hearts - Valence Shapers | Control, drain, high valence stacks</p>
+    </div>
+    <span class="deck-toggle">▼</span>
+  </div>
+  <div class="deck-content">
+    <div class="passive-box">
+      <h4>Passive: Empathic Bond</h4>
+      <p>Gain +2 Resonance Points whenever an opponent plays a Hearts card.</p>
+    </div>
+
+    <h4>Deck Contents (24 cards)</h4>
+    <div class="deck-cards" id="hearts-cards"></div>
+
+    <div class="deck-stats">
+      <div class="stat-box"><label>Total Cards</label><value>24</value></div>
+      <div class="stat-box"><label>Faction Cards</label><value>12</value></div>
+      <div class="stat-box"><label>Avg Rank</label><value>7.2</value></div>
+      <div class="stat-box"><label>Strategy</label><value>Control</value></div>
+    </div>
+
+    <button class="simulate-btn" onclick="simulateTurn('hearts')">Simulate First Turn</button>
+
+    <div class="simulation-area" id="hearts-sim"></div>
+  </div>
+</div>
+
+<!-- Diamonds Deck -->
+<div class="deck-section" id="diamonds-deck">
+  <div class="deck-header diamonds" onclick="toggleDeck('diamonds')">
+    <div class="deck-symbol diamonds">♦</div>
+    <div class="deck-info">
+      <h3 style="color: var(--diamonds);">Solar Flare</h3>
+      <p>Diamonds - Radiant Catalysts | Burst damage, high risk/reward</p>
+    </div>
+    <span class="deck-toggle">▼</span>
+  </div>
+  <div class="deck-content">
+    <div class="passive-box">
+      <h4>Passive: Brilliance</h4>
+      <p>When you play 3 or more cards in a single formation, gain +5 Resonance Points.</p>
+    </div>
+
+    <h4>Deck Contents (20 cards)</h4>
+    <div class="deck-cards" id="diamonds-cards"></div>
+
+    <div class="deck-stats">
+      <div class="stat-box"><label>Total Cards</label><value>20</value></div>
+      <div class="stat-box"><label>Faction Cards</label><value>10</value></div>
+      <div class="stat-box"><label>Avg Rank</label><value>9.1</value></div>
+      <div class="stat-box"><label>Strategy</label><value>Burst</value></div>
+    </div>
+
+    <button class="simulate-btn" onclick="simulateTurn('diamonds')">Simulate First Turn</button>
+
+    <div class="simulation-area" id="diamonds-sim"></div>
+  </div>
+</div>
+
+<!-- Clubs Deck -->
+<div class="deck-section" id="clubs-deck">
+  <div class="deck-header clubs" onclick="toggleDeck('clubs')">
+    <div class="deck-symbol clubs">♣</div>
+    <div class="deck-info">
+      <h3 style="color: var(--clubs);">Growing Bastion</h3>
+      <p>Clubs - Foundation Builders | Defense, steady accumulation</p>
+    </div>
+    <span class="deck-toggle">▼</span>
+  </div>
+  <div class="deck-content">
+    <div class="passive-box">
+      <h4>Passive: Rooted</h4>
+      <p>Your cards cannot be affected by opponent abilities (Time Lock, Drain, etc.).</p>
+    </div>
+
+    <h4>Deck Contents (25 cards)</h4>
+    <div class="deck-cards" id="clubs-cards"></div>
+
+    <div class="deck-stats">
+      <div class="stat-box"><label>Total Cards</label><value>25</value></div>
+      <div class="stat-box"><label>Faction Cards</label><value>13</value></div>
+      <div class="stat-box"><label>Avg Rank</label><value>6.4</value></div>
+      <div class="stat-box"><label>Strategy</label><value>Fortress</value></div>
+    </div>
+
+    <button class="simulate-btn" onclick="simulateTurn('clubs')">Simulate First Turn</button>
+
+    <div class="simulation-area" id="clubs-sim"></div>
+  </div>
+</div>
+
+<script>
+// Default deck builds for each faction
+const defaultDecks = {
+  spades: {
+    name: "Temporal Assault",
+    faction: "Temporal Weavers",
+    passive: "Temporal Echo",
+    color: "#00D4FF",
+    cards: [
+      // Core Spades (10)
+      "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "JS", "QS",
+      // Support - Low cost for speed (10)
+      "2H", "3H", "4H", "2C", "3C", "2D", "3D", "4D", "5D", "6D",
+      // Finishers (2)
+      "KS", "KH"
+    ],
+    strategy: "Play sequential Spades chains for chain bonus. Use low-cost support cards for quick formations.",
+    firstTurnPlay: ["AS", "2S", "3S"] // Optimal first turn
+  },
+  hearts: {
+    name: "Emotional Tide",
+    faction: "Valence Shapers",
+    passive: "Empathic Bond",
+    color: "#FF3366",
+    cards: [
+      // Core Hearts (12) - focus on high ranks
+      "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AH", "3H",
+      // Support - Centers for clustering (8)
+      "7S", "7C", "7D", "6S", "6C", "6D", "8S", "8C",
+      // Finishers (4)
+      "KS", "KC", "QS", "QC"
+    ],
+    strategy: "Stack high-rank Hearts for valence synergy. Use 7s for center clustering bonus.",
+    firstTurnPlay: ["7H", "7S", "7C"]
+  },
+  diamonds: {
+    name: "Solar Flare",
+    faction: "Radiant Catalysts",
+    passive: "Brilliance",
+    color: "#FFD700",
+    cards: [
+      // Core Diamonds - extremes (10)
+      "AD", "JD", "QD", "KD", "2D", "3D", "10D", "9D", "8D", "7D",
+      // Support - All high cards (10)
+      "KH", "KS", "KC", "QH", "QS", "JH", "JS", "JC", "AH", "AS"
+    ],
+    strategy: "Go all-in with big plays. Trigger Brilliance passive with 3+ card formations. Race to 1,000.",
+    firstTurnPlay: ["KD", "KH", "KS"]
+  },
+  clubs: {
+    name: "Growing Bastion",
+    faction: "Foundation Builders",
+    passive: "Rooted",
+    color: "#33FF66",
+    cards: [
+      // Core Clubs - full spread (13)
+      "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC",
+      // Support - mid-range for clustering (12)
+      "5S", "5H", "5D", "6S", "6H", "6D", "7S", "7H", "7D", "8S", "8H", "8D"
+    ],
+    strategy: "Build steady presence. Cluster mid-range cards. Rooted passive protects from disruption.",
+    firstTurnPlay: ["5C", "6C", "7C", "8C"]
+  }
+};
+
+// Card data with coordinates and phases
+const cardData = {};
+const suits = ['S', 'H', 'D', 'C'];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+const rankValues = {A: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, J: 11, Q: 12, K: 13};
+
+// Generate card data
+suits.forEach(suit => {
+  ranks.forEach((rank, idx) => {
+    const cardId = rank + suit;
+    const numRank = rankValues[rank];
+    const coordinate = (numRank - 7) / 6; // -1 to +1
+
+    // Phase based on suit and rank
+    const suitOffset = {S: 0, H: Math.PI/2, D: Math.PI, C: 3*Math.PI/2};
+    const phase = (suitOffset[suit] + (numRank - 1) * Math.PI / 6.5) % (2 * Math.PI);
+
+    cardData[cardId] = {
+      id: cardId,
+      rank: rank,
+      suit: suit,
+      value: numRank,
+      coordinate: coordinate,
+      phase: phase
+    };
+  });
+});
+
+// Toggle deck expansion
+function toggleDeck(faction) {
+  const section = document.getElementById(faction + '-deck');
+  section.classList.toggle('expanded');
+
+  // Initialize deck cards if first time
+  if (section.classList.contains('expanded')) {
+    renderDeckCards(faction);
+  }
+}
+
+// Render deck cards
+function renderDeckCards(faction) {
+  const container = document.getElementById(faction + '-cards');
+  if (container.children.length > 0) return; // Already rendered
+
+  const deck = defaultDecks[faction];
+  deck.cards.forEach(cardId => {
+    const card = cardData[cardId];
+    const div = document.createElement('div');
+    div.className = `deck-card ${card.suit}`;
+    div.innerHTML = `${card.rank}<span style="font-size:0.6rem">${getSuitSymbol(card.suit)}</span>`;
+    div.title = `${card.rank} of ${getSuitName(card.suit)} | Value: ${card.value} | Coord: ${card.coordinate.toFixed(2)}`;
+    container.appendChild(div);
+  });
+}
+
+function getSuitSymbol(suit) {
+  return {S: '♠', H: '♥', D: '♦', C: '♣'}[suit];
+}
+
+function getSuitName(suit) {
+  return {S: 'Spades', H: 'Hearts', D: 'Diamonds', C: 'Clubs'}[suit];
+}
+
+// Simulate first turn
+function simulateTurn(faction) {
+  const deck = defaultDecks[faction];
+  const simArea = document.getElementById(faction + '-sim');
+
+  // Shuffle and draw 5
+  const shuffled = [...deck.cards].sort(() => Math.random() - 0.5);
+  const hand = shuffled.slice(0, 5);
+
+  // For tutorial, ensure we get a good hand by including the recommended play
+  const goodHand = [...deck.firstTurnPlay];
+  const remaining = shuffled.filter(c => !deck.firstTurnPlay.includes(c));
+  while (goodHand.length < 5 && remaining.length > 0) {
+    goodHand.push(remaining.shift());
+  }
+
+  const playedCards = deck.firstTurnPlay.map(id => cardData[id]);
+  const heldCards = goodHand.filter(id => !deck.firstTurnPlay.includes(id)).map(id => cardData[id]);
+
+  // Calculate scores
+  const baseScore = playedCards.reduce((sum, c) => sum + c.value, 0);
+  const clusterBonus = calculateClusterBonus(playedCards);
+  const chainBonus = calculateChainBonus(playedCards);
+  const resonanceBonus = calculateResonanceBonus(playedCards);
+  const factionBonus = calculateFactionBonus(faction, playedCards);
+  const totalScore = baseScore + clusterBonus + chainBonus + resonanceBonus + factionBonus;
+
+  simArea.innerHTML = `
+    <div class="sim-phase">
+      <h4><span class="phase-num">1</span> DRAW Phase</h4>
+      <p>You draw your starting hand of 5 cards:</p>
+      <div class="hand-display">
+        ${goodHand.map(id => {
+          const c = cardData[id];
+          const isPlayed = deck.firstTurnPlay.includes(id);
+          return `<div class="hand-card ${c.suit} ${isPlayed ? '' : 'dimmed'}">
+            <span class="rank">${c.rank}</span>
+            <span class="suit">${getSuitSymbol(c.suit)}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="sim-phase">
+      <h4><span class="phase-num">2</span> MAIN Phase - Formation</h4>
+      <p>You play ${playedCards.length} cards as your formation:</p>
+      <div class="hand-display">
+        ${playedCards.map(c => `
+          <div class="hand-card ${c.suit} played">
+            <span class="rank">${c.rank}</span>
+            <span class="suit">${getSuitSymbol(c.suit)}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="explanation">
+        <h5>Why this play?</h5>
+        <p>${getPlayExplanation(faction, playedCards)}</p>
+      </div>
+    </div>
+
+    <div class="sim-phase">
+      <h4><span class="phase-num">3</span> RESONANCE Phase - Scoring</h4>
+      <div class="score-breakdown">
+        <div class="score-row">
+          <span class="label">Base Points (${playedCards.map(c => c.value).join(' + ')})</span>
+          <span class="value">+${baseScore}</span>
+        </div>
+        <div class="score-row">
+          <span class="label">Cluster Bonus (4D proximity)</span>
+          <span class="value ${clusterBonus > 0 ? 'positive' : ''}">+${clusterBonus}</span>
+        </div>
+        <div class="score-row">
+          <span class="label">Chain Bonus (coupling links)</span>
+          <span class="value ${chainBonus > 0 ? 'positive' : ''}">+${chainBonus}</span>
+        </div>
+        <div class="score-row">
+          <span class="label">Resonance Bonus (phase alignment)</span>
+          <span class="value ${resonanceBonus > 0 ? 'positive' : ''}">+${resonanceBonus}</span>
+        </div>
+        <div class="score-row">
+          <span class="label">Faction Bonus (${deck.faction})</span>
+          <span class="value ${factionBonus > 0 ? 'positive' : ''}">+${factionBonus}</span>
+        </div>
+        <div class="score-row">
+          <span class="label">TOTAL TURN SCORE</span>
+          <span class="value">${totalScore}</span>
+        </div>
+      </div>
+      <div class="explanation">
+        <h5>Score Breakdown</h5>
+        <p>${getScoreExplanation(faction, playedCards, {baseScore, clusterBonus, chainBonus, resonanceBonus, factionBonus})}</p>
+      </div>
+    </div>
+
+    <div class="sim-phase">
+      <h4><span class="phase-num">4</span> End of Turn</h4>
+      <p>Cards in hand: ${5 - playedCards.length} | Cards played: ${playedCards.length} | Score: <strong style="color: var(--accent)">${totalScore}</strong> / 1,000</p>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Played cards go to discard. Draw 2 cards next turn.</p>
+    </div>
+
+    <button class="reset-btn" onclick="simulateTurn('${faction}')">Simulate Again</button>
+  `;
+
+  simArea.classList.add('active');
+}
+
+// Scoring calculations
+function calculateClusterBonus(cards) {
+  if (cards.length < 2) return 0;
+
+  // Calculate average distance
+  let totalDist = 0;
+  let pairs = 0;
+  for (let i = 0; i < cards.length; i++) {
+    for (let j = i + 1; j < cards.length; j++) {
+      const dist = Math.abs(cards[i].coordinate - cards[j].coordinate);
+      totalDist += dist;
+      pairs++;
+    }
+  }
+  const avgDist = totalDist / pairs;
+
+  // Same suit adjacent: +5 per pair
+  let bonus = 0;
+  const sorted = [...cards].sort((a, b) => a.value - b.value);
+  for (let i = 0; i < sorted.length - 1; i++) {
+    if (sorted[i].suit === sorted[i+1].suit && Math.abs(sorted[i].value - sorted[i+1].value) === 1) {
+      bonus += 5;
+    }
+  }
+
+  // Same rank different suits: +3 per pair
+  for (let i = 0; i < cards.length; i++) {
+    for (let j = i + 1; j < cards.length; j++) {
+      if (cards[i].value === cards[j].value && cards[i].suit !== cards[j].suit) {
+        bonus += 3;
+      }
+    }
+  }
+
+  // Distance bonus
+  if (avgDist < 0.5) bonus += Math.floor((1 - avgDist) * 10);
+
+  return bonus;
+}
+
+function calculateChainBonus(cards) {
+  if (cards.length < 2) return 0;
+
+  let bonus = 0;
+  const sorted = [...cards].sort((a, b) => a.value - b.value);
+
+  let chainLength = 1;
+  for (let i = 0; i < sorted.length - 1; i++) {
+    if (sorted[i].suit === sorted[i+1].suit && sorted[i+1].value - sorted[i].value === 1) {
+      bonus += 8; // Sequential same suit
+      chainLength++;
+    } else if (sorted[i].value === sorted[i+1].value) {
+      bonus += 4; // Parallel ranks
+    }
+  }
+
+  // Unbroken chain bonus
+  if (chainLength >= 3) bonus += 15;
+
+  return bonus;
+}
+
+function calculateResonanceBonus(cards) {
+  if (cards.length < 2) return 0;
+
+  // Calculate coherence (simplified Kuramoto order parameter)
+  const sumCos = cards.reduce((s, c) => s + Math.cos(c.phase), 0);
+  const sumSin = cards.reduce((s, c) => s + Math.sin(c.phase), 0);
+  const coherence = Math.sqrt(sumCos * sumCos + sumSin * sumSin) / cards.length;
+
+  if (coherence >= 0.9) return 30;
+  if (coherence >= 0.7) return 20;
+  if (coherence >= 0.5) return 10;
+  return 0;
+}
+
+function calculateFactionBonus(faction, cards) {
+  const suitMap = {spades: 'S', hearts: 'H', diamonds: 'D', clubs: 'C'};
+  const factionSuit = suitMap[faction];
+  const factionCards = cards.filter(c => c.suit === factionSuit);
+
+  switch (faction) {
+    case 'spades':
+      // +3 per Spades beyond first
+      return Math.max(0, (factionCards.length - 1) * 3);
+    case 'hearts':
+      // +2 per high-rank heart (8-K)
+      return factionCards.filter(c => c.value >= 8).length * 2;
+    case 'diamonds':
+      // +5 if 3+ cards (Brilliance)
+      return cards.length >= 3 ? 5 : 0;
+    case 'clubs':
+      // +2 per clubs card
+      return factionCards.length * 2;
+  }
+  return 0;
+}
+
+function getPlayExplanation(faction, cards) {
+  const explanations = {
+    spades: `This sequential Spades chain (${cards.map(c => c.rank + getSuitSymbol(c.suit)).join(' → ')}) triggers chain bonuses. Adjacent ranks in the same suit generate +8 per link, plus an unbroken chain bonus of +15 for 3+ cards.`,
+    hearts: `Playing three 7s creates a tight cluster at the tesseract center (coordinate 0,0,0,0). All 7s have matching coordinates, maximizing cluster bonus.`,
+    diamonds: `Three Kings is a high-risk, high-reward play. Base points alone are 39 (13+13+13), and playing 3 cards triggers the Brilliance passive for +5 extra.`,
+    clubs: `This mid-range Clubs chain (5-6-7-8) maximizes both chain bonus and clustering. Four sequential cards in the same suit is a powerful opening.`
+  };
+  return explanations[faction];
+}
+
+function getScoreExplanation(faction, cards, scores) {
+  const strongestBonus = Object.entries(scores)
+    .filter(([k, v]) => k !== 'baseScore' && v > 0)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  if (!strongestBonus) {
+    return "This play focuses on base points. Try playing cards that are closer in 4D space or from the same suit for bonus points.";
+  }
+
+  const bonusNames = {
+    clusterBonus: "clustering",
+    chainBonus: "chain formation",
+    resonanceBonus: "phase alignment",
+    factionBonus: "faction synergy"
+  };
+
+  return `Your strongest bonus comes from ${bonusNames[strongestBonus[0]]} (+${strongestBonus[1]}). ${faction === 'diamonds' ? 'Diamonds excels at burst damage - one big turn can swing the game.' : 'Continue building on this strategy as the game progresses.'}`;
+}
+
+// Auto-expand first deck on load
+document.addEventListener('DOMContentLoaded', () => {
+  toggleDeck('spades');
+});
+</script>

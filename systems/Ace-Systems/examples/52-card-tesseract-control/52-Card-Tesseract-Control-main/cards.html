@@ -1,0 +1,135 @@
+---
+layout: default
+title: Card Gallery
+description: Browse all 52 holographic cards in the Quantum Resonance universe
+permalink: /cards/
+---
+
+<section class="generator-form">
+  <h2>Card Viewer</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+    Select a suit and rank to view any card in the 52-card holographic universe.
+  </p>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="suit-select">Suit (Channel)</label>
+      <select id="suit-select">
+        <option value="S" data-color="#00D4FF">{{ site.suits.S.symbol }} Spades (B - Temporal)</option>
+        <option value="H" data-color="#FF3366">{{ site.suits.H.symbol }} Hearts (R - Valence)</option>
+        <option value="D" data-color="#FFD700">{{ site.suits.D.symbol }} Diamonds (CMY - Arousal)</option>
+        <option value="C" data-color="#33FF66">{{ site.suits.C.symbol }} Clubs (G - Concrete)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="rank-select">Rank</label>
+      <select id="rank-select">
+        <option value="A">Ace (Origin: -1.0)</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7 (Center: 0.0)</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="J">Jack</option>
+        <option value="Q">Queen</option>
+        <option value="K">King (Apex: +1.0)</option>
+      </select>
+    </div>
+
+    <button class="generate-btn" onclick="showCard()">View Card</button>
+  </div>
+</section>
+
+<div id="card-preview"></div>
+
+<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 3rem 0;">
+
+<!-- Quick Reference Panel -->
+<div class="quick-ref">
+  <h3>4D Coordinate System</h3>
+  <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+    Each card encodes a position in 4-dimensional tesseract space. Suits map to dimensions:
+  </p>
+  <ul>
+    <li><span style="color: var(--spades);">{{ site.suits.S.symbol }} Spades</span> Temporal (Past -1 to Future +1)</li>
+    <li><span style="color: var(--hearts);">{{ site.suits.H.symbol }} Hearts</span> Valence (Negative -1 to Positive +1)</li>
+    <li><span style="color: var(--diamonds);">{{ site.suits.D.symbol }} Diamonds</span> Arousal (Calm -1 to Excited +1)</li>
+    <li><span style="color: var(--clubs);">{{ site.suits.C.symbol }} Clubs</span> Concrete (Abstract -1 to Concrete +1)</li>
+  </ul>
+</div>
+
+<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 3rem 0;">
+
+<!-- Full Deck Display -->
+{% assign suits = "S,H,D,C" | split: "," %}
+{% assign suit_names = "Spades,Hearts,Diamonds,Clubs" | split: "," %}
+{% assign suit_colors = "#00D4FF,#FF3366,#FFD700,#33FF66" | split: "," %}
+{% assign channels = "B,R,CMY,G" | split: "," %}
+{% assign dimensions = "Temporal,Valence,Arousal,Concrete" | split: "," %}
+{% assign factions = "Temporal Weavers,Valence Shapers,Radiant Catalysts,Foundation Builders" | split: "," %}
+
+{% for i in (0..3) %}
+{% assign suit = suits[i] %}
+{% assign suit_name = suit_names[i] %}
+{% assign suit_color = suit_colors[i] %}
+{% assign channel = channels[i] %}
+{% assign dimension = dimensions[i] %}
+{% assign faction = factions[i] %}
+
+<section class="suit-section">
+  <div class="suit-header {{ suit_name | downcase }}">
+    <span class="suit-symbol" style="color: {{ suit_color }};">
+      {% case suit %}
+        {% when 'S' %}♠
+        {% when 'H' %}♥
+        {% when 'D' %}♦
+        {% when 'C' %}♣
+      {% endcase %}
+    </span>
+    <div>
+      <h2 style="color: {{ suit_color }};">{{ suit_name }}</h2>
+      <span class="suit-info">{{ dimension }} Dimension</span>
+      <span class="faction-name">{{ faction }}</span>
+    </div>
+    <span class="channel-badge {{ channel }}">{{ channel }} Channel</span>
+  </div>
+
+  <div class="card-grid">
+    {% assign ranks = "A,2,3,4,5,6,7,8,9,10,J,Q,K" | split: "," %}
+    {% for rank in ranks %}
+    {% assign card_id = rank | append: suit %}
+    <div class="card-container" onclick="window.open('{{ site.baseurl }}/assets/cards/{{ card_id }}.svg', '_blank')" title="{{ rank }} of {{ suit_name }} - Click to view full size">
+      <img src="{{ site.baseurl }}/assets/cards/{{ card_id }}.svg" alt="{{ card_id }}" loading="lazy">
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+
+<script>
+function showCard() {
+  const suit = document.getElementById('suit-select').value;
+  const rank = document.getElementById('rank-select').value;
+  const cardId = rank + suit;
+
+  const preview = document.getElementById('card-preview');
+  preview.innerHTML = `
+    <div style="text-align: center;">
+      <img src="{{ site.baseurl }}/assets/cards/${cardId}.svg"
+           alt="${cardId}"
+           style="max-width: 400px; width: 100%; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+      <p style="margin-top: 1rem; font-family: monospace; color: var(--text-secondary);">
+        Card ID: ${cardId}
+      </p>
+    </div>
+  `;
+
+  // Smooth scroll to preview
+  preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>

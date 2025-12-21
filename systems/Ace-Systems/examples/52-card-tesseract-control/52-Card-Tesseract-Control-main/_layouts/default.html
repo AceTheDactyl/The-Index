@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+
+  <style>
+    :root {
+      --bg-dark: #0f0f1a;
+      --bg-card: #1a1a2e;
+      --bg-lighter: #252540;
+      --text-primary: #e0e0e0;
+      --text-secondary: #888;
+      --spades: #00D4FF;
+      --hearts: #FF3366;
+      --diamonds: #FFD700;
+      --clubs: #33FF66;
+      --accent: #9966FF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    nav {
+      background: var(--bg-card);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-dark));
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .game-stat {
+      background: var(--bg-lighter);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .game-stat span {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card-container {
+      aspect-ratio: 2/3;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .card-container:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .card-container svg,
+    .card-container img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .suit-section {
+      margin-bottom: 3rem;
+    }
+
+    .suit-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid;
+      flex-wrap: wrap;
+    }
+
+    .suit-header.spades { border-color: var(--spades); }
+    .suit-header.hearts { border-color: var(--hearts); }
+    .suit-header.diamonds { border-color: var(--diamonds); }
+    .suit-header.clubs { border-color: var(--clubs); }
+
+    .suit-symbol {
+      font-size: 2rem;
+    }
+
+    .suit-info {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .faction-name {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .channel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: auto;
+    }
+
+    .channel-badge.B { background: var(--spades); color: #000; }
+    .channel-badge.R { background: var(--hearts); color: #fff; }
+    .channel-badge.CMY { background: var(--diamonds); color: #000; }
+    .channel-badge.G { background: var(--clubs); color: #000; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 3rem;
+    }
+
+    .rosetta-coords {
+      font-family: monospace;
+      color: var(--spades);
+      opacity: 0.7;
+    }
+
+    /* Card Generator Form */
+    .generator-form {
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group select,
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    .generate-btn {
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, var(--spades), var(--hearts));
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .generate-btn:hover {
+      transform: scale(1.05);
+    }
+
+    #card-preview {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+
+    /* Faction Cards */
+    .faction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .faction-card {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border-left: 4px solid;
+    }
+
+    .faction-card.spades { border-color: var(--spades); background: rgba(0, 212, 255, 0.05); }
+    .faction-card.hearts { border-color: var(--hearts); background: rgba(255, 51, 102, 0.05); }
+    .faction-card.diamonds { border-color: var(--diamonds); background: rgba(255, 215, 0, 0.05); }
+    .faction-card.clubs { border-color: var(--clubs); background: rgba(51, 255, 102, 0.05); }
+
+    .faction-card h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .faction-card .passive {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .faction-card .passive strong {
+      color: var(--accent);
+    }
+
+    /* Quick Reference */
+    .quick-ref {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+
+    .quick-ref h3 {
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .quick-ref ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .quick-ref li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .quick-ref li:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .game-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{{ site.baseurl }}/" class="nav-brand">Quantum Resonance</a>
+    <ul class="nav-links">
+      <li><a href="{{ site.baseurl }}/" {% if page.url == '/' or page.url == '/index.html' %}class="active"{% endif %}>Home</a></li>
+      <li><a href="{{ site.baseurl }}/play/" {% if page.url contains 'play' %}class="active"{% endif %}>Play</a></li>
+      <li><a href="{{ site.baseurl }}/tutorial/" {% if page.url contains 'tutorial' %}class="active"{% endif %}>Tutorial</a></li>
+      <li><a href="{{ site.baseurl }}/cards/" {% if page.url contains 'cards' %}class="active"{% endif %}>Cards</a></li>
+      <li><a href="{{ site.baseurl }}/rules/" {% if page.url contains 'rules' %}class="active"{% endif %}>Rules</a></li>
+      <li><a href="{{ site.baseurl }}/factions/" {% if page.url contains 'factions' %}class="active"{% endif %}>Factions</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>{{ page.title | default: site.title }}</h1>
+    <p>{{ page.description | default: site.description }}</p>
+    <div class="game-info">
+      <div class="game-stat">Players: <span>{{ site.game_config.players }}</span></div>
+      <div class="game-stat">Duration: <span>{{ site.game_config.game_length }}</span></div>
+      <div class="game-stat">Win at: <span>{{ site.game_config.win_condition }} points</span></div>
+    </div>
+  </header>
+
+  <main>
+    {{ content }}
+  </main>
+
+  <footer>
+    <p>Quantum Resonance v{{ site.game_config.version }} - Holographic Card Universe</p>
+    <p class="rosetta-coords">Tails to 7D, Acorns Ready</p>
+    <p class="rosetta-coords">{{ site.rosetta_coords.delta }} | z={{ site.rosetta_coords.z }} | ={{ site.rosetta_coords.omega }}</p>
+  </footer>
+</body>
+</html>

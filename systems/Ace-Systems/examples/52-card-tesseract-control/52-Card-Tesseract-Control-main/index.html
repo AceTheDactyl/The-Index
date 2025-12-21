@@ -1,0 +1,562 @@
+---
+layout: default
+title: Quantum Resonance
+description: A deck-building card game using a 52-card holographic universe
+---
+
+<style>
+  .hero-section {
+    text-align: center;
+    padding: 2rem 0 3rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .nav-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .nav-card {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .nav-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+  }
+
+  .nav-card h3 {
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+  }
+
+  .nav-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .section-header h2 {
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .content-box {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .content-box h3 {
+    color: var(--diamonds);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .content-box h3:first-child {
+    margin-top: 0;
+  }
+
+  .step-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: step-counter;
+  }
+
+  .step-list li {
+    padding: 1rem 1rem 1rem 3.5rem;
+    margin: 0.75rem 0;
+    background: var(--bg-lighter);
+    border-radius: 8px;
+    position: relative;
+    counter-increment: step-counter;
+  }
+
+  .step-list li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+
+  .two-column {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .info-table th,
+  .info-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .info-table th {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(153, 102, 255, 0.1), rgba(0, 212, 255, 0.1));
+    border: 1px solid var(--accent);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+  }
+
+  .highlight-box h4 {
+    color: var(--accent);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .faction-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin: 0.25rem;
+  }
+
+  .faction-mini.spades { background: rgba(0, 212, 255, 0.2); color: var(--spades); }
+  .faction-mini.hearts { background: rgba(255, 51, 102, 0.2); color: var(--hearts); }
+  .faction-mini.diamonds { background: rgba(255, 215, 0, 0.2); color: var(--diamonds); }
+  .faction-mini.clubs { background: rgba(51, 255, 102, 0.2); color: var(--clubs); }
+
+  .turn-phase {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .phase-badge {
+    padding: 0.5rem 1rem;
+    background: var(--bg-lighter);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  .scoring-quick {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .score-item {
+    background: var(--bg-lighter);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .score-item strong {
+    display: block;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .deck-visual {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .mini-card {
+    width: 40px;
+    height: 56px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .mini-card.spades { background: linear-gradient(135deg, #1a3a4a, #0a1a2a); color: var(--spades); border: 1px solid var(--spades); }
+  .mini-card.hearts { background: linear-gradient(135deg, #4a1a2a, #2a0a1a); color: var(--hearts); border: 1px solid var(--hearts); }
+  .mini-card.diamonds { background: linear-gradient(135deg, #4a3a1a, #2a1a0a); color: var(--diamonds); border: 1px solid var(--diamonds); }
+  .mini-card.clubs { background: linear-gradient(135deg, #1a4a2a, #0a2a1a); color: var(--clubs); border: 1px solid var(--clubs); }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+  <p class="hero-tagline">
+    Harness the mathematical structure of a 4D tesseract. Master spatial clustering, phase synchronization, and faction abilities. First to 1,000 Resonance Points wins.
+  </p>
+
+  <div class="nav-cards">
+    <a href="{{ site.baseurl }}/play/" class="nav-card" style="border: 2px solid var(--accent); background: linear-gradient(135deg, rgba(153, 102, 255, 0.1), rgba(0, 212, 255, 0.1));">
+      <h3>Play Now</h3>
+      <p>Simulate a full turn on the interactive playing field</p>
+    </a>
+    <a href="{{ site.baseurl }}/tutorial/" class="nav-card">
+      <h3>Tutorial Builds</h3>
+      <p>Default decks and first-turn simulations for new players</p>
+    </a>
+    <a href="{{ site.baseurl }}/cards/" class="nav-card">
+      <h3>Card Gallery</h3>
+      <p>Browse all 52 holographic cards with 4D coordinates</p>
+    </a>
+    <a href="{{ site.baseurl }}/rules/" class="nav-card">
+      <h3>Full Rulebook</h3>
+      <p>Complete rules, scoring details, and advanced play</p>
+    </a>
+    <a href="{{ site.baseurl }}/factions/" class="nav-card">
+      <h3>Faction Guide</h3>
+      <p>Master the four factions and their unique abilities</p>
+    </a>
+  </div>
+</div>
+
+<!-- Quick Rules Section -->
+<div class="section-header">
+  <h2>Game Rules</h2>
+</div>
+
+<div class="content-box">
+  <h3>Objective</h3>
+  <p>Be the first player to reach <strong style="color: var(--accent);">1,000 Resonance Points</strong> by playing cards in strategic formations that maximize your score through spatial clustering, phase alignment, and faction synergies.</p>
+
+  <h3>The Four Factions</h3>
+  <p>Each faction controls a dimension of the tesseract:</p>
+  <div style="margin: 1rem 0;">
+    <span class="faction-mini spades">♠ Spades - Temporal Weavers</span>
+    <span class="faction-mini hearts">♥ Hearts - Valence Shapers</span>
+    <span class="faction-mini diamonds">♦ Diamonds - Radiant Catalysts</span>
+    <span class="faction-mini clubs">♣ Clubs - Foundation Builders</span>
+  </div>
+
+  <h3>Turn Structure</h3>
+  <div class="turn-phase">
+    <div class="phase-badge"><strong>1. DRAW</strong> - Draw 2 cards</div>
+    <div class="phase-badge"><strong>2. MAIN</strong> - Play 1-5 cards</div>
+    <div class="phase-badge"><strong>3. RESONANCE</strong> - Calculate score</div>
+    <div class="phase-badge"><strong>4. DISCARD</strong> - Hand limit: 7</div>
+    <div class="phase-badge"><strong>5. END</strong> - Pass turn</div>
+  </div>
+
+  <h3>Scoring Components</h3>
+  <div class="scoring-quick">
+    <div class="score-item">
+      <strong>Base</strong>
+      Card ranks (A=1 to K=13)
+    </div>
+    <div class="score-item">
+      <strong>Cluster</strong>
+      4D proximity bonus
+    </div>
+    <div class="score-item">
+      <strong>Chain</strong>
+      Coupling network links
+    </div>
+    <div class="score-item">
+      <strong>Resonance</strong>
+      Phase alignment
+    </div>
+    <div class="score-item">
+      <strong>Faction</strong>
+      Special abilities
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>Special Formations</h4>
+    <p><strong>Perfect Center:</strong> Play all four 7s = +40 bonus points</p>
+    <p><strong>Full Axis:</strong> Play Ace + King of same suit = +20 bonus points</p>
+  </div>
+</div>
+
+<!-- Deck Building Operator Manual -->
+<div class="section-header">
+  <h2>Deck Building Operator Manual</h2>
+</div>
+
+<div class="content-box">
+  <h3>Deck Composition Rules</h3>
+  <table class="info-table">
+    <tr>
+      <th>Parameter</th>
+      <th>Requirement</th>
+    </tr>
+    <tr>
+      <td>Deck Size</td>
+      <td>20-30 cards</td>
+    </tr>
+    <tr>
+      <td>Faction Cards</td>
+      <td>8-15 cards from your faction's suit</td>
+    </tr>
+    <tr>
+      <td>Copy Limit</td>
+      <td>Maximum 2 copies of any single card</td>
+    </tr>
+  </table>
+
+  <h3>Building Your Deck</h3>
+  <ol class="step-list">
+    <li><strong>Choose Your Faction</strong> - Select one of the four factions. This determines your primary suit and special abilities.</li>
+    <li><strong>Select Faction Core (8-15 cards)</strong> - Start with cards from your faction's suit. These trigger your passive ability and synergize with your faction bonus.</li>
+    <li><strong>Add Support Cards (5-15 cards)</strong> - Fill remaining slots with cards from other suits that complement your strategy.</li>
+    <li><strong>Consider 4D Positioning</strong> - Cards close in coordinate space cluster well. Same-rank cards across suits pair nicely.</li>
+    <li><strong>Balance Your Curve</strong> - Mix low ranks (fast plays) with high ranks (big scores) for flexibility.</li>
+  </ol>
+
+  <h3>Deck Archetypes</h3>
+  <div class="two-column">
+    <div>
+      <h4 style="color: var(--spades);">♠ Tempo Spades</h4>
+      <p>Fast sequential plays with temporal manipulation. Focus on AS-7S chain potential.</p>
+      <p><em>Core: 10 Spades, Support: 8 low-rank mixeds, Finishers: KS, KH</em></p>
+    </div>
+    <div>
+      <h4 style="color: var(--hearts);">♥ Control Hearts</h4>
+      <p>Drain opponents while stacking positive valence. Punish enemy Heart plays.</p>
+      <p><em>Core: 12 Hearts (focus 8-K), Support: All 7s for clustering</em></p>
+    </div>
+    <div>
+      <h4 style="color: var(--diamonds);">♦ Burst Diamonds</h4>
+      <p>High-risk massive scores. Race to 1,000 with extreme arousal values.</p>
+      <p><em>Core: 11 Diamonds (extremes: A, J, Q, K), Support: All Kings for apex burst</em></p>
+    </div>
+    <div>
+      <h4 style="color: var(--clubs);">♣ Fortress Clubs</h4>
+      <p>Slow build, unassailable defense. Immune to disruption, accumulate steadily.</p>
+      <p><em>Core: 13 Clubs (full spread), Support: 7s and mid-range for clusters</em></p>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h4>Deck Validation Checklist</h4>
+    <ul>
+      <li>Total cards: between 20 and 30</li>
+      <li>Faction suit cards: between 8 and 15</li>
+      <li>No card appears more than twice</li>
+      <li>Consider phase alignment within your faction</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Two-Player Setup Guide -->
+<div class="section-header" id="two-player-setup">
+  <h2>Two-Player Game Setup</h2>
+</div>
+
+<div class="content-box">
+  <h3>Option A: Constructed Decks</h3>
+  <p>Each player brings their own pre-built deck following deck construction rules.</p>
+
+  <ol class="step-list">
+    <li><strong>Build Decks</strong> - Each player constructs a 20-30 card deck with 8-15 faction cards.</li>
+    <li><strong>Choose Seats</strong> - Sit across from each other. Each player needs space for deck, discard, and play area.</li>
+    <li><strong>Shuffle</strong> - Each player shuffles their own deck thoroughly.</li>
+    <li><strong>Draw Starting Hand</strong> - Each player draws 5 cards.</li>
+    <li><strong>Mulligan (Optional)</strong> - Shuffle any cards back, draw that many minus 1.</li>
+    <li><strong>Determine First Player</strong> - Faction order: Spades, Hearts, Diamonds, Clubs. Whoever is first goes first.</li>
+  </ol>
+
+  <h3>Option B: Shared 52-Card Deck</h3>
+  <p>Perfect for learning or when players don't have constructed decks. Uses the full holographic deck.</p>
+
+  <div class="deck-visual">
+    <div class="mini-card spades">♠</div>
+    <div class="mini-card spades">♠</div>
+    <div class="mini-card spades">♠</div>
+    <div class="mini-card hearts">♥</div>
+    <div class="mini-card hearts">♥</div>
+    <div class="mini-card hearts">♥</div>
+    <div class="mini-card diamonds">♦</div>
+    <div class="mini-card diamonds">♦</div>
+    <div class="mini-card diamonds">♦</div>
+    <div class="mini-card clubs">♣</div>
+    <div class="mini-card clubs">♣</div>
+    <div class="mini-card clubs">♣</div>
+    <div style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--text-secondary);">...52</div>
+  </div>
+
+  <ol class="step-list">
+    <li><strong>Shuffle All 52 Cards</strong> - Combine the entire holographic deck and shuffle thoroughly.</li>
+    <li><strong>Choose Factions</strong> - Each player picks a different faction. This grants passive/active abilities without deck restrictions.</li>
+    <li><strong>Deal Starting Hands</strong> - Deal 7 cards to each player from the shared deck.</li>
+    <li><strong>Place Deck Centrally</strong> - The remaining cards form a shared draw pile between players.</li>
+    <li><strong>Create Shared Discard</strong> - Played cards go to a shared discard pile.</li>
+    <li><strong>Begin Play</strong> - Spades faction goes first. Follow standard turn structure.</li>
+  </ol>
+
+  <div class="highlight-box">
+    <h4>Shared Deck Variant Rules</h4>
+    <ul>
+      <li><strong>No faction card minimums</strong> - Play any cards you draw</li>
+      <li><strong>Faction abilities still apply</strong> - Your passive triggers on your faction's suit</li>
+      <li><strong>Deck exhaustion</strong> - When shared deck empties, shuffle shared discard to reform it</li>
+      <li><strong>Strategic drafting</strong> - Holding cards denies them from opponent</li>
+    </ul>
+  </div>
+
+  <h3>Option C: Dual Tesseract (104 Cards)</h3>
+  <p>The definitive competitive format. Each player owns a complete 52-card holographic deck and secretly constructs their play deck before the match.</p>
+
+  <div class="deck-visual">
+    <div class="mini-card spades">♠</div>
+    <div class="mini-card hearts">♥</div>
+    <div class="mini-card diamonds">♦</div>
+    <div class="mini-card clubs">♣</div>
+    <div style="display: flex; align-items: center; padding: 0 1rem; color: var(--text-secondary); font-weight: bold;">×52</div>
+    <div style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--accent);">+</div>
+    <div class="mini-card spades">♠</div>
+    <div class="mini-card hearts">♥</div>
+    <div class="mini-card diamonds">♦</div>
+    <div class="mini-card clubs">♣</div>
+    <div style="display: flex; align-items: center; padding: 0 1rem; color: var(--text-secondary); font-weight: bold;">×52</div>
+    <div style="display: flex; align-items: center; padding: 0 0.5rem; color: var(--accent);">=104</div>
+  </div>
+
+  <ol class="step-list">
+    <li><strong>Each Player Brings 52</strong> - Both players arrive with their own complete holographic deck (all 52 unique cards).</li>
+    <li><strong>Choose Factions Openly</strong> - Declare factions simultaneously. Knowing opponent's faction informs your build strategy.</li>
+    <li><strong>Discrete Build Phase</strong> - Separate and secretly select 20-30 cards from your 52 to form your play deck. Remaining cards become your <em>Sideboard</em>.</li>
+    <li><strong>Sideboard Rules</strong> - Your sideboard stays face-down and out of play. Between games in a match, you may swap cards 1-for-1.</li>
+    <li><strong>Reveal & Shuffle</strong> - Once both players finish building, reveal deck sizes (not contents), shuffle, and draw 5.</li>
+    <li><strong>Tesseract Collision</strong> - Both players now operate in parallel 4D spaces. Cards only interact through scoring and abilities, never mixing decks.</li>
+  </ol>
+
+  <div class="highlight-box">
+    <h4>Dual Tesseract Dynamics</h4>
+    <ul>
+      <li><strong>Normalized starting point</strong> - Both players have access to identical card pools, skill determines the build</li>
+      <li><strong>Hidden information</strong> - Opponent doesn't know which 22-32 cards you left in sideboard</li>
+      <li><strong>Meta-game reads</strong> - Predict opponent's build based on faction choice and adjust yours</li>
+      <li><strong>Full deck construction rules apply</strong> - 8-15 faction cards, max 2 copies (but you only have 1 of each in your 52)</li>
+      <li><strong>Mirror matches possible</strong> - Both players can choose the same faction since decks never mix</li>
+    </ul>
+  </div>
+
+  <div class="highlight-box" style="border-color: var(--diamonds); background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 51, 102, 0.05));">
+    <h4>Advanced: Best-of-Three Match Structure</h4>
+    <ul>
+      <li><strong>Game 1</strong> - Play with your initial build</li>
+      <li><strong>Sideboard</strong> - Between games, swap up to 5 cards from sideboard (1-for-1 only)</li>
+      <li><strong>Game 2+</strong> - Adapt your strategy based on what you learned about opponent's build</li>
+      <li><strong>Winner</strong> - First to win 2 games takes the match</li>
+    </ul>
+  </div>
+
+  <h3>Play Area Layout</h3>
+  <table class="info-table">
+    <tr>
+      <th>Zone</th>
+      <th>Location</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td>Draw Pile</td>
+      <td>Center (shared) or Player's right</td>
+      <td>Face-down cards to draw from</td>
+    </tr>
+    <tr>
+      <td>Discard Pile</td>
+      <td>Center (shared) or beside draw pile</td>
+      <td>Face-up played/discarded cards</td>
+    </tr>
+    <tr>
+      <td>Play Area</td>
+      <td>In front of player</td>
+      <td>Current formation being scored</td>
+    </tr>
+    <tr>
+      <td>Hand</td>
+      <td>Hidden from opponent</td>
+      <td>Your available cards (limit 7)</td>
+    </tr>
+    <tr>
+      <td>Score Track</td>
+      <td>Visible to both</td>
+      <td>Running total (paper or tracker)</td>
+    </tr>
+  </table>
+</div>
+
+<!-- Quick Reference -->
+<div class="section-header">
+  <h2>Quick Reference</h2>
+</div>
+
+<div class="content-box">
+  <div class="two-column">
+    <div>
+      <h3>Rank Values</h3>
+      <table class="info-table">
+        <tr><td>Ace</td><td>1 point</td></tr>
+        <tr><td>2-10</td><td>Face value</td></tr>
+        <tr><td>Jack</td><td>11 points</td></tr>
+        <tr><td>Queen</td><td>12 points</td></tr>
+        <tr><td>King</td><td>13 points</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Resonance Thresholds</h3>
+      <table class="info-table">
+        <tr><td>Coherence 0.9</td><td>+30 Perfect</td></tr>
+        <tr><td>Coherence 0.7</td><td>+20 Strong</td></tr>
+        <tr><td>Coherence 0.5</td><td>+10 Moderate</td></tr>
+        <tr><td>Below 0.5</td><td>No bonus</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3>Key Numbers</h3>
+  <div class="scoring-quick">
+    <div class="score-item"><strong>Win</strong>1,000 pts</div>
+    <div class="score-item"><strong>Hand Limit</strong>7 cards</div>
+    <div class="score-item"><strong>Draw/Turn</strong>2 cards</div>
+    <div class="score-item"><strong>Start Hand</strong>5 cards</div>
+    <div class="score-item"><strong>Max Play</strong>5 cards</div>
+  </div>
+</div>
