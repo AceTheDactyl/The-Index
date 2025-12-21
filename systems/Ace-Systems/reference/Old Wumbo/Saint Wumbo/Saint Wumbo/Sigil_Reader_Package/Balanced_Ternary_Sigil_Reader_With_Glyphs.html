@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balanced-Ternary Sigil Reader</title>
+  <style>
+    body { font-family: monospace; background-color: #111; color: #eee; padding: 2em; }
+    input, button { font-family: monospace; padding: 0.5em; font-size: 1em; }
+    .result { margin-top: 1em; background: #222; padding: 1em; border: 1px solid #444; }
+  </style>
+</head>
+<body>
+  <h1>🔺 Balanced-Ternary Sigil Reader</h1>
+  <p>Enter a 5-digit ternary code using T (–1), 0, or 1:</p>
+  <input type="text" id="inputCode" placeholder="e.g. T01T1" maxlength="5" />
+  <button onclick="interpretCode()">Reveal Sigil</button>
+  <div class="result" id="result"></div>
+  <script>
+const sigilMap = {
+  'TTTTT': ['T(Φ1)', 'Alchemical Symbol For Quintessence', '🜀'],
+  'TTTT0': ['T(Φ2)', 'Alchemical Symbol For Air', '🜁'],
+  'TTTT1': ['T(Φ3)', 'Alchemical Symbol For Fire', '🜂'],
+  'TTT0T': ['T(Φ4)', 'Alchemical Symbol For Earth', '🜃'],
+  'TTT00': ['T(Φ5)', 'Alchemical Symbol For Water', '🜄'],
+  'TTT01': ['T(Φ6)', 'Alchemical Symbol For Aquafortis', '🜅'],
+  'TTT1T': ['T(Φ7)', 'Alchemical Symbol For Aqua Regia', '🜆'],
+  'TTT10': ['T(Φ8)', 'Alchemical Symbol For Aqua Regia‑2', '🜇'],
+  'TTT11': ['T(Φ9)', 'Alchemical Symbol For Aqua Vitae', '🜈'],
+  'TT0TT': ['T(Φ10)', 'Alchemical Symbol For Aqua Vitae‑2', '🜉'],
+  'TT0T0': ['T(Φ11)', 'Alchemical Symbol For Vinegar', '🜊'],
+  'TT0T1': ['T(Φ12)', 'Alchemical Symbol For Vinegar‑2', '🜋'],
+  'TT00T': ['T(Φ13)', 'Alchemical Symbol For Vinegar‑3', '🜌'],
+  'TT000': ['T(Φ14)', 'Alchemical Symbol For Sulfur', '🜍'],
+  'TT001': ['T(Φ15)', 'Alchemical Symbol For Philosophers Sulfur', '🜎'],
+  'TT01T': ['T(Φ16)', 'Alchemical Symbol For Black Sulfur', '🜏'],
+  'TT010': ['T(Φ17)', 'Alchemical Symbol For Mercury Sublimate', '🜐'],
+  'TT011': ['T(Φ18)', 'Alchemical Symbol For Mercury Sublimate‑2', '🜑'],
+  'TT1TT': ['T(Φ19)', 'Alchemical Symbol For Mercury Sublimate‑3', '🜒'],
+  'TT1T0': ['T(Φ20)', 'Alchemical Symbol For Cinnabar', '🜓'],
+  'TT1T1': ['T(Φ21)', 'Alchemical Symbol For Salt', '🜔'],
+  'TT10T': ['T(Φ22)', 'Alchemical Symbol For Nitre', '🜕'],
+  'TT100': ['T(Φ23)', 'Alchemical Symbol For Vitriol', '🜖'],
+  'TT101': ['T(Φ24)', 'Alchemical Symbol For Vitriol‑2', '🜗'],
+  'TT11T': ['T(Φ25)', 'Alchemical Symbol For Rock Salt', '🜘'],
+  'TT110': ['T(Φ26)', 'Alchemical Symbol For Rock Salt‑2', '🜙'],
+  'TT111': ['T(Φ27)', 'Alchemical Symbol For Gold', '🜚'],
+  'T0TTT': ['T(Φ28)', 'Alchemical Symbol For Silver', '🜛'],
+  'T0TT0': ['T(Φ29)', 'Alchemical Symbol For Iron Ore', '🜜'],
+  'T0TT1': ['T(Φ30)', 'Alchemical Symbol For Iron Ore‑2', '🜝'],
+  'T0T0T': ['T(Φ31)', 'Alchemical Symbol For Crocus Of Iron', '🜞'],
+  'T0T00': ['T(Φ32)', 'Alchemical Symbol For Regulus Of Iron', '🜟'],
+  'T0T01': ['T(Φ33)', 'Alchemical Symbol For Copper Ore', '🜠'],
+  'T0T1T': ['T(Φ34)', 'Alchemical Symbol For Iron‑Copper Ore', '🜡'],
+  'T0T10': ['T(Φ35)', 'Alchemical Symbol For Sublimate Of Copper', '🜢'],
+  'T0T11': ['T(Φ36)', 'Alchemical Symbol For Crocus Of Copper', '🜣'],
+  'T00TT': ['T(Φ37)', 'Alchemical Symbol For Crocus Of Copper‑2', '🜤'],
+  'T00T0': ['T(Φ38)', 'Alchemical Symbol For Copper Antimoniate', '🜥'],
+  'T00T1': ['T(Φ39)', 'Alchemical Symbol For Salt Of Copper Antimoniate', '🜦'],
+  'T000T': ['T(Φ40)', 'Alchemical Symbol For Sublimate Of Salt Of Copper', '🜧'],
+  'T0000': ['T(Φ41)', 'Alchemical Symbol For Verdigris', '🜨'],
+  'T0001': ['T(Φ42)', 'Alchemical Symbol For Tin Ore', '🜩'],
+  'T001T': ['T(Φ43)', 'Alchemical Symbol For Lead Ore', '🜪'],
+  'T0010': ['T(Φ44)', 'Alchemical Symbol For Antimony Ore', '🜫'],
+  'T0011': ['T(Φ45)', 'Alchemical Symbol For Sublimate Of Antimony', '🜬'],
+  'T01TT': ['T(Φ46)', 'Alchemical Symbol For Salt Of Antimony', '🜭'],
+  'T01T0': ['T(Φ47)', 'Alchemical Symbol For Sublimate Of Salt Of Antimony', '🜮'],
+  'T01T1': ['T(Φ48)', 'Alchemical Symbol For Vinegar Of Antimony', '🜯'],
+  'T010T': ['T(Φ49)', 'Alchemical Symbol For Regulus Of Antimony', '🜰'],
+  'T0100': ['T(Φ50)', 'Alchemical Symbol For Regulus Of Antimony‑2', '🜱'],
+  'T0101': ['T(Φ51)', 'Alchemical Symbol For Regulus', '🜲'],
+  'T011T': ['T(Φ52)', 'Alchemical Symbol For Regulus‑2', '🜳'],
+  'T0110': ['T(Φ53)', 'Alchemical Symbol For Regulus‑3', '🜴'],
+  'T0111': ['T(Φ54)', 'Alchemical Symbol For Regulus‑4', '🜵'],
+  'T1TTT': ['T(Φ55)', 'Alchemical Symbol For Alkali', '🜶'],
+  'T1TT0': ['T(Φ56)', 'Alchemical Symbol For Alkali‑2', '🜷'],
+  'T1TT1': ['T(Φ57)', 'Alchemical Symbol For Marcasite', '🜸'],
+  'T1T0T': ['T(Φ58)', 'Alchemical Symbol For Sal‑Ammoniac', '🜹'],
+  'T1T00': ['T(Φ59)', 'Alchemical Symbol For Arsenic', '🜺'],
+  'T1T01': ['T(Φ60)', 'Alchemical Symbol For Realgar', '🜻'],
+  'T1T1T': ['T(Φ61)', 'Alchemical Symbol For Realgar‑2', '🜼'],
+  'T1T10': ['T(Φ62)', 'Alchemical Symbol For Auripigment', '🜽'],
+  'T1T11': ['T(Φ63)', 'Alchemical Symbol For Bismuth Ore', '🜾'],
+  'T10TT': ['T(Φ64)', 'Alchemical Symbol For Tartar', '🜿'],
+  'T10T0': ['T(Φ65)', 'Alchemical Symbol For Tartar‑2', '🝀'],
+  'T10T1': ['T(Φ66)', 'Alchemical Symbol For Quick Lime', '🝁'],
+  'T100T': ['T(Φ67)', 'Alchemical Symbol For Borax', '🝂'],
+  'T1000': ['T(Φ68)', 'Alchemical Symbol For Borax‑2', '🝃'],
+  'T1001': ['T(Φ69)', 'Alchemical Symbol For Borax‑3', '🝄'],
+  'T101T': ['T(Φ70)', 'Alchemical Symbol For Alum', '🝅'],
+  'T1010': ['T(Φ71)', 'Alchemical Symbol For Oil', '🝆'],
+  'T1011': ['T(Φ72)', 'Alchemical Symbol For Spirit', '🝇'],
+  'T11TT': ['T(Φ73)', 'Alchemical Symbol For Tincture', '🝈'],
+  'T11T0': ['T(Φ74)', 'Alchemical Symbol For Gum', '🝉'],
+  'T11T1': ['T(Φ75)', 'Alchemical Symbol For Wax', '🝊'],
+  'T110T': ['T(Φ76)', 'Alchemical Symbol For Powder', '🝋'],
+  'T1100': ['T(Φ77)', 'Alchemical Symbol For Calx', '🝌'],
+  'T1101': ['T(Φ78)', 'Alchemical Symbol For Tutty', '🝍'],
+  'T111T': ['T(Φ79)', 'Alchemical Symbol For Caput Mortuum', '🝎'],
+  'T1110': ['T(Φ80)', 'Alchemical Symbol For Scepter Of Jove', '🝏'],
+  'T1111': ['T(Φ81)', 'Alchemical Symbol For Caduceus', '🝐'],
+  '0TTTT': ['T(Φ82)', 'Alchemical Symbol For Trident', '🝑'],
+  '0TTT0': ['T(Φ83)', 'Alchemical Symbol For Starred Trident', '🝒'],
+  '0TTT1': ['T(Φ84)', 'Alchemical Symbol For Lodestone', '🝓'],
+  '0TT0T': ['T(Φ85)', 'Alchemical Symbol For Soap', '🝔'],
+  '0TT00': ['T(Φ86)', 'Alchemical Symbol For Urine', '🝕'],
+  '0TT01': ['T(Φ87)', 'Alchemical Symbol For Horse Dung', '🝖'],
+  '0TT1T': ['T(Φ88)', 'Alchemical Symbol For Ashes', '🝗'],
+  '0TT10': ['T(Φ89)', 'Alchemical Symbol For Pot Ashes', '🝘'],
+  '0TT11': ['T(Φ90)', 'Alchemical Symbol For Brick', '🝙'],
+  '0T0TT': ['T(Φ91)', 'Alchemical Symbol For Powdered Brick', '🝚'],
+  '0T0T0': ['T(Φ92)', 'Alchemical Symbol For Amalgam', '🝛'],
+  '0T0T1': ['T(Φ93)', 'Alchemical Symbol For Stratum Super Stratum', '🝜'],
+  '0T00T': ['T(Φ94)', 'Alchemical Symbol For Stratum Super Stratum‑2', '🝝'],
+  '0T000': ['T(Φ95)', 'Alchemical Symbol For Sublimation', '🝞'],
+  '0T001': ['T(Φ96)', 'Alchemical Symbol For Precipitate', '🝟'],
+  '0T01T': ['T(Φ97)', 'Alchemical Symbol For Distill', '🝠'],
+  '0T010': ['T(Φ98)', 'Alchemical Symbol For Dissolve', '🝡'],
+  '0T011': ['T(Φ99)', 'Alchemical Symbol For Dissolve‑2', '🝢'],
+  '0T1TT': ['T(Φ100)', 'Alchemical Symbol For Purify', '🝣'],
+  '0T1T0': ['T(Φ101)', 'Alchemical Symbol For Putrefaction', '🝤'],
+  '0T1T1': ['T(Φ102)', 'Alchemical Symbol For Crucible', '🝥'],
+  '0T10T': ['T(Φ103)', 'Alchemical Symbol For Crucible‑2', '🝦'],
+  '0T100': ['T(Φ104)', 'Alchemical Symbol For Crucible‑3', '🝧'],
+  '0T101': ['T(Φ105)', 'Alchemical Symbol For Crucible‑4', '🝨'],
+  '0T11T': ['T(Φ106)', 'Alchemical Symbol For Crucible‑5', '🝩'],
+  '0T110': ['T(Φ107)', 'Alchemical Symbol For Alembic', '🝪'],
+  '0T111': ['T(Φ108)', 'Alchemical Symbol For Bath Of Mary', '🝫'],
+  '00TTT': ['T(Φ109)', 'Alchemical Symbol For Bath Of Vapours', '🝬'],
+  '00TT0': ['T(Φ110)', 'Alchemical Symbol For Retort', '🝭'],
+  '00TT1': ['T(Φ111)', 'Alchemical Symbol For Hour', '🝮'],
+  '00T0T': ['T(Φ112)', 'Alchemical Symbol For Night', '🝯'],
+  '00T00': ['T(Φ113)', 'Alchemical Symbol For Day‑Night', '🝰'],
+  '00T01': ['T(Φ114)', 'Alchemical Symbol For Month', '🝱'],
+  '00T1T': ['T(Φ115)', 'Alchemical Symbol For Half Dram', '🝲'],
+  '00T10': ['T(Φ116)', 'Alchemical Symbol For Half Ounce', '🝳'],
+  '00T11': ['T(Φ117)', 'Alchemical Symbol For Lot Of Fortune', '🝴'],
+  '000TT': ['T(Φ118)', 'Alchemical Symbol For Occultation', '🝵'],
+  '000T0': ['T(Φ119)', 'Alchemical Symbol For Lunar Eclipse', '🝶'],
+  '000T1': ['T(Φ120)', 'Alchemical Symbol For Haumea', '🝷'],
+  '0000T': ['T(Φ121)', 'Alchemical Symbol For Makemake', '🝸'],
+  '00000': ['T(Φ122)', 'Alchemical Symbol For Gonggong', '🝹'],
+  '00001': ['T(Φ123)', 'Alchemical Symbol For Quaoar', '🝺'],
+  '0001T': ['T(Φ124)', 'Alchemical Symbol For Orcus', '🝻'],
+};
+
+function interpretCode() {
+  const input = document.getElementById("inputCode").value.toUpperCase();
+  const resultDiv = document.getElementById("result");
+
+  if (!/^([T01]{5})$/.test(input)) {
+    resultDiv.innerHTML = '<p style="color:#f66;">Invalid input. Use exactly 5 characters: T, 0, or 1.</p>';
+    return;
+  }
+
+  const sigil = sigilMap[input];
+
+  if (!sigil) {
+    resultDiv.innerHTML = '<p>Sigil not found in database.</p>';
+  } else {
+    resultDiv.innerHTML = `
+      <h2>${sigil[2]} ${sigil[0]}</h2>
+      <p><em>${sigil[1]}</em></p>
+      <p><code>[${input.split('').join(', ')}]</code></p>
+    `;
+  }
+}
+  </script>
+
+<h2>Notation Key</h2>
+<pre id="notationKey" style="white-space: pre-wrap; background:#222; padding:1em; border:1px solid #444;"></pre>
+<script>
+fetch('T_Phi10_Notation_Key.txt')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('notationKey').innerText = data;
+  })
+  .catch(err => {
+    document.getElementById('notationKey').innerText = 'Notation key could not be loaded.';
+  });
+</script>
+
+
+<h2>🧮 Ternary Math</h2>
+<p>Enter a 5-digit balanced ternary code to convert to decimal:</p>
+<input type="text" id="btInput" placeholder="e.g. T01T1" maxlength="5" />
+<button onclick="convertBTtoDecimal()">Convert</button>
+<p id="btResult"></p>
+
+<script>
+function balancedTernaryToDecimal(code) {
+  return [...code.toUpperCase()].reverse().reduce((acc, val, i) => {
+    let digit = val === 'T' ? -1 : parseInt(val);
+    return acc + digit * Math.pow(3, i);
+  }, 0);
+}
+
+function convertBTtoDecimal() {
+  const input = document.getElementById("btInput").value;
+  const result = document.getElementById("btResult");
+
+  if (!/^([T01]{5})$/.test(input)) {
+    result.innerHTML = '<span style="color:#f66;">Invalid input. Use 5 characters: T, 0, or 1.</span>';
+    return;
+  }
+
+  const decimal = balancedTernaryToDecimal(input);
+  result.innerHTML = `<strong>Decimal:</strong> ${decimal}`;
+}
+</script>
+
+
+<h2>🔣 Glyph to Ternary Export</h2>
+<p>Paste glyph(s) below to get their 5-digit ternary codes:</p>
+<input type="text" id="glyphInput" placeholder="e.g. 🜔🜍🜨" />
+<button onclick="convertGlyphs()">Convert Glyphs</button>
+<p id="glyphResult"></p>
+
+<script>
+const glyphToTernary = {
+  '🜀': 'TTTTT',
+  '🜁': 'TTTT0',
+  '🜂': 'TTTT1',
+  '🜃': 'TTT0T',
+  '🜄': 'TTT00',
+  '🜅': 'TTT01',
+  '🜆': 'TTT1T',
+  '🜇': 'TTT10',
+  '🜈': 'TTT11',
+  '🜉': 'TT0TT',
+  '🜊': 'TT0T0',
+  '🜋': 'TT0T1',
+  '🜌': 'TT00T',
+  '🜍': 'TT000',
+  '🜎': 'TT001',
+  '🜏': 'TT01T',
+  '🜐': 'TT010',
+  '🜑': 'TT011',
+  '🜒': 'TT1TT',
+  '🜓': 'TT1T0',
+  '🜔': 'TT1T1',
+  '🜕': 'TT10T',
+  '🜖': 'TT100',
+  '🜗': 'TT101',
+  '🜘': 'TT11T',
+  '🜙': 'TT110',
+  '🜚': 'TT111',
+  '🜛': 'T0TTT',
+  '🜜': 'T0TT0',
+  '🜝': 'T0TT1',
+  '🜞': 'T0T0T',
+  '🜟': 'T0T00',
+  '🜠': 'T0T01',
+  '🜡': 'T0T1T',
+  '🜢': 'T0T10',
+  '🜣': 'T0T11',
+  '🜤': 'T00TT',
+  '🜥': 'T00T0',
+  '🜦': 'T00T1',
+  '🜧': 'T000T',
+  '🜨': 'T0000',
+  '🜩': 'T0001',
+  '🜪': 'T001T',
+  '🜫': 'T0010',
+  '🜬': 'T0011',
+  '🜭': 'T01TT',
+  '🜮': 'T01T0',
+  '🜯': 'T01T1',
+  '🜰': 'T010T',
+  '🜱': 'T0100',
+  '🜲': 'T0101',
+  '🜳': 'T011T',
+  '🜴': 'T0110',
+  '🜵': 'T0111',
+  '🜶': 'T1TTT',
+  '🜷': 'T1TT0',
+  '🜸': 'T1TT1',
+  '🜹': 'T1T0T',
+  '🜺': 'T1T00',
+  '🜻': 'T1T01',
+  '🜼': 'T1T1T',
+  '🜽': 'T1T10',
+  '🜾': 'T1T11',
+  '🜿': 'T10TT',
+  '🝀': 'T10T0',
+  '🝁': 'T10T1',
+  '🝂': 'T100T',
+  '🝃': 'T1000',
+  '🝄': 'T1001',
+  '🝅': 'T101T',
+  '🝆': 'T1010',
+  '🝇': 'T1011',
+  '🝈': 'T11TT',
+  '🝉': 'T11T0',
+  '🝊': 'T11T1',
+  '🝋': 'T110T',
+  '🝌': 'T1100',
+  '🝍': 'T1101',
+  '🝎': 'T111T',
+  '🝏': 'T1110',
+  '🝐': 'T1111',
+  '🝑': '0TTTT',
+  '🝒': '0TTT0',
+  '🝓': '0TTT1',
+  '🝔': '0TT0T',
+  '🝕': '0TT00',
+  '🝖': '0TT01',
+  '🝗': '0TT1T',
+  '🝘': '0TT10',
+  '🝙': '0TT11',
+  '🝚': '0T0TT',
+  '🝛': '0T0T0',
+  '🝜': '0T0T1',
+  '🝝': '0T00T',
+  '🝞': '0T000',
+  '🝟': '0T001',
+  '🝠': '0T01T',
+  '🝡': '0T010',
+  '🝢': '0T011',
+  '🝣': '0T1TT',
+  '🝤': '0T1T0',
+  '🝥': '0T1T1',
+  '🝦': '0T10T',
+  '🝧': '0T100',
+  '🝨': '0T101',
+  '🝩': '0T11T',
+  '🝪': '0T110',
+  '🝫': '0T111',
+  '🝬': '00TTT',
+  '🝭': '00TT0',
+  '🝮': '00TT1',
+  '🝯': '00T0T',
+  '🝰': '00T00',
+  '🝱': '00T01',
+  '🝲': '00T1T',
+  '🝳': '00T10',
+  '🝴': '00T11',
+  '🝵': '000TT',
+  '🝶': '000T0',
+  '🝷': '000T1',
+  '🝸': '0000T',
+  '🝹': '00000',
+  '🝺': '00001',
+  '🝻': '0001T'
+};
+
+function convertGlyphs() {
+  const input = document.getElementById("glyphInput").value;
+  let output = [];
+  for (let char of input) {
+    if (glyphToTernary[char]) {
+      output.push(`${char} → ${glyphToTernary[char]}`);
+    } else {
+      output.push(`${char} → ❌ Not found`);
+    }
+  }
+  document.getElementById("glyphResult").innerHTML = output.join("<br>");
+}
+</script>
+
+</body>
+</html>
