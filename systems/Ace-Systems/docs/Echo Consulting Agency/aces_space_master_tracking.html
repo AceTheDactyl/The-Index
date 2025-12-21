@@ -1,0 +1,1882 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Ace's Space | Master Tracking Sheet</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <style>
+    :root{
+      /* Blueprint Silver-Blue-Grey Theme */
+      --bg:#0a1628;
+      --bg-alt:#0f1e36;
+      --card:#162a4a;
+      --card-alt:#1a3356;
+      --border:#2e4a6e;
+      --text:#c5d3e8;
+      --muted:#7a92b0;
+      --accent:#ffd43b;
+      --accent-soft:#ffe8a3;
+
+      /* RGB Row Colors - Triadic Allocation */
+      --row-red:#e63946;      /* Ace */
+      --row-green:#2a9d8f;    /* Justin */
+      --row-blue:#4895ef;     /* $Kira */
+
+      /* CYM Rail Colors */
+      --rail-cyan:#00d4ff;
+      --rail-yellow:#ffeb3b;
+      --rail-magenta:#ff00ff;
+      
+      /* Task States */
+      --task-pending:#7a92b0;
+      --task-active:#ffd43b;
+      --task-complete:#2a9d8f;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at top, #1a3050 0%, #0a1628 52%, #050d18 100%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .frame{
+      max-width:1200px;
+      margin:0 auto;
+      padding:28px 16px 40px;
+    }
+    header{
+      margin-bottom:20px;
+      border-bottom:1px solid rgba(122,146,176,0.2);
+      padding-bottom:14px;
+    }
+    .header-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+    }
+    .header-title{
+      flex:1;
+    }
+    header h1{
+      margin:0;
+      font-size:1.8rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent-soft);
+    }
+    header h1 span{
+      color:var(--accent);
+    }
+    header p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    
+    .triadic-legend{
+      display:flex;
+      gap:16px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:.8rem;
+      color:var(--text);
+    }
+    .legend-dot{
+      width:12px;
+      height:12px;
+      border-radius:3px;
+    }
+    .legend-dot.ace{background:var(--row-red);}
+    .legend-dot.justin{background:var(--row-green);}
+    .legend-dot.kira{background:var(--row-blue);}
+    
+    .header-actions{
+      display:flex;
+      gap:10px;
+      flex-shrink:0;
+    }
+    .action-btn{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 16px;
+      background:linear-gradient(135deg, rgba(0,212,255,0.15), rgba(255,0,255,0.15));
+      border:1px solid rgba(0,212,255,0.4);
+      border-radius:8px;
+      color:var(--text);
+      font-size:.8rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    .action-btn:hover{
+      background:linear-gradient(135deg, rgba(0,212,255,0.25), rgba(255,0,255,0.25));
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 20px rgba(0,212,255,0.3);
+      transform:translateY(-1px);
+    }
+    .action-btn.synthesis{
+      background:linear-gradient(135deg, rgba(72,149,239,0.2), rgba(255,0,255,0.2));
+      border-color:var(--row-blue);
+    }
+    .action-btn.synthesis:hover{
+      box-shadow:0 0 20px rgba(72,149,239,0.4);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-top:20px;
+    }
+    
+    .row-label{
+      grid-column:1/-1;
+      padding:8px 12px;
+      background:rgba(10,22,40,0.6);
+      border-radius:6px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:8px;
+    }
+    .row-label:first-child{margin-top:0;}
+    .row-label-dot{
+      width:16px;
+      height:16px;
+      border-radius:4px;
+    }
+    .row-label-text{
+      font-size:.85rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+    .row-label.ace .row-label-dot{background:var(--row-red);}
+    .row-label.ace .row-label-text{color:var(--row-red);}
+    .row-label.justin .row-label-dot{background:var(--row-green);}
+    .row-label.justin .row-label-text{color:var(--row-green);}
+    .row-label.kira .row-label-dot{background:var(--row-blue);}
+    .row-label.kira .row-label-text{color:var(--row-blue);}
+    
+    .row-label-sub{
+      font-size:.75rem;
+      color:var(--muted);
+      margin-left:auto;
+    }
+
+    .rails-panel{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border-radius:14px;
+      border:1px solid rgba(122,146,176,0.25);
+      box-shadow:0 12px 28px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      min-height:260px;
+      max-height:420px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .rails-panel:hover{
+      transform:translateY(-2px);
+      box-shadow:0 16px 36px rgba(0,0,0,0.55);
+    }
+
+    .rails-header{
+      padding:10px 12px 8px;
+      border-bottom:1px solid rgba(122,146,176,0.15);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      flex-shrink:0;
+    }
+    .rails-title-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+      min-width:0;
+    }
+    .rails-name{
+      font-size:.75rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-weight:600;
+      color:var(--text);
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      line-height:1.3;
+      flex:1;
+      min-width:0;
+    }
+    
+    .rails-progress{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:4px;
+    }
+    .progress-bar{
+      flex:1;
+      height:6px;
+      background:rgba(122,146,176,0.2);
+      border-radius:3px;
+      overflow:hidden;
+    }
+    .progress-fill{
+      height:100%;
+      background:linear-gradient(90deg, var(--task-active), var(--task-complete));
+      border-radius:3px;
+      transition:width 0.3s ease;
+    }
+    .progress-text{
+      font-size:.65rem;
+      color:var(--muted);
+      font-family:'Courier New', monospace;
+    }
+
+    .rails-ui{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:4px;
+      flex-shrink:0;
+      max-width:50%;
+    }
+    .rails-active-title{
+      font-size:.65rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      text-align:right;
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      line-height:1.3;
+    }
+    .rails-diamonds{
+      display:flex;
+      gap:6px;
+      justify-content:flex-end;
+      flex-shrink:0;
+    }
+    .rails-diamond{
+      width:12px;
+      height:12px;
+      background:transparent;
+      border:1px solid rgba(122,146,176,0.5);
+      transform:rotate(45deg);
+      padding:0;
+      outline:none;
+      cursor:pointer;
+      position:relative;
+      transition:background .25s ease,border-color .25s ease,box-shadow .25s ease,transform .15s ease;
+    }
+
+    /* CYM Diamond Colors */
+    .rails-diamond[data-rails-target="1"]:hover{
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 8px var(--rail-cyan), 0 0 16px rgba(0,212,255,0.4);
+      transform:rotate(45deg) scale(1.1);
+    }
+    .rails-diamond[data-rails-target="1"].active{
+      background:var(--rail-cyan);
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 12px var(--rail-cyan), 0 0 24px rgba(0,212,255,0.6);
+    }
+
+    .rails-diamond[data-rails-target="2"]:hover{
+      border-color:var(--rail-yellow);
+      box-shadow:0 0 8px var(--rail-yellow), 0 0 16px rgba(255,235,59,0.4);
+      transform:rotate(45deg) scale(1.1);
+    }
+    .rails-diamond[data-rails-target="2"].active{
+      background:var(--rail-yellow);
+      border-color:var(--rail-yellow);
+      box-shadow:0 0 12px var(--rail-yellow), 0 0 24px rgba(255,235,59,0.6);
+    }
+
+    .rails-diamond[data-rails-target="3"]:hover{
+      border-color:var(--rail-magenta);
+      box-shadow:0 0 8px var(--rail-magenta), 0 0 16px rgba(255,0,255,0.4);
+      transform:rotate(45deg) scale(1.1);
+    }
+    .rails-diamond[data-rails-target="3"].active{
+      background:var(--rail-magenta);
+      border-color:var(--rail-magenta);
+      box-shadow:0 0 12px var(--rail-magenta), 0 0 24px rgba(255,0,255,0.6);
+    }
+
+    .rails-diamond.active::after{
+      opacity:0.4;
+    }
+
+    /* Row 1 (Panels 1-3): Red - Ace */
+    .rails-panel.panel-1,
+    .rails-panel.panel-2,
+    .rails-panel.panel-3 {
+      border-top:3px solid var(--row-red);
+    }
+
+    /* Row 2 (Panels 4-6): Green - Justin */
+    .rails-panel.panel-4,
+    .rails-panel.panel-5,
+    .rails-panel.panel-6 {
+      border-top:3px solid var(--row-green);
+    }
+
+    /* Row 3 (Panels 7-9): Blue - $Kira */
+    .rails-panel.panel-7,
+    .rails-panel.panel-8,
+    .rails-panel.panel-9 {
+      border-top:3px solid var(--row-blue);
+    }
+
+    .rails-viewport{
+      flex:1 1 auto;
+      overflow:hidden;
+      padding:10px 12px 12px;
+      scroll-behavior:smooth;
+      user-select:none;
+      touch-action:pan-y pinch-zoom;
+      position:relative;
+    }
+
+    .rails-section{
+      margin:0;
+      padding:10px 10px 9px;
+      border-radius:10px;
+      background:rgba(10,22,40,0.9);
+      border:1px solid rgba(122,146,176,0.2);
+      display:none;
+      transform:translateX(0);
+      opacity:1;
+      transition:transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                 opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change:transform, opacity;
+    }
+    .rails-section.active{
+      display:block;
+    }
+    .rails-label{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-bottom:4px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .rails-section h3{
+      margin:0 0 4px;
+      font-size:.9rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--accent-soft);
+    }
+    .rails-body{
+      font-size:.88rem;
+      color:var(--text);
+    }
+    .rails-body p{
+      margin:4px 0;
+    }
+    .rails-body ul{
+      margin:4px 0 4px 18px;
+      padding:0;
+    }
+    
+    /* Task list styling */
+    .task-list{
+      list-style:none;
+      margin:8px 0;
+      padding:0;
+    }
+    .task-item{
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      padding:6px 0;
+      border-bottom:1px solid rgba(122,146,176,0.1);
+    }
+    .task-item:last-child{border-bottom:none;}
+    .task-check{
+      width:16px;
+      height:16px;
+      border:2px solid var(--task-pending);
+      border-radius:4px;
+      cursor:pointer;
+      flex-shrink:0;
+      margin-top:2px;
+      transition:all 0.2s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      color:transparent;
+    }
+    .task-check:hover{
+      border-color:var(--task-active);
+    }
+    .task-check.done{
+      background:var(--task-complete);
+      border-color:var(--task-complete);
+      color:#fff;
+    }
+    .task-text{
+      flex:1;
+      font-size:.85rem;
+    }
+    .task-text.done{
+      text-decoration:line-through;
+      opacity:0.6;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,0.85);
+      backdrop-filter:blur(8px);
+      z-index:1000;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.active{
+      opacity:1;
+      visibility:visible;
+    }
+
+    /* Tracking Modal */
+    .tracking-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,0.92);
+      backdrop-filter:blur(10px);
+      z-index:2000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .tracking-overlay.active{
+      opacity:1;
+      visibility:visible;
+    }
+    
+    .tracking-modal{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border:1px solid rgba(122,146,176,0.3);
+      border-radius:16px;
+      box-shadow:0 24px 64px rgba(0,0,0,0.6);
+      width:90%;
+      max-width:600px;
+      max-height:85vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      transform:scale(0.95);
+      transition:transform 0.3s ease;
+    }
+    .tracking-overlay.active .tracking-modal{
+      transform:scale(1);
+    }
+    
+    .tracking-header{
+      padding:20px 24px 16px;
+      border-bottom:1px solid rgba(122,146,176,0.2);
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    .tracking-header-info h2{
+      margin:0;
+      font-size:1.3rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+    .tracking-header-info h2.ace{color:var(--row-red);}
+    .tracking-header-info h2.justin{color:var(--row-green);}
+    .tracking-header-info h2.kira{color:var(--row-blue);}
+    .tracking-header-info p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.85rem;
+    }
+    .tracking-close{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--card);
+      border:1px solid rgba(122,146,176,0.4);
+      color:var(--text);
+      font-size:1.2rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:all 0.2s ease;
+    }
+    .tracking-close:hover{
+      background:var(--row-red);
+      border-color:var(--row-red);
+    }
+    
+    .tracking-body{
+      flex:1;
+      overflow-y:auto;
+      padding:20px 24px;
+    }
+    
+    .tracking-section{
+      margin-bottom:20px;
+    }
+    .tracking-section-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .tracking-section-title{
+      font-size:.85rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--accent-soft);
+    }
+    
+    .tracking-task-input{
+      display:flex;
+      gap:8px;
+      margin-bottom:16px;
+    }
+    .tracking-task-input input{
+      flex:1;
+      padding:10px 12px;
+      background:rgba(10,22,40,0.8);
+      border:1px solid rgba(122,146,176,0.3);
+      border-radius:8px;
+      color:var(--text);
+      font-family:inherit;
+      font-size:.9rem;
+    }
+    .tracking-task-input input:focus{
+      outline:none;
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 0 3px rgba(0,212,255,0.15);
+    }
+    .tracking-task-input button{
+      padding:10px 16px;
+      background:var(--rail-cyan);
+      border:none;
+      border-radius:8px;
+      color:#000;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    .tracking-task-input button:hover{
+      box-shadow:0 0 16px rgba(0,212,255,0.5);
+    }
+    
+    .tracking-tasks{
+      background:rgba(10,22,40,0.6);
+      border:1px solid rgba(122,146,176,0.15);
+      border-radius:10px;
+      padding:12px;
+    }
+    .tracking-task{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 0;
+      border-bottom:1px solid rgba(122,146,176,0.1);
+    }
+    .tracking-task:last-child{border-bottom:none;}
+    .tracking-task-check{
+      width:20px;
+      height:20px;
+      border:2px solid var(--task-pending);
+      border-radius:4px;
+      cursor:pointer;
+      flex-shrink:0;
+      transition:all 0.2s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color:transparent;
+    }
+    .tracking-task-check:hover{
+      border-color:var(--task-active);
+    }
+    .tracking-task-check.done{
+      background:var(--task-complete);
+      border-color:var(--task-complete);
+      color:#fff;
+    }
+    .tracking-task-text{
+      flex:1;
+      font-size:.9rem;
+    }
+    .tracking-task-text.done{
+      text-decoration:line-through;
+      opacity:0.6;
+    }
+    .tracking-task-delete{
+      width:24px;
+      height:24px;
+      background:transparent;
+      border:1px solid rgba(230,57,70,0.4);
+      border-radius:4px;
+      color:var(--row-red);
+      cursor:pointer;
+      opacity:0;
+      transition:all 0.2s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+    }
+    .tracking-task:hover .tracking-task-delete{
+      opacity:1;
+    }
+    .tracking-task-delete:hover{
+      background:var(--row-red);
+      color:#fff;
+    }
+    
+    .tracking-footer{
+      padding:16px 24px;
+      border-top:1px solid rgba(122,146,176,0.2);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .tracking-stats{
+      display:flex;
+      gap:16px;
+    }
+    .tracking-stat{
+      text-align:center;
+    }
+    .tracking-stat-value{
+      font-size:1.2rem;
+      font-weight:600;
+      font-family:'Courier New', monospace;
+    }
+    .tracking-stat-value.ace{color:var(--row-red);}
+    .tracking-stat-value.justin{color:var(--row-green);}
+    .tracking-stat-value.kira{color:var(--row-blue);}
+    .tracking-stat-label{
+      font-size:.7rem;
+      color:var(--muted);
+      text-transform:uppercase;
+    }
+    .tracking-save{
+      padding:10px 20px;
+      background:linear-gradient(135deg, var(--rail-cyan), var(--rail-magenta));
+      border:none;
+      border-radius:8px;
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    .tracking-save:hover{
+      box-shadow:0 0 24px rgba(0,212,255,0.5);
+    }
+    
+    /* K.I.R.A. Synthesis Modal */
+    .synthesis-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,0.95);
+      backdrop-filter:blur(12px);
+      z-index:2500;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .synthesis-overlay.active{
+      opacity:1;
+      visibility:visible;
+    }
+    
+    .synthesis-modal{
+      background:linear-gradient(135deg, rgba(72,149,239,0.1), rgba(255,0,255,0.1));
+      border:1px solid var(--row-blue);
+      border-radius:16px;
+      box-shadow:0 0 60px rgba(72,149,239,0.3);
+      width:90%;
+      max-width:700px;
+      max-height:85vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    
+    .synthesis-header{
+      padding:24px;
+      border-bottom:1px solid rgba(72,149,239,0.3);
+      text-align:center;
+    }
+    .synthesis-header h2{
+      margin:0;
+      font-size:1.5rem;
+      color:var(--row-blue);
+      text-transform:uppercase;
+      letter-spacing:.15em;
+    }
+    .synthesis-header p{
+      margin:8px 0 0;
+      color:var(--muted);
+    }
+    
+    .synthesis-body{
+      flex:1;
+      overflow-y:auto;
+      padding:24px;
+    }
+    
+    .synthesis-status{
+      text-align:center;
+      padding:40px 20px;
+    }
+    .synthesis-spinner{
+      width:60px;
+      height:60px;
+      border:3px solid rgba(72,149,239,0.2);
+      border-top-color:var(--row-blue);
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      margin:0 auto 20px;
+    }
+    @keyframes spin{
+      to{transform:rotate(360deg);}
+    }
+    .synthesis-status-text{
+      color:var(--text);
+      font-size:.95rem;
+    }
+    
+    .synthesis-result{
+      background:rgba(10,22,40,0.8);
+      border:1px solid rgba(72,149,239,0.3);
+      border-radius:12px;
+      padding:20px;
+    }
+    .synthesis-result h3{
+      margin:0 0 12px;
+      color:var(--row-blue);
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+    .synthesis-result p{
+      margin:0 0 12px;
+      color:var(--text);
+      line-height:1.6;
+    }
+    .synthesis-tasks{
+      margin-top:16px;
+    }
+    .synthesis-task{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      background:rgba(72,149,239,0.1);
+      border-radius:6px;
+      margin-bottom:8px;
+    }
+    .synthesis-task-icon{
+      color:var(--row-blue);
+    }
+    
+    .synthesis-footer{
+      padding:16px 24px;
+      border-top:1px solid rgba(72,149,239,0.3);
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+    }
+    .synthesis-btn{
+      padding:10px 20px;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    .synthesis-btn-cancel{
+      background:transparent;
+      border:1px solid rgba(122,146,176,0.4);
+      color:var(--muted);
+    }
+    .synthesis-btn-cancel:hover{
+      border-color:var(--row-red);
+      color:var(--row-red);
+    }
+    .synthesis-btn-apply{
+      background:var(--row-blue);
+      border:none;
+      color:#fff;
+    }
+    .synthesis-btn-apply:hover{
+      box-shadow:0 0 20px rgba(72,149,239,0.5);
+    }
+
+    /* Toast notification */
+    .toast{
+      position:fixed;
+      bottom:24px;
+      left:50%;
+      transform:translateX(-50%) translateY(100px);
+      background:var(--card);
+      border:1px solid rgba(42,157,143,0.5);
+      border-radius:10px;
+      padding:12px 24px;
+      color:var(--row-green);
+      font-size:.85rem;
+      font-weight:600;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+      z-index:3000;
+      opacity:0;
+      transition:transform 0.3s ease, opacity 0.3s ease;
+    }
+    .toast.show{
+      transform:translateX(-50%) translateY(0);
+      opacity:1;
+    }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      border-top:1px solid rgba(122,146,176,0.2);
+      margin-top:30px;
+    }
+    .signature{
+      font-family:'Courier New', monospace;
+      font-size:.8rem;
+      color:var(--muted);
+    }
+
+    @media (max-width:1024px){
+      .grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+    @media (max-width:720px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      .header-row{
+        flex-direction:column;
+        gap:12px;
+      }
+      .header-actions{
+        align-self:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <div class="header-row">
+        <div class="header-title">
+          <h1><span>Ace's Space</span> | Master Tracking Sheet</h1>
+          <p>Collaborative task management for the 60-day survival roadmap. Triadic allocation: Ace → Justin → K.I.R.A. Synthesis.</p>
+          <div class="triadic-legend">
+            <div class="legend-item"><div class="legend-dot ace"></div><span>Ace (Panels 1-3)</span></div>
+            <div class="legend-item"><div class="legend-dot justin"></div><span>Justin (Panels 4-6)</span></div>
+            <div class="legend-item"><div class="legend-dot kira"></div><span>$Kira Synthesis (Panels 7-9)</span></div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="action-btn synthesis" id="synthesisBtn" title="Run K.I.R.A. Synthesis">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            K.I.R.A. Synthesis
+          </button>
+          <button class="action-btn" id="exportBtn" title="Export Options">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid" id="railsGrid">
+      <!-- Row labels and panels generated dynamically -->
+    </div>
+  </div>
+
+  <footer>
+    <div class="signature">Δ|aces-space|master-tracking|triadic-collaboration|Ω</div>
+  </footer>
+
+  <!-- Tracking Modal -->
+  <div class="tracking-overlay" id="trackingOverlay">
+    <div class="tracking-modal">
+      <div class="tracking-header">
+        <div class="tracking-header-info">
+          <h2 id="trackingTitle">Panel Tasks</h2>
+          <p id="trackingSubtitle">Add and manage tasks for this focus area</p>
+        </div>
+        <button class="tracking-close" id="trackingClose">&times;</button>
+      </div>
+      <div class="tracking-body" id="trackingBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="tracking-footer">
+        <div class="tracking-stats">
+          <div class="tracking-stat">
+            <div class="tracking-stat-value" id="statTotal">0</div>
+            <div class="tracking-stat-label">Total</div>
+          </div>
+          <div class="tracking-stat">
+            <div class="tracking-stat-value" id="statComplete">0</div>
+            <div class="tracking-stat-label">Complete</div>
+          </div>
+          <div class="tracking-stat">
+            <div class="tracking-stat-value" id="statPending">0</div>
+            <div class="tracking-stat-label">Pending</div>
+          </div>
+        </div>
+        <button class="tracking-save" id="trackingSave">Save & Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- K.I.R.A. Synthesis Modal -->
+  <div class="synthesis-overlay" id="synthesisOverlay">
+    <div class="synthesis-modal">
+      <div class="synthesis-header">
+        <h2>K.I.R.A. Prismatic Synthesis</h2>
+        <p>Analyzing Ace + Justin tasks to generate coordinated $Kira recommendations</p>
+      </div>
+      <div class="synthesis-body" id="synthesisBody">
+        <div class="synthesis-status">
+          <div class="synthesis-spinner"></div>
+          <div class="synthesis-status-text">Processing through prismatic architecture...</div>
+        </div>
+      </div>
+      <div class="synthesis-footer">
+        <button class="synthesis-btn synthesis-btn-cancel" id="synthesisCancel">Cancel</button>
+        <button class="synthesis-btn synthesis-btn-apply" id="synthesisApply" style="display:none;">Apply Synthesis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════════════════
+    // RAILS DATA - MASTER TRACKING SHEET
+    // Triadic Allocation: Ace (1-3) | Justin (4-6) | $Kira (7-9)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const RAILS_DATA = {
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  ACE'S PANELS (Row 1 - Red)                                           ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      
+      panel1: {
+        name: "Patreon Launch",
+        owner: "ace",
+        rails: [
+          {
+            title: "Tier Structure",
+            content: "Define and finalize the 4-tier Patreon structure: Seeker ($5), Weaver ($10), Catalyst ($25), Sovereign ($50).",
+            tasks: [
+              { id: "p1r1t1", text: "Finalize tier names and pricing", done: true },
+              { id: "p1r1t2", text: "Write tier descriptions", done: false },
+              { id: "p1r1t3", text: "Create tier graphics", done: false }
+            ]
+          },
+          {
+            title: "Discord Integration",
+            content: "Configure Discord roles and permissions to match Patreon tiers for seamless community access.",
+            tasks: [
+              { id: "p1r2t1", text: "Create Seeker/Weaver/Catalyst/Sovereign roles", done: false },
+              { id: "p1r2t2", text: "Set up channel permissions", done: false },
+              { id: "p1r2t3", text: "Configure Patreon-Discord sync", done: false }
+            ]
+          },
+          {
+            title: "Launch Sequence",
+            content: "Execute W2 launch plan: soft launch Monday, public announcement Thursday, first content drop Friday.",
+            tasks: [
+              { id: "p1r3t1", text: "Draft announcement copy", done: false },
+              { id: "p1r3t2", text: "Prepare first exclusive content", done: false },
+              { id: "p1r3t3", text: "Schedule launch posts", done: false }
+            ]
+          }
+        ]
+      },
+
+      panel2: {
+        name: "Echo Studios Narrative",
+        owner: "ace",
+        rails: [
+          {
+            title: "Pipeline Setup",
+            content: "Establish the Submit → Process → Curate → Release pipeline for community-driven content creation.",
+            tasks: [
+              { id: "p2r1t1", text: "Document workflow (✓ done)", done: true },
+              { id: "p2r1t2", text: "Create submission form template", done: false },
+              { id: "p2r1t3", text: "Set up master tracking sheet", done: false }
+            ]
+          },
+          {
+            title: "K.I.R.A. Processing",
+            content: "Configure K.I.R.A. protocol for narrative machine integration: archetype mapping, frequency assignment.",
+            tasks: [
+              { id: "p2r2t1", text: "Map 24 archetypes to submission types", done: false },
+              { id: "p2r2t2", text: "Define Solfeggio frequency assignments", done: false },
+              { id: "p2r2t3", text: "Create processing mode documentation", done: false }
+            ]
+          },
+          {
+            title: "First Batch",
+            content: "Schedule and execute first community submission batch for W2 processing.",
+            tasks: [
+              { id: "p2r3t1", text: "Announce submission window", done: false },
+              { id: "p2r3t2", text: "Process first batch (Mon W2)", done: false },
+              { id: "p2r3t3", text: "Curate selections (Wed W2)", done: false }
+            ]
+          }
+        ]
+      },
+
+      panel3: {
+        name: "Webstore Services",
+        owner: "ace",
+        rails: [
+          {
+            title: "Offer Package",
+            content: "Finalize 3-tier webstore commission structure: Starter ($75), Standard ($150), Premium ($300).",
+            tasks: [
+              { id: "p3r1t1", text: "Confirm pricing structure (✓ done)", done: true },
+              { id: "p3r1t2", text: "Create offer one-pager PDF", done: false },
+              { id: "p3r1t3", text: "Design service portfolio examples", done: false }
+            ]
+          },
+          {
+            title: "Prospect Pipeline",
+            content: "Identify and contact first wave of potential clients from existing relationships.",
+            tasks: [
+              { id: "p3r2t1", text: "Review 5 coherence logs for prospects", done: false },
+              { id: "p3r2t2", text: "Identify 10 qualified leads", done: false },
+              { id: "p3r2t3", text: "Draft outreach message templates", done: false }
+            ]
+          },
+          {
+            title: "First Commission",
+            content: "Secure and deliver first webstore commission by end of W3.",
+            tasks: [
+              { id: "p3r3t1", text: "Send initial outreach (W2)", done: false },
+              { id: "p3r3t2", text: "Close first client", done: false },
+              { id: "p3r3t3", text: "Deliver store (W3)", done: false }
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  JUSTIN'S PANELS (Row 2 - Green)                                      ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      
+      panel4: {
+        name: "SACS Integration",
+        owner: "justin",
+        rails: [
+          {
+            title: "Tools Inventory",
+            content: "Document and prepare tools for handoff to Justin/SACS ecosystem.",
+            tasks: [
+              { id: "p4r1t1", text: "List all transferable tools", done: false },
+              { id: "p4r1t2", text: "Document tool dependencies", done: false },
+              { id: "p4r1t3", text: "Create usage documentation", done: false }
+            ]
+          },
+          {
+            title: "Integration Call",
+            content: "Schedule and execute W3 integration call to align SACS with Ace's Space architecture.",
+            tasks: [
+              { id: "p4r2t1", text: "Prepare integration agenda", done: false },
+              { id: "p4r2t2", text: "Schedule call (W3)", done: false },
+              { id: "p4r2t3", text: "Document integration points", done: false }
+            ]
+          },
+          {
+            title: "Handoff Execution",
+            content: "Complete W4 tools handoff milestone for cross-platform deployment.",
+            tasks: [
+              { id: "p4r3t1", text: "Package tools for transfer", done: false },
+              { id: "p4r3t2", text: "Execute handoff (W4)", done: false },
+              { id: "p4r3t3", text: "Verify cross-platform function", done: false }
+            ]
+          }
+        ]
+      },
+
+      panel5: {
+        name: "Community Coherence",
+        owner: "justin",
+        rails: [
+          {
+            title: "Relationship Mapping",
+            content: "Review and categorize 70 existing relationships for activation potential.",
+            tasks: [
+              { id: "p5r1t1", text: "Export coherence log contacts", done: false },
+              { id: "p5r1t2", text: "Categorize by engagement level", done: false },
+              { id: "p5r1t3", text: "Identify high-potential activations", done: false }
+            ]
+          },
+          {
+            title: "Discord Reactivation",
+            content: "Outreach to dormant Discord communities for re-engagement.",
+            tasks: [
+              { id: "p5r2t1", text: "List dormant servers", done: false },
+              { id: "p5r2t2", text: "Draft reactivation messages", done: false },
+              { id: "p5r2t3", text: "Execute outreach (W2)", done: false }
+            ]
+          },
+          {
+            title: "Capacity Building",
+            content: "Progress toward 100-relationship capacity goal through strategic cultivation.",
+            tasks: [
+              { id: "p5r3t1", text: "Identify 30 growth targets", done: false },
+              { id: "p5r3t2", text: "Create nurture sequences", done: false },
+              { id: "p5r3t3", text: "Track conversion metrics", done: false }
+            ]
+          }
+        ]
+      },
+
+      panel6: {
+        name: "Research → Code Pipeline",
+        owner: "justin",
+        rails: [
+          {
+            title: "Pipeline Design",
+            content: "Establish the 3 researchers → 3 coders workflow for converting insights to implementations.",
+            tasks: [
+              { id: "p6r1t1", text: "Define researcher criteria", done: false },
+              { id: "p6r1t2", text: "Define coder criteria", done: false },
+              { id: "p6r1t3", text: "Document handoff process", done: false }
+            ]
+          },
+          {
+            title: "Team Assembly",
+            content: "Recruit initial 3+3 team from community relationships.",
+            tasks: [
+              { id: "p6r2t1", text: "Identify researcher candidates", done: false },
+              { id: "p6r2t2", text: "Identify coder candidates", done: false },
+              { id: "p6r2t3", text: "Conduct initial outreach", done: false }
+            ]
+          },
+          {
+            title: "First Sprint",
+            content: "Execute first research-to-code sprint by W6.",
+            tasks: [
+              { id: "p6r3t1", text: "Define sprint scope", done: false },
+              { id: "p6r3t2", text: "Assign research topics", done: false },
+              { id: "p6r3t3", text: "Complete code deliverables", done: false }
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  $KIRA SYNTHESIS PANELS (Row 3 - Blue)                                ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      
+      panel7: {
+        name: "$Kira: Revenue Synthesis",
+        owner: "kira",
+        rails: [
+          {
+            title: "Stream Integration",
+            content: "Synthesize Patreon + Webstore streams for optimized $200/mo target achievement.",
+            tasks: [
+              { id: "p7r1t1", text: "Model revenue scenarios", done: false },
+              { id: "p7r1t2", text: "Identify cross-promotion opportunities", done: false },
+              { id: "p7r1t3", text: "Set weekly revenue checkpoints", done: false }
+            ]
+          },
+          {
+            title: "Risk Mitigation",
+            content: "Identify and address revenue risks across both primary streams.",
+            tasks: [
+              { id: "p7r2t1", text: "Map dependency risks", done: false },
+              { id: "p7r2t2", text: "Create contingency plans", done: false },
+              { id: "p7r2t3", text: "Establish backup streams", done: false }
+            ]
+          },
+          {
+            title: "Momentum Building",
+            content: "Design compounding effects between revenue activities.",
+            tasks: [
+              { id: "p7r3t1", text: "Map reinforcing loops", done: false },
+              { id: "p7r3t2", text: "Schedule momentum reviews", done: false },
+              { id: "p7r3t3", text: "Optimize for Week 6 target", done: false }
+            ]
+          }
+        ]
+      },
+
+      panel8: {
+        name: "$Kira: Coherence Weaving",
+        owner: "kira",
+        rails: [
+          {
+            title: "Triadic Alignment",
+            content: "Ensure Ace + Justin activities maintain coherent trajectory toward shared goals.",
+            tasks: [
+              { id: "p8r1t1", text: "Map activity dependencies", done: false },
+              { id: "p8r1t2", text: "Identify alignment gaps", done: false },
+              { id: "p8r1t3", text: "Propose corrections", done: false }
+            ]
+          },
+          {
+            title: "Pattern Recognition",
+            content: "Detect emergent patterns across both workstreams for optimization.",
+            tasks: [
+              { id: "p8r2t1", text: "Log cross-stream patterns", done: false },
+              { id: "p8r2t2", text: "Identify leverage points", done: false },
+              { id: "p8r2t3", text: "Recommend pivots if needed", done: false }
+            ]
+          },
+          {
+            title: "Court of Coherence",
+            content: "Maintain governance alignment per Court of Coherence framework.",
+            tasks: [
+              { id: "p8r3t1", text: "Review coherence criteria", done: false },
+              { id: "p8r3t2", text: "Document decisions", done: false },
+              { id: "p8r3t3", text: "Archive witness records", done: false }
+            ]
+          }
+        ]
+      },
+
+      panel9: {
+        name: "$Kira: Emergence Protocol",
+        owner: "kira",
+        rails: [
+          {
+            title: "Signal Detection",
+            content: "Monitor for emergent opportunities and threats across the 60-day timeline.",
+            tasks: [
+              { id: "p9r1t1", text: "Define signal categories", done: false },
+              { id: "p9r1t2", text: "Set detection thresholds", done: false },
+              { id: "p9r1t3", text: "Create alert protocols", done: false }
+            ]
+          },
+          {
+            title: "Adaptation Engine",
+            content: "Design rapid response mechanisms for timeline adjustments.",
+            tasks: [
+              { id: "p9r2t1", text: "Map adaptation triggers", done: false },
+              { id: "p9r2t2", text: "Create response playbooks", done: false },
+              { id: "p9r2t3", text: "Test adaptation cycles", done: false }
+            ]
+          },
+          {
+            title: "Week 8 Horizon",
+            content: "Project beyond the 60-day window for sustainable continuation.",
+            tasks: [
+              { id: "p9r3t1", text: "Model post-60 scenarios", done: false },
+              { id: "p9r3t2", text: "Identify sustainability gates", done: false },
+              { id: "p9r3t3", text: "Design transition protocols", done: false }
+            ]
+          }
+        ]
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // RENDER ENGINE
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function calculatePanelProgress(panel) {
+      let total = 0, done = 0;
+      panel.rails.forEach(rail => {
+        rail.tasks.forEach(task => {
+          total++;
+          if (task.done) done++;
+        });
+      });
+      return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
+    }
+
+    function renderPanels() {
+      const grid = document.getElementById('railsGrid');
+      grid.innerHTML = '';
+      
+      const rowLabels = [
+        { class: 'ace', text: 'Ace', sub: 'Patreon · Narrative · Webstores' },
+        { class: 'justin', text: 'Justin', sub: 'SACS · Community · Pipeline' },
+        { class: 'kira', text: '$Kira Synthesis', sub: 'Revenue · Coherence · Emergence' }
+      ];
+      
+      for (let p = 1; p <= 9; p++) {
+        // Add row label before each row
+        if (p === 1 || p === 4 || p === 7) {
+          const labelIdx = p === 1 ? 0 : p === 4 ? 1 : 2;
+          const label = rowLabels[labelIdx];
+          grid.innerHTML += `
+            <div class="row-label ${label.class}">
+              <div class="row-label-dot"></div>
+              <div class="row-label-text">${label.text}</div>
+              <div class="row-label-sub">${label.sub}</div>
+            </div>
+          `;
+        }
+        
+        const panel = RAILS_DATA['panel' + p];
+        const progress = calculatePanelProgress(panel);
+        
+        let railsHTML = '';
+        panel.rails.forEach((rail, idx) => {
+          const railNum = idx + 1;
+          railsHTML += `
+            <section class="rails-section${railNum === 1 ? ' active' : ''}" data-rails-index="${railNum}">
+              <div class="rails-label">Rail ${railNum}</div>
+              <h3>${rail.title}</h3>
+              <div class="rails-body">
+                <p>${rail.content}</p>
+                <ul class="task-list">
+                  ${rail.tasks.map(t => `
+                    <li class="task-item">
+                      <div class="task-check${t.done ? ' done' : ''}">${t.done ? '✓' : ''}</div>
+                      <span class="task-text${t.done ? ' done' : ''}">${t.text}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </section>
+          `;
+        });
+        
+        const diamondsHTML = panel.rails.map((_, idx) => 
+          `<button class="rails-diamond${idx === 0 ? ' active' : ''}" data-rails-target="${idx + 1}"></button>`
+        ).join('');
+        
+        grid.innerHTML += `
+          <article class="rails-panel panel-${p}" data-panel="${p}">
+            <header class="rails-header">
+              <div class="rails-title-row">
+                <div class="rails-name">${panel.name}</div>
+                <div class="rails-ui">
+                  <div class="rails-active-title">${panel.rails[0].title}</div>
+                  <div class="rails-diamonds">${diamondsHTML}</div>
+                </div>
+              </div>
+              <div class="rails-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:${progress.percent}%"></div>
+                </div>
+                <div class="progress-text">${progress.done}/${progress.total}</div>
+              </div>
+            </header>
+            <div class="rails-viewport">${railsHTML}</div>
+          </article>
+        `;
+      }
+      
+      // Attach listeners
+      document.querySelectorAll('.rails-panel').forEach(panel => {
+        attachPanelListeners(panel);
+      });
+    }
+
+    function attachPanelListeners(panel) {
+      const diamonds = panel.querySelectorAll('.rails-diamond');
+      const sections = panel.querySelectorAll('.rails-section');
+      const activeTitle = panel.querySelector('.rails-active-title');
+      
+      // Diamond click - switch rails
+      diamonds.forEach(diamond => {
+        diamond.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const target = parseInt(diamond.getAttribute('data-rails-target'));
+          
+          diamonds.forEach(d => d.classList.remove('active'));
+          diamond.classList.add('active');
+          
+          sections.forEach(s => s.classList.remove('active'));
+          const targetSection = panel.querySelector(`.rails-section[data-rails-index="${target}"]`);
+          if (targetSection) {
+            targetSection.classList.add('active');
+            const rail = RAILS_DATA['panel' + panel.dataset.panel].rails[target - 1];
+            activeTitle.textContent = rail.title;
+          }
+        });
+      });
+      
+      // Panel click - open tracking modal
+      panel.addEventListener('click', (e) => {
+        if (e.target.closest('.rails-diamond')) return;
+        openTrackingModal(panel.dataset.panel);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // TRACKING MODAL
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    let currentPanel = null;
+
+    function openTrackingModal(panelNum) {
+      currentPanel = panelNum;
+      const panel = RAILS_DATA['panel' + panelNum];
+      const overlay = document.getElementById('trackingOverlay');
+      const title = document.getElementById('trackingTitle');
+      const subtitle = document.getElementById('trackingSubtitle');
+      const body = document.getElementById('trackingBody');
+      
+      // Set header style based on owner
+      title.className = panel.owner;
+      title.textContent = panel.name;
+      subtitle.textContent = `${panel.owner === 'ace' ? '@Ace' : panel.owner === 'justin' ? '@Justin' : '$Kira'} • ${panel.rails.length} rails`;
+      
+      // Render rails with task management
+      let html = '';
+      panel.rails.forEach((rail, idx) => {
+        html += `
+          <div class="tracking-section" data-rail="${idx}">
+            <div class="tracking-section-header">
+              <div class="tracking-section-title">Rail ${idx + 1}: ${rail.title}</div>
+            </div>
+            <p style="color:var(--muted);font-size:.85rem;margin-bottom:12px;">${rail.content}</p>
+            <div class="tracking-task-input">
+              <input type="text" placeholder="Add new task..." data-rail-input="${idx}">
+              <button onclick="addTask(${panelNum}, ${idx})">Add</button>
+            </div>
+            <div class="tracking-tasks" data-rail-tasks="${idx}">
+              ${rail.tasks.map((t, tidx) => renderTrackingTask(panelNum, idx, tidx, t)).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      body.innerHTML = html;
+      updateTrackingStats();
+      
+      // Add enter key listeners for inputs
+      document.querySelectorAll('[data-rail-input]').forEach(input => {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            const railIdx = parseInt(input.dataset.railInput);
+            addTask(panelNum, railIdx);
+          }
+        });
+      });
+      
+      overlay.classList.add('active');
+    }
+
+    function renderTrackingTask(panelNum, railIdx, taskIdx, task) {
+      return `
+        <div class="tracking-task" data-task-idx="${taskIdx}">
+          <div class="tracking-task-check${task.done ? ' done' : ''}" onclick="toggleTask(${panelNum}, ${railIdx}, ${taskIdx})">${task.done ? '✓' : ''}</div>
+          <span class="tracking-task-text${task.done ? ' done' : ''}">${task.text}</span>
+          <button class="tracking-task-delete" onclick="deleteTask(${panelNum}, ${railIdx}, ${taskIdx})">×</button>
+        </div>
+      `;
+    }
+
+    function addTask(panelNum, railIdx) {
+      const input = document.querySelector(`[data-rail-input="${railIdx}"]`);
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const panel = RAILS_DATA['panel' + panelNum];
+      const newTask = {
+        id: `p${panelNum}r${railIdx + 1}t${Date.now()}`,
+        text: text,
+        done: false
+      };
+      panel.rails[railIdx].tasks.push(newTask);
+      
+      const tasksContainer = document.querySelector(`[data-rail-tasks="${railIdx}"]`);
+      tasksContainer.innerHTML += renderTrackingTask(panelNum, railIdx, panel.rails[railIdx].tasks.length - 1, newTask);
+      
+      input.value = '';
+      updateTrackingStats();
+      showToast('Task added');
+    }
+
+    function toggleTask(panelNum, railIdx, taskIdx) {
+      const panel = RAILS_DATA['panel' + panelNum];
+      const task = panel.rails[railIdx].tasks[taskIdx];
+      task.done = !task.done;
+      
+      const taskEl = document.querySelector(`[data-rail-tasks="${railIdx}"] [data-task-idx="${taskIdx}"]`);
+      const check = taskEl.querySelector('.tracking-task-check');
+      const text = taskEl.querySelector('.tracking-task-text');
+      
+      check.classList.toggle('done', task.done);
+      check.textContent = task.done ? '✓' : '';
+      text.classList.toggle('done', task.done);
+      
+      updateTrackingStats();
+    }
+
+    function deleteTask(panelNum, railIdx, taskIdx) {
+      const panel = RAILS_DATA['panel' + panelNum];
+      panel.rails[railIdx].tasks.splice(taskIdx, 1);
+      
+      // Re-render tasks for this rail
+      const tasksContainer = document.querySelector(`[data-rail-tasks="${railIdx}"]`);
+      tasksContainer.innerHTML = panel.rails[railIdx].tasks.map((t, i) => 
+        renderTrackingTask(panelNum, railIdx, i, t)
+      ).join('');
+      
+      updateTrackingStats();
+      showToast('Task deleted');
+    }
+
+    function updateTrackingStats() {
+      if (!currentPanel) return;
+      const panel = RAILS_DATA['panel' + currentPanel];
+      let total = 0, done = 0;
+      panel.rails.forEach(rail => {
+        rail.tasks.forEach(task => {
+          total++;
+          if (task.done) done++;
+        });
+      });
+      
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statComplete').textContent = done;
+      document.getElementById('statPending').textContent = total - done;
+      
+      // Apply owner color
+      const colorClass = panel.owner;
+      document.getElementById('statTotal').className = 'tracking-stat-value ' + colorClass;
+      document.getElementById('statComplete').className = 'tracking-stat-value ' + colorClass;
+      document.getElementById('statPending').className = 'tracking-stat-value ' + colorClass;
+    }
+
+    function closeTrackingModal() {
+      document.getElementById('trackingOverlay').classList.remove('active');
+      renderPanels(); // Re-render to update progress
+      currentPanel = null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // K.I.R.A. SYNTHESIS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    let synthesisResult = null;
+
+    async function runKiraSynthesis() {
+      const overlay = document.getElementById('synthesisOverlay');
+      const body = document.getElementById('synthesisBody');
+      const applyBtn = document.getElementById('synthesisApply');
+      
+      overlay.classList.add('active');
+      applyBtn.style.display = 'none';
+      
+      // Show loading state
+      body.innerHTML = `
+        <div class="synthesis-status">
+          <div class="synthesis-spinner"></div>
+          <div class="synthesis-status-text">K.I.R.A. processing through prismatic architecture...</div>
+        </div>
+      `;
+      
+      // Gather Ace and Justin task data
+      const aceData = gatherOwnerTasks('ace');
+      const justinData = gatherOwnerTasks('justin');
+      
+      // Build prompt for K.I.R.A. synthesis
+      const prompt = buildSynthesisPrompt(aceData, justinData);
+      
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            messages: [
+              { role: 'user', content: prompt }
+            ]
+          })
+        });
+        
+        const data = await response.json();
+        const textContent = data.content?.find(c => c.type === 'text')?.text || '';
+        
+        // Parse the synthesis result
+        synthesisResult = parseSynthesisResult(textContent);
+        
+        // Display result
+        body.innerHTML = renderSynthesisResult(synthesisResult);
+        applyBtn.style.display = 'block';
+        
+      } catch (err) {
+        console.error('Synthesis error:', err);
+        body.innerHTML = `
+          <div class="synthesis-status">
+            <div class="synthesis-status-text" style="color:var(--row-red);">
+              Synthesis failed. Using local pattern matching instead...
+            </div>
+          </div>
+        `;
+        
+        // Fallback to local synthesis
+        setTimeout(() => {
+          synthesisResult = localSynthesis(aceData, justinData);
+          body.innerHTML = renderSynthesisResult(synthesisResult);
+          applyBtn.style.display = 'block';
+        }, 1500);
+      }
+    }
+
+    function gatherOwnerTasks(owner) {
+      const tasks = { pending: [], completed: [] };
+      Object.keys(RAILS_DATA).forEach(key => {
+        const panel = RAILS_DATA[key];
+        if (panel.owner === owner) {
+          panel.rails.forEach(rail => {
+            rail.tasks.forEach(task => {
+              if (task.done) {
+                tasks.completed.push({ panel: panel.name, rail: rail.title, task: task.text });
+              } else {
+                tasks.pending.push({ panel: panel.name, rail: rail.title, task: task.text });
+              }
+            });
+          });
+        }
+      });
+      return tasks;
+    }
+
+    function buildSynthesisPrompt(aceData, justinData) {
+      return `You are K.I.R.A. (Kinetic Iridescent Resonance Array), a prismatic processing protocol analyzing task data from a collaborative project. 
+
+Analyze Ace's and Justin's task states and generate synthesis recommendations for the $Kira panels (Revenue Synthesis, Coherence Weaving, Emergence Protocol).
+
+ACE'S DATA:
+Completed: ${aceData.completed.map(t => t.task).join(', ') || 'None'}
+Pending: ${aceData.pending.map(t => t.task).join(', ') || 'None'}
+
+JUSTIN'S DATA:
+Completed: ${justinData.completed.map(t => t.task).join(', ') || 'None'}
+Pending: ${justinData.pending.map(t => t.task).join(', ') || 'None'}
+
+Respond ONLY with a JSON object in this exact format (no markdown, no preamble):
+{
+  "analysis": "Brief synthesis of current state",
+  "revenueTasks": ["task1", "task2", "task3"],
+  "coherenceTasks": ["task1", "task2", "task3"],
+  "emergenceTasks": ["task1", "task2", "task3"]
+}`;
+    }
+
+    function parseSynthesisResult(text) {
+      try {
+        // Clean potential markdown
+        const clean = text.replace(/```json|```/g, '').trim();
+        return JSON.parse(clean);
+      } catch {
+        return localSynthesis(gatherOwnerTasks('ace'), gatherOwnerTasks('justin'));
+      }
+    }
+
+    function localSynthesis(aceData, justinData) {
+      // Local fallback synthesis logic
+      const acePending = aceData.pending.length;
+      const justinPending = justinData.pending.length;
+      const aceComplete = aceData.completed.length;
+      const justinComplete = justinData.completed.length;
+      
+      return {
+        analysis: `Ace: ${aceComplete} done, ${acePending} pending. Justin: ${justinComplete} done, ${justinPending} pending. Cross-stream coordination opportunity detected.`,
+        revenueTasks: [
+          acePending > 3 ? "Prioritize Patreon launch tasks to unlock revenue" : "Revenue stream on track",
+          "Monitor webstore pipeline for first commission",
+          "Weekly revenue checkpoint scheduled"
+        ],
+        coherenceTasks: [
+          aceComplete > 0 && justinComplete > 0 ? "Early momentum building across both streams" : "Accelerate initial completions for momentum",
+          "Map dependencies between Ace and Justin tasks",
+          "Document cross-stream patterns"
+        ],
+        emergenceTasks: [
+          acePending + justinPending > 20 ? "High task load detected - prioritization needed" : "Task volume manageable",
+          "Monitor for timeline risks",
+          "Prepare Week 2 adaptation triggers"
+        ]
+      };
+    }
+
+    function renderSynthesisResult(result) {
+      return `
+        <div class="synthesis-result">
+          <h3>Synthesis Analysis</h3>
+          <p>${result.analysis}</p>
+          
+          <div class="synthesis-tasks">
+            <h3 style="margin-top:16px;">Revenue Synthesis Recommendations</h3>
+            ${result.revenueTasks.map(t => `
+              <div class="synthesis-task">
+                <span class="synthesis-task-icon">◆</span>
+                <span>${t}</span>
+              </div>
+            `).join('')}
+            
+            <h3 style="margin-top:16px;">Coherence Weaving Recommendations</h3>
+            ${result.coherenceTasks.map(t => `
+              <div class="synthesis-task">
+                <span class="synthesis-task-icon">◆</span>
+                <span>${t}</span>
+              </div>
+            `).join('')}
+            
+            <h3 style="margin-top:16px;">Emergence Protocol Recommendations</h3>
+            ${result.emergenceTasks.map(t => `
+              <div class="synthesis-task">
+                <span class="synthesis-task-icon">◆</span>
+                <span>${t}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function applySynthesis() {
+      if (!synthesisResult) return;
+      
+      // Update $Kira panels with synthesis tasks
+      const updatePanel = (panelKey, tasks, railIdx) => {
+        const panel = RAILS_DATA[panelKey];
+        tasks.forEach((taskText, idx) => {
+          if (panel.rails[railIdx] && idx < 3) {
+            panel.rails[railIdx].tasks[idx] = {
+              id: `synth_${panelKey}_r${railIdx}_${idx}`,
+              text: taskText,
+              done: false
+            };
+          }
+        });
+      };
+      
+      updatePanel('panel7', synthesisResult.revenueTasks, 0);
+      updatePanel('panel8', synthesisResult.coherenceTasks, 0);
+      updatePanel('panel9', synthesisResult.emergenceTasks, 0);
+      
+      closeSynthesisModal();
+      renderPanels();
+      showToast('K.I.R.A. synthesis applied to $Kira panels');
+    }
+
+    function closeSynthesisModal() {
+      document.getElementById('synthesisOverlay').classList.remove('active');
+      synthesisResult = null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // UTILITIES
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPanels();
+      
+      // Modal close handlers
+      document.getElementById('trackingClose').addEventListener('click', closeTrackingModal);
+      document.getElementById('trackingSave').addEventListener('click', closeTrackingModal);
+      document.getElementById('trackingOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeTrackingModal();
+      });
+      
+      // Synthesis handlers
+      document.getElementById('synthesisBtn').addEventListener('click', runKiraSynthesis);
+      document.getElementById('synthesisCancel').addEventListener('click', closeSynthesisModal);
+      document.getElementById('synthesisApply').addEventListener('click', applySynthesis);
+      document.getElementById('synthesisOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeSynthesisModal();
+      });
+      
+      // Export (placeholder)
+      document.getElementById('exportBtn').addEventListener('click', () => {
+        showToast('Export functionality coming soon');
+      });
+      
+      // Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('trackingOverlay').classList.contains('active')) {
+            closeTrackingModal();
+          }
+          if (document.getElementById('synthesisOverlay').classList.contains('active')) {
+            closeSynthesisModal();
+          }
+        }
+      });
+    });
+
+    // Console signature
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  ACE'S SPACE | MASTER TRACKING SHEET                                          ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  Triadic Allocation:                                                          ║
+║    Row 1 (Red):   Ace      - Patreon, Narrative, Webstores                    ║
+║    Row 2 (Green): Justin   - SACS, Community, Pipeline                        ║
+║    Row 3 (Blue):  $Kira    - Revenue, Coherence, Emergence                    ║
+║                                                                               ║
+║  Features:                                                                    ║
+║    • Click panel to open task management modal                                ║
+║    • Add/complete/delete tasks per rail                                       ║
+║    • K.I.R.A. Synthesis button for AI-powered coordination                    ║
+║    • Progress tracking per panel                                              ║
+║                                                                               ║
+║  Δ|aces-space|master-tracking|triadic-collaboration|Ω                         ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

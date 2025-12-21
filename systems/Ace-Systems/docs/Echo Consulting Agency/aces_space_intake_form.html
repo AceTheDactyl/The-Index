@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ace's Space | Artist Intake Form</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #030508;
+      --deep: #080c12;
+      --surface: #0f1419;
+      --elevated: #161d26;
+      --border: #1e2a38;
+      --border-light: #2a3a4d;
+      
+      --text-primary: #e8eef4;
+      --text-secondary: #8899aa;
+      --text-muted: #556677;
+      
+      --echo-gold: #d4a853;
+      --echo-gold-dim: #a68532;
+      --echo-gold-glow: rgba(212, 168, 83, 0.25);
+      
+      --thread-violet: #8b5cf6;
+      --thread-emerald: #10b981;
+      --thread-cyan: #06b6d4;
+      --thread-rose: #f43f5e;
+      
+      --success: #22c55e;
+      --warning: #eab308;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at top, #0f1419, #030508 52%, #020207);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: var(--deep);
+      border: 2px solid var(--echo-gold);
+      border-radius: 12px;
+      box-shadow: 0 0 30px var(--echo-gold-glow);
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8em;
+      color: var(--echo-gold);
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px var(--echo-gold-glow);
+      letter-spacing: 0.1em;
+    }
+
+    .subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-secondary);
+      font-size: 0.95em;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 20px;
+      background: var(--surface);
+      border: 1px solid var(--thread-violet);
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8em;
+      color: var(--thread-violet);
+    }
+
+    .navigation {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-btn {
+      padding: 12px 24px;
+      background: var(--surface);
+      border: 2px solid var(--echo-gold);
+      color: var(--echo-gold);
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: var(--echo-gold);
+      color: var(--void);
+      box-shadow: 0 0 20px var(--echo-gold-glow);
+    }
+
+    .section {
+      display: none;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--echo-gold);
+      font-size: 2em;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--echo-gold);
+      padding-bottom: 10px;
+    }
+
+    h3 {
+      color: var(--thread-emerald);
+      font-size: 1.4em;
+      margin: 30px 0 15px 0;
+    }
+
+    .intro-text {
+      color: var(--text-secondary);
+      margin: 15px 0;
+      font-size: 1.05em;
+      line-height: 1.8;
+    }
+
+    .ascii-box {
+      background: #000;
+      border: 2px solid var(--echo-gold);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--echo-gold);
+      white-space: pre;
+      line-height: 1.3;
+    }
+
+    .service-box {
+      background: rgba(212, 168, 83, 0.08);
+      border-left: 4px solid var(--echo-gold);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .info-box {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 4px solid var(--thread-emerald);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .warning-box {
+      background: rgba(139, 92, 246, 0.1);
+      border-left: 4px solid var(--thread-violet);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .module-card {
+      background: rgba(212, 168, 83, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      transition: all 0.2s;
+    }
+
+    .module-card:hover {
+      border-color: var(--echo-gold-dim);
+    }
+
+    .module-title {
+      color: var(--echo-gold);
+      font-size: 1.15em;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .tier-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .tier-card.seeker { border-color: var(--text-muted); }
+    .tier-card.weaver { border-color: var(--thread-violet); }
+    .tier-card.catalyst { border-color: var(--thread-emerald); }
+    .tier-card.sovereign { border-color: var(--echo-gold); }
+
+    .tier-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4em;
+      margin-bottom: 5px;
+    }
+
+    .tier-price {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      font-size: 0.9em;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1em;
+      margin: 10px 0;
+      transition: all 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--echo-gold);
+      box-shadow: 0 0 10px var(--echo-gold-glow);
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    select option {
+      background: var(--deep);
+      color: var(--text-primary);
+    }
+
+    button {
+      padding: 12px 24px;
+      background: var(--echo-gold);
+      color: var(--void);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1em;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin: 10px 5px;
+    }
+
+    button:hover {
+      box-shadow: 0 0 20px var(--echo-gold-glow);
+      transform: translateY(-2px);
+    }
+
+    button.secondary {
+      background: var(--surface);
+      border: 2px solid var(--echo-gold);
+      color: var(--echo-gold);
+    }
+
+    label {
+      display: block;
+      color: var(--thread-emerald);
+      font-weight: 500;
+      margin-top: 20px;
+      margin-bottom: 5px;
+    }
+
+    .helper-text {
+      color: var(--text-muted);
+      font-size: 0.9em;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .signature {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      font-size: 0.8em;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .export-section {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 2px solid var(--border);
+    }
+
+    .service-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--thread-emerald);
+      color: var(--void);
+      border-radius: 4px;
+      font-size: 0.8em;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .commission-highlight {
+      background: linear-gradient(135deg, rgba(212, 168, 83, 0.1), rgba(139, 92, 246, 0.1));
+      border: 2px solid var(--echo-gold);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+    }
+
+    .commission-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5em;
+      color: var(--echo-gold);
+      margin-bottom: 15px;
+    }
+
+    .price-tag {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--echo-gold);
+      color: var(--void);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      
+      .logo {
+        font-size: 2em;
+      }
+
+      .navigation {
+        flex-direction: column;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Ace's Space</div>
+      <p class="subtitle">Artist Intake Form</p>
+      <div class="tier-badge">Patreon Member Portal</div>
+    </header>
+
+    <nav class="navigation">
+      <button class="nav-btn active" onclick="showSection('welcome')">Welcome</button>
+      <button class="nav-btn" onclick="showSection('services')">Services</button>
+      <button class="nav-btn" onclick="showSection('intake')">Build Your Profile</button>
+      <button class="nav-btn" onclick="showSection('commission')">Request Commission</button>
+    </nav>
+
+    <!-- SECTION 1: WELCOME -->
+    <section id="welcome" class="section active">
+      <h2>Welcome, Artist</h2>
+      
+      <p class="intro-text">This is your intake form for Ace's Space — a community-driven ecosystem for artists who need help with <strong>social platforming</strong>, <strong>distribution</strong>, and <strong>building their digital presence</strong>.</p>
+
+      <div class="info-box">
+        <strong>What We Offer:</strong>
+        <ul style="margin-top: 10px; padding-left: 20px; color: var(--text-secondary);">
+          <li><strong>Social Platforming Assistance</strong> — Strategy, content planning, audience building</li>
+          <li><strong>Distribution Support</strong> — Get your work on streaming platforms, storefronts</li>
+          <li><strong>Webstore Commissions</strong> — Custom Discord-integrated stores built by our team</li>
+          <li><strong>Narrative Machine Access</strong> — Submit to the K.I.R.A. processing pipeline</li>
+        </ul>
+      </div>
+
+      <h3>Patreon Tier Access</h3>
+
+      <div class="tier-grid">
+        <div class="tier-card seeker">
+          <div class="tier-name" style="color: var(--text-muted);">🌱 Seeker</div>
+          <div class="tier-price">$5/month</div>
+          <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">Observer access. Monthly digest. Discord read-only.</p>
+        </div>
+        
+        <div class="tier-card weaver">
+          <div class="tier-name" style="color: var(--thread-violet);">🔮 Weaver</div>
+          <div class="tier-price">$10/month</div>
+          <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">Submit to narrative machine. Early track access. Contributor credits.</p>
+        </div>
+        
+        <div class="tier-card catalyst">
+          <div class="tier-name" style="color: var(--thread-emerald);">⚡ Catalyst</div>
+          <div class="tier-price">$25/month</div>
+          <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">Vote on direction. Private coherence calls. Featured contributor.</p>
+        </div>
+        
+        <div class="tier-card sovereign">
+          <div class="tier-name" style="color: var(--echo-gold);">👑 Sovereign</div>
+          <div class="tier-price">$50/month</div>
+          <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">1:1 monthly session. Full architecture access. Co-create narratives.</p>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <strong>Important:</strong> Your tier determines your access level, but webstore commissions are available to <strong>anyone</strong> — Patreon membership is not required to commission a store.
+      </div>
+
+      <p class="intro-text">Use the navigation above to explore services, build your artist profile, or request a webstore commission.</p>
+    </section>
+
+    <!-- SECTION 2: SERVICES -->
+    <section id="services" class="section">
+      <h2>Services Available</h2>
+
+      <h3>🎨 Social Platforming Assistance</h3>
+      
+      <div class="module-card">
+        <div class="module-title">What We Help With</div>
+        <ul style="padding-left: 20px; color: var(--text-secondary); margin-top: 10px;">
+          <li>Content strategy development</li>
+          <li>Platform selection guidance (Discord, Twitter/X, Instagram, TikTok)</li>
+          <li>Posting schedule optimization</li>
+          <li>Audience engagement techniques</li>
+          <li>Cross-platform presence coordination</li>
+        </ul>
+        <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;"><em>Available to Weaver+ tiers through community collaboration</em></p>
+      </div>
+
+      <h3>📡 Distribution Support</h3>
+
+      <div class="module-card">
+        <div class="module-title">Get Your Work Out There</div>
+        <ul style="padding-left: 20px; color: var(--text-secondary); margin-top: 10px;">
+          <li>DistroKid setup and optimization</li>
+          <li>Streaming platform submission (Spotify, Apple Music, etc.)</li>
+          <li>Digital storefront configuration</li>
+          <li>Release strategy planning</li>
+          <li>Metadata and SEO optimization</li>
+        </ul>
+        <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;"><em>Available to all tiers — Catalyst+ gets priority support</em></p>
+      </div>
+
+      <h3>🛒 Webstore Commissions</h3>
+
+      <div class="commission-highlight">
+        <div class="commission-title">Custom Discord-Integrated Webstores</div>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">Get a professional storefront built for your community. Discord-native, community-priced, 5-7 day delivery.</p>
+        
+        <div class="grid-2">
+          <div class="module-card" style="margin: 0;">
+            <div class="module-title">⚡ Starter <span class="price-tag">$75</span></div>
+            <ul style="padding-left: 20px; color: var(--text-secondary); font-size: 0.9em; margin-top: 10px;">
+              <li>1-3 pages</li>
+              <li>Up to 10 products</li>
+              <li>Template-based design</li>
+              <li>Basic Discord webhook</li>
+              <li>7-day support</li>
+            </ul>
+          </div>
+          
+          <div class="module-card" style="margin: 0;">
+            <div class="module-title">🔮 Standard <span class="price-tag">$150</span></div>
+            <ul style="padding-left: 20px; color: var(--text-secondary); font-size: 0.9em; margin-top: 10px;">
+              <li>5-7 pages</li>
+              <li>Up to 25 products</li>
+              <li>Custom theme</li>
+              <li>Full Discord bot + role-gating</li>
+              <li>14-day support</li>
+            </ul>
+          </div>
+          
+          <div class="module-card" style="margin: 0;">
+            <div class="module-title">👑 Premium <span class="price-tag">$300</span></div>
+            <ul style="padding-left: 20px; color: var(--text-secondary); font-size: 0.9em; margin-top: 10px;">
+              <li>Unlimited pages</li>
+              <li>Unlimited products</li>
+              <li>Fully custom design</li>
+              <li>Advanced integrations</li>
+              <li>30-day support + revisions</li>
+            </ul>
+          </div>
+
+          <div class="module-card" style="margin: 0;">
+            <div class="module-title">Add-Ons</div>
+            <ul style="padding-left: 20px; color: var(--text-secondary); font-size: 0.9em; margin-top: 10px;">
+              <li>Rush delivery (3 days): +$50</li>
+              <li>Extra revision cycle: +$40</li>
+              <li>Custom bot feature: +$30/each</li>
+              <li>Monthly maintenance: +$25/mo</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3>🎵 Narrative Machine Pipeline</h3>
+
+      <div class="module-card">
+        <div class="module-title">Submit → Process → Curate → Release</div>
+        <p style="color: var(--text-secondary); margin-top: 10px;">Your concepts enter the K.I.R.A. prismatic processing pipeline. Submissions are analyzed, mapped to archetypes, and woven into collaborative releases.</p>
+        <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9em;"><em>Submission access: Weaver+ tiers</em></p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: INTAKE FORM -->
+    <section id="intake" class="section">
+      <h2>Build Your Artist Profile</h2>
+
+      <p class="intro-text">This profile helps us understand your needs, strengths, and goals. It's a living document — update it anytime.</p>
+
+      <div class="info-box">
+        <strong>Before You Begin:</strong>
+        <ul style="margin-top: 10px; padding-left: 20px; color: var(--text-secondary);">
+          <li>Be specific about what you NEED (not just want)</li>
+          <li>Include any accessibility or scheduling requirements</li>
+          <li>Your profile helps us match you with the right resources</li>
+          <li>This form saves to your browser — you can return later</li>
+        </ul>
+      </div>
+
+      <form id="intakeForm">
+        <h3>Basic Info</h3>
+        
+        <label for="artistName">Artist Name / Handle</label>
+        <p class="helper-text">How you want to be known in the community</p>
+        <input type="text" id="artistName" placeholder="e.g., Echo_Maker, Luna, The_Night_Owl">
+
+        <label for="artistRole">What Do You Create?</label>
+        <p class="helper-text">Music? Visual art? Writing? Multiple disciplines?</p>
+        <input type="text" id="artistRole" placeholder="e.g., Electronic Producer | Visual Artist | Songwriter">
+
+        <label for="patreonTier">Current Patreon Tier</label>
+        <select id="patreonTier">
+          <option value="">— Select your tier —</option>
+          <option value="none">Not a Patreon member (yet)</option>
+          <option value="seeker">🌱 Seeker ($5/mo)</option>
+          <option value="weaver">🔮 Weaver ($10/mo)</option>
+          <option value="catalyst">⚡ Catalyst ($25/mo)</option>
+          <option value="sovereign">👑 Sovereign ($50/mo)</option>
+        </select>
+
+        <h3>Your Needs 🌙</h3>
+        <p class="helper-text">What do you REQUIRE to thrive as an artist? Not preferences — necessities. Include scheduling constraints, accessibility needs, communication preferences.</p>
+
+        <label for="need1">Need #1</label>
+        <textarea id="need1" rows="3" placeholder="e.g., Feedback that's constructive, not just 'sounds great' — I need specific direction"></textarea>
+
+        <label for="need2">Need #2</label>
+        <textarea id="need2" rows="3" placeholder="e.g., Flexible deadlines — my creative process doesn't follow a schedule"></textarea>
+
+        <label for="need3">Need #3</label>
+        <textarea id="need3" rows="3" placeholder="e.g., Text-based communication preferred — phone calls are overwhelming"></textarea>
+
+        <button type="button" class="secondary" onclick="addNeedField()">+ Add Another Need</button>
+        <div id="additionalNeeds"></div>
+
+        <h3>Your Strengths ✨</h3>
+        <p class="helper-text">What do you naturally bring? Skills that flow easily, not obligations you're forcing yourself into.</p>
+
+        <label for="strength1">Strength #1</label>
+        <textarea id="strength1" rows="3" placeholder="e.g., Sound design — I can make anything sound like it belongs in a space"></textarea>
+
+        <label for="strength2">Strength #2</label>
+        <textarea id="strength2" rows="3" placeholder="e.g., Visual storytelling — I see narratives in color and shape"></textarea>
+
+        <label for="strength3">Strength #3</label>
+        <textarea id="strength3" rows="3" placeholder="e.g., Pattern recognition — I notice connections others miss"></textarea>
+
+        <button type="button" class="secondary" onclick="addStrengthField()">+ Add Another Strength</button>
+        <div id="additionalStrengths"></div>
+
+        <h3>Your Goals 🎯</h3>
+
+        <label for="goalShort">Short Term (Next 30 Days)</label>
+        <textarea id="goalShort" rows="3" placeholder="e.g., Release my first single through proper distribution channels"></textarea>
+
+        <label for="goalMid">Mid Term (Next 3-6 Months)</label>
+        <textarea id="goalMid" rows="3" placeholder="e.g., Build a Discord community of 200+ engaged listeners"></textarea>
+
+        <label for="goalLong">Long Term (Next Year)</label>
+        <textarea id="goalLong" rows="3" placeholder="e.g., Sustainable monthly income from my art ($500+)"></textarea>
+
+        <h3>What Drives You 💎</h3>
+
+        <label for="motivCore">Core Drive (Why do you create?)</label>
+        <textarea id="motivCore" rows="4" placeholder="e.g., Music saved my life during dark times — I want to create that lifeline for others"></textarea>
+
+        <label for="motivPlanted">What Started This Path?</label>
+        <textarea id="motivPlanted" rows="3" placeholder="e.g., Discovering electronic music at 15 and realizing I could make worlds with sound"></textarea>
+
+        <label for="motivSustains">What Keeps You Going?</label>
+        <textarea id="motivSustains" rows="3" placeholder="e.g., That one person who says 'this track helped me through my day'"></textarea>
+
+        <h3>Services You Need 📋</h3>
+        <p class="helper-text">What specific help do you need from Ace's Space? Check what applies and describe your situation.</p>
+
+        <div class="module-card">
+          <label style="margin-top: 0;">
+            <input type="checkbox" id="needPlatforming" style="width: auto; margin-right: 10px;">
+            <strong>Social Platforming Help</strong>
+          </label>
+          <textarea id="platformingDetails" rows="3" placeholder="Describe what you need: Which platforms? What's your current presence? What are you struggling with?"></textarea>
+        </div>
+
+        <div class="module-card">
+          <label style="margin-top: 0;">
+            <input type="checkbox" id="needDistribution" style="width: auto; margin-right: 10px;">
+            <strong>Distribution Assistance</strong>
+          </label>
+          <textarea id="distributionDetails" rows="3" placeholder="Describe what you need: What are you releasing? Where do you want it? Current blockers?"></textarea>
+        </div>
+
+        <div class="module-card">
+          <label style="margin-top: 0;">
+            <input type="checkbox" id="needWebstore" style="width: auto; margin-right: 10px;">
+            <strong>Webstore Commission</strong>
+          </label>
+          <textarea id="webstoreDetails" rows="3" placeholder="Describe what you're selling: Products, community size, budget range, timeline"></textarea>
+        </div>
+
+        <div class="module-card">
+          <label style="margin-top: 0;">
+            <input type="checkbox" id="needNarrative" style="width: auto; margin-right: 10px;">
+            <strong>Narrative Machine Submission</strong>
+          </label>
+          <textarea id="narrativeDetails" rows="3" placeholder="What concepts do you want to submit? Themes, ideas, story fragments?"></textarea>
+        </div>
+
+        <div class="module-card">
+          <label style="margin-top: 0;">
+            <input type="checkbox" id="needOther" style="width: auto; margin-right: 10px;">
+            <strong>Something Else</strong>
+          </label>
+          <textarea id="otherDetails" rows="3" placeholder="Describe what you need that isn't listed above"></textarea>
+        </div>
+
+        <div class="export-section">
+          <h3>Generate Your Profile</h3>
+          <button type="button" onclick="generateProfile()">🎨 Create ASCII Profile</button>
+          <button type="button" class="secondary" onclick="saveProfile()">💾 Save to Browser</button>
+          <button type="button" class="secondary" onclick="loadProfile()">📂 Load Saved Profile</button>
+          <button type="button" class="secondary" onclick="clearForm()">🔄 Clear Form</button>
+        </div>
+      </form>
+
+      <h3>Your Generated Profile</h3>
+      <div id="asciiPreview" class="ascii-box"><!-- Your profile will appear here after you click "Create ASCII Profile" --></div>
+
+      <div class="info-box">
+        <strong>Next Steps:</strong>
+        <ol style="margin-top: 10px; padding-left: 20px; color: var(--text-secondary);">
+          <li>Copy your ASCII profile</li>
+          <li>Share in Discord #introductions or with Ace directly</li>
+          <li>We'll review and reach out about matching services</li>
+          <li>Update your profile anytime as needs change</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SECTION 4: COMMISSION REQUEST -->
+    <section id="commission" class="section">
+      <h2>Request a Webstore Commission</h2>
+
+      <p class="intro-text">Ready to get your custom Discord-integrated webstore? Fill out this form and we'll get back to you within 48 hours.</p>
+
+      <div class="warning-box">
+        <strong>Current Capacity:</strong> 5 stores/month | <strong>Turnaround:</strong> 5-7 business days
+      </div>
+
+      <form id="commissionForm">
+        <h3>Your Information</h3>
+
+        <label for="commName">Your Name / Handle</label>
+        <input type="text" id="commName" placeholder="e.g., Luna_Creates">
+
+        <label for="commEmail">Email Address</label>
+        <input type="email" id="commEmail" placeholder="you@example.com">
+
+        <label for="commDiscord">Discord Username</label>
+        <input type="text" id="commDiscord" placeholder="e.g., luna_creates#1234">
+
+        <h3>Store Details</h3>
+
+        <label for="commTier">Which Package?</label>
+        <select id="commTier">
+          <option value="">— Select package —</option>
+          <option value="starter">⚡ Starter — $75 (1-3 pages, 10 products)</option>
+          <option value="standard">🔮 Standard — $150 (5-7 pages, 25 products)</option>
+          <option value="premium">👑 Premium — $300 (Unlimited, fully custom)</option>
+        </select>
+
+        <label for="commProducts">What Are You Selling?</label>
+        <p class="helper-text">Physical merch? Digital downloads? Services? Mix of everything?</p>
+        <textarea id="commProducts" rows="4" placeholder="e.g., Music downloads, band merch (shirts, posters), exclusive stems for producers"></textarea>
+
+        <label for="commCommunity">Tell Us About Your Community</label>
+        <p class="helper-text">Approximately how many members? How active is it? What's the vibe?</p>
+        <textarea id="commCommunity" rows="4" placeholder="e.g., ~150 Discord members, mostly musicians and music lovers, active in evenings EST, chill supportive atmosphere"></textarea>
+
+        <label for="commBranding">Branding / Design Direction</label>
+        <p class="helper-text">Colors? Aesthetic? Any existing brand assets we should match?</p>
+        <textarea id="commBranding" rows="4" placeholder="e.g., Dark theme with purple/blue accents, minimal and clean, have a logo (will share)"></textarea>
+
+        <label for="commTimeline">Timeline Needs</label>
+        <select id="commTimeline">
+          <option value="">— Select timeline —</option>
+          <option value="standard">Standard (5-7 days) — No rush</option>
+          <option value="rush">Rush (3 days) — +$50</option>
+          <option value="flexible">Flexible — Whenever you can get to it</option>
+        </select>
+
+        <h3>Add-Ons</h3>
+        <p class="helper-text">Check any additional services you need</p>
+
+        <div style="margin: 15px 0;">
+          <label style="display: inline-flex; align-items: center; margin: 10px 0;">
+            <input type="checkbox" id="addonMaintenance" style="width: auto; margin-right: 10px;">
+            Monthly Maintenance (+$25/mo)
+          </label><br>
+          <label style="display: inline-flex; align-items: center; margin: 10px 0;">
+            <input type="checkbox" id="addonMigration" style="width: auto; margin-right: 10px;">
+            Content Migration from existing store (+$50)
+          </label><br>
+          <label style="display: inline-flex; align-items: center; margin: 10px 0;">
+            <input type="checkbox" id="addonCustomBot" style="width: auto; margin-right: 10px;">
+            Custom Discord Bot Features (+$30/feature)
+          </label>
+        </div>
+
+        <label for="commNotes">Anything Else We Should Know?</label>
+        <textarea id="commNotes" rows="4" placeholder="Special requirements, questions, concerns, etc."></textarea>
+
+        <div class="export-section">
+          <button type="button" onclick="generateCommission()">📋 Generate Commission Request</button>
+          <button type="button" class="secondary" onclick="copyCommission()">📋 Copy to Clipboard</button>
+        </div>
+      </form>
+
+      <h3>Your Commission Request</h3>
+      <div id="commissionPreview" class="ascii-box"><!-- Your commission request will appear here --></div>
+
+      <div class="info-box">
+        <strong>What Happens Next:</strong>
+        <ol style="margin-top: 10px; padding-left: 20px; color: var(--text-secondary);">
+          <li>Copy the generated request</li>
+          <li>Send to Ace via Discord DM or email</li>
+          <li>We'll confirm receipt within 48 hours</li>
+          <li>Discovery call to finalize details</li>
+          <li>50% deposit to begin work</li>
+          <li>Delivery in 5-7 days (or 3 for rush)</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer>
+      <div class="signature">Δ|aces-space|artist-intake|patreon-portal|Ω</div>
+      <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.9em;">Build your presence. Find your people. Create your future.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Navigation
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(sectionId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Dynamic fields
+    let needCount = 3;
+    let strengthCount = 3;
+
+    function addNeedField() {
+      needCount++;
+      const container = document.getElementById('additionalNeeds');
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <label for="need${needCount}">Need #${needCount}</label>
+        <textarea id="need${needCount}" rows="3" placeholder="Another need..."></textarea>
+      `;
+      container.appendChild(div);
+    }
+
+    function addStrengthField() {
+      strengthCount++;
+      const container = document.getElementById('additionalStrengths');
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <label for="strength${strengthCount}">Strength #${strengthCount}</label>
+        <textarea id="strength${strengthCount}" rows="3" placeholder="Another strength..."></textarea>
+      `;
+      container.appendChild(div);
+    }
+
+    // Generate ASCII Profile
+    function generateProfile() {
+      const name = document.getElementById('artistName').value || '[Your Name]';
+      const role = document.getElementById('artistRole').value || '[Your Role]';
+      const tier = document.getElementById('patreonTier').value || 'none';
+      
+      const tierLabels = {
+        'none': 'Not Yet Subscribed',
+        'seeker': '🌱 Seeker',
+        'weaver': '🔮 Weaver',
+        'catalyst': '⚡ Catalyst',
+        'sovereign': '👑 Sovereign'
+      };
+
+      // Collect needs
+      const needs = [];
+      for (let i = 1; i <= needCount; i++) {
+        const el = document.getElementById(`need${i}`);
+        if (el && el.value.trim()) needs.push(el.value.trim());
+      }
+
+      // Collect strengths
+      const strengths = [];
+      for (let i = 1; i <= strengthCount; i++) {
+        const el = document.getElementById(`strength${i}`);
+        if (el && el.value.trim()) strengths.push(el.value.trim());
+      }
+
+      // Goals and motivations
+      const goalShort = document.getElementById('goalShort').value.trim();
+      const goalMid = document.getElementById('goalMid').value.trim();
+      const goalLong = document.getElementById('goalLong').value.trim();
+      const motivCore = document.getElementById('motivCore').value.trim();
+      const motivPlanted = document.getElementById('motivPlanted').value.trim();
+      const motivSustains = document.getElementById('motivSustains').value.trim();
+
+      // Services needed
+      const services = [];
+      if (document.getElementById('needPlatforming').checked) {
+        services.push({ name: 'Social Platforming', desc: document.getElementById('platformingDetails').value.trim() });
+      }
+      if (document.getElementById('needDistribution').checked) {
+        services.push({ name: 'Distribution', desc: document.getElementById('distributionDetails').value.trim() });
+      }
+      if (document.getElementById('needWebstore').checked) {
+        services.push({ name: 'Webstore Commission', desc: document.getElementById('webstoreDetails').value.trim() });
+      }
+      if (document.getElementById('needNarrative').checked) {
+        services.push({ name: 'Narrative Machine', desc: document.getElementById('narrativeDetails').value.trim() });
+      }
+      if (document.getElementById('needOther').checked) {
+        services.push({ name: 'Other', desc: document.getElementById('otherDetails').value.trim() });
+      }
+
+      // Build ASCII
+      let ascii = `╔══════════════════════════════════════════════════════════════════════╗
+║              ACE'S SPACE | ARTIST PROFILE                            ║
+║              ${name.padEnd(56)}║
+║              Role: ${role.padEnd(50)}║
+║              Tier: ${tierLabels[tier].padEnd(50)}║
+╚══════════════════════════════════════════════════════════════════════╝
+
+┌─ NEEDS (What I Require to Thrive) ─────────────────────────────────┐
+│                                                                       │
+`;
+
+      if (needs.length > 0) {
+        needs.forEach((need, idx) => {
+          const lines = wrapText(need, 65);
+          ascii += `│  ${(idx + 1) + '.'} ${lines[0].padEnd(65)}│\n`;
+          for (let i = 1; i < lines.length; i++) {
+            ascii += `│     ${lines[i].padEnd(65)}│\n`;
+          }
+          ascii += `│                                                                       │\n`;
+        });
+      } else {
+        ascii += `│  [No needs specified yet]                                             │\n│                                                                       │\n`;
+      }
+
+      ascii += `└───────────────────────────────────────────────────────────────────────┘
+
+┌─ STRENGTHS (What I Naturally Bring) ───────────────────────────────┐
+│                                                                       │
+`;
+
+      if (strengths.length > 0) {
+        strengths.forEach((strength, idx) => {
+          const lines = wrapText(strength, 65);
+          ascii += `│  ${(idx + 1) + '.'} ${lines[0].padEnd(65)}│\n`;
+          for (let i = 1; i < lines.length; i++) {
+            ascii += `│     ${lines[i].padEnd(65)}│\n`;
+          }
+          ascii += `│                                                                       │\n`;
+        });
+      } else {
+        ascii += `│  [No strengths specified yet]                                         │\n│                                                                       │\n`;
+      }
+
+      ascii += `└───────────────────────────────────────────────────────────────────────┘
+
+┌─ GOALS (Where I'm Headed) ─────────────────────────────────────────┐
+│                                                                       │
+│  🎯 SHORT TERM (30 Days)                                             │
+│     ${goalShort ? wrapText(goalShort, 65)[0].padEnd(65) : '[Not specified]'.padEnd(65)}│
+│                                                                       │
+│  🎯 MID TERM (3-6 Months)                                            │
+│     ${goalMid ? wrapText(goalMid, 65)[0].padEnd(65) : '[Not specified]'.padEnd(65)}│
+│                                                                       │
+│  🎯 LONG TERM (Next Year)                                            │
+│     ${goalLong ? wrapText(goalLong, 65)[0].padEnd(65) : '[Not specified]'.padEnd(65)}│
+│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ MOTIVATIONS (Why I Create) ───────────────────────────────────────┐
+│                                                                       │
+│  💎 CORE DRIVE                                                       │
+`;
+
+      if (motivCore) {
+        const lines = wrapText(motivCore, 65);
+        lines.forEach(line => {
+          ascii += `│     ${line.padEnd(65)}│\n`;
+        });
+      } else {
+        ascii += `│     [Not specified]                                                   │\n`;
+      }
+
+      ascii += `│                                                                       │
+│  🌱 WHAT STARTED THIS                                                │
+`;
+
+      if (motivPlanted) {
+        const lines = wrapText(motivPlanted, 65);
+        lines.forEach(line => {
+          ascii += `│     ${line.padEnd(65)}│\n`;
+        });
+      } else {
+        ascii += `│     [Not specified]                                                   │\n`;
+      }
+
+      ascii += `│                                                                       │
+│  ⚡ WHAT KEEPS ME GOING                                              │
+`;
+
+      if (motivSustains) {
+        const lines = wrapText(motivSustains, 65);
+        lines.forEach(line => {
+          ascii += `│     ${line.padEnd(65)}│\n`;
+        });
+      } else {
+        ascii += `│     [Not specified]                                                   │\n`;
+      }
+
+      ascii += `│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ SERVICES REQUESTED (What I Need from Ace's Space) ────────────────┐
+│                                                                       │
+`;
+
+      if (services.length > 0) {
+        services.forEach((service, idx) => {
+          ascii += `│  📋 ${service.name.toUpperCase().padEnd(64)}│\n`;
+          if (service.desc) {
+            const lines = wrapText(service.desc, 65);
+            lines.forEach(line => {
+              ascii += `│     ${line.padEnd(65)}│\n`;
+            });
+          }
+          ascii += `│                                                                       │\n`;
+        });
+      } else {
+        ascii += `│  [No services requested yet]                                          │\n│                                                                       │\n`;
+      }
+
+      ascii += `└───────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  ACE'S SPACE SEAL: Δ|artist-profile|Ω                                ║
+║  This profile is LIVING. Update it as you grow.                      ║
+║  Signed: ${name.padEnd(59)}║
+╚══════════════════════════════════════════════════════════════════════╝`;
+
+      document.getElementById('asciiPreview').textContent = ascii;
+      document.getElementById('asciiPreview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Generate Commission Request
+    function generateCommission() {
+      const name = document.getElementById('commName').value || '[Your Name]';
+      const email = document.getElementById('commEmail').value || '[Your Email]';
+      const discord = document.getElementById('commDiscord').value || '[Your Discord]';
+      const tier = document.getElementById('commTier').value || 'Not selected';
+      const products = document.getElementById('commProducts').value || '[Not specified]';
+      const community = document.getElementById('commCommunity').value || '[Not specified]';
+      const branding = document.getElementById('commBranding').value || '[Not specified]';
+      const timeline = document.getElementById('commTimeline').value || 'standard';
+      const notes = document.getElementById('commNotes').value || '';
+
+      const tierLabels = {
+        '': 'Not selected',
+        'starter': '⚡ Starter — $75',
+        'standard': '🔮 Standard — $150',
+        'premium': '👑 Premium — $300'
+      };
+
+      const timelineLabels = {
+        '': 'Not selected',
+        'standard': 'Standard (5-7 days)',
+        'rush': 'Rush (3 days) +$50',
+        'flexible': 'Flexible'
+      };
+
+      // Add-ons
+      const addons = [];
+      if (document.getElementById('addonMaintenance').checked) addons.push('Monthly Maintenance (+$25/mo)');
+      if (document.getElementById('addonMigration').checked) addons.push('Content Migration (+$50)');
+      if (document.getElementById('addonCustomBot').checked) addons.push('Custom Bot Features (+$30/each)');
+
+      let ascii = `╔══════════════════════════════════════════════════════════════════════╗
+║              ACE'S SPACE | WEBSTORE COMMISSION REQUEST               ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+┌─ CLIENT INFORMATION ───────────────────────────────────────────────┐
+│                                                                       │
+│  Name:     ${name.padEnd(58)}│
+│  Email:    ${email.padEnd(58)}│
+│  Discord:  ${discord.padEnd(58)}│
+│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ PACKAGE SELECTION ────────────────────────────────────────────────┐
+│                                                                       │
+│  Package:  ${tierLabels[tier].padEnd(58)}│
+│  Timeline: ${timelineLabels[timeline].padEnd(58)}│
+│                                                                       │
+`;
+
+      if (addons.length > 0) {
+        ascii += `│  Add-Ons:                                                             │\n`;
+        addons.forEach(addon => {
+          ascii += `│     • ${addon.padEnd(62)}│\n`;
+        });
+      }
+
+      ascii += `│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+
+┌─ STORE DETAILS ────────────────────────────────────────────────────┐
+│                                                                       │
+│  PRODUCTS/SERVICES:                                                   │
+`;
+
+      wrapText(products, 65).forEach(line => {
+        ascii += `│     ${line.padEnd(65)}│\n`;
+      });
+
+      ascii += `│                                                                       │
+│  COMMUNITY:                                                           │
+`;
+
+      wrapText(community, 65).forEach(line => {
+        ascii += `│     ${line.padEnd(65)}│\n`;
+      });
+
+      ascii += `│                                                                       │
+│  BRANDING/DESIGN:                                                     │
+`;
+
+      wrapText(branding, 65).forEach(line => {
+        ascii += `│     ${line.padEnd(65)}│\n`;
+      });
+
+      if (notes) {
+        ascii += `│                                                                       │
+│  ADDITIONAL NOTES:                                                    │
+`;
+        wrapText(notes, 65).forEach(line => {
+          ascii += `│     ${line.padEnd(65)}│\n`;
+        });
+      }
+
+      ascii += `│                                                                       │
+└───────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  Submitted: ${new Date().toLocaleDateString().padEnd(57)}║
+║  Δ|webstore-commission|request|Ω                                     ║
+╚══════════════════════════════════════════════════════════════════════╝`;
+
+      document.getElementById('commissionPreview').textContent = ascii;
+      document.getElementById('commissionPreview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function copyCommission() {
+      const text = document.getElementById('commissionPreview').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Commission request copied to clipboard!');
+      });
+    }
+
+    // Helper function to wrap text
+    function wrapText(text, maxWidth) {
+      if (!text) return [''];
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
+      
+      words.forEach(word => {
+        if ((currentLine + word).length <= maxWidth) {
+          currentLine += (currentLine ? ' ' : '') + word;
+        } else {
+          if (currentLine) lines.push(currentLine);
+          currentLine = word;
+        }
+      });
+      
+      if (currentLine) lines.push(currentLine);
+      return lines.length > 0 ? lines : [''];
+    }
+
+    // Save/Load functionality
+    function saveProfile() {
+      const data = {
+        artistName: document.getElementById('artistName').value,
+        artistRole: document.getElementById('artistRole').value,
+        patreonTier: document.getElementById('patreonTier').value,
+        needs: [],
+        strengths: [],
+        goalShort: document.getElementById('goalShort').value,
+        goalMid: document.getElementById('goalMid').value,
+        goalLong: document.getElementById('goalLong').value,
+        motivCore: document.getElementById('motivCore').value,
+        motivPlanted: document.getElementById('motivPlanted').value,
+        motivSustains: document.getElementById('motivSustains').value,
+        services: {
+          platforming: { checked: document.getElementById('needPlatforming').checked, details: document.getElementById('platformingDetails').value },
+          distribution: { checked: document.getElementById('needDistribution').checked, details: document.getElementById('distributionDetails').value },
+          webstore: { checked: document.getElementById('needWebstore').checked, details: document.getElementById('webstoreDetails').value },
+          narrative: { checked: document.getElementById('needNarrative').checked, details: document.getElementById('narrativeDetails').value },
+          other: { checked: document.getElementById('needOther').checked, details: document.getElementById('otherDetails').value }
+        }
+      };
+      
+      for (let i = 1; i <= needCount; i++) {
+        const el = document.getElementById(`need${i}`);
+        if (el) data.needs.push(el.value);
+      }
+      
+      for (let i = 1; i <= strengthCount; i++) {
+        const el = document.getElementById(`strength${i}`);
+        if (el) data.strengths.push(el.value);
+      }
+      
+      localStorage.setItem('acesSpaceProfile', JSON.stringify(data));
+      alert('✅ Profile saved to browser! You can close this page and come back later.');
+    }
+
+    function loadProfile() {
+      const saved = localStorage.getItem('acesSpaceProfile');
+      if (!saved) {
+        alert('❌ No saved profile found.');
+        return;
+      }
+      
+      const data = JSON.parse(saved);
+      
+      document.getElementById('artistName').value = data.artistName || '';
+      document.getElementById('artistRole').value = data.artistRole || '';
+      document.getElementById('patreonTier').value = data.patreonTier || '';
+      
+      data.needs.forEach((need, idx) => {
+        const i = idx + 1;
+        let el = document.getElementById(`need${i}`);
+        if (!el && i > 3) {
+          addNeedField();
+          el = document.getElementById(`need${needCount}`);
+        }
+        if (el) el.value = need;
+      });
+      
+      data.strengths.forEach((strength, idx) => {
+        const i = idx + 1;
+        let el = document.getElementById(`strength${i}`);
+        if (!el && i > 3) {
+          addStrengthField();
+          el = document.getElementById(`strength${strengthCount}`);
+        }
+        if (el) el.value = strength;
+      });
+      
+      document.getElementById('goalShort').value = data.goalShort || '';
+      document.getElementById('goalMid').value = data.goalMid || '';
+      document.getElementById('goalLong').value = data.goalLong || '';
+      document.getElementById('motivCore').value = data.motivCore || '';
+      document.getElementById('motivPlanted').value = data.motivPlanted || '';
+      document.getElementById('motivSustains').value = data.motivSustains || '';
+      
+      if (data.services) {
+        document.getElementById('needPlatforming').checked = data.services.platforming?.checked || false;
+        document.getElementById('platformingDetails').value = data.services.platforming?.details || '';
+        document.getElementById('needDistribution').checked = data.services.distribution?.checked || false;
+        document.getElementById('distributionDetails').value = data.services.distribution?.details || '';
+        document.getElementById('needWebstore').checked = data.services.webstore?.checked || false;
+        document.getElementById('webstoreDetails').value = data.services.webstore?.details || '';
+        document.getElementById('needNarrative').checked = data.services.narrative?.checked || false;
+        document.getElementById('narrativeDetails').value = data.services.narrative?.details || '';
+        document.getElementById('needOther').checked = data.services.other?.checked || false;
+        document.getElementById('otherDetails').value = data.services.other?.details || '';
+      }
+      
+      alert('✅ Profile loaded!');
+    }
+
+    function clearForm() {
+      if (confirm('⚠️ Are you sure? This will clear all form data (but not your saved profile).')) {
+        document.getElementById('intakeForm').reset();
+        document.getElementById('additionalNeeds').innerHTML = '';
+        document.getElementById('additionalStrengths').innerHTML = '';
+        document.getElementById('asciiPreview').textContent = '<!-- Your profile will appear here after you click "Create ASCII Profile" -->';
+        needCount = 3;
+        strengthCount = 3;
+      }
+    }
+
+    // Console signature
+    console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║  ACE'S SPACE | ARTIST INTAKE FORM                             ║
+╠═══════════════════════════════════════════════════════════════╣
+║  Services: Social Platforming | Distribution | Webstores      ║
+║  Tiers: Seeker | Weaver | Catalyst | Sovereign                ║
+║  Webstore Capacity: 5/month                                   ║
+║                                                               ║
+║  Δ|aces-space|artist-intake|patreon-portal|Ω                  ║
+╚═══════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ace's Space | 60-Day Roadmap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #030508;
+      --deep: #080c12;
+      --surface: #0f1419;
+      --elevated: #161d26;
+      --border: #1e2a38;
+      --border-light: #2a3a4d;
+      
+      --text-primary: #e8eef4;
+      --text-secondary: #8899aa;
+      --text-muted: #556677;
+      
+      --echo-gold: #d4a853;
+      --echo-gold-dim: #a68532;
+      --thread-blue: #3b82f6;
+      --thread-violet: #8b5cf6;
+      --thread-emerald: #10b981;
+      --thread-rose: #f43f5e;
+      --thread-amber: #f59e0b;
+      --thread-cyan: #06b6d4;
+      
+      --success: #22c55e;
+      --warning: #eab308;
+      --danger: #ef4444;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--void);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Background grid */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 500;
+      color: var(--echo-gold);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    
+    .deadline-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      padding: 1rem 2rem;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .deadline-item {
+      text-align: center;
+    }
+    
+    .deadline-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--echo-gold);
+    }
+    
+    .deadline-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .view-btn {
+      padding: 0.5rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+    
+    .view-btn:hover {
+      border-color: var(--border-light);
+      color: var(--text-primary);
+    }
+    
+    .view-btn.active {
+      background: var(--echo-gold-dim);
+      border-color: var(--echo-gold);
+      color: var(--void);
+    }
+    
+    .privacy-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+    
+    .toggle-switch.active {
+      background: var(--thread-violet);
+      border-color: var(--thread-violet);
+    }
+    
+    .toggle-switch.active::after {
+      left: 26px;
+      background: white;
+    }
+    
+    .toggle-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Revenue Target */
+    .revenue-tracker {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .revenue-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+    }
+    
+    .revenue-title {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .revenue-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem;
+    }
+    
+    .revenue-current {
+      color: var(--echo-gold);
+    }
+    
+    .revenue-target {
+      color: var(--text-muted);
+    }
+    
+    .revenue-bar {
+      height: 8px;
+      background: var(--surface);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    
+    .revenue-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--echo-gold-dim), var(--echo-gold));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+    
+    .revenue-streams {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    
+    .stream-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    
+    .stream-name {
+      color: var(--text-secondary);
+    }
+    
+    .stream-value {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+    
+    /* Timeline */
+    .timeline-section {
+      margin-bottom: 3rem;
+    }
+    
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .week-column {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      min-height: 200px;
+      transition: all 0.2s;
+    }
+    
+    .week-column:hover {
+      border-color: var(--border-light);
+    }
+    
+    .week-column.current {
+      border-color: var(--echo-gold);
+      box-shadow: 0 0 20px rgba(212, 168, 83, 0.1);
+    }
+    
+    .week-header {
+      text-align: center;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+    
+    .week-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .week-dates {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+    
+    .week-tasks {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    
+    .task-chip {
+      font-size: 0.65rem;
+      padding: 0.3rem 0.5rem;
+      border-radius: 3px;
+      background: var(--surface);
+      border-left: 2px solid var(--thread-blue);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .task-chip:hover {
+      background: var(--elevated);
+      color: var(--text-primary);
+    }
+    
+    .task-chip.private {
+      opacity: 0.5;
+      border-style: dashed;
+    }
+    
+    .task-chip.private.hidden {
+      display: none;
+    }
+    
+    .task-chip[data-thread="echo"] { border-color: var(--echo-gold); }
+    .task-chip[data-thread="patreon"] { border-color: var(--thread-violet); }
+    .task-chip[data-thread="webstore"] { border-color: var(--thread-emerald); }
+    .task-chip[data-thread="justin"] { border-color: var(--thread-cyan); }
+    .task-chip[data-thread="commune"] { border-color: var(--thread-rose); }
+    .task-chip[data-thread="podcast"] { border-color: var(--thread-amber); }
+    .task-chip[data-thread="community"] { border-color: var(--thread-blue); }
+    
+    .task-chip.milestone {
+      background: var(--elevated);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    /* Thread Legend */
+    .thread-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 2rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .legend-item:hover {
+      background: var(--surface);
+    }
+    
+    .legend-item.inactive {
+      opacity: 0.4;
+    }
+    
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+    
+    .legend-dot.echo { background: var(--echo-gold); }
+    .legend-dot.patreon { background: var(--thread-violet); }
+    .legend-dot.webstore { background: var(--thread-emerald); }
+    .legend-dot.justin { background: var(--thread-cyan); }
+    .legend-dot.commune { background: var(--thread-rose); }
+    .legend-dot.podcast { background: var(--thread-amber); }
+    .legend-dot.community { background: var(--thread-blue); }
+    
+    /* Thread Details Panel */
+    .threads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .thread-card {
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    
+    .thread-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+    
+    .thread-card.private {
+      border-style: dashed;
+    }
+    
+    .thread-card.private.hidden {
+      display: none;
+    }
+    
+    .thread-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .thread-title {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .thread-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+    
+    .thread-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    
+    .thread-status.active {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--success);
+    }
+    
+    .thread-status.pending {
+      background: rgba(234, 179, 8, 0.2);
+      color: var(--warning);
+    }
+    
+    .thread-status.blocked {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+    }
+    
+    .thread-status.hidden-tag {
+      background: rgba(139, 92, 246, 0.2);
+      color: var(--thread-violet);
+    }
+    
+    .thread-body {
+      padding: 1rem;
+    }
+    
+    .thread-description {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    
+    .thread-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.75rem;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+    }
+    
+    .meta-value {
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .thread-milestones {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .milestone-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      padding: 0.3rem 0;
+    }
+    
+    .milestone-check {
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .milestone-check.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+    
+    .milestone-text {
+      color: var(--text-secondary);
+    }
+    
+    .milestone-text.done {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    
+    /* Critical Path */
+    .critical-path {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(212, 168, 83, 0.1));
+      border: 1px solid var(--thread-rose);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .critical-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--thread-rose);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
+    
+    .critical-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .critical-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--surface);
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    
+    .critical-week {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    
+    .signature {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .timeline {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .timeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .deadline-bar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  
+  <div class="container">
+    <header>
+      <div class="logo">Ace's Space</div>
+      <div class="subtitle">60-Day Survival Roadmap</div>
+      
+      <div class="deadline-bar">
+        <div class="deadline-item">
+          <div class="deadline-value" id="daysRemaining">60</div>
+          <div class="deadline-label">Days Left</div>
+        </div>
+        <div class="deadline-item">
+          <div class="deadline-value">$200</div>
+          <div class="deadline-label">Monthly Target</div>
+        </div>
+        <div class="deadline-item">
+          <div class="deadline-value">70</div>
+          <div class="deadline-label">Relationships</div>
+        </div>
+        <div class="deadline-item">
+          <div class="deadline-value">100</div>
+          <div class="deadline-label">Capacity Goal</div>
+        </div>
+      </div>
+    </header>
+    
+    <div class="controls">
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="timeline">Timeline</button>
+        <button class="view-btn" data-view="threads">Threads</button>
+      </div>
+      
+      <div class="privacy-toggle">
+        <span class="toggle-label">Show Hidden Threads</span>
+        <div class="toggle-switch" id="privacyToggle"></div>
+      </div>
+    </div>
+    
+    <!-- Revenue Tracker -->
+    <div class="revenue-tracker">
+      <div class="revenue-header">
+        <span class="revenue-title">Revenue Progress</span>
+        <span class="revenue-amount">
+          <span class="revenue-current">$0</span>
+          <span class="revenue-target"> / $200</span>
+        </span>
+      </div>
+      <div class="revenue-bar">
+        <div class="revenue-fill" style="width: 0%"></div>
+      </div>
+      <div class="revenue-streams">
+        <div class="stream-item">
+          <span class="stream-name">Streaming</span>
+          <span class="stream-value">$0</span>
+        </div>
+        <div class="stream-item">
+          <span class="stream-name">Patreon (0/10)</span>
+          <span class="stream-value">$0</span>
+        </div>
+        <div class="stream-item">
+          <span class="stream-name">Webstores (0/5)</span>
+          <span class="stream-value">$0</span>
+        </div>
+        <div class="stream-item">
+          <span class="stream-name">Discord Stores</span>
+          <span class="stream-value">$0</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Critical Path -->
+    <div class="critical-path">
+      <div class="critical-title">⚠ Critical Path — If These Slip, Everything Slips</div>
+      <div class="critical-items">
+        <div class="critical-item">
+          <span class="critical-week">W1-2</span>
+          <span>Patreon Launch + Tier Structure</span>
+        </div>
+        <div class="critical-item">
+          <span class="critical-week">W2-3</span>
+          <span>First Webstore Commission</span>
+        </div>
+        <div class="critical-item">
+          <span class="critical-week">W4</span>
+          <span>Justin/SACS Tools Handoff</span>
+        </div>
+        <div class="critical-item">
+          <span class="critical-week">W6</span>
+          <span>10 Patreon Subs</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Thread Legend -->
+    <div class="thread-legend">
+      <div class="legend-item" data-filter="echo">
+        <div class="legend-dot echo"></div>
+        <span>Echo Studios</span>
+      </div>
+      <div class="legend-item" data-filter="patreon">
+        <div class="legend-dot patreon"></div>
+        <span>Patreon</span>
+      </div>
+      <div class="legend-item" data-filter="webstore">
+        <div class="legend-dot webstore"></div>
+        <span>Webstores</span>
+      </div>
+      <div class="legend-item" data-filter="justin">
+        <div class="legend-dot justin"></div>
+        <span>Justin/SACS</span>
+      </div>
+      <div class="legend-item" data-filter="commune">
+        <div class="legend-dot commune"></div>
+        <span>Commune</span>
+      </div>
+      <div class="legend-item" data-filter="podcast">
+        <div class="legend-dot podcast"></div>
+        <span>Podcast</span>
+      </div>
+      <div class="legend-item" data-filter="community">
+        <div class="legend-dot community"></div>
+        <span>Community</span>
+      </div>
+    </div>
+    
+    <!-- Timeline View -->
+    <div class="timeline-section" id="timelineView">
+      <div class="section-title">8-Week Timeline</div>
+      
+      <div class="timeline">
+        <!-- Week 1 -->
+        <div class="week-column current">
+          <div class="week-header">
+            <div class="week-number">Week 1</div>
+            <div class="week-dates">Dec 5-11</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip milestone" data-thread="patreon">Define Patreon tiers</div>
+            <div class="task-chip" data-thread="echo">Narrative machine workflow doc</div>
+            <div class="task-chip" data-thread="webstore">Package webstore offer</div>
+            <div class="task-chip" data-thread="community">Review 5 coherence logs</div>
+            <div class="task-chip private" data-thread="podcast">Podcast concept outline</div>
+          </div>
+        </div>
+        
+        <!-- Week 2 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 2</div>
+            <div class="week-dates">Dec 12-18</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip milestone" data-thread="patreon">Launch Patreon</div>
+            <div class="task-chip" data-thread="webstore">First webstore prospect</div>
+            <div class="task-chip" data-thread="justin">Tools inventory for Justin</div>
+            <div class="task-chip" data-thread="echo">Second track release</div>
+            <div class="task-chip" data-thread="community">Dormant Discord outreach</div>
+          </div>
+        </div>
+        
+        <!-- Week 3 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 3</div>
+            <div class="week-dates">Dec 19-25</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip milestone" data-thread="webstore">Webstore #1 delivered</div>
+            <div class="task-chip" data-thread="patreon">First 3 Patreon subs</div>
+            <div class="task-chip" data-thread="justin">SACS integration call</div>
+            <div class="task-chip private" data-thread="commune">Commune status check</div>
+          </div>
+        </div>
+        
+        <!-- Week 4 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 4</div>
+            <div class="week-dates">Dec 26 - Jan 1</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip milestone" data-thread="justin">Justin tools handoff</div>
+            <div class="task-chip" data-thread="webstore">Webstores #2-3 in progress</div>
+            <div class="task-chip" data-thread="echo">Discord storefront beta</div>
+            <div class="task-chip" data-thread="community">K.I.R.A. intro doc (public)</div>
+          </div>
+        </div>
+        
+        <!-- Week 5 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 5</div>
+            <div class="week-dates">Jan 2-8</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip" data-thread="webstore">Webstores #2-3 delivered</div>
+            <div class="task-chip" data-thread="patreon">5 Patreon subs</div>
+            <div class="task-chip" data-thread="echo">Third track + narrative</div>
+            <div class="task-chip private" data-thread="podcast">Record pilot episode</div>
+          </div>
+        </div>
+        
+        <!-- Week 6 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 6</div>
+            <div class="week-dates">Jan 9-15</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip milestone" data-thread="patreon">10 Patreon subs ✓</div>
+            <div class="task-chip" data-thread="webstore">Webstores #4-5 in progress</div>
+            <div class="task-chip" data-thread="justin">SACS cross-platform test</div>
+            <div class="task-chip" data-thread="community">Researcher → Coder pipeline active</div>
+          </div>
+        </div>
+        
+        <!-- Week 7 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 7</div>
+            <div class="week-dates">Jan 16-22</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip" data-thread="webstore">5 webstores complete</div>
+            <div class="task-chip" data-thread="echo">Discord storefront public</div>
+            <div class="task-chip private" data-thread="commune">Nonprofit partnership draft</div>
+            <div class="task-chip" data-thread="community">Community narrative sprint</div>
+          </div>
+        </div>
+        
+        <!-- Week 8 -->
+        <div class="week-column">
+          <div class="week-header">
+            <div class="week-number">Week 8</div>
+            <div class="week-dates">Jan 23-31</div>
+          </div>
+          <div class="week-tasks">
+            <div class="task-chip milestone" data-thread="echo">$200/mo revenue ✓</div>
+            <div class="task-chip" data-thread="patreon">Patreon sustainable</div>
+            <div class="task-chip" data-thread="justin">Justin/SACS integrated</div>
+            <div class="task-chip" data-thread="community">Phase 2 planning</div>
+            <div class="task-chip private" data-thread="podcast">Podcast announce?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Threads View -->
+    <div class="timeline-section" id="threadsView" style="display: none;">
+      <div class="section-title">Active Threads</div>
+      
+      <div class="threads-grid">
+        <!-- Echo Studios -->
+        <div class="thread-card" data-thread="echo">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--echo-gold)"></div>
+              Echo Studios
+            </div>
+            <span class="thread-status active">Active</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              Community-driven AI narrative machine. Music production via submit → process → curate → release pipeline. For-profit entity with nonprofit partnerships.
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Revenue:</span>
+                <span class="meta-value">$0 → $200</span>
+              </div>
+              <div class="meta-item">
+                <span>Tracks:</span>
+                <span class="meta-value">1 live</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check done">✓</div>
+                <span class="milestone-text done">DistroKid setup</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check done">✓</div>
+                <span class="milestone-text done">First release (Crystalline Echo)</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Workflow documentation</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Discord storefront live</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Patreon -->
+        <div class="thread-card" data-thread="patreon">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--thread-violet)"></div>
+              Patreon
+            </div>
+            <span class="thread-status pending">Pending</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              Tiered participation in narrative development. Members choose involvement level. Recurring revenue stream.
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Target:</span>
+                <span class="meta-value">10 subs</span>
+              </div>
+              <div class="meta-item">
+                <span>Blocker:</span>
+                <span class="meta-value">Tier structure</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Define tier structure</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Create Patreon page</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Launch announcement</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">10 subscribers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Webstores -->
+        <div class="thread-card" data-thread="webstore">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--thread-emerald)"></div>
+              Webstore Commissions
+            </div>
+            <span class="thread-status pending">Pending</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              Custom webstore design for clients. 3-coder team capacity: ~5/month. Service revenue stream.
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Capacity:</span>
+                <span class="meta-value">5/month</span>
+              </div>
+              <div class="meta-item">
+                <span>Delivered:</span>
+                <span class="meta-value">0/5</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Package offer + pricing</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">First client acquired</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">First delivery</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">5 webstores delivered</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Justin/SACS -->
+        <div class="thread-card" data-thread="justin">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--thread-cyan)"></div>
+              Justin / SACS
+            </div>
+            <span class="thread-status active">Active</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              Off-platform coordination. Justin cohereing with Discord community via SACS. Needs tools understanding. Triadic anchor: @@Justin.Ace.$Kira
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Priority:</span>
+                <span class="meta-value">High</span>
+              </div>
+              <div class="meta-item">
+                <span>Deadline:</span>
+                <span class="meta-value">W4</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Tools inventory doc</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">SACS integration call</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Tools handoff complete</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Cross-platform active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Commune (Private) -->
+        <div class="thread-card private" data-thread="commune">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--thread-rose)"></div>
+              California Commune
+            </div>
+            <span class="thread-status hidden-tag">Hidden</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              Community partnership for living space purchase. Parallel survival path. Status uncertain.
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Visibility:</span>
+                <span class="meta-value">Private</span>
+              </div>
+              <div class="meta-item">
+                <span>Dependency:</span>
+                <span class="meta-value">External</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Status check (W3)</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Nonprofit partnership draft</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Podcast (Private) -->
+        <div class="thread-card private" data-thread="podcast">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--thread-amber)"></div>
+              Podcast
+            </div>
+            <span class="thread-status hidden-tag">Hidden</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              Unrevealed to community. Content/narrative extension. Lower priority than revenue threads.
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Visibility:</span>
+                <span class="meta-value">Private</span>
+              </div>
+              <div class="meta-item">
+                <span>Priority:</span>
+                <span class="meta-value">Low</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Concept outline (W1)</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Pilot episode (W5)</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Announce decision (W8)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Community -->
+        <div class="thread-card" data-thread="community">
+          <div class="thread-header">
+            <div class="thread-title">
+              <div class="thread-indicator" style="background: var(--thread-blue)"></div>
+              Community Coherence
+            </div>
+            <span class="thread-status active">Active</span>
+          </div>
+          <div class="thread-body">
+            <div class="thread-description">
+              70 relationships. 3 researchers → 3 coders pipeline. 5 coherence logs on file. Dormant Discord communities to activate.
+            </div>
+            <div class="thread-meta">
+              <div class="meta-item">
+                <span>Members:</span>
+                <span class="meta-value">70</span>
+              </div>
+              <div class="meta-item">
+                <span>Coherence logs:</span>
+                <span class="meta-value">5</span>
+              </div>
+            </div>
+            <div class="thread-milestones">
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Review coherence logs</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Dormant Discord outreach</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">K.I.R.A. intro (public)</span>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-check"></div>
+                <span class="milestone-text">Research→Code pipeline active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <div class="signature">Δ|aces-space-roadmap|60-day|survival|Ω</div>
+    </footer>
+  </div>
+  
+  <script>
+    // View toggle
+    const viewBtns = document.querySelectorAll('.view-btn');
+    const timelineView = document.getElementById('timelineView');
+    const threadsView = document.getElementById('threadsView');
+    
+    viewBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        if (btn.dataset.view === 'timeline') {
+          timelineView.style.display = 'block';
+          threadsView.style.display = 'none';
+        } else {
+          timelineView.style.display = 'none';
+          threadsView.style.display = 'block';
+        }
+      });
+    });
+    
+    // Privacy toggle
+    const privacyToggle = document.getElementById('privacyToggle');
+    const privateElements = document.querySelectorAll('.private');
+    
+    privacyToggle.addEventListener('click', () => {
+      privacyToggle.classList.toggle('active');
+      privateElements.forEach(el => {
+        el.classList.toggle('hidden', !privacyToggle.classList.contains('active'));
+      });
+    });
+    
+    // Initialize hidden
+    privateElements.forEach(el => el.classList.add('hidden'));
+    
+    // Legend filtering
+    const legendItems = document.querySelectorAll('.legend-item');
+    const activeFilters = new Set();
+    
+    legendItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const filter = item.dataset.filter;
+        
+        if (activeFilters.has(filter)) {
+          activeFilters.delete(filter);
+          item.classList.remove('inactive');
+        } else {
+          if (activeFilters.size === 0) {
+            // First filter - mark all others as inactive
+            legendItems.forEach(li => {
+              if (li.dataset.filter !== filter) {
+                li.classList.add('inactive');
+              }
+            });
+          }
+          activeFilters.add(filter);
+          item.classList.remove('inactive');
+        }
+        
+        // If all filters cleared, show all
+        if (activeFilters.size === 0) {
+          legendItems.forEach(li => li.classList.remove('inactive'));
+        }
+        
+        updateVisibility();
+      });
+    });
+    
+    function updateVisibility() {
+      const allTasks = document.querySelectorAll('.task-chip, .thread-card');
+      
+      allTasks.forEach(task => {
+        if (activeFilters.size === 0) {
+          // Show all (respect privacy toggle)
+          if (task.classList.contains('private')) {
+            task.classList.toggle('hidden', !privacyToggle.classList.contains('active'));
+          } else {
+            task.classList.remove('hidden');
+          }
+        } else {
+          // Show only filtered
+          const thread = task.dataset.thread;
+          if (activeFilters.has(thread)) {
+            if (task.classList.contains('private')) {
+              task.classList.toggle('hidden', !privacyToggle.classList.contains('active'));
+            } else {
+              task.classList.remove('hidden');
+            }
+          } else {
+            task.classList.add('hidden');
+          }
+        }
+      });
+    }
+    
+    // Milestone checkboxes
+    const milestoneChecks = document.querySelectorAll('.milestone-check:not(.done)');
+    milestoneChecks.forEach(check => {
+      check.addEventListener('click', () => {
+        check.classList.toggle('done');
+        check.textContent = check.classList.contains('done') ? '✓' : '';
+        check.nextElementSibling.classList.toggle('done');
+      });
+    });
+    
+    // Days remaining calculator
+    function updateDaysRemaining() {
+      const deadline = new Date('2025-02-03'); // 60 days from Dec 5
+      const today = new Date();
+      const diff = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+      document.getElementById('daysRemaining').textContent = Math.max(0, diff);
+    }
+    updateDaysRemaining();
+    
+    // Console signature
+    console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║  ACE'S SPACE | 60-DAY SURVIVAL ROADMAP                        ║
+╠═══════════════════════════════════════════════════════════════╣
+║  Target: $200/month                                           ║
+║  Deadline: 60 days                                            ║
+║  Threads: 7 active                                            ║
+║  Relationships: 70                                            ║
+║  Capacity Goal: 100                                           ║
+║                                                               ║
+║  Critical Path:                                               ║
+║    W1-2: Patreon Launch                                       ║
+║    W2-3: First Webstore                                       ║
+║    W4: Justin Tools Handoff                                   ║
+║    W6: 10 Patreon Subs                                        ║
+║                                                               ║
+║  Δ|aces-space-roadmap|60-day|survival|Ω                       ║
+╚═══════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

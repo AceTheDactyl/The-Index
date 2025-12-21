@@ -1,0 +1,3454 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>R.A.I.L.S. — Recording · All · Introspective · Language · Sequences</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <style>
+    :root{
+      /* Blueprint Silver-Blue-Grey Theme */
+      --bg:#0a1628;
+      --bg-alt:#0f1e36;
+      --card:#162a4a;
+      --card-alt:#1a3356;
+      --border:#2e4a6e;
+      --text:#c5d3e8;
+      --muted:#7a92b0;
+      --accent:#ffd43b;
+      --accent-soft:#ffe8a3;
+
+      /* RGB Row Colors */
+      --row-red:#e63946;
+      --row-green:#2a9d8f;
+      --row-blue:#4895ef;
+
+      /* CYM Rail Colors */
+      --rail-cyan:#00d4ff;
+      --rail-yellow:#ffeb3b;
+      --rail-magenta:#ff00ff;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at top, #1a3050 0%, #0a1628 52%, #050d18 100%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .frame{
+      max-width:1200px;
+      margin:0 auto;
+      padding:28px 16px 40px;
+    }
+    header{
+      margin-bottom:20px;
+      border-bottom:1px solid rgba(122,146,176,0.2);
+      padding-bottom:14px;
+    }
+    .header-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+    }
+    .header-title{
+      flex:1;
+    }
+    header h1{
+      margin:0;
+      font-size:1.8rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent-soft);
+    }
+    header h1 span{
+      color:var(--accent);
+    }
+    header p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .export-btn{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 16px;
+      background:linear-gradient(135deg, rgba(0,212,255,0.15), rgba(255,0,255,0.15));
+      border:1px solid rgba(0,212,255,0.4);
+      border-radius:8px;
+      color:var(--text);
+      font-size:.8rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      flex-shrink:0;
+    }
+    .export-btn:hover{
+      background:linear-gradient(135deg, rgba(0,212,255,0.25), rgba(255,0,255,0.25));
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 20px rgba(0,212,255,0.3);
+      transform:translateY(-1px);
+    }
+    .export-btn svg{
+      flex-shrink:0;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-top:20px;
+    }
+
+    .rails-panel{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border-radius:14px;
+      border:1px solid rgba(122,146,176,0.25);
+      box-shadow:0 12px 28px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      min-height:260px;
+      max-height:420px;
+      overflow:hidden;
+    }
+
+    .rails-header{
+      padding:10px 12px 8px;
+      border-bottom:1px solid rgba(122,146,176,0.15);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      flex-shrink:0;
+    }
+    .rails-title-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+      min-width:0;
+    }
+    .rails-name{
+      font-size:.75rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-weight:600;
+      color:var(--text);
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      line-height:1.3;
+      flex:1;
+      min-width:0;
+    }
+
+    .rails-ui{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:4px;
+      flex-shrink:0;
+      max-width:50%;
+    }
+    .rails-active-title{
+      font-size:.65rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      text-align:right;
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      line-height:1.3;
+    }
+    .rails-diamonds{
+      display:flex;
+      gap:6px;
+      justify-content:flex-end;
+      flex-shrink:0;
+    }
+    .rails-diamond{
+      width:12px;
+      height:12px;
+      background:transparent;
+      border:1px solid rgba(122,146,176,0.5);
+      transform:rotate(45deg);
+      padding:0;
+      outline:none;
+      cursor:pointer;
+      position:relative;
+      transition:background .25s ease,border-color .25s ease,box-shadow .25s ease,transform .15s ease;
+    }
+    .rails-diamond::after{
+      content:"";
+      position:absolute;
+      inset:1px;
+      background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.3),transparent 60%);
+      opacity:0;
+      transition:opacity .25s ease;
+    }
+
+    /* CYM Diamond Colors */
+    .rails-diamond[data-rails-target="1"]:hover{
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 8px var(--rail-cyan), 0 0 16px rgba(0,212,255,0.4);
+      transform:rotate(45deg) scale(1.1);
+    }
+    .rails-diamond[data-rails-target="1"].active{
+      background:var(--rail-cyan);
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 12px var(--rail-cyan), 0 0 24px rgba(0,212,255,0.6);
+    }
+
+    .rails-diamond[data-rails-target="2"]:hover{
+      border-color:var(--rail-yellow);
+      box-shadow:0 0 8px var(--rail-yellow), 0 0 16px rgba(255,235,59,0.4);
+      transform:rotate(45deg) scale(1.1);
+    }
+    .rails-diamond[data-rails-target="2"].active{
+      background:var(--rail-yellow);
+      border-color:var(--rail-yellow);
+      box-shadow:0 0 12px var(--rail-yellow), 0 0 24px rgba(255,235,59,0.6);
+    }
+
+    .rails-diamond[data-rails-target="3"]:hover{
+      border-color:var(--rail-magenta);
+      box-shadow:0 0 8px var(--rail-magenta), 0 0 16px rgba(255,0,255,0.4);
+      transform:rotate(45deg) scale(1.1);
+    }
+    .rails-diamond[data-rails-target="3"].active{
+      background:var(--rail-magenta);
+      border-color:var(--rail-magenta);
+      box-shadow:0 0 12px var(--rail-magenta), 0 0 24px rgba(255,0,255,0.6);
+    }
+
+    .rails-diamond.active::after{
+      opacity:0.4;
+    }
+
+    /* Row 1 (Panels 1-3): Red */
+    .rails-panel.panel-1,
+    .rails-panel.panel-2,
+    .rails-panel.panel-3 {
+      border-top:3px solid var(--row-red);
+    }
+
+    /* Row 2 (Panels 4-6): Green */
+    .rails-panel.panel-4,
+    .rails-panel.panel-5,
+    .rails-panel.panel-6 {
+      border-top:3px solid var(--row-green);
+    }
+
+    /* Row 3 (Panels 7-9): Blue */
+    .rails-panel.panel-7,
+    .rails-panel.panel-8,
+    .rails-panel.panel-9 {
+      border-top:3px solid var(--row-blue);
+    }
+
+    .rails-viewport{
+      flex:1 1 auto;
+      overflow:hidden;
+      padding:10px 12px 12px;
+      scroll-behavior:smooth;
+      user-select:none;
+      touch-action:pan-y pinch-zoom;
+      position:relative;
+    }
+
+    .rails-section{
+      margin:0;
+      padding:10px 10px 9px;
+      border-radius:10px;
+      background:rgba(10,22,40,0.9);
+      border:1px solid rgba(122,146,176,0.2);
+      display:none;
+      transform:translateX(0);
+      opacity:1;
+      transition:transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), 
+                 opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change:transform, opacity;
+    }
+    .rails-section.active{
+      display:block;
+    }
+    .rails-section.swiping{
+      transition:none;
+    }
+    .rails-section.transitioning-out{
+      position:absolute;
+      top:10px;
+      left:12px;
+      right:12px;
+    }
+    .rails-section.slide-out-left{
+      transform:translateX(-100%);
+      opacity:0;
+    }
+    .rails-section.slide-out-right{
+      transform:translateX(100%);
+      opacity:0;
+    }
+    .rails-section.slide-in-left{
+      transform:translateX(30%);
+      opacity:0;
+    }
+    .rails-section.slide-in-right{
+      transform:translateX(-30%);
+      opacity:0;
+    }
+    .rails-label{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-bottom:4px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .rails-section h3{
+      margin:0 0 4px;
+      font-size:.9rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--accent-soft);
+    }
+    .rails-body{
+      font-size:.88rem;
+      color:var(--text);
+    }
+    .rails-body p{
+      margin:4px 0;
+    }
+    .rails-body ul{
+      margin:4px 0 4px 18px;
+      padding:0;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,0.85);
+      backdrop-filter:blur(8px);
+      z-index:1000;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.active{
+      opacity:1;
+      visibility:visible;
+    }
+
+    /* Modal Container */
+    .modal-container{
+      position:fixed;
+      z-index:1001;
+      transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events:none;
+      opacity:0;
+    }
+    .modal-container.active{
+      pointer-events:auto;
+      opacity:1;
+    }
+    .modal-container.animating{
+      pointer-events:none;
+    }
+
+    /* Modal Panel (cloned) */
+    .modal-container .rails-panel{
+      max-height:80vh;
+      min-height:400px;
+      width:100%;
+      height:100%;
+      cursor:default;
+    }
+    .modal-container .rails-viewport{
+      max-height:calc(80vh - 60px);
+      overflow-y:auto;
+      overflow-x:hidden;
+    }
+
+    /* Close Button */
+    .modal-close{
+      position:absolute;
+      top:-12px;
+      right:-12px;
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--card);
+      border:1px solid rgba(122,146,176,0.4);
+      color:var(--text);
+      font-size:1.2rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:all 0.2s ease;
+      z-index:1002;
+    }
+    .modal-close:hover{
+      background:var(--row-red);
+      border-color:var(--row-red);
+      transform:scale(1.1);
+    }
+
+    /* Clickable panel indicator */
+    .rails-panel{
+      cursor:pointer;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .rails-panel:hover{
+      transform:translateY(-2px);
+      box-shadow:0 16px 36px rgba(0,0,0,0.55);
+    }
+    .rails-panel.modal-source{
+      opacity:0.3;
+      pointer-events:none;
+    }
+
+    @media (max-width:1024px){
+      .grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+    @media (max-width:720px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      .rails-panel{
+        max-height:none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       SETUP WIZARD STYLES
+       ═══════════════════════════════════════════════════════════════════════════ */
+    
+    .wizard-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,0.95);
+      backdrop-filter:blur(12px);
+      z-index:2000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:1;
+      transition:opacity 0.4s ease;
+    }
+    .wizard-overlay.hidden{
+      opacity:0;
+      pointer-events:none;
+    }
+    
+    .wizard-container{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border:1px solid rgba(122,146,176,0.3);
+      border-radius:16px;
+      box-shadow:0 24px 64px rgba(0,0,0,0.6);
+      width:90%;
+      max-width:700px;
+      max-height:90vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    
+    .wizard-header{
+      padding:24px 28px 16px;
+      border-bottom:1px solid rgba(122,146,176,0.2);
+      flex-shrink:0;
+    }
+    .wizard-header h2{
+      margin:0;
+      font-size:1.4rem;
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+    .wizard-subtitle{
+      margin:6px 0 16px;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .wizard-progress{
+      height:6px;
+      background:rgba(122,146,176,0.2);
+      border-radius:3px;
+      overflow:hidden;
+    }
+    .wizard-progress-bar{
+      height:100%;
+      background:linear-gradient(90deg, var(--rail-cyan), var(--rail-magenta));
+      border-radius:3px;
+      width:11.11%;
+      transition:width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .wizard-step-indicator{
+      margin-top:10px;
+      font-size:.8rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    
+    .wizard-body{
+      flex:1;
+      overflow-y:auto;
+      padding:20px 28px;
+    }
+    
+    .wizard-panel{
+      display:none;
+    }
+    .wizard-panel.active{
+      display:block;
+    }
+    
+    .wizard-field{
+      margin-bottom:16px;
+    }
+    .wizard-field label{
+      display:block;
+      font-size:.75rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      margin-bottom:6px;
+    }
+    .wizard-field input,
+    .wizard-field textarea{
+      width:100%;
+      padding:10px 12px;
+      background:rgba(10,22,40,0.8);
+      border:1px solid rgba(122,146,176,0.3);
+      border-radius:8px;
+      color:var(--text);
+      font-family:inherit;
+      font-size:.9rem;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .wizard-field input:focus,
+    .wizard-field textarea:focus{
+      outline:none;
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 0 3px rgba(0,212,255,0.15);
+    }
+    .wizard-field input::placeholder,
+    .wizard-field textarea::placeholder{
+      color:rgba(122,146,176,0.5);
+    }
+    .wizard-field textarea{
+      resize:vertical;
+      min-height:60px;
+    }
+    
+    .wizard-rail-section{
+      background:rgba(10,22,40,0.5);
+      border:1px solid rgba(122,146,176,0.15);
+      border-radius:10px;
+      padding:14px 16px;
+      margin-bottom:14px;
+    }
+    .wizard-rail-header{
+      font-size:.8rem;
+      color:var(--accent-soft);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      margin-bottom:12px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(122,146,176,0.15);
+    }
+    .wizard-rail-header.rail-1{ color:var(--rail-cyan); }
+    .wizard-rail-header.rail-2{ color:var(--rail-yellow); }
+    .wizard-rail-header.rail-3{ color:var(--rail-magenta); }
+    
+    .wizard-list-items{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .wizard-list-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .wizard-list-item span{
+      color:var(--muted);
+      font-size:.8rem;
+    }
+    .wizard-list-item input{
+      flex:1;
+    }
+    
+    .wizard-footer{
+      padding:16px 28px 20px;
+      border-top:1px solid rgba(122,146,176,0.2);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-shrink:0;
+    }
+    .wizard-nav{
+      display:flex;
+      gap:10px;
+    }
+    .wizard-btn{
+      padding:10px 20px;
+      border-radius:8px;
+      font-size:.85rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      border:1px solid transparent;
+    }
+    .wizard-btn-skip{
+      background:transparent;
+      border-color:rgba(122,146,176,0.4);
+      color:var(--muted);
+    }
+    .wizard-btn-skip:hover{
+      border-color:var(--row-red);
+      color:var(--row-red);
+    }
+    .wizard-btn-prev,
+    .wizard-btn-next{
+      background:rgba(122,146,176,0.15);
+      color:var(--text);
+    }
+    .wizard-btn-prev:hover,
+    .wizard-btn-next:hover{
+      background:rgba(122,146,176,0.25);
+    }
+    .wizard-btn-prev:disabled{
+      opacity:0.4;
+      cursor:not-allowed;
+    }
+    .wizard-btn-next.finish{
+      background:linear-gradient(135deg, var(--rail-cyan), var(--rail-magenta));
+      color:#fff;
+    }
+    .wizard-btn-next.finish:hover{
+      box-shadow:0 0 20px rgba(0,212,255,0.4);
+    }
+    
+    .wizard-panel-indicator{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:4px;
+      font-size:.7rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      margin-bottom:12px;
+    }
+    .wizard-panel-indicator.row-1{ background:rgba(230,57,70,0.2); color:var(--row-red); }
+    .wizard-panel-indicator.row-2{ background:rgba(42,157,143,0.2); color:var(--row-green); }
+    .wizard-panel-indicator.row-3{ background:rgba(72,149,239,0.2); color:var(--row-blue); }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       EXPORT MODAL STYLES
+       ═══════════════════════════════════════════════════════════════════════════ */
+    
+    .export-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,13,24,0.92);
+      backdrop-filter:blur(10px);
+      z-index:2000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .export-overlay.active{
+      opacity:1;
+      visibility:visible;
+    }
+    
+    .export-modal{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border:1px solid rgba(122,146,176,0.3);
+      border-radius:16px;
+      box-shadow:0 24px 64px rgba(0,0,0,0.6);
+      width:90%;
+      max-width:800px;
+      max-height:90vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      transform:scale(0.95);
+      transition:transform 0.3s ease;
+    }
+    .export-overlay.active .export-modal{
+      transform:scale(1);
+    }
+    
+    .export-header{
+      padding:20px 24px 16px;
+      border-bottom:1px solid rgba(122,146,176,0.2);
+    }
+    .export-header h2{
+      margin:0;
+      font-size:1.3rem;
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+    .export-header p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:.85rem;
+    }
+    
+    .export-body{
+      flex:1;
+      overflow-y:auto;
+      padding:20px 24px;
+    }
+    
+    .export-field{
+      margin-bottom:16px;
+    }
+    .export-field label{
+      display:block;
+      font-size:.75rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      margin-bottom:6px;
+    }
+    .export-field input{
+      width:100%;
+      padding:12px 14px;
+      background:rgba(10,22,40,0.8);
+      border:1px solid rgba(122,146,176,0.3);
+      border-radius:8px;
+      color:var(--text);
+      font-family:inherit;
+      font-size:.95rem;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .export-field input:focus{
+      outline:none;
+      border-color:var(--rail-cyan);
+      box-shadow:0 0 0 3px rgba(0,212,255,0.15);
+    }
+    .export-field input::placeholder{
+      color:rgba(122,146,176,0.5);
+    }
+    
+    .export-preview{
+      margin-top:20px;
+      background:rgba(10,22,40,0.9);
+      border:1px solid rgba(122,146,176,0.2);
+      border-radius:10px;
+      overflow:hidden;
+    }
+    .export-preview-label{
+      padding:10px 14px;
+      background:rgba(122,146,176,0.1);
+      border-bottom:1px solid rgba(122,146,176,0.15);
+      font-size:.7rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .export-preview-content{
+      margin:0;
+      padding:14px;
+      font-family:'Courier New', Courier, monospace;
+      font-size:.65rem;
+      line-height:1.4;
+      color:var(--rail-cyan);
+      white-space:pre;
+      overflow-x:auto;
+      max-height:300px;
+      overflow-y:auto;
+    }
+    
+    .export-footer{
+      padding:16px 24px;
+      border-top:1px solid rgba(122,146,176,0.2);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .export-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    
+    .export-modal-btn{
+      padding:12px 20px;
+      border-radius:8px;
+      font-size:.8rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      cursor:pointer;
+      transition:all 0.2s ease;
+      border:1px solid transparent;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .export-cancel{
+      background:transparent;
+      border-color:rgba(122,146,176,0.4);
+      color:var(--muted);
+    }
+    .export-cancel:hover{
+      border-color:var(--row-red);
+      color:var(--row-red);
+    }
+    .export-copy{
+      background:rgba(0,212,255,0.15);
+      border-color:rgba(0,212,255,0.4);
+      color:var(--rail-cyan);
+    }
+    .export-copy:hover{
+      background:rgba(0,212,255,0.25);
+      box-shadow:0 0 16px rgba(0,212,255,0.3);
+    }
+    .export-copy.copied{
+      background:rgba(42,157,143,0.3);
+      border-color:var(--row-green);
+      color:var(--row-green);
+    }
+    .export-txt{
+      background:rgba(255,235,59,0.15);
+      border-color:rgba(255,235,59,0.4);
+      color:var(--rail-yellow);
+    }
+    .export-txt:hover{
+      background:rgba(255,235,59,0.25);
+      box-shadow:0 0 16px rgba(255,235,59,0.3);
+    }
+    .export-tex{
+      background:rgba(255,0,255,0.12);
+      border-color:rgba(255,0,255,0.35);
+      color:var(--rail-magenta);
+    }
+    .export-tex:hover{
+      background:rgba(255,0,255,0.22);
+      box-shadow:0 0 16px rgba(255,0,255,0.3);
+    }
+    .export-zip{
+      background:rgba(42,157,143,0.15);
+      border-color:rgba(42,157,143,0.4);
+      color:var(--row-green);
+    }
+    .export-zip:hover{
+      background:rgba(42,157,143,0.25);
+      box-shadow:0 0 16px rgba(42,157,143,0.3);
+    }
+    .export-confirm{
+      background:linear-gradient(135deg, var(--rail-cyan), var(--rail-magenta));
+      color:#fff;
+    }
+    .export-confirm:hover{
+      box-shadow:0 0 24px rgba(0,212,255,0.5);
+      transform:translateY(-1px);
+    }
+
+    /* Toast notification */
+    .export-toast{
+      position:fixed;
+      bottom:24px;
+      left:50%;
+      transform:translateX(-50%) translateY(100px);
+      background:var(--card);
+      border:1px solid rgba(42,157,143,0.5);
+      border-radius:10px;
+      padding:12px 24px;
+      color:var(--row-green);
+      font-size:.85rem;
+      font-weight:600;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+      z-index:3000;
+      opacity:0;
+      transition:transform 0.3s ease, opacity 0.3s ease;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .export-toast.show{
+      transform:translateX(-50%) translateY(0);
+      opacity:1;
+    }
+    .export-toast svg{
+      color:var(--row-green);
+    }
+
+    @media (max-width:600px){
+      .header-row{
+        flex-direction:column;
+        gap:12px;
+      }
+      .export-btn{
+        align-self:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <div class="header-row">
+        <div class="header-title">
+          <h1><span>R</span>ecording · <span>A</span>ll · <span>I</span>ntrospective · <span>L</span>anguage · <span>S</span>equences</h1>
+          <p>Each panel represents a unique perspective. Each rail builds upon that perspective sequentially without referencing other panels. This template holds 3 rails per panel by default—ask your AI to generate more as needed.</p>
+        </div>
+        <button class="export-btn" id="exportBtn" title="Export Options">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export Options
+        </button>
+      </div>
+    </header>
+
+    <div class="grid" id="railsGrid">
+      <!-- Panels are generated dynamically from RAILS_DATA below -->
+    </div>
+  </div>
+
+  <!-- Modal Structure -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal-container" id="modalContainer">
+    <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+
+  <!-- Setup Wizard -->
+  <div class="wizard-overlay" id="wizardOverlay">
+    <div class="wizard-container" id="wizardContainer">
+      <div class="wizard-header">
+        <h2>R.A.I.L.S. Setup Wizard</h2>
+        <p class="wizard-subtitle">Fill in your content panel by panel, or skip to use placeholders</p>
+        <div class="wizard-progress">
+          <div class="wizard-progress-bar" id="wizardProgressBar"></div>
+        </div>
+        <div class="wizard-step-indicator" id="wizardStepIndicator">Panel 1 of 9</div>
+      </div>
+      
+      <div class="wizard-body" id="wizardBody">
+        <!-- Wizard content generated dynamically -->
+      </div>
+      
+      <div class="wizard-footer">
+        <button class="wizard-btn wizard-btn-skip" id="wizardSkip">Skip Setup</button>
+        <div class="wizard-nav">
+          <button class="wizard-btn wizard-btn-prev" id="wizardPrev" disabled>← Previous</button>
+          <button class="wizard-btn wizard-btn-next" id="wizardNext">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Modal -->
+  <div class="export-overlay" id="exportOverlay">
+    <div class="export-modal">
+      <div class="export-header">
+        <h2>Export Options</h2>
+        <p>Export your R.A.I.L.S. content in multiple formats</p>
+      </div>
+      <div class="export-body">
+        <div class="export-field">
+          <label for="exportTitle">Document Title</label>
+          <input type="text" id="exportTitle" placeholder="Enter a title for your ASCII export...">
+        </div>
+        <div class="export-field">
+          <label for="exportSubtitle">Subtitle (optional)</label>
+          <input type="text" id="exportSubtitle" placeholder="Enter a subtitle or description...">
+        </div>
+        <div class="export-preview">
+          <div class="export-preview-label">Preview</div>
+          <pre class="export-preview-content" id="exportPreview">Loading preview...</pre>
+        </div>
+      </div>
+      <div class="export-footer">
+        <button class="export-modal-btn export-cancel" id="exportCancel">Cancel</button>
+        <div class="export-actions">
+          <button class="export-modal-btn export-copy" id="exportCopy" title="Copy ASCII to clipboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            Copy
+          </button>
+          <button class="export-modal-btn export-txt" id="exportTxt" title="Download as TXT file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+            TXT
+          </button>
+          <button class="export-modal-btn export-tex" id="exportTex" title="Download as LaTeX file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <text x="7" y="18" font-size="7" fill="currentColor" stroke="none">TeX</text>
+            </svg>
+            TEX
+          </button>
+          <button class="export-modal-btn export-zip" id="exportZip" title="Download as ZIP with individual rail files">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              <line x1="12" y1="11" x2="12" y2="17"/>
+              <polyline points="9 14 12 11 15 14"/>
+            </svg>
+            ZIP
+          </button>
+          <button class="export-modal-btn export-confirm" id="exportConfirm" title="Download as PDF file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M9 15v2h6v-2"/>
+              <path d="M12 12v5"/>
+            </svg>
+            PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="export-toast" id="exportToast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="toastMessage">Copied to clipboard!</span>
+  </div>
+
+  <script>
+    /*
+     * ═══════════════════════════════════════════════════════════════════════════
+     * R.A.I.L.S. — Recording · All · Introspective · Language · Sequences
+     * ═══════════════════════════════════════════════════════════════════════════
+     * 
+     * LLM INSTRUCTIONS: Fill in the RAILS_DATA object below to populate the template.
+     * The HTML will be automatically generated from this data structure.
+     * 
+     * ┌─────────────────────────────────────────────────────────────────────────┐
+     * │  STRUCTURE OVERVIEW                                                     │
+     * ├─────────────────────────────────────────────────────────────────────────┤
+     * │  • 9 panels — each represents a UNIQUE PERSPECTIVE on the topic        │
+     * │  • Each panel contains 3+ rails (add more rail objects as needed)      │
+     * │  • Rails build SEQUENTIALLY within their panel                         │
+     * │  • Rails do NOT cross-reference other panels unless instructed         │
+     * └─────────────────────────────────────────────────────────────────────────┘
+     * 
+     * ┌─────────────────────────────────────────────────────────────────────────┐
+     * │  FIELD DEFINITIONS                                                      │
+     * ├─────────────────────────────────────────────────────────────────────────┤
+     * │                                                                         │
+     * │  name: (string) The panel's perspective/theme name                      │
+     * │        └─ Example: "Historical Context", "Technical Implementation"     │
+     * │        └─ Keep concise: 2-5 words ideal                                 │
+     * │                                                                         │
+     * │  rails: (array) Sequential content blocks within the panel              │
+     * │    │                                                                    │
+     * │    └─ title: (string) The rail's heading                                │
+     * │       │      └─ Example: "Origins", "Core Mechanics", "Future Vision"   │
+     * │       │      └─ Keep concise: 2-4 words ideal                           │
+     * │       │                                                                 │
+     * │    └─ content: (string) The rail's main explanatory paragraph           │
+     * │       │        └─ 1-3 sentences that introduce or expand the concept    │
+     * │       │        └─ Should flow naturally from previous rail              │
+     * │       │                                                                 │
+     * │    └─ listItems: (array of strings) Supporting points or examples       │
+     * │                  └─ 3 items recommended (can be more or fewer)          │
+     * │                  └─ Brief phrases or single sentences                   │
+     * │                                                                         │
+     * └─────────────────────────────────────────────────────────────────────────┘
+     * 
+     * ┌─────────────────────────────────────────────────────────────────────────┐
+     * │  RAIL PROGRESSION PATTERN                                               │
+     * ├─────────────────────────────────────────────────────────────────────────┤
+     * │                                                                         │
+     * │  Rail 1: FOUNDATION                                                     │
+     * │          └─ Introduce the perspective's core concept                    │
+     * │          └─ Set the groundwork for what follows                         │
+     * │          └─ Answer: "What is this about?"                               │
+     * │                                                                         │
+     * │  Rail 2: DEVELOPMENT                                                    │
+     * │          └─ Build upon Rail 1's foundation                              │
+     * │          └─ Add depth, nuance, or complexity                            │
+     * │          └─ Answer: "How does this work/apply?"                         │
+     * │                                                                         │
+     * │  Rail 3: EXPANSION                                                      │
+     * │          └─ Build upon Rail 2's development                             │
+     * │          └─ Extend, conclude, or project forward                        │
+     * │          └─ Answer: "What are the implications/future?"                 │
+     * │                                                                         │
+     * │  Rail 4+: Continue the progression as needed...                         │
+     * │                                                                         │
+     * └─────────────────────────────────────────────────────────────────────────┘
+     * 
+     * ┌─────────────────────────────────────────────────────────────────────────┐
+     * │  COLOR SCHEME                                                           │
+     * ├─────────────────────────────────────────────────────────────────────────┤
+     * │  ⚠️  BEFORE FILLING, ASK: "Custom color scheme or keep default?"        │
+     * │                                                                         │
+     * │  To customize: Edit :root CSS variables in the <style> block above      │
+     * │  Current theme: Blueprint Silver-Blue-Grey + RGB Rows + CYM Diamonds    │
+     * └─────────────────────────────────────────────────────────────────────────┘
+     * 
+     * ═══════════════════════════════════════════════════════════════════════════
+     */
+
+    const RAILS_DATA = {
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 1                                                              ║
+      // ║  Row: 1 (Red accent)                                                  ║
+      // ║  Position: Top-left                                                   ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel1: {
+        // Panel name: The overarching perspective/theme (2-5 words)
+        name: "[Insert Panel Name: 1]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          // Introduce this perspective's core concept
+          {
+            title: "[Insert Rails Title]",      // Rail heading (2-4 words)
+            content: "[Insert Rails Content]",  // Main paragraph (1-3 sentences)
+            listItems: [                        // Supporting points (3 recommended)
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          // Build upon Rail 1, add depth
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          // Extend or conclude the sequence
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+          // ── Add more rails here if needed ───────────────────────────────────
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 2                                                              ║
+      // ║  Row: 1 (Red accent)                                                  ║
+      // ║  Position: Top-center                                                 ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel2: {
+        name: "[Insert Panel Name: 2]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 3                                                              ║
+      // ║  Row: 1 (Red accent)                                                  ║
+      // ║  Position: Top-right                                                  ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel3: {
+        name: "[Insert Panel Name: 3]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 4                                                              ║
+      // ║  Row: 2 (Green accent)                                                ║
+      // ║  Position: Middle-left                                                ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel4: {
+        name: "[Insert Panel Name: 4]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 5                                                              ║
+      // ║  Row: 2 (Green accent)                                                ║
+      // ║  Position: Middle-center                                              ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel5: {
+        name: "[Insert Panel Name: 5]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 6                                                              ║
+      // ║  Row: 2 (Green accent)                                                ║
+      // ║  Position: Middle-right                                               ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel6: {
+        name: "[Insert Panel Name: 6]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 7                                                              ║
+      // ║  Row: 3 (Blue accent)                                                 ║
+      // ║  Position: Bottom-left                                                ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel7: {
+        name: "[Insert Panel Name: 7]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 8                                                              ║
+      // ║  Row: 3 (Blue accent)                                                 ║
+      // ║  Position: Bottom-center                                              ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel8: {
+        name: "[Insert Panel Name: 8]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      },
+
+      // ╔═══════════════════════════════════════════════════════════════════════╗
+      // ║  PANEL 9                                                              ║
+      // ║  Row: 3 (Blue accent)                                                 ║
+      // ║  Position: Bottom-right                                               ║
+      // ╚═══════════════════════════════════════════════════════════════════════╝
+      panel9: {
+        name: "[Insert Panel Name: 9]",
+        
+        rails: [
+          // ── Rail 1: Foundation ──────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 2: Development ─────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          },
+          // ── Rail 3: Expansion ───────────────────────────────────────────────
+          {
+            title: "[Insert Rails Title]",
+            content: "[Insert Rails Content]",
+            listItems: [
+              "[Insert List Item]",
+              "[Insert List Item]",
+              "[Insert List Item]"
+            ]
+          }
+        ]
+      }
+
+      // ═══════════════════════════════════════════════════════════════════════
+      // END OF RAILS_DATA — Do not modify below this line
+      // ═══════════════════════════════════════════════════════════════════════
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // TEMPLATE GENERATOR - Do not modify below unless customizing functionality
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function generatePanelHTML(panelData, panelIndex) {
+      const railsHTML = panelData.rails.map((rail, railIndex) => {
+        const listItemsHTML = rail.listItems.map(item => `<li>${item}</li>`).join('\n                ');
+        return `
+          <article class="rails-section${railIndex === 0 ? ' active' : ''}" data-rails-index="${railIndex + 1}">
+            <div class="rails-label">Rail ${railIndex + 1}</div>
+            <h3>${rail.title}</h3>
+            <div class="rails-body">
+              <p>${rail.content}</p>
+              <ul>
+                ${listItemsHTML}
+              </ul>
+            </div>
+          </article>`;
+      }).join('');
+
+      const diamondsHTML = panelData.rails.map((_, railIndex) => 
+        `<button class="rails-diamond${railIndex === 0 ? ' active' : ''}" data-rails-target="${railIndex + 1}" aria-label="Rail ${railIndex + 1}"></button>`
+      ).join('\n                ');
+
+      return `
+      <section class="rails-panel panel-${panelIndex}" data-rails-panel="${panelIndex}">
+        <div class="rails-header">
+          <div class="rails-title-row">
+            <span class="rails-name">${panelData.name}</span>
+            <div class="rails-ui">
+              <span class="rails-active-title">${panelData.rails[0].title}</span>
+              <div class="rails-diamonds">
+                ${diamondsHTML}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rails-viewport">${railsHTML}
+        </div>
+      </section>`;
+    }
+
+    function renderRAILS() {
+      const grid = document.getElementById('railsGrid');
+      let html = '';
+      
+      for (let i = 1; i <= 9; i++) {
+        const panelData = RAILS_DATA[`panel${i}`];
+        if (panelData) {
+          html += generatePanelHTML(panelData, i);
+        }
+      }
+      
+      grid.innerHTML = html;
+      initializeInteractions();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INTERACTION HANDLERS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function syncActiveRailTitle(panel) {
+      const activeSection = panel.querySelector('.rails-section.active');
+      const titleDisplay = panel.querySelector('.rails-active-title');
+      if (activeSection && titleDisplay) {
+        const railTitle = activeSection.querySelector('h3');
+        if (railTitle) {
+          titleDisplay.textContent = railTitle.textContent;
+        }
+      }
+    }
+
+    function initializeInteractions() {
+      document.querySelectorAll('.rails-panel').forEach(panel => {
+        syncActiveRailTitle(panel);
+      });
+
+      document.querySelectorAll('.rails-panel').forEach(panel => {
+        const diamonds = panel.querySelectorAll('.rails-diamond');
+
+        diamonds.forEach(diamond => {
+          diamond.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const target = parseInt(diamond.getAttribute('data-rails-target'));
+            const currentDiamond = panel.querySelector('.rails-diamond.active');
+            const currentIndex = currentDiamond ? parseInt(currentDiamond.getAttribute('data-rails-target')) : 1;
+            
+            if (target === currentIndex) return;
+            
+            const direction = target > currentIndex ? 'left' : 'right';
+            const currentSection = panel.querySelector('.rails-section.active');
+            const newSection = panel.querySelector(`.rails-section[data-rails-index="${target}"]`);
+            
+            diamonds.forEach(d => d.classList.toggle('active', d === diamond));
+            
+            if (currentSection && newSection) {
+              currentSection.classList.add('transitioning-out');
+              currentSection.classList.add(direction === 'left' ? 'slide-out-left' : 'slide-out-right');
+              
+              setTimeout(() => {
+                currentSection.classList.remove('active', 'slide-out-left', 'slide-out-right', 'transitioning-out');
+                currentSection.style.transform = '';
+                currentSection.style.opacity = '';
+              }, 350);
+              
+              newSection.classList.add('active');
+              newSection.classList.add(direction === 'left' ? 'slide-in-left' : 'slide-in-right');
+              
+              newSection.offsetHeight;
+              
+              requestAnimationFrame(() => {
+                newSection.classList.remove('slide-in-left', 'slide-in-right');
+              });
+              
+              setTimeout(() => syncActiveRailTitle(panel), 50);
+            }
+          });
+        });
+      });
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalContainer = document.getElementById('modalContainer');
+      const modalContent = document.getElementById('modalContent');
+      const modalClose = document.getElementById('modalClose');
+      let activeSourcePanel = null;
+      let isAnimating = false;
+      let recentSwipe = false;
+
+      document.querySelectorAll('.rails-panel').forEach(panel => {
+        panel.addEventListener('click', (e) => {
+          if (e.target.closest('.rails-diamond') || 
+              e.target.closest('.rails-viewport') || 
+              isAnimating || 
+              recentSwipe) {
+            return;
+          }
+          openModal(panel);
+        });
+      });
+
+      function openModal(sourcePanel) {
+        isAnimating = true;
+        activeSourcePanel = sourcePanel;
+        
+        const rect = sourcePanel.getBoundingClientRect();
+        const clonedPanel = sourcePanel.cloneNode(true);
+        clonedPanel.classList.remove('modal-source');
+        modalContent.innerHTML = '';
+        modalContent.appendChild(clonedPanel);
+        
+        modalContainer.style.top = rect.top + 'px';
+        modalContainer.style.left = rect.left + 'px';
+        modalContainer.style.width = rect.width + 'px';
+        modalContainer.style.height = rect.height + 'px';
+        
+        modalOverlay.classList.add('active');
+        modalContainer.classList.add('active', 'animating');
+        sourcePanel.classList.add('modal-source');
+        
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const modalWidth = Math.min(600, viewportWidth - 48);
+            const modalHeight = Math.min(viewportHeight * 0.8, 600);
+            
+            modalContainer.style.top = (viewportHeight - modalHeight) / 2 + 'px';
+            modalContainer.style.left = (viewportWidth - modalWidth) / 2 + 'px';
+            modalContainer.style.width = modalWidth + 'px';
+            modalContainer.style.height = modalHeight + 'px';
+            
+            setTimeout(() => {
+              modalContainer.classList.remove('animating');
+              isAnimating = false;
+              attachDiamondListeners(clonedPanel);
+              initSwipeForPanel(clonedPanel);
+            }, 400);
+          });
+        });
+      }
+
+      function closeModal() {
+        if (isAnimating || !activeSourcePanel) return;
+        
+        isAnimating = true;
+        modalContainer.classList.add('animating');
+        
+        const rect = activeSourcePanel.getBoundingClientRect();
+        
+        modalContainer.style.top = rect.top + 'px';
+        modalContainer.style.left = rect.left + 'px';
+        modalContainer.style.width = rect.width + 'px';
+        modalContainer.style.height = rect.height + 'px';
+        
+        syncRailState();
+        
+        setTimeout(() => {
+          modalOverlay.classList.remove('active');
+          modalContainer.classList.remove('active', 'animating');
+          activeSourcePanel.classList.remove('modal-source');
+          modalContent.innerHTML = '';
+          activeSourcePanel = null;
+          isAnimating = false;
+        }, 400);
+      }
+
+      function syncRailState() {
+        if (!activeSourcePanel) return;
+        
+        const modalDiamonds = modalContent.querySelectorAll('.rails-diamond');
+        const sourceDiamonds = activeSourcePanel.querySelectorAll('.rails-diamond');
+        const sourceSections = activeSourcePanel.querySelectorAll('.rails-section');
+        
+        modalDiamonds.forEach((diamond, index) => {
+          if (diamond.classList.contains('active')) {
+            const target = diamond.getAttribute('data-rails-target');
+            
+            sourceDiamonds.forEach(d => d.classList.toggle('active', d === sourceDiamonds[index]));
+            sourceSections.forEach(section => {
+              const idx = section.getAttribute('data-rails-index');
+              section.classList.toggle('active', idx === target);
+            });
+            syncActiveRailTitle(activeSourcePanel);
+          }
+        });
+      }
+
+      function attachDiamondListeners(panel) {
+        const diamonds = panel.querySelectorAll('.rails-diamond');
+        
+        syncActiveRailTitle(panel);
+
+        diamonds.forEach(diamond => {
+          diamond.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const target = parseInt(diamond.getAttribute('data-rails-target'));
+            const currentDiamond = panel.querySelector('.rails-diamond.active');
+            const currentIndex = currentDiamond ? parseInt(currentDiamond.getAttribute('data-rails-target')) : 1;
+            
+            if (target === currentIndex) return;
+            
+            const direction = target > currentIndex ? 'left' : 'right';
+            const currentSection = panel.querySelector('.rails-section.active');
+            const newSection = panel.querySelector(`.rails-section[data-rails-index="${target}"]`);
+            
+            diamonds.forEach(d => d.classList.toggle('active', d === diamond));
+            
+            if (currentSection && newSection) {
+              currentSection.classList.add('transitioning-out');
+              currentSection.classList.add(direction === 'left' ? 'slide-out-left' : 'slide-out-right');
+              
+              setTimeout(() => {
+                currentSection.classList.remove('active', 'slide-out-left', 'slide-out-right', 'transitioning-out');
+                currentSection.style.transform = '';
+                currentSection.style.opacity = '';
+              }, 350);
+              
+              newSection.classList.add('active');
+              newSection.classList.add(direction === 'left' ? 'slide-in-left' : 'slide-in-right');
+              
+              newSection.offsetHeight;
+              
+              requestAnimationFrame(() => {
+                newSection.classList.remove('slide-in-left', 'slide-in-right');
+              });
+              
+              setTimeout(() => syncActiveRailTitle(panel), 50);
+            }
+          });
+        });
+      }
+
+      modalOverlay.addEventListener('click', closeModal);
+      modalClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalContainer.classList.contains('active')) {
+          closeModal();
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (modalContainer.classList.contains('active') && !isAnimating) {
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const modalWidth = Math.min(600, viewportWidth - 48);
+          const modalHeight = Math.min(viewportHeight * 0.8, 600);
+          
+          modalContainer.style.top = (viewportHeight - modalHeight) / 2 + 'px';
+          modalContainer.style.left = (viewportWidth - modalWidth) / 2 + 'px';
+          modalContainer.style.width = modalWidth + 'px';
+          modalContainer.style.height = modalHeight + 'px';
+        }
+      });
+
+      const SWIPE_THRESHOLD = 50;
+      const SWIPE_VELOCITY_THRESHOLD = 0.3;
+
+      function initSwipeForPanel(panel) {
+        const viewport = panel.querySelector('.rails-viewport');
+        if (!viewport) return;
+
+        let startX = 0, startY = 0, currentX = 0, startTime = 0;
+        let isDragging = false, activeSection = null, hasMoved = false;
+
+        function getCurrentRailIndex(p) {
+          const d = p.querySelector('.rails-diamond.active');
+          return d ? parseInt(d.getAttribute('data-rails-target')) : 1;
+        }
+
+        function getTotalRails(p) {
+          return p.querySelectorAll('.rails-diamond').length;
+        }
+
+        function switchToRail(p, newIndex, direction) {
+          const diamonds = p.querySelectorAll('.rails-diamond');
+          const curr = p.querySelector('.rails-section.active');
+          const next = p.querySelector(`.rails-section[data-rails-index="${newIndex}"]`);
+          
+          if (!next || next === curr) return;
+          
+          diamonds.forEach(d => {
+            d.classList.toggle('active', parseInt(d.getAttribute('data-rails-target')) === newIndex);
+          });
+          
+          if (curr) {
+            curr.classList.add('transitioning-out', direction === 'left' ? 'slide-out-left' : 'slide-out-right');
+            setTimeout(() => {
+              curr.classList.remove('active', 'slide-out-left', 'slide-out-right', 'transitioning-out');
+              curr.style.transform = '';
+              curr.style.opacity = '';
+            }, 350);
+          }
+          
+          next.classList.add('active', direction === 'left' ? 'slide-in-left' : 'slide-in-right');
+          next.offsetHeight;
+          requestAnimationFrame(() => next.classList.remove('slide-in-left', 'slide-in-right'));
+          setTimeout(() => syncActiveRailTitle(p), 50);
+        }
+
+        function handleStart(e) {
+          if (e.target.closest('.rails-diamond')) return;
+          const pt = e.touches ? e.touches[0] : e;
+          startX = currentX = pt.clientX;
+          startY = pt.clientY;
+          startTime = Date.now();
+          isDragging = true;
+          hasMoved = false;
+          activeSection = viewport.querySelector('.rails-section.active');
+          if (activeSection) activeSection.classList.add('swiping');
+          viewport.classList.add('dragging');
+        }
+
+        function handleMove(e) {
+          if (!isDragging) return;
+          const pt = e.touches ? e.touches[0] : e;
+          const dX = pt.clientX - startX, dY = pt.clientY - startY;
+          if (Math.abs(dY) > Math.abs(dX) && Math.abs(dX) < 10) return;
+          if (Math.abs(dX) > 10) { e.preventDefault(); hasMoved = true; }
+          currentX = pt.clientX;
+          if (activeSection) {
+            const idx = getCurrentRailIndex(panel), total = getTotalRails(panel);
+            let r = 1;
+            if ((dX > 0 && idx === 1) || (dX < 0 && idx === total)) r = 0.3;
+            const mv = dX * 0.5 * r;
+            activeSection.style.transform = `translateX(${mv}px)`;
+            activeSection.style.opacity = 1 - Math.min(0.3, Math.abs(mv) / 200);
+          }
+        }
+
+        function handleEnd() {
+          if (!isDragging) return;
+          isDragging = false;
+          viewport.classList.remove('dragging');
+          const dX = currentX - startX, vel = Math.abs(dX) / (Date.now() - startTime);
+          if (activeSection) activeSection.classList.remove('swiping');
+          const isSwipe = (Math.abs(dX) > SWIPE_THRESHOLD || vel > SWIPE_VELOCITY_THRESHOLD) && hasMoved;
+          if (isSwipe) {
+            recentSwipe = true;
+            setTimeout(() => recentSwipe = false, 100);
+            const idx = getCurrentRailIndex(panel), total = getTotalRails(panel);
+            if (dX < 0 && idx < total) switchToRail(panel, idx + 1, 'left');
+            else if (dX > 0 && idx > 1) switchToRail(panel, idx - 1, 'right');
+            else if (activeSection) { activeSection.style.transform = ''; activeSection.style.opacity = ''; }
+          } else if (activeSection) { activeSection.style.transform = ''; activeSection.style.opacity = ''; }
+          activeSection = null;
+        }
+
+        viewport.addEventListener('touchstart', handleStart, { passive: true });
+        viewport.addEventListener('touchmove', handleMove, { passive: false });
+        viewport.addEventListener('touchend', handleEnd);
+        viewport.addEventListener('touchcancel', handleEnd);
+        viewport.addEventListener('mousedown', handleStart);
+        viewport.addEventListener('mousemove', handleMove);
+        viewport.addEventListener('mouseup', handleEnd);
+        viewport.addEventListener('mouseleave', handleEnd);
+      }
+
+      document.querySelectorAll('.rails-panel').forEach(p => initSwipeForPanel(p));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SETUP WIZARD
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function initSetupWizard() {
+      const wizardOverlay = document.getElementById('wizardOverlay');
+      const wizardBody = document.getElementById('wizardBody');
+      const wizardPrev = document.getElementById('wizardPrev');
+      const wizardNext = document.getElementById('wizardNext');
+      const wizardSkip = document.getElementById('wizardSkip');
+      const wizardProgressBar = document.getElementById('wizardProgressBar');
+      const wizardStepIndicator = document.getElementById('wizardStepIndicator');
+      
+      let currentStep = 0;
+      const totalSteps = 9;
+      
+      // Row colors for panel indicators
+      const rowInfo = {
+        1: { row: 1, color: 'row-1', label: 'Row 1 · Red' },
+        2: { row: 1, color: 'row-1', label: 'Row 1 · Red' },
+        3: { row: 1, color: 'row-1', label: 'Row 1 · Red' },
+        4: { row: 2, color: 'row-2', label: 'Row 2 · Green' },
+        5: { row: 2, color: 'row-2', label: 'Row 2 · Green' },
+        6: { row: 2, color: 'row-2', label: 'Row 2 · Green' },
+        7: { row: 3, color: 'row-3', label: 'Row 3 · Blue' },
+        8: { row: 3, color: 'row-3', label: 'Row 3 · Blue' },
+        9: { row: 3, color: 'row-3', label: 'Row 3 · Blue' }
+      };
+      
+      // Generate wizard panels for each of the 9 panels
+      function generateWizardPanels() {
+        let html = '';
+        
+        for (let p = 1; p <= 9; p++) {
+          const info = rowInfo[p];
+          html += `
+          <div class="wizard-panel${p === 1 ? ' active' : ''}" data-panel="${p}">
+            <span class="wizard-panel-indicator ${info.color}">${info.label} · Position ${((p - 1) % 3) + 1}</span>
+            
+            <div class="wizard-field">
+              <label for="panel${p}_name">Panel ${p} Name</label>
+              <input type="text" id="panel${p}_name" placeholder="e.g., Historical Context, Technical Overview, User Experience..." data-field="name">
+            </div>
+            
+            <!-- Rail 1 -->
+            <div class="wizard-rail-section">
+              <div class="wizard-rail-header rail-1">◆ Rail 1: Foundation</div>
+              <div class="wizard-field">
+                <label for="panel${p}_rail1_title">Rail Title</label>
+                <input type="text" id="panel${p}_rail1_title" placeholder="e.g., Origins, Introduction, Overview..." data-field="rail1_title">
+              </div>
+              <div class="wizard-field">
+                <label for="panel${p}_rail1_content">Rail Content</label>
+                <textarea id="panel${p}_rail1_content" placeholder="Main explanatory paragraph (1-3 sentences)..." data-field="rail1_content"></textarea>
+              </div>
+              <div class="wizard-field">
+                <label>List Items</label>
+                <div class="wizard-list-items">
+                  <div class="wizard-list-item"><span>1.</span><input type="text" id="panel${p}_rail1_item1" placeholder="Supporting point..." data-field="rail1_item1"></div>
+                  <div class="wizard-list-item"><span>2.</span><input type="text" id="panel${p}_rail1_item2" placeholder="Supporting point..." data-field="rail1_item2"></div>
+                  <div class="wizard-list-item"><span>3.</span><input type="text" id="panel${p}_rail1_item3" placeholder="Supporting point..." data-field="rail1_item3"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Rail 2 -->
+            <div class="wizard-rail-section">
+              <div class="wizard-rail-header rail-2">◆ Rail 2: Development</div>
+              <div class="wizard-field">
+                <label for="panel${p}_rail2_title">Rail Title</label>
+                <input type="text" id="panel${p}_rail2_title" placeholder="e.g., Mechanics, Process, Application..." data-field="rail2_title">
+              </div>
+              <div class="wizard-field">
+                <label for="panel${p}_rail2_content">Rail Content</label>
+                <textarea id="panel${p}_rail2_content" placeholder="Build upon Rail 1 (1-3 sentences)..." data-field="rail2_content"></textarea>
+              </div>
+              <div class="wizard-field">
+                <label>List Items</label>
+                <div class="wizard-list-items">
+                  <div class="wizard-list-item"><span>1.</span><input type="text" id="panel${p}_rail2_item1" placeholder="Supporting point..." data-field="rail2_item1"></div>
+                  <div class="wizard-list-item"><span>2.</span><input type="text" id="panel${p}_rail2_item2" placeholder="Supporting point..." data-field="rail2_item2"></div>
+                  <div class="wizard-list-item"><span>3.</span><input type="text" id="panel${p}_rail2_item3" placeholder="Supporting point..." data-field="rail2_item3"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Rail 3 -->
+            <div class="wizard-rail-section">
+              <div class="wizard-rail-header rail-3">◆ Rail 3: Expansion</div>
+              <div class="wizard-field">
+                <label for="panel${p}_rail3_title">Rail Title</label>
+                <input type="text" id="panel${p}_rail3_title" placeholder="e.g., Future, Implications, Conclusion..." data-field="rail3_title">
+              </div>
+              <div class="wizard-field">
+                <label for="panel${p}_rail3_content">Rail Content</label>
+                <textarea id="panel${p}_rail3_content" placeholder="Extend or conclude (1-3 sentences)..." data-field="rail3_content"></textarea>
+              </div>
+              <div class="wizard-field">
+                <label>List Items</label>
+                <div class="wizard-list-items">
+                  <div class="wizard-list-item"><span>1.</span><input type="text" id="panel${p}_rail3_item1" placeholder="Supporting point..." data-field="rail3_item1"></div>
+                  <div class="wizard-list-item"><span>2.</span><input type="text" id="panel${p}_rail3_item2" placeholder="Supporting point..." data-field="rail3_item2"></div>
+                  <div class="wizard-list-item"><span>3.</span><input type="text" id="panel${p}_rail3_item3" placeholder="Supporting point..." data-field="rail3_item3"></div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        }
+        
+        wizardBody.innerHTML = html;
+      }
+      
+      function updateUI() {
+        // Update progress bar
+        const progress = ((currentStep + 1) / totalSteps) * 100;
+        wizardProgressBar.style.width = progress + '%';
+        
+        // Update step indicator
+        wizardStepIndicator.textContent = `Panel ${currentStep + 1} of ${totalSteps}`;
+        
+        // Update panel visibility
+        document.querySelectorAll('.wizard-panel').forEach((panel, index) => {
+          panel.classList.toggle('active', index === currentStep);
+        });
+        
+        // Update buttons
+        wizardPrev.disabled = currentStep === 0;
+        
+        if (currentStep === totalSteps - 1) {
+          wizardNext.textContent = 'Finish ✓';
+          wizardNext.classList.add('finish');
+        } else {
+          wizardNext.textContent = 'Next →';
+          wizardNext.classList.remove('finish');
+        }
+      }
+      
+      function collectFormData() {
+        for (let p = 1; p <= 9; p++) {
+          const panelData = RAILS_DATA[`panel${p}`];
+          
+          // Get panel name
+          const nameInput = document.getElementById(`panel${p}_name`);
+          if (nameInput && nameInput.value.trim()) {
+            panelData.name = nameInput.value.trim();
+          }
+          
+          // Get rails data
+          for (let r = 1; r <= 3; r++) {
+            const rail = panelData.rails[r - 1];
+            
+            const titleInput = document.getElementById(`panel${p}_rail${r}_title`);
+            if (titleInput && titleInput.value.trim()) {
+              rail.title = titleInput.value.trim();
+            }
+            
+            const contentInput = document.getElementById(`panel${p}_rail${r}_content`);
+            if (contentInput && contentInput.value.trim()) {
+              rail.content = contentInput.value.trim();
+            }
+            
+            // Get list items
+            for (let i = 1; i <= 3; i++) {
+              const itemInput = document.getElementById(`panel${p}_rail${r}_item${i}`);
+              if (itemInput && itemInput.value.trim()) {
+                rail.listItems[i - 1] = itemInput.value.trim();
+              }
+            }
+          }
+        }
+      }
+      
+      function closeWizard() {
+        wizardOverlay.classList.add('hidden');
+        setTimeout(() => {
+          wizardOverlay.style.display = 'none';
+        }, 400);
+      }
+      
+      // Event Listeners
+      wizardPrev.addEventListener('click', () => {
+        if (currentStep > 0) {
+          currentStep--;
+          updateUI();
+          wizardBody.scrollTop = 0;
+        }
+      });
+      
+      wizardNext.addEventListener('click', () => {
+        if (currentStep < totalSteps - 1) {
+          currentStep++;
+          updateUI();
+          wizardBody.scrollTop = 0;
+        } else {
+          // Finish - collect data and render
+          collectFormData();
+          closeWizard();
+          renderRAILS();
+          scheduleLatexUpdate(); // Update LaTeX in background
+        }
+      });
+      
+      wizardSkip.addEventListener('click', () => {
+        closeWizard();
+        renderRAILS();
+        scheduleLatexUpdate(); // Update LaTeX in background
+      });
+      
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (wizardOverlay.style.display === 'none') return;
+        
+        if (e.key === 'Escape') {
+          closeWizard();
+          renderRAILS();
+        }
+      });
+      
+      // Initialize
+      generateWizardPanels();
+      updateUI();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ASCII EXPORT SYSTEM
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // LATEX BACKGROUND GENERATOR
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    let currentLatexContent = '';
+    
+    function escapeLatex(text) {
+      // Escape special LaTeX characters
+      return text
+        .replace(/\\/g, '\\textbackslash{}')
+        .replace(/&/g, '\\&')
+        .replace(/%/g, '\\%')
+        .replace(/\$/g, '\\$')
+        .replace(/#/g, '\\#')
+        .replace(/_/g, '\\_')
+        .replace(/\{/g, '\\{')
+        .replace(/\}/g, '\\}')
+        .replace(/~/g, '\\textasciitilde{}')
+        .replace(/\^/g, '\\textasciicircum{}');
+    }
+    
+    function generateLatex(title, subtitle) {
+      const date = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', month: 'long', day: 'numeric' 
+      });
+      
+      const rowColors = { 1: 'Red', 2: 'Green', 3: 'Blue' };
+      const railColors = { 1: 'cyan', 2: 'yellow', 3: 'magenta' };
+      const railLabels = { 1: 'Foundation', 2: 'Development', 3: 'Expansion' };
+      
+      let tex = `% ═══════════════════════════════════════════════════════════════════════════
+% R.A.I.L.S. — Recording · All · Introspective · Language · Sequences
+% LaTeX Export
+% Generated: ${date}
+% ═══════════════════════════════════════════════════════════════════════════
+
+\\documentclass[11pt,a4paper]{article}
+
+% ─────────────────────────────────────────────────────────────────────────────
+% PACKAGES
+% ─────────────────────────────────────────────────────────────────────────────
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+\\usepackage{geometry}
+\\usepackage{xcolor}
+\\usepackage{titlesec}
+\\usepackage{enumitem}
+\\usepackage{fancyhdr}
+\\usepackage{tcolorbox}
+\\usepackage{graphicx}
+\\usepackage{hyperref}
+
+% ─────────────────────────────────────────────────────────────────────────────
+% PAGE SETUP
+% ─────────────────────────────────────────────────────────────────────────────
+\\geometry{margin=1in}
+\\pagestyle{fancy}
+\\fancyhf{}
+\\fancyhead[L]{\\textsc{R.A.I.L.S.}}
+\\fancyhead[R]{\\textsc{${escapeLatex(title || 'Document')}}}
+\\fancyfoot[C]{\\thepage}
+
+% ─────────────────────────────────────────────────────────────────────────────
+% COLOR DEFINITIONS (RGB + CYM Theme)
+% ─────────────────────────────────────────────────────────────────────────────
+\\definecolor{rowred}{RGB}{230,57,70}
+\\definecolor{rowgreen}{RGB}{42,157,143}
+\\definecolor{rowblue}{RGB}{72,149,239}
+\\definecolor{railcyan}{RGB}{0,212,255}
+\\definecolor{railyellow}{RGB}{255,235,59}
+\\definecolor{railmagenta}{RGB}{255,0,255}
+\\definecolor{titlecolor}{RGB}{255,212,59}
+\\definecolor{cardcolor}{RGB}{22,42,74}
+\\definecolor{textcolor}{RGB}{197,211,232}
+
+% ─────────────────────────────────────────────────────────────────────────────
+% CUSTOM ENVIRONMENTS
+% ─────────────────────────────────────────────────────────────────────────────
+\\newtcolorbox{railbox}[2][]{
+  colback=cardcolor!5!white,
+  colframe=#2,
+  fonttitle=\\bfseries\\small,
+  title=#1,
+  arc=3mm,
+  boxrule=1pt,
+  left=6pt,
+  right=6pt,
+  top=4pt,
+  bottom=4pt
+}
+
+\\newtcolorbox{panelbox}[2][]{
+  colback=white,
+  colframe=#2,
+  fonttitle=\\bfseries\\large,
+  title=#1,
+  arc=4mm,
+  boxrule=2pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+  toptitle=3mm,
+  bottomtitle=2mm
+}
+
+% ─────────────────────────────────────────────────────────────────────────────
+% DOCUMENT
+% ─────────────────────────────────────────────────────────────────────────────
+\\begin{document}
+
+% ═══════════════════════════════════════════════════════════════════════════
+% TITLE PAGE
+% ═══════════════════════════════════════════════════════════════════════════
+\\begin{titlepage}
+  \\centering
+  \\vspace*{2cm}
+  
+  {\\Huge\\bfseries\\textcolor{titlecolor}{R.A.I.L.S.}}\\\\[0.5cm]
+  {\\large Recording $\\cdot$ All $\\cdot$ Introspective $\\cdot$ Language $\\cdot$ Sequences}\\\\[2cm]
+  
+  {\\LARGE\\bfseries ${escapeLatex(title || 'Untitled Document')}}\\\\[0.5cm]
+  ${subtitle ? `{\\large ${escapeLatex(subtitle)}}\\\\[1cm]` : ''}
+  
+  \\vfill
+  
+  {\\large Generated: ${date}}\\\\[0.5cm]
+  
+  \\vspace{1cm}
+  
+  \\begin{tcolorbox}[colback=cardcolor!10!white,colframe=cardcolor!50!black,width=0.8\\textwidth,arc=4mm]
+    \\centering
+    \\textbf{Grid Structure}\\\\[0.3cm]
+    \\textcolor{rowred}{\\textbf{Row 1 (Red):}} Panels 1--3\\\\
+    \\textcolor{rowgreen}{\\textbf{Row 2 (Green):}} Panels 4--6\\\\
+    \\textcolor{rowblue}{\\textbf{Row 3 (Blue):}} Panels 7--9\\\\[0.3cm]
+    \\textbf{Rail Progression:}\\\\
+    \\textcolor{railcyan}{$\\blacklozenge$ Cyan (Foundation)} $\\rightarrow$
+    \\textcolor{railyellow}{$\\blacklozenge$ Yellow (Development)} $\\rightarrow$
+    \\textcolor{railmagenta}{$\\blacklozenge$ Magenta (Expansion)}
+  \\end{tcolorbox}
+  
+\\end{titlepage}
+
+\\tableofcontents
+\\newpage
+
+`;
+      
+      // Generate content for each row and panel
+      for (let row = 1; row <= 3; row++) {
+        const rowColor = rowColors[row].toLowerCase();
+        const rowColorName = `row${rowColor}`;
+        
+        tex += `
+% ═══════════════════════════════════════════════════════════════════════════
+% ROW ${row} — ${rowColors[row].toUpperCase()}
+% ═══════════════════════════════════════════════════════════════════════════
+\\section*{\\textcolor{${rowColorName}}{Row ${row} — ${rowColors[row]}}}
+\\addcontentsline{toc}{section}{Row ${row} — ${rowColors[row]}}
+
+`;
+        
+        for (let col = 0; col < 3; col++) {
+          const panelNum = (row - 1) * 3 + col + 1;
+          const panelData = RAILS_DATA[`panel${panelNum}`];
+          
+          if (panelData) {
+            const panelName = escapeLatex(panelData.name || `Panel ${panelNum}`);
+            const positions = ['Left', 'Center', 'Right'];
+            
+            tex += `
+% ─────────────────────────────────────────────────────────────────────────────
+% PANEL ${panelNum}
+% ─────────────────────────────────────────────────────────────────────────────
+\\subsection*{Panel ${panelNum}: ${panelName}}
+\\addcontentsline{toc}{subsection}{Panel ${panelNum}: ${panelName}}
+{\\small\\textit{Position: ${positions[col]}}}
+
+\\begin{panelbox}[${panelName}]{${rowColorName}}
+
+`;
+            
+            // Generate rails
+            panelData.rails.forEach((rail, railIndex) => {
+              const railNum = railIndex + 1;
+              const railColor = `rail${railColors[railNum] || 'cyan'}`;
+              const railLabel = railLabels[railNum] || `Rail ${railNum}`;
+              const railTitle = escapeLatex(rail.title || '[Rail Title]');
+              const railContent = escapeLatex(rail.content || '[Rail Content]');
+              
+              tex += `
+\\begin{railbox}[\\textcolor{${railColor}}{$\\blacklozenge$ Rail ${railNum}: ${railLabel}} — ${railTitle}]{${railColor}}
+
+${railContent}
+
+\\begin{itemize}[leftmargin=*,itemsep=2pt]
+`;
+              
+              // List items
+              const listItems = rail.listItems || ['[Item 1]', '[Item 2]', '[Item 3]'];
+              listItems.forEach((item) => {
+                tex += `  \\item ${escapeLatex(item || '[List Item]')}\n`;
+              });
+              
+              tex += `\\end{itemize}
+
+\\end{railbox}
+\\vspace{0.3cm}
+
+`;
+            });
+            
+            tex += `\\end{panelbox}
+\\vspace{0.5cm}
+
+`;
+          }
+        }
+        
+        if (row < 3) {
+          tex += `\\newpage\n`;
+        }
+      }
+      
+      // Document end
+      tex += `
+% ═══════════════════════════════════════════════════════════════════════════
+% END OF DOCUMENT
+% ═══════════════════════════════════════════════════════════════════════════
+\\end{document}
+`;
+      
+      return tex;
+    }
+    
+    function updateLatexInBackground() {
+      const title = document.getElementById('exportTitle')?.value || '';
+      const subtitle = document.getElementById('exportSubtitle')?.value || '';
+      currentLatexContent = generateLatex(title, subtitle);
+    }
+    
+    // Update LaTeX whenever RAILS_DATA changes (called after wizard or edits)
+    function scheduleLatexUpdate() {
+      setTimeout(updateLatexInBackground, 100);
+    }
+
+    function initExportSystem() {
+      const exportBtn = document.getElementById('exportBtn');
+      const exportOverlay = document.getElementById('exportOverlay');
+      const exportCancel = document.getElementById('exportCancel');
+      const exportConfirm = document.getElementById('exportConfirm');
+      const exportCopy = document.getElementById('exportCopy');
+      const exportTxt = document.getElementById('exportTxt');
+      const exportTex = document.getElementById('exportTex');
+      const exportZip = document.getElementById('exportZip');
+      const exportTitle = document.getElementById('exportTitle');
+      const exportSubtitle = document.getElementById('exportSubtitle');
+      const exportPreview = document.getElementById('exportPreview');
+      const exportToast = document.getElementById('exportToast');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      // Initial LaTeX generation
+      updateLatexInBackground();
+      
+      // Toast notification
+      function showToast(message) {
+        toastMessage.textContent = message;
+        exportToast.classList.add('show');
+        setTimeout(() => {
+          exportToast.classList.remove('show');
+        }, 2500);
+      }
+      
+      // ASCII art generation utilities
+      function padCenter(text, width) {
+        const padding = Math.max(0, width - text.length);
+        const left = Math.floor(padding / 2);
+        const right = padding - left;
+        return ' '.repeat(left) + text + ' '.repeat(right);
+      }
+      
+      function padRight(text, width) {
+        return text + ' '.repeat(Math.max(0, width - text.length));
+      }
+      
+      function wrapText(text, maxWidth) {
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = '';
+        
+        words.forEach(word => {
+          if ((currentLine + ' ' + word).trim().length <= maxWidth) {
+            currentLine = (currentLine + ' ' + word).trim();
+          } else {
+            if (currentLine) lines.push(currentLine);
+            currentLine = word;
+          }
+        });
+        if (currentLine) lines.push(currentLine);
+        return lines;
+      }
+      
+      function truncate(text, maxLen) {
+        if (text.length <= maxLen) return text;
+        return text.substring(0, maxLen - 3) + '...';
+      }
+      
+      // Generate ASCII for a single panel
+      function generatePanelASCII(panelData, panelNum, boxWidth = 72) {
+        const innerWidth = boxWidth - 4;
+        const lines = [];
+        
+        // Row indicator
+        const rowNum = Math.ceil(panelNum / 3);
+        const rowColors = { 1: 'RED', 2: 'GREEN', 3: 'BLUE' };
+        const positions = ['Left', 'Center', 'Right'];
+        const posIndex = (panelNum - 1) % 3;
+        
+        // Panel header
+        lines.push('╔' + '═'.repeat(boxWidth - 2) + '╗');
+        lines.push('║' + padCenter(`PANEL ${panelNum}`, boxWidth - 2) + '║');
+        lines.push('║' + padCenter(`Row ${rowNum} (${rowColors[rowNum]}) · ${positions[posIndex]}`, boxWidth - 2) + '║');
+        lines.push('╠' + '═'.repeat(boxWidth - 2) + '╣');
+        
+        // Panel name - use actual data
+        const panelName = panelData.name || `[Panel ${panelNum}]`;
+        lines.push('║  ' + padRight(`NAME: ${truncate(panelName, innerWidth - 8)}`, innerWidth) + '  ║');
+        lines.push('╠' + '─'.repeat(boxWidth - 2) + '╣');
+        
+        // Rails - use actual data
+        const railSymbols = ['◆ CYAN', '◆ YELLOW', '◆ MAGENTA'];
+        const railLabels = ['Foundation', 'Development', 'Expansion'];
+        
+        panelData.rails.forEach((rail, railIndex) => {
+          const symbol = railSymbols[railIndex] || `◆ RAIL ${railIndex + 1}`;
+          const label = railLabels[railIndex] || `Rail ${railIndex + 1}`;
+          
+          lines.push('║  ' + padRight(`┌─ ${symbol} ─ ${label.toUpperCase()} ─${'─'.repeat(Math.max(0, innerWidth - symbol.length - label.length - 10))}┐`, innerWidth) + '  ║');
+          lines.push('║  ' + padRight(`│`, innerWidth) + '  ║');
+          
+          // Rail title - use actual data
+          const railTitle = rail.title || '[Rail Title]';
+          lines.push('║  ' + padRight(`│  Title: ${truncate(railTitle, innerWidth - 12)}`, innerWidth) + '  ║');
+          lines.push('║  ' + padRight(`│`, innerWidth) + '  ║');
+          
+          // Rail content (wrapped) - use actual data
+          const railContent = rail.content || '[Rail Content]';
+          const contentLines = wrapText(railContent, innerWidth - 14);
+          lines.push('║  ' + padRight(`│  Content:`, innerWidth) + '  ║');
+          contentLines.forEach(cLine => {
+            lines.push('║  ' + padRight(`│    ${truncate(cLine, innerWidth - 8)}`, innerWidth) + '  ║');
+          });
+          lines.push('║  ' + padRight(`│`, innerWidth) + '  ║');
+          
+          // List items - use actual data
+          lines.push('║  ' + padRight(`│  Points:`, innerWidth) + '  ║');
+          const listItems = rail.listItems || ['[Item 1]', '[Item 2]', '[Item 3]'];
+          listItems.forEach((item, i) => {
+            const itemText = item || `[Item ${i + 1}]`;
+            lines.push('║  ' + padRight(`│    ${i + 1}. ${truncate(itemText, innerWidth - 10)}`, innerWidth) + '  ║');
+          });
+          
+          lines.push('║  ' + padRight(`│`, innerWidth) + '  ║');
+          lines.push('║  ' + padRight(`└${'─'.repeat(innerWidth - 4)}┘`, innerWidth) + '  ║');
+          
+          if (railIndex < panelData.rails.length - 1) {
+            lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+          }
+        });
+        
+        lines.push('╚' + '═'.repeat(boxWidth - 2) + '╝');
+        
+        return lines.join('\n');
+      }
+      
+      // Generate full ASCII document
+      function generateFullASCII(title, subtitle) {
+        const boxWidth = 76;
+        const lines = [];
+        const date = new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        
+        // Document header
+        lines.push('');
+        lines.push('╔' + '═'.repeat(boxWidth - 2) + '╗');
+        lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+        lines.push('║' + padCenter('R.A.I.L.S.', boxWidth - 2) + '║');
+        lines.push('║' + padCenter('Recording · All · Introspective · Language · Sequences', boxWidth - 2) + '║');
+        lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+        lines.push('╠' + '═'.repeat(boxWidth - 2) + '╣');
+        lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+        
+        // Title
+        if (title) {
+          const titleLines = wrapText(title.toUpperCase(), boxWidth - 8);
+          titleLines.forEach(tLine => {
+            lines.push('║' + padCenter(tLine, boxWidth - 2) + '║');
+          });
+        }
+        
+        // Subtitle
+        if (subtitle) {
+          lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+          const subLines = wrapText(subtitle, boxWidth - 8);
+          subLines.forEach(sLine => {
+            lines.push('║' + padCenter(sLine, boxWidth - 2) + '║');
+          });
+        }
+        
+        lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+        lines.push('║' + padCenter(`Generated: ${date}`, boxWidth - 2) + '║');
+        lines.push('║' + ' '.repeat(boxWidth - 2) + '║');
+        lines.push('╚' + '═'.repeat(boxWidth - 2) + '╝');
+        lines.push('');
+        
+        // Grid overview with actual panel names
+        lines.push('');
+        lines.push('┌' + '─'.repeat(boxWidth - 2) + '┐');
+        lines.push('│' + padCenter('GRID OVERVIEW', boxWidth - 2) + '│');
+        lines.push('├' + '─'.repeat(boxWidth - 2) + '┤');
+        lines.push('│' + ' '.repeat(boxWidth - 2) + '│');
+        
+        // Show panel names in grid format
+        for (let row = 1; row <= 3; row++) {
+          const rowColors = { 1: 'RED', 2: 'GREEN', 3: 'BLUE' };
+          const panelNames = [];
+          for (let col = 0; col < 3; col++) {
+            const pNum = (row - 1) * 3 + col + 1;
+            const pData = RAILS_DATA[`panel${pNum}`];
+            const name = pData ? truncate(pData.name, 18) : `[Panel ${pNum}]`;
+            panelNames.push(name);
+          }
+          lines.push('│' + padCenter(`ROW ${row} (${rowColors[row]}):  ${panelNames.join('  |  ')}`, boxWidth - 2) + '│');
+        }
+        
+        lines.push('│' + ' '.repeat(boxWidth - 2) + '│');
+        lines.push('│' + padCenter('Each panel contains 3 rails:', boxWidth - 2) + '│');
+        lines.push('│' + padCenter('◆ CYAN (Foundation) → ◆ YELLOW (Development) → ◆ MAGENTA (Expansion)', boxWidth - 2) + '│');
+        lines.push('│' + ' '.repeat(boxWidth - 2) + '│');
+        lines.push('└' + '─'.repeat(boxWidth - 2) + '┘');
+        lines.push('');
+        
+        // Panels - iterate through RAILS_DATA
+        for (let row = 1; row <= 3; row++) {
+          const rowColors = { 1: 'RED', 2: 'GREEN', 3: 'BLUE' };
+          lines.push('');
+          lines.push('');
+          lines.push('█'.repeat(boxWidth));
+          lines.push(`█${padCenter(`ROW ${row} — ${rowColors[row]}`, boxWidth - 2)}█`);
+          lines.push('█'.repeat(boxWidth));
+          lines.push('');
+          
+          for (let col = 0; col < 3; col++) {
+            const panelNum = (row - 1) * 3 + col + 1;
+            const panelData = RAILS_DATA[`panel${panelNum}`];
+            if (panelData) {
+              lines.push('');
+              lines.push(generatePanelASCII(panelData, panelNum, boxWidth));
+            }
+          }
+        }
+        
+        // Footer
+        lines.push('');
+        lines.push('');
+        lines.push('─'.repeat(boxWidth));
+        lines.push(padCenter('END OF DOCUMENT', boxWidth));
+        lines.push('─'.repeat(boxWidth));
+        lines.push('');
+        
+        return lines.join('\n');
+      }
+      
+      // Generate PDF
+      async function generatePDF(title, subtitle) {
+        // Dynamic library loading if not available
+        if (typeof window.jspdf === 'undefined') {
+          showToast('Loading PDF library...');
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Failed to load jsPDF'));
+            document.head.appendChild(script);
+          }).catch(err => {
+            showToast('Failed to load PDF library. Check your internet connection.');
+            console.error(err);
+            return;
+          });
+          // Small delay to ensure library initializes
+          await new Promise(r => setTimeout(r, 100));
+        }
+        
+        // Check again after attempted load
+        if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+          showToast('PDF library failed to initialize. Please refresh the page.');
+          console.error('jsPDF is not defined after load attempt');
+          return;
+        }
+        
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+          });
+          
+          const ascii = generateFullASCII(title, subtitle);
+          const pageHeight = doc.internal.pageSize.getHeight();
+          const margin = 10;
+          const lineHeight = 3.2;
+          const fontSize = 7;
+          
+          doc.setFont('Courier', 'normal');
+          doc.setFontSize(fontSize);
+          
+          const lines = ascii.split('\n');
+          let y = margin + 5;
+          
+          lines.forEach((line) => {
+            if (y > pageHeight - margin) {
+              doc.addPage();
+              y = margin + 5;
+            }
+            
+            // Color coding for certain lines
+            if (line.includes('ROW 1') || line.includes('RED')) {
+              doc.setTextColor(230, 57, 70);
+            } else if (line.includes('ROW 2') || line.includes('GREEN')) {
+              doc.setTextColor(42, 157, 143);
+            } else if (line.includes('ROW 3') || line.includes('BLUE')) {
+              doc.setTextColor(72, 149, 239);
+            } else if (line.includes('CYAN')) {
+              doc.setTextColor(0, 180, 220);
+            } else if (line.includes('YELLOW')) {
+              doc.setTextColor(200, 180, 0);
+            } else if (line.includes('MAGENTA')) {
+              doc.setTextColor(200, 0, 200);
+            } else if (line.includes('R.A.I.L.S.')) {
+              doc.setTextColor(200, 170, 50);
+            } else {
+              doc.setTextColor(60, 80, 100);
+            }
+            
+            doc.text(line, margin, y);
+            y += lineHeight;
+          });
+          
+          // Save using File System Access API (trusted by Windows)
+          const filename = (title || 'RAILS_Export').replace(/[^a-zA-Z0-9]/g, '_') + '.pdf';
+          
+          if ('showSaveFilePicker' in window) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{
+                  description: 'PDF Document',
+                  accept: { 'application/pdf': ['.pdf'] }
+                }]
+              });
+              const pdfBlob = doc.output('blob');
+              const writable = await handle.createWritable();
+              await writable.write(pdfBlob);
+              await writable.close();
+              showToast('PDF saved successfully!');
+              return;
+            } catch (err) {
+              if (err.name === 'AbortError') {
+                showToast('Save cancelled');
+                return;
+              }
+              console.log('File System Access API failed, using fallback:', err);
+            }
+          }
+          
+          // Fallback to regular save
+          doc.save(filename);
+          showToast('PDF downloaded!');
+        } catch (err) {
+          console.error('PDF generation failed:', err);
+          showToast('PDF generation failed: ' + err.message);
+        }
+      }
+      
+      // Generate TXT file
+      async function generateTXT(title, subtitle) {
+        const ascii = generateFullASCII(title, subtitle);
+        const blob = new Blob([ascii], { type: 'text/plain;charset=utf-8' });
+        const filename = (title || 'RAILS_Export').replace(/[^a-zA-Z0-9]/g, '_') + '.txt';
+        
+        // Try File System Access API first (trusted by Windows)
+        if ('showSaveFilePicker' in window) {
+          try {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: filename,
+              types: [{
+                description: 'Text File',
+                accept: { 'text/plain': ['.txt'] }
+              }]
+            });
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            showToast('TXT file saved successfully!');
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') {
+              showToast('Save cancelled');
+              return;
+            }
+            console.log('File System Access API failed, using fallback:', err);
+          }
+        }
+        
+        // Fallback
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('TXT file downloaded!');
+      }
+      
+      // Generate TEX file
+      async function generateTEX(title, subtitle) {
+        const latex = generateLatex(title, subtitle);
+        const blob = new Blob([latex], { type: 'application/x-tex;charset=utf-8' });
+        const filename = (title || 'RAILS_Export').replace(/[^a-zA-Z0-9]/g, '_') + '.tex';
+        
+        // Try File System Access API first (trusted by Windows)
+        if ('showSaveFilePicker' in window) {
+          try {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: filename,
+              types: [{
+                description: 'LaTeX File',
+                accept: { 'application/x-tex': ['.tex'] }
+              }]
+            });
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            showToast('LaTeX file saved successfully!');
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') {
+              showToast('Save cancelled');
+              return;
+            }
+            console.log('File System Access API failed, using fallback:', err);
+          }
+        }
+        
+        // Fallback
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('LaTeX file downloaded!');
+      }
+      
+// Generate README content for the ZIP
+      function generateREADME(title, subtitle) {
+        const date = new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        
+        return `================================================================================
+R.A.I.L.S. - Recording - All - Introspective - Language - Sequences
+================================================================================
+
+Document: ${title || 'Untitled Document'}
+${subtitle ? 'Subtitle: ' + subtitle + '\n' : ''}Generated: ${date}
+
+================================================================================
+ABOUT THIS EXPORT
+================================================================================
+
+IMPORTANT: The .rail and .guide files are plain text files. You can:
+- Open them directly with any text editor (Notepad, VS Code, etc.)
+- Right-click -> "Open with" -> Choose your text editor
+- Rename them to .txt if you prefer
+
+This ZIP archive contains your R.A.I.L.S. content organized into individual 
+text files for each rail within each panel. The folder structure mirrors the 
+9-panel grid system:
+
+    RAILS_Export/
+    +-- RAILS_GUIDE.guide (this file - open with any text editor)
+    +-- Panel_1_[Name]/
+    |   +-- Rail_1_Foundation_[Title].rail
+    |   +-- Rail_2_Development_[Title].rail
+    |   +-- Rail_3_Expansion_[Title].rail
+    +-- Panel_2_[Name]/
+    |   +-- ...
+    +-- ... (through Panel 9)
+
+================================================================================
+UNDERSTANDING THE R.A.I.L.S. SYSTEM
+================================================================================
+
+WHAT IS R.A.I.L.S.?
+-------------------
+R.A.I.L.S. stands for "Recording All Introspective Language Sequences." It is
+a structured framework for capturing multiple perspectives on a topic, where
+each perspective evolves through sequential "rails" of increasing depth.
+
+THE GRID STRUCTURE (3x3 = 9 Panels)
+-----------------------------------
+The system organizes content into a 3x3 grid of panels:
+
+    +-------------+-------------+-------------+
+    |  PANEL 1    |  PANEL 2    |  PANEL 3    |  <- Row 1 (RED)
+    |  Top-Left   |  Top-Center |  Top-Right  |
+    +-------------+-------------+-------------+
+    |  PANEL 4    |  PANEL 5    |  PANEL 6    |  <- Row 2 (GREEN)
+    |  Mid-Left   |  Mid-Center |  Mid-Right  |
+    +-------------+-------------+-------------+
+    |  PANEL 7    |  PANEL 8    |  PANEL 9    |  <- Row 3 (BLUE)
+    |  Bot-Left   |  Bot-Center |  Bot-Right  |
+    +-------------+-------------+-------------+
+
+Each panel represents a UNIQUE PERSPECTIVE on the topic. Panels do not
+cross-reference each other unless explicitly designed to do so.
+
+THE RAIL SYSTEM (CYM Color Coding)
+----------------------------------
+Within each panel, content is organized into sequential "rails":
+
+    [CYAN]    - Rail 1: FOUNDATION
+                Introduces the perspective's core concept
+                Answers: "What is this about?"
+
+    [YELLOW]  - Rail 2: DEVELOPMENT  
+                Builds upon the foundation with depth and nuance
+                Answers: "How does this work/apply?"
+
+    [MAGENTA] - Rail 3: EXPANSION
+                Extends or concludes the sequence
+                Answers: "What are the implications/future?"
+
+    Additional rails continue the progression as needed...
+
+KEY PRINCIPLES
+--------------
+1. SEQUENTIAL BUILDING: Each rail builds upon the previous one within its panel
+2. PANEL INDEPENDENCE: Panels represent distinct perspectives
+3. PROGRESSIVE DEPTH: Rails move from foundation -> development -> expansion
+4. STRUCTURED EXPLORATION: The grid enables systematic topic coverage
+
+================================================================================
+FILE NAMING CONVENTION
+================================================================================
+
+Panel folders:
+    Panel_[Number]_[Sanitized_Panel_Name]/
+
+Rail files:
+    Rail_[Number]_[Stage]_[Sanitized_Rail_Title].rail
+
+NOTE: .rail and .guide files are plain text - open them with any text editor
+(Notepad, VS Code, etc.) or rename to .txt if preferred.
+
+Where:
+    - [Number] = Panel or rail number (1-9 for panels, 1+ for rails)
+    - [Stage] = Foundation, Development, Expansion, or Rail_[N] for 4+
+    - Names are sanitized (special characters replaced with underscores)
+
+================================================================================
+RAIL FILE CONTENTS
+================================================================================
+
+Each rail text file contains:
+
+    1. HEADER - Panel context, rail number, and progression stage
+    2. TITLE - The rail's heading
+    3. CONTENT - Main explanatory paragraph(s)
+    4. LIST ITEMS - Supporting points or key takeaways
+
+Example structure:
+
+    ============================================================================
+    PANEL 1: [Panel Name]
+    RAIL 1: Foundation (CYAN)
+    ============================================================================
+
+    TITLE: [Rail Title]
+
+    ----------------------------------------------------------------------------
+    CONTENT
+    ----------------------------------------------------------------------------
+
+    [Main content paragraph]
+
+    ----------------------------------------------------------------------------
+    KEY POINTS
+    ----------------------------------------------------------------------------
+
+    * [List item 1]
+    * [List item 2]
+    * [List item 3]
+
+================================================================================
+TIPS FOR USE
+================================================================================
+
+1. READING ORDER: Start with Rail 1 of each panel, then progress through
+   Rail 2, Rail 3, etc. within that panel before moving to the next.
+
+2. COMPARATIVE ANALYSIS: Compare the same rail number across different panels
+   to see how different perspectives approach similar stages of development.
+
+3. RECONSTRUCTION: These files can be used to rebuild the R.A.I.L.S. template
+   or import into other documentation systems.
+
+4. INTEGRATION: Individual rail files can be incorporated into reports,
+   presentations, or other documents as modular content blocks.
+
+================================================================================
+GENERATED BY R.A.I.L.S. TEMPLATE
+================================================================================
+
+For more information or to create your own R.A.I.L.S. documents, use the
+interactive HTML template that generated this export.
+
+================================================================================
+`;
+      }
+      
+      // Generate individual rail TXT content
+      function generateRailTXT(panelData, panelNum, rail, railIndex) {
+        const railLabels = { 1: 'Foundation', 2: 'Development', 3: 'Expansion' };
+        const railColors = { 1: 'CYAN', 2: 'YELLOW', 3: 'MAGENTA' };
+        const railNum = railIndex + 1;
+        const railLabel = railLabels[railNum] || `Rail_${railNum}`;
+        const railColor = railColors[railNum] || `RAIL ${railNum}`;
+        
+        // Placeholder examples for each rail type
+        const placeholderExamples = {
+          1: {
+            title: 'Introduction to Core Concepts',
+            content: 'This is where you would introduce the foundational ideas of your perspective. The Foundation rail establishes the groundwork and answers "What is this about?" Start with the essential concepts that readers need to understand before diving deeper.',
+            listItems: [
+              'Define the key terms and concepts for this perspective',
+              'Establish the scope and boundaries of this viewpoint', 
+              'Introduce the main thesis or central idea'
+            ]
+          },
+          2: {
+            title: 'Deeper Analysis and Application',
+            content: 'The Development rail builds upon the foundation by adding depth, nuance, and practical application. This section answers "How does this work?" and "How can it be applied?" Explore the mechanisms, processes, or methodologies involved.',
+            listItems: [
+              'Explain how the foundational concepts operate in practice',
+              'Provide examples or case studies that illustrate the ideas',
+              'Address common challenges or considerations'
+            ]
+          },
+          3: {
+            title: 'Future Implications and Conclusions',
+            content: 'The Expansion rail extends the discussion to broader implications, future directions, or concluding thoughts. This section answers "What are the implications?" and "Where does this lead?" Consider long-term effects and potential developments.',
+            listItems: [
+              'Discuss the broader implications of this perspective',
+              'Explore potential future developments or trends',
+              'Summarize key takeaways and actionable insights'
+            ]
+          }
+        };
+        
+        const placeholder = placeholderExamples[railNum] || placeholderExamples[1];
+        
+        // Determine if content is placeholder or real
+        const isPlaceholder = !rail || !rail.title || rail.title.includes('[Insert');
+        
+        // Use real content or placeholder examples
+        const panelName = (panelData && panelData.name && !panelData.name.includes('[Insert')) 
+          ? panelData.name 
+          : `Perspective ${panelNum} (Example)`;
+        const railTitle = (rail && rail.title && !rail.title.includes('[Insert')) 
+          ? rail.title 
+          : placeholder.title;
+        const railContent = (rail && rail.content && !rail.content.includes('[Insert')) 
+          ? rail.content 
+          : placeholder.content;
+        const listItems = (rail && rail.listItems && rail.listItems.length > 0 && !rail.listItems[0].includes('[Insert'))
+          ? rail.listItems
+          : placeholder.listItems;
+        
+        const lines = [];
+        const width = 76;
+        const divider = '='.repeat(width);
+        const thinDivider = '-'.repeat(width);
+        
+        // Header
+        lines.push(divider);
+        lines.push(`PANEL ${panelNum}: ${panelName}`);
+        lines.push(`RAIL ${railNum}: ${railLabel} (${railColor})`);
+        if (isPlaceholder) {
+          lines.push('[EXAMPLE CONTENT - Fill in your own via the Setup Wizard]');
+        }
+        lines.push(divider);
+        lines.push('');
+        
+        // Title
+        lines.push(`TITLE: ${railTitle}`);
+        lines.push('');
+        
+        // Content
+        lines.push(thinDivider);
+        lines.push('CONTENT');
+        lines.push(thinDivider);
+        lines.push('');
+        lines.push(railContent);
+        lines.push('');
+        
+        // List items
+        lines.push(thinDivider);
+        lines.push('KEY POINTS');
+        lines.push(thinDivider);
+        lines.push('');
+        
+        listItems.forEach((item, i) => {
+          lines.push(`* ${item}`);
+        });
+        
+        lines.push('');
+        lines.push(divider);
+        lines.push(`End of Panel ${panelNum}, Rail ${railNum}`);
+        lines.push(divider);
+        
+        return lines.join('\n');
+      }
+      
+      // Sanitize filename (remove special characters)
+      function sanitizeFilename(name) {
+        return (name || 'Untitled')
+          .replace(/[^a-zA-Z0-9\s\-_]/g, '')
+          .replace(/\s+/g, '_')
+          .substring(0, 50);
+      }
+      
+      // Generate ZIP file with folder structure
+      async function generateZIP(title, subtitle) {
+        // Dynamic library loading if not available
+        if (typeof JSZip === 'undefined') {
+          showToast('Loading ZIP library...');
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Failed to load JSZip'));
+            document.head.appendChild(script);
+          }).catch(err => {
+            showToast('Failed to load ZIP library. Check your internet connection.');
+            console.error(err);
+            return;
+          });
+          // Small delay to ensure library initializes
+          await new Promise(r => setTimeout(r, 100));
+        }
+        
+        // Check again after attempted load
+        if (typeof JSZip === 'undefined') {
+          showToast('ZIP library failed to initialize. Please refresh the page.');
+          console.error('JSZip is not defined after load attempt');
+          return;
+        }
+        
+        try {
+          const zip = new JSZip();
+          const baseFolder = sanitizeFilename(title || 'RAILS_Export');
+          
+          // Add GUIDE file (custom extension to avoid Windows security scanning)
+          const readme = generateREADME(title, subtitle);
+          zip.file(`${baseFolder}/RAILS_GUIDE.guide`, readme);
+          
+          // Rail stage labels
+          const railLabels = { 1: 'Foundation', 2: 'Development', 3: 'Expansion' };
+          
+          // Process each panel
+          for (let panelNum = 1; panelNum <= 9; panelNum++) {
+            const panelData = RAILS_DATA[`panel${panelNum}`];
+            
+            // Placeholder panel names for unfilled panels
+            const placeholderPanelNames = {
+              1: 'Historical Context',
+              2: 'Technical Analysis', 
+              3: 'User Experience',
+              4: 'Economic Factors',
+              5: 'Social Impact',
+              6: 'Environmental View',
+              7: 'Future Trends',
+              8: 'Comparative Study',
+              9: 'Synthesis and Summary'
+            };
+            
+            // Create default panel data if missing or placeholder
+            const isPlaceholder = !panelData || !panelData.name || panelData.name.includes('[Insert');
+            const safePanelData = {
+              name: isPlaceholder ? placeholderPanelNames[panelNum] : panelData.name,
+              rails: (panelData && panelData.rails) ? panelData.rails : []
+            };
+            
+            // Create panel folder name with fallback
+            const panelName = sanitizeFilename(
+              (safePanelData.name && !safePanelData.name.includes('[Insert')) 
+                ? safePanelData.name 
+                : `Panel_${panelNum}`
+            );
+            const panelFolder = `${baseFolder}/Panel_${panelNum}_${panelName}`;
+            
+            // Ensure rails array exists
+            const rails = safePanelData.rails || [];
+            
+            // Process each rail in the panel
+            rails.forEach((rail, railIndex) => {
+              const railNum = railIndex + 1;
+              const railLabel = railLabels[railNum] || `Rail_${railNum}`;
+              const railTitle = sanitizeFilename(
+                (rail && rail.title && !rail.title.includes('[Insert')) 
+                  ? rail.title 
+                  : railLabel
+              );
+              
+              // Generate rail filename (.rail custom extension avoids Windows scanning)
+              const railFilename = `Rail_${railNum}_${railLabel}_${railTitle}.rail`;
+              
+              // Generate rail content
+              const railContent = generateRailTXT(safePanelData, panelNum, rail || {}, railIndex);
+              
+              // Add to ZIP
+              zip.file(`${panelFolder}/${railFilename}`, railContent);
+            });
+            
+            // If no rails exist, create default empty rails
+            if (rails.length === 0) {
+              for (let railIndex = 0; railIndex < 3; railIndex++) {
+                const railNum = railIndex + 1;
+                const railLabel = railLabels[railNum] || `Rail_${railNum}`;
+                const railFilename = `Rail_${railNum}_${railLabel}_Empty.rail`;
+                const railContent = generateRailTXT(safePanelData, panelNum, {}, railIndex);
+                zip.file(`${panelFolder}/${railFilename}`, railContent);
+              }
+            }
+          }
+          
+          // Generate and download ZIP using File System Access API (trusted by Windows)
+          const content = await zip.generateAsync({ type: 'blob' });
+          const filename = `${baseFolder}.zip`;
+          
+          // Try File System Access API first (trusted by Windows)
+          if ('showSaveFilePicker' in window) {
+            try {
+              const handle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{
+                  description: 'ZIP Archive',
+                  accept: { 'application/zip': ['.zip'] }
+                }]
+              });
+              const writable = await handle.createWritable();
+              await writable.write(content);
+              await writable.close();
+              showToast('ZIP archive saved successfully!');
+              return;
+            } catch (err) {
+              // User cancelled or API failed, fall back to traditional download
+              if (err.name === 'AbortError') {
+                showToast('Save cancelled');
+                return;
+              }
+              console.log('File System Access API failed, using fallback:', err);
+            }
+          }
+          
+          // Fallback for browsers without File System Access API
+          const url = URL.createObjectURL(content);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('ZIP archive downloaded!');
+        } catch (err) {
+          console.error('ZIP generation failed:', err);
+          showToast('ZIP generation failed: ' + err.message);
+        }
+      }
+      
+      // Copy to clipboard
+      async function copyToClipboard(title, subtitle) {
+        const ascii = generateFullASCII(title, subtitle);
+        try {
+          await navigator.clipboard.writeText(ascii);
+          exportCopy.classList.add('copied');
+          exportCopy.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Copied!
+          `;
+          showToast('ASCII copied to clipboard!');
+          setTimeout(() => {
+            exportCopy.classList.remove('copied');
+            exportCopy.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy
+            `;
+          }, 2000);
+        } catch (err) {
+          // Fallback for older browsers
+          const textarea = document.createElement('textarea');
+          textarea.value = ascii;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          showToast('ASCII copied to clipboard!');
+        }
+      }
+      
+      // Update preview
+      function updatePreview() {
+        const title = exportTitle.value || 'Untitled Document';
+        const subtitle = exportSubtitle.value || '';
+        
+        // Generate a shortened preview showing actual data
+        const boxWidth = 58;
+        const lines = [];
+        
+        lines.push('╔' + '═'.repeat(boxWidth - 2) + '╗');
+        lines.push('║' + padCenter('R.A.I.L.S.', boxWidth - 2) + '║');
+        lines.push('╠' + '═'.repeat(boxWidth - 2) + '╣');
+        lines.push('║' + padCenter(truncate(title.toUpperCase(), boxWidth - 4), boxWidth - 2) + '║');
+        if (subtitle) {
+          lines.push('║' + padCenter(truncate(subtitle, boxWidth - 4), boxWidth - 2) + '║');
+        }
+        lines.push('╚' + '═'.repeat(boxWidth - 2) + '╝');
+        lines.push('');
+        
+        // Show first panel preview with actual data
+        const panel1 = RAILS_DATA.panel1;
+        if (panel1) {
+          lines.push('┌' + '─'.repeat(boxWidth - 2) + '┐');
+          lines.push('│' + padCenter('PANEL 1 PREVIEW', boxWidth - 2) + '│');
+          lines.push('├' + '─'.repeat(boxWidth - 2) + '┤');
+          lines.push('│  ' + padRight(`Name: ${truncate(panel1.name, boxWidth - 10)}`, boxWidth - 4) + '│');
+          if (panel1.rails && panel1.rails[0]) {
+            lines.push('│  ' + padRight(`Rail 1: ${truncate(panel1.rails[0].title, boxWidth - 12)}`, boxWidth - 4) + '│');
+          }
+          lines.push('└' + '─'.repeat(boxWidth - 2) + '┘');
+        }
+        
+        lines.push('');
+        lines.push(`... Full export includes all 9 panels ...`);
+        lines.push(`... Each with ${panel1 ? panel1.rails.length : 3} color-coded rails ...`);
+        
+        exportPreview.textContent = lines.join('\n');
+      }
+      
+      // Event listeners
+      exportBtn.addEventListener('click', () => {
+        exportOverlay.classList.add('active');
+        updatePreview();
+        updateLatexInBackground(); // Refresh LaTeX with current data
+        exportTitle.focus();
+      });
+      
+      exportCancel.addEventListener('click', () => {
+        exportOverlay.classList.remove('active');
+      });
+      
+      exportOverlay.addEventListener('click', (e) => {
+        if (e.target === exportOverlay) {
+          exportOverlay.classList.remove('active');
+        }
+      });
+      
+      exportConfirm.addEventListener('click', () => {
+        const title = exportTitle.value || 'RAILS Export';
+        const subtitle = exportSubtitle.value || '';
+        generatePDF(title, subtitle);
+      });
+      
+      exportTxt.addEventListener('click', () => {
+        const title = exportTitle.value || 'RAILS Export';
+        const subtitle = exportSubtitle.value || '';
+        generateTXT(title, subtitle);
+      });
+      
+      exportTex.addEventListener('click', () => {
+        const title = exportTitle.value || 'RAILS Export';
+        const subtitle = exportSubtitle.value || '';
+        generateTEX(title, subtitle);
+      });
+      
+      exportZip.addEventListener('click', () => {
+        const title = exportTitle.value || 'RAILS Export';
+        const subtitle = exportSubtitle.value || '';
+        generateZIP(title, subtitle);
+      });
+      
+      exportCopy.addEventListener('click', () => {
+        const title = exportTitle.value || 'RAILS Export';
+        const subtitle = exportSubtitle.value || '';
+        copyToClipboard(title, subtitle);
+      });
+      
+      exportTitle.addEventListener('input', () => {
+        updatePreview();
+        updateLatexInBackground();
+      });
+      exportSubtitle.addEventListener('input', () => {
+        updatePreview();
+        updateLatexInBackground();
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && exportOverlay.classList.contains('active')) {
+          exportOverlay.classList.remove('active');
+        }
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CONSOLE INSTRUCTIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  R.A.I.L.S. — Recording · All · Introspective · Language · Sequences          ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  LLM INSTRUCTIONS                                                             ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║  TO POPULATE THIS TEMPLATE:                                                   ║
+║  Edit the RAILS_DATA object at the top of the <script> section.               ║
+║  The HTML will be automatically generated from your data.                     ║
+║                                                                               ║
+║  DATA STRUCTURE (per panel):                                                  ║
+║  {                                                                            ║
+║    name: "Panel Name",                                                        ║
+║    rails: [                                                                   ║
+║      {                                                                        ║
+║        title: "Rail Title",                                                   ║
+║        content: "Rail content paragraph",                                     ║
+║        listItems: ["Item 1", "Item 2", "Item 3"]                              ║
+║      },                                                                       ║
+║      // ... more rails                                                        ║
+║    ]                                                                          ║
+║  }                                                                            ║
+║                                                                               ║
+║  RAIL PROGRESSION:                                                            ║
+║  • Rail 1: Foundation — introduce the perspective's core concept              ║
+║  • Rail 2: Development — build upon Rail 1, deepen the perspective            ║
+║  • Rail 3: Expansion — build upon Rail 2, extend or conclude the sequence     ║
+║                                                                               ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  COLOR SCHEME                                                                 ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║  ⚠️  BEFORE FILLING CONTENT, ASK THE OWNER:                                   ║
+║     "Would you like a custom color scheme, or keep the default?"              ║
+║                                                                               ║
+║  CURRENT THEME: Blueprint Silver-Blue-Grey + RGB Rows + CYM Rails             ║
+║                                                                               ║
+║  Panel Rows (RGB):                                                            ║
+║  • Row 1 (Panels 1-3): Red    (#e63946)                                       ║
+║  • Row 2 (Panels 4-6): Green  (#2a9d8f)                                       ║
+║  • Row 3 (Panels 7-9): Blue   (#4895ef)                                       ║
+║                                                                               ║
+║  Rail Diamonds (CYM):                                                         ║
+║  • Rail 1: Cyan    (#00d4ff)                                                  ║
+║  • Rail 2: Yellow  (#ffeb3b)                                                  ║
+║  • Rail 3: Magenta (#ff00ff)                                                  ║
+║                                                                               ║
+║  TO CUSTOMIZE: Modify :root CSS variables in <style>                          ║
+║                                                                               ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  INTERACTIONS                                                                 ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║  • PANEL CLICK: Opens animated modal with enlarged panel view                 ║
+║  • DIAMOND CLICK: Switches rails (works in grid and modal)                    ║
+║  • SWIPE/DRAG: Swipe left/right or click+drag to switch rails                 ║
+║  • MODAL CLOSE: Click overlay, X button, or press Escape                      ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+    `);
+
+    // Initialize the template
+    // Start with the setup wizard - user can fill in content or skip
+    initSetupWizard();
+    
+    // Initialize export system (available after wizard closes)
+    initExportSystem();
+  </script>
+</body>
+</html>
