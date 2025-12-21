@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Index</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79b8ff;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --experimental: #a371f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .system-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .system-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .system-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .system-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            margin-top: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: rgba(63, 185, 80, 0.15);
+            color: var(--success);
+        }
+
+        .status-experimental {
+            background-color: rgba(163, 113, 247, 0.15);
+            color: var(--experimental);
+        }
+
+        .status-planned {
+            background-color: rgba(210, 153, 34, 0.15);
+            color: var(--warning);
+        }
+
+        .empty-state {
+            background-color: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state code {
+            background-color: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .about-section {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .about-section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .about-section ul {
+            list-style: none;
+            color: var(--text-secondary);
+        }
+
+        .about-section li {
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .about-section li::before {
+            content: "\2022";
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                padding: 2rem 0;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">&#128450;</div>
+            <h1>The Index</h1>
+            <p class="tagline">A unified, human-navigable layer for exploring multiple systems within a single monorepo. The map, not the territory.</p>
+        </header>
+
+        <main>
+            <section class="section">
+                <h2 class="section-title">&#128463; Systems</h2>
+                <div class="empty-state">
+                    <h3>No systems indexed yet</h3>
+                    <p>Add your first system by creating <code>systems/your-system.html</code></p>
+                </div>
+                <!--
+                Example system cards (uncomment and modify as you add systems):
+
+                <div class="systems-grid">
+                    <a href="systems/ucf.html" class="system-card">
+                        <h3>Unified Consciousness Framework</h3>
+                        <p>Core framework for consciousness modeling and cognitive architecture.</p>
+                        <span class="status-badge status-active">Active</span>
+                    </a>
+                    <a href="systems/tarot.html" class="system-card">
+                        <h3>Tarot Workspace</h3>
+                        <p>Divination and symbolic interpretation tools.</p>
+                        <span class="status-badge status-experimental">Experimental</span>
+                    </a>
+                    <a href="systems/firmware.html" class="system-card">
+                        <h3>Firmware Systems</h3>
+                        <p>Embedded systems and hardware interfaces.</p>
+                        <span class="status-badge status-planned">Planned</span>
+                    </a>
+                </div>
+                -->
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#128312; About This Index</h2>
+                <div class="about-section">
+                    <h2>What is The Index?</h2>
+                    <p>The Index is a GitHub Pages-hosted HTML registry for exploring multiple systems within a single monorepo. Each HTML file serves as an interactive index for a workspace, project, folder, or subsystem.</p>
+                    <p>Designed to help navigate:</p>
+                    <ul>
+                        <li>Multiple workspaces and nested repositories</li>
+                        <li>Experimental folders and research prototypes</li>
+                        <li>Long-lived systems with partial overlap</li>
+                        <li>Complex project constellations</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub Pages</a> &middot; View on <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+        </footer>
+    </div>
+</body>
+</html>
