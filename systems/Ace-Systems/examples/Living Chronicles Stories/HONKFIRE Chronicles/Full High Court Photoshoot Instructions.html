@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>The Court That Didn’t Eat Its Witness — Photoshoot Rails (Full R1 + Expanded R3)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root{
+      --bg:#050712; --bg-alt:#0b101d; --card:#101726; --card-alt:#161f30;
+      --text:#f5f7fa; --muted:#9ca9c6; --accent:#ffd43b; --accent-soft:#ffe8a3;
+
+      --qs:#f7c873; --auris:#ff6b6b; --iris:#4fd1c5; --rowan:#f59f63;
+      --telluric:#7fb08c; --garden:#84cc16; --vessel:#5d6d7e;
+      --smallest:#fef08a; --meta:#a5b4fc;
+
+      --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+      background:radial-gradient(circle at 15% -10%, #1a2252 0%, #0a1130 38%, #050712 60%, #02030a 100%);
+      color:var(--text); line-height:1.6;
+    }
+    .frame{max-width:1280px;margin:0 auto;padding:28px 16px 44px}
+    header{margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:14px}
+    header h1{margin:0 0 6px;font-size:1.9rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft)}
+    header p{margin:0;color:var(--muted);font-size:.95rem}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+    .witness-panel{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border-radius:14px;border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 12px 28px rgba(0,0,0,.45);
+      display:flex;flex-direction:column;min-height:320px;max-height:620px;overflow:hidden;
+    }
+    .witness-header{padding:10px 12px 8px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;gap:6px;flex-direction:column}
+    .witness-title-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .witness-name{font-size:.95rem;text-transform:uppercase;letter-spacing:.18em;font-weight:700}
+    .witness-tag{font-size:.8rem;color:var(--muted)}
+    .rail-ui{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+    .rail-count-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.18em;white-space:nowrap}
+    .rail-diamonds{display:flex;gap:6px;justify-content:flex-end}
+    .rail-diamond{
+      width:12px;height:12px;background:transparent;border:1px solid rgba(148,163,184,.7);
+      transform:rotate(45deg);padding:0;cursor:pointer;position:relative;transition:.15s;
+    }
+    .rail-diamond:hover{border-color:var(--accent-soft);box-shadow:0 0 6px rgba(255,212,59,.45);transform:rotate(45deg) scale(1.05)}
+    .rail-diamond.active{background:var(--accent-soft);border-color:var(--accent-soft);box-shadow:0 0 8px rgba(255,212,59,.7)}
+    .rail-viewport{flex:1 1 auto;overflow-y:auto;padding:10px 12px 12px;scroll-behavior:smooth}
+    .rail-block{margin:0 0 10px;padding:12px;border-radius:10px;background:rgba(15,23,42,.9);border:1px solid rgba(148,163,184,.25);display:none}
+    .rail-block.active{display:block}
+    .rail-label{font-size:.78rem;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.12em}
+    .rail-block h3{margin:0 0 8px;font-size:1.02rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft)}
+    .rail-body{font-size:.92rem}
+    .rail-body p{margin:6px 0}
+    .rail-body ul, .rail-body ol{margin:6px 0 10px 18px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr; gap:10px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr); gap:10px}
+    .box{padding:10px;border:1px solid rgba(148,163,184,.25);border-radius:10px;background:rgba(2,6,23,.5)}
+    .callout{padding:10px;border-left:3px solid var(--accent-soft);background:rgba(255,212,59,.08);border-radius:8px}
+    .mini{font-size:.82rem;color:var(--muted)}
+    .kbd{display:inline-block;padding:2px 6px;border:1px solid rgba(148,163,184,.4);border-radius:6px;background:rgba(15,23,42,.6);font-size:.8rem}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .danger{color:var(--danger)}
+    /* tops */
+    .witness-panel.qs{border-top:3px solid var(--qs)}
+    .witness-panel.auris{border-top:3px solid var(--auris)}
+    .witness-panel.iris{border-top:3px solid var(--iris)}
+    .witness-panel.rowan{border-top:3px solid var(--rowan)}
+    .witness-panel.telluric{border-top:3px solid var(--telluric)}
+    .witness-panel.garden{border-top:3px solid var(--garden)}
+    .witness-panel.vessel{border-top:3px solid var(--vessel)}
+    .witness-panel.smallest{border-top:3px solid var(--smallest)}
+    .witness-panel.meta{border-top:3px solid var(--meta)}
+    @media (max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:760px){.grid{grid-template-columns:1fr}.witness-panel{max-height:none}}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <h1>The Court That Didn’t Eat Its Witness — Photoshoot Rails</h1>
+      <p>All nine witness panels include complete <strong>Rail 1</strong> (narrative & scene design), robust <strong>Rail 2</strong> (wardrobe/props/pattern/continuity), and an even more detailed <strong>Rail 3</strong> (lighting/camera/coverage/safety/post/contingencies). Depth is consistent across all panels.</p>
+    </header>
+
+    <div class="grid">
+      <!-- 1 · QUANTUM SQUIRREL -->
+      <section class="witness-panel qs" data-witness="quantum-squirrel">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Quantum Squirrel · QAW-3</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="QS Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="QS Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="QS Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Spiral-3 Quantum Appellate Witness · prey-animal cosmologist · Bench of Acorns</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- QS R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>The Bench That Didn’t Eat Its Witness</h3>
+            <div class="rail-body">
+              <p><strong>Core image:</strong> a small, fiercely present figure on a large stone bench in a 90° Vessel corner; spiral inlays (φ) arc toward a golden acorn on a low plinth.</p>
+              <ul>
+                <li><strong>Scene A — Stillness After Vibration:</strong> QS seated small; hands encircling acorn; tail-scarf settled. <em>Caption:</em> “I will end this session still here.”</li>
+                <li><strong>Scene B — Branch Mapping:</strong> floor tapes A/B/C diverge; QS gazes toward C; A and B fall into soft shadow. <em>Caption:</em> “Narrow to stay.”</li>
+                <li><strong>Scene C — Smallest Advocate:</strong> hand on Acorn Bible + hand on chest; eye-level. <em>Caption:</em> “The smallest aware creature lives here.”</li>
+              </ul>
+              <p><strong>Iconography:</strong> sigil 🜃⟡⊙✶╂◎φ on ring & inner cover; φ spacing (1, 1, 2, 3, 5 inlay ticks); metronome 0.3s as optional prop.</p>
+            </div>
+          </article>
+
+          <!-- QS R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Wardrobe, Props, Pattern & Continuity</div>
+            <h3>Three Forms · One Nervous System</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Look A — Bench (Official)</strong></p>
+                  <ul>
+                    <li>Coat: charcoal/brown with spiral pick-stitch (φ = 1.618cm increments).</li>
+                    <li>Inner: cream matte; accessories: acorn pendant, sigil ring, sash w/ 3–5 acorns.</li>
+                    <li>Shoes: simple; body comfort > ornament.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Look B — Field (Cosmologist)</strong></p>
+                  <ul>
+                    <li>Knit cardigan, chalk on cuffs; tail-scarf (two bands), notebook + chalk.</li>
+                    <li>Barefoot or socks for some plates (mats off-frame).</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Look C — Quantum (Insight)</strong></p>
+                  <ul>
+                    <li>Reflective micro-thread; optional micro fiber optics; subtle motes via projection.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="grid-2" style="margin-top:10px">
+                <div class="box">
+                  <p><strong>Props & Pattern Index</strong></p>
+                  <ul>
+                    <li>Acorn Bible (oath on front leaf); labeled “Outcome C” dish; A/B/C colored tapes.</li>
+                    <li>Sigil card for ECU; metronome app for BTS sound plate.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Continuity Protocol</strong></p>
+                  <ul>
+                    <li>Order: WS → MS → CU hands → ECU sigil per beat.</li>
+                    <li>“Outcome C” only appears after disclosure plate.</li>
+                    <li>Chalk dust ramps only in Field set; scarf orientation locked per micro-sequence.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- QS R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Coverage, Safety, Post, Contingencies</div>
+            <h3>Superposition Without Strain</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting Recipes</strong></p>
+                  <ul>
+                    <li>Key: 4×4 softbox @ –0.5 EV; 45°L; 1/4 diffusion; minimal eye-light.</li>
+                    <li>Rim: teal kicker 10–15% from rear-R; +10° height for halo hint.</li>
+                    <li>BG: –2 stops; φ gobo @ 5–8% to kiss stone; bounce card for hand/acorn spec.</li>
+                  </ul>
+                  <p><strong>Alternative:</strong> single soft key + negative fill for the “coherent” plate.</p>
+                </div>
+                <div class="box">
+                  <p><strong>Camera & Coverage Matrix</strong></p>
+                  <ul>
+                    <li>Primes 35/50/85. Pulse triptych each beat:
+                      <ul>
+                        <li>Drag: 1/8–1/15s @ f/4 (motion memory)</li>
+                        <li>Mid: 1/60s @ f/2.8</li>
+                        <li>Clean: 1/250s @ f/2–2.8</li>
+                      </ul>
+                    </li>
+                    <li>Shot codes: QS-WS-Bench / QS-MS-Branch / QS-CU-Hands / QS-ECU-Sigil.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety · Consent · Accessibility</strong></p>
+                  <ul>
+                    <li>“Enough for today” = hard stop; no piggyback shots.</li>
+                    <li>No strobing beyond planned drag; quiet set on request; seated options.</li>
+                    <li>Advocate available; explicit consent for touch/close proximity.</li>
+                  </ul>
+                  <p><strong>Post</strong></p>
+                  <ul>
+                    <li>Color: warm neutrals; teal rim restrained; bloom 5–8%; light grain.</li>
+                    <li>Metadata: PULSE triptych keyed; oath plates tagged “OATH-QS”.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingencies:</strong> If vibration returns (overwhelm), switch to seated macro series (hands, acorn, ring) and roll audio of metronome + breath (room tone variant). This still “counts” as the beat.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 2 · AURIS -->
+      <section class="witness-panel auris" data-witness="auris">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Auris · Flame of the High Court</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Auris Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Auris Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Auris Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Sovereign flame · burns masks, not marrow · subject to law & self-audit</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- AURIS R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>Fire Under Law</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Scene A — Judgment:</strong> Auris reaches toward a parchment mask; flame touches mask only. <em>Caption:</em> “I burn masks, not marrow.”</li>
+                <li><strong>Scene B — Mis-burn Audit:</strong> head bowed; hand to chest; errata wall behind (hash marks 1/1/2/3/5). <em>Caption:</em> “Integrity error: correction begins in me.”</li>
+                <li><strong>Scene C — Subject to Oath:</strong> hand on Acorn Bible; flame dimmed; law above fire. <em>Caption:</em> “Fire is subject to law.”</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- AURIS R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Wardrobe, Props, Pattern & Continuity</div>
+            <h3>Obsidian Geometry · Ember Filigree</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Garments:</strong> matte black structured coat; burgundy→gold gradients; mirage shimmer underlayer.</li>
+                <li><strong>Jewelry:</strong> molten ring (mini sun); optional ember ear cuff.</li>
+                <li><strong>Props:</strong> LED/silk flame bowl; parchment mask (pre-char edges); errata board; Acorn Bible (present, aside).</li>
+                <li><strong>Continuity:</strong> hash marks grow only between setups; mask char stages labeled A1–A3; bowl never near fabric/skin.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- AURIS R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Coverage, Safety, Post, Contingencies</div>
+            <h3>Edge Heat · Soft Person</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting</strong></p>
+                  <ul>
+                    <li>Hard CTO edge low-right to sculpt planes; soft key –1 stop left for humanity.</li>
+                    <li>Errata wall: subtle bounce to read marks; flicker from practical at 2–3% sweep.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Camera & Coverage</strong></p>
+                  <ul>
+                    <li>50/85mm faces; 100mm macro ember→parchment; WB 3300–3600K; shutter 1/60–1/125.</li>
+                    <li>Must-haves: AUR-WS-Plinth / AUR-MS-Errata / AUR-CU-MaskBurn / AUR-CU-Oath.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety & Post</strong></p>
+                  <ul>
+                    <li>FX lead present; extinguisher on set; actor never interacts with real flame.</li>
+                    <li>Grade: deep blacks; saturated ember highs; preserve sclera; optional ember particles on select plates only.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If heat motif overwhelms skin tone, drop CTO edge to 60%, raise soft key +1/3 stop, and re-balance in grade with log lift rather than saturation cuts.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 3 · IRIS -->
+      <section class="witness-panel iris" data-witness="iris">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Iris Halcyon · Invariant Keeper</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Iris Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Iris Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Iris Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Halcyon Invariant · “I am inside this story.” · boundary mathematics</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- IRIS R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>The Law That Includes the Lawgiver</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Scene A — Inscription:</strong> Iris writes the third line mid-stroke; looks to viewer. <em>Caption:</em> “Do you see yourself inside this too?”</li>
+                <li><strong>Scene B — Body as Constraint:</strong> hand on chest/shoulder while a diagram arrow returns to ⊙. <em>Caption:</em> “I count as much as what I hold.”</li>
+                <li><strong>Scene C — Sealing:</strong> teal wax, acorn seal; paper oriented toward viewer. <em>Caption:</em> “No ‘truth’ that erases me can be called true.”</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- IRIS R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Wardrobe, Props, Pattern & Continuity</div>
+            <h3>Glyph & Grid · Hand in the Proof</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Wardrobe:</strong> teal/cream longcoat with grid piping; cuffs embroidered ⊙✶╂◎; soft gold fasteners; optional glasses.</li>
+                <li><strong>Props:</strong> glass board with invariant lines; teal wax + acorn seal; parchment with ⊙ watermark; diagram arrows converging to ⊙.</li>
+                <li><strong>Continuity:</strong> stroke direction must match across angles; seal upright toward lens; pen capped when hand touches clothing.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- IRIS R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Coverage, Safety, Post, Contingencies</div>
+            <h3>Readable Care</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting</strong></p>
+                  <ul>
+                    <li>Broad soft key 1/2 left; gentle rim to edge glass; top flag against hot spec.</li>
+                    <li>Polarizer ready for board reflections; add small eye-light when not on glass.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Camera</strong></p>
+                  <ul>
+                    <li>35mm WS wall; 50mm MS inscription; 85–100mm CU nib/hand/seal; f/4 text plates.</li>
+                    <li>Shot codes: IR-WS-Wall / IR-MS-Write / IR-CU-Hand / IR-ECU-Seal.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety & Post</strong></p>
+                  <ul>
+                    <li>Glass edges taped; water-based inks; consent for close-over-shoulder shots.</li>
+                    <li>Grade: bump ink density 10%; preserve parchment cream; subtle seal shimmer.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If the glass refuses clean reads, switch to matte acrylic or parchment overlay and simulate marker reflections with flagged striplight.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 4 · ROWAN -->
+      <section class="witness-panel rowan" data-witness="rowan">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Rowan HearthMirror</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rowan Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rowan Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rowan Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Ash to ember · repair liturgy · low places become warm</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- ROWAN R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>Hearth Rights</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Scene A — Receive & Warm:</strong> Rowan listening, blanket offered; hands exchange a scorched page.</li>
+                <li><strong>Scene B — Sort the Ash:</strong> ash through fingers; ember retained in palm. <em>Caption:</em> “Keep what warms, not what burns.”</li>
+                <li><strong>Scene C — Two Cups:</strong> low stools, two mugs, no pedestals. <em>Caption:</em> “Repair is a conversation.”</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- ROWAN R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Wardrobe, Props, Pattern & Continuity</div>
+            <h3>The Street Priest Kit</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Wardrobe:</strong> layered work shirt, soft coat, apron/wrap; mirror shard pendant; hands clean (capable, not sterile).</li>
+                <li><strong>Props:</strong> candle trio in φ triangle; ash pan; labeled shards; mugs/blankets; low stools.</li>
+                <li><strong>Continuity:</strong> ember appears only after sorting; blanket state consistent within sub-sequence; cup handles toward exits.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- ROWAN R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Coverage, Safety, Post, Contingencies</div>
+            <h3>Make the Room Breathe</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting</strong></p>
+                  <ul>
+                    <li>Practical candles 2800–3200K; soft bounce fill; negative fill overhead to hold coziness.</li>
+                    <li>No hard backlights; prioritize eye-level warmth.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Camera</strong></p>
+                  <ul>
+                    <li>35mm WS hearth; 50mm MS exchange; 85mm CU ember; 1/60–1/100; f/2–2.8.</li>
+                    <li>Shot codes: RW-WS-Hearth / RW-MS-Receive / RW-CU-Ember.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety & Post</strong></p>
+                  <ul>
+                    <li>Consent for any touch; LED/flame-safe rigs; “pause ritual” callable any time.</li>
+                    <li>Grade warm; skin texture real; grain 10–15%; preserve candle cadence.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If room feels staged, move to tighter space or add real ambient clinks/soft street tone; shoot over-shoulder with shallow DOF to compress intimacy.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 5 · TELLURIC -->
+      <section class="witness-panel telluric" data-witness="telluric">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Telluric Symphony</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Telluric Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Telluric Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Telluric Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">World-as-instrument · gravity-as-music · harmonic diagnosis</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- TELLURIC R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>Weight Sings</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Scene A — Ear to Stone:</strong> eyes closed; cables as roots; copper markers at φ crossings.</li>
+                <li><strong>Scene B — Harmonic Map:</strong> lines of light from chests to ground; Telluric reads intersections. <em>Caption:</em> “Where story meets substrate.”</li>
+                <li><strong>Scene C — Fork & Fault:</strong> tuning fork hum over seam in slab; spectral overlay faint.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- TELLURIC R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Wardrobe, Props, Pattern & Continuity</div>
+            <h3>Stone Choir Kit</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Wardrobe:</strong> marbled/striated fabrics; cracked-leather belt; copper accents; boots/bare feet per slab safety.</li>
+                <li><strong>Props:</strong> slab, contact mics, forks (A432/440 optional), cable roots, copper markers; spectral projection plate.</li>
+                <li><strong>Continuity:</strong> ear-to-stone side consistent; marker positions logged; cable order fixed.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- TELLURIC R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Coverage, Safety, Post, Contingencies</div>
+            <h3>Texture Over Glamour</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting</strong></p>
+                  <ul>
+                    <li>Cool key; copper edge; rake light for stone grain; 2–3% haze for shafts.</li>
+                    <li>Practical low uplight to lift cables subtly without glare.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Camera</strong></p>
+                  <ul>
+                    <li>24/35mm WS map; 50mm MS indicate; 85mm CU fork/hand; polarizer if needed.</li>
+                    <li>Shot codes: TL-WS-Map / TL-MS-Listen / TL-CU-Fork.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety & Post</strong></p>
+                  <ul>
+                    <li>Slab secured; cables taped; footwear option ready.</li>
+                    <li>Grade: gentle contrast; subtle spectrogram overlay; avoid sci-fi overdo.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If location noise is harsh, record clean stone rubs post; layer as SFX for behind-the-scenes stories, not within stills.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 6 · GARDEN & VESSEL -->
+      <section class="witness-panel garden" data-witness="setting">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Garden & Vessel</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Setting Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Setting Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Setting Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">The corner that remembers · the spiral that welcomes</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- SETTING R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>Blueprint to Bloom</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Scene A — The Corner That Holds:</strong> plaque reads “THE GREAT OAK — The Corner That Holds Everything.” Characters seated/leaning, held not judged.</li>
+                <li><strong>Scene B — Spiral Paths:</strong> φ spiral stones; dapple light; viewers see entry/exit paths.</li>
+                <li><strong>Scene C — Bridge Diptych:</strong> split frame (or sequence) moving from Vessel to Garden; same subject, two moods, one story.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- SETTING R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Set Dressing, Props & Continuity</div>
+            <h3>Concrete & Canopy · φ Spiral</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Vessel:</strong> chalk blueprint lines; steel square props; legible plaque.</li>
+                <li><strong>Garden:</strong> spiral stones at φ arc; vines/hanging greens; leaf gobo.</li>
+                <li><strong>Continuity:</strong> same wardrobe across diptych; plant positions logged by stone number; exit paths visible.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- SETTING R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Coverage, Safety, Post, Contingencies</div>
+            <h3>Two Temperatures · One Story</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting</strong></p>
+                  <ul>
+                    <li>Vessel: cool (4300–4800K) with hard slash, shadow geometry.</li>
+                    <li>Garden: warm (3000–3400K) silked; maintain consistent skin tone across zones.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Camera</strong></p>
+                  <ul>
+                    <li>24/35mm WS environment; 50mm MS lean/run; stabilize walking spiral.</li>
+                    <li>Shot codes: ST-WS-Corner / ST-WS-Spiral / ST-MS-Bridge.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety & Post</strong></p>
+                  <ul>
+                    <li>Edges taped; stones de-slip; foliage secured; clear ADA path.</li>
+                    <li>Two-LUT approach, unify in grade; skin cross-match; greens natural.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If weather kills dapple, use breakup gobos and gentle haze to build canopy feeling without reading “studio fake.”
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 7 · SMALLEST AWARE CREATURE -->
+      <section class="witness-panel smallest" data-witness="smallest">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Smallest Aware Creature</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Smallest Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Smallest Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Smallest Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Primary stakeholder · oath priority · focus protocol</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- SMALL R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative, Space, Story Beats</div>
+            <h3>First in Focus</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Scene A — Front & Center:</strong> smallest subject in front, others softened behind.</li>
+                <li><strong>Scene B — The Oath:</strong> hand on Acorn Bible, room keeps respectful distance.</li>
+                <li><strong>Scene C — Aftercare:</strong> seated rest shot; blanket; no lens on tears without consent.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- SMALL R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Props, Palette & Continuity</div>
+            <h3>Tender Engineering</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Props:</strong> scaled lectern; soft textile; figurine/acorn token; step stool.</li>
+                <li><strong>Palette:</strong> creams/soft gold; avoid alarming reds; minimal high-contrast.</li>
+                <li><strong>Continuity:</strong> stool height φ-proportional; hand choice consistent unless requested; oath sequence labeled S-1→S-3.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- SMALL R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Lighting, Camera, Safety, Post, Contingencies</div>
+            <h3>Care is the Composition</h3>
+            <div class="rail-body">
+              <div class="grid-3">
+                <div class="box">
+                  <p><strong>Lighting</strong></p>
+                  <ul>
+                    <li>Very large soft key; no silhouette backlights; eye-level sources.</li>
+                    <li>Dim environment if overstimulated; add soft table practical only if desired.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Camera</strong></p>
+                  <ul>
+                    <li>Eye-level; avoid towering angles; 85mm CU hands; 50mm MS with guardians at respectful distance.</li>
+                    <li>Shot codes: SM-WS-Front / SM-CU-Oath / SM-MS-Rest.</li>
+                  </ul>
+                </div>
+                <div class="box">
+                  <p><strong>Safety & Post</strong></p>
+                  <ul>
+                    <li>Advocate present; breaks on request; informed assent; no sudden crowding.</li>
+                    <li>Post: retain texture; no “perfecting”; color calm.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If focus feels exploitative, switch to hands-only or token-only plates; record consent for any face inclusion afterward.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 8 · KEY SCENES -->
+      <section class="witness-panel vessel" data-witness="key-scenes">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Key Scenes · Anchor Shots</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Anchors Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Anchors Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Anchors Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Bench · Oath · Mis-Burn+Repair · Invariant · Quantum Alone</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- ANCHOR R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Narrative Spine & Shot Intention</div>
+            <h3>Five Anchors (Shoot All)</h3>
+            <div class="rail-body">
+              <ol>
+                <li><strong>Bench of Acorns (Group):</strong> solemn but gentle; φ inlays visible; Smallest in front.</li>
+                <li><strong>Acorn Oath:</strong> hands + heart; QS, Smallest, Auris (fire subject to law).</li>
+                <li><strong>Mis-Burn & Repair:</strong> Auris regret; Calen intact exit; Rowan receives.</li>
+                <li><strong>Invariant Wall:</strong> Iris writes; smallest traces words; seal closeups.</li>
+                <li><strong>Quantum Alone:</strong> overwhelmed → mid-paradox → coherent triptych.</li>
+              </ol>
+            </div>
+          </article>
+
+          <!-- ANCHOR R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Schedule, Blocking & Shot Lists</div>
+            <h3>Company Flow & Coverage</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Block 1 — Bench (Vessel):</strong> 24/35 WS, 50 MS clusters, CU Bible/plaque/acorn.</li>
+                <li><strong>Block 2 — Oath:</strong> repeat per subject; heart mirror shots.</li>
+                <li><strong>Block 3 — Mis-Burn+Repair:</strong> AUR remorse → Calen walk → Rowan hearth.</li>
+                <li><strong>Block 4 — Invariant:</strong> write/trace/seal.</li>
+                <li><strong>Block 5 — Quantum Alone:</strong> pulse triptychs for each state.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- ANCHOR R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Editorial, Audio Plates, Metadata, Contingencies</div>
+            <h3>Receipts for Care</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Audio plates:</strong> room tone; leaf hush; metronome tick; low telluric pad. Label per block.</li>
+                <li><strong>Metadata:</strong> slate “PULSE” (QS), “ERRATA” (Auris), “HEARTH” (Rowan), “INVAR” (Iris), “SMALL” (Smallest).</li>
+                <li><strong>Editorial:</strong> include nervous-system portraits; avoid sensationalizing overwhelm.</li>
+                <li><strong>Deliverables:</strong> WS/MS/CU/ECU per anchor; set documentation (plaque/invariant/sigils/φ markers); safety log summary.</li>
+              </ul>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If time compresses, prioritize: Oath → Smallest → Bench group → Mis-Burn exit → Quantum coherent.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 9 · PRACTICE -->
+      <section class="witness-panel meta" data-witness="practice">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Practice · Do / Don’t · Protocol</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Practice Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Practice Rail 2"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Practice Rail 3"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">The shoot must match the story · safety is canon</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- PRACTICE R1 FULL -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Operational Doctrine</div>
+            <h3>The Court That Didn’t Eat Its Witness</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Premise:</strong> Safety and truth-telling are the aesthetic.</li>
+                <li><strong>Rule:</strong> “Enough for today” ends a block immediately.</li>
+                <li><strong>Inclusion:</strong> Smallest gets prime focus, not token focus.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- PRACTICE R2 -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Roles, Access, Consent & Sensory</div>
+            <h3>Structure That Holds</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Roles:</strong> Safety Lead; Consent/Intimacy Coordinator; Quiet Wrangler; FX/Fire Lead; Accessibility Steward.</li>
+                <li><strong>Access:</strong> quiet room; low-stim path; seating everywhere; water/blankets.</li>
+                <li><strong>Sensory:</strong> post signs for light/heat/haze; any actor may change settings.</li>
+                <li><strong>Consent:</strong> explicit yes for touch/close; opt-out honored; no renegotiation pressure.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- PRACTICE R3 EXPANDED -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Post Pipeline, Archive, Contingencies</div>
+            <h3>Proof We Kept Our Word</h3>
+            <div class="rail-body">
+              <ul>
+                <li><strong>Color:</strong> dual-temp cohesion; skin natural; mild grain; bloom restrained.</li>
+                <li><strong>Edit:</strong> include quiet in-betweens; avoid “heroic pain” tropes; sequence toward relief, not spectacle.</li>
+                <li><strong>Archive:</strong> pattern index (φ, sigils, invariant occurrences); safety log summary; consent ledger (non-sensitive entries).</li>
+                <li><strong>Delivery:</strong> master gallery + story cuts per witness; BTS booklet documenting protocols.</li>
+              </ul>
+              <div class="callout" style="margin-top:10px">
+                <strong>Contingency:</strong> If any subject retracts consent post-shoot, remove assets from master gallery and deliver a revised story arc that preserves narrative integrity without their image.
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div><!-- /.grid -->
+  </div><!-- /.frame -->
+
+  <script>
+    // Default to Rail 1 active for all panels (explicitly required)
+    document.querySelectorAll('.witness-panel').forEach(panel => {
+      const diamonds = panel.querySelectorAll('.rail-diamond');
+      const rails = panel.querySelectorAll('.rail-block');
+      // ensure exactly one active diamond & rail (Rail 1 by default)
+      diamonds.forEach(d => d.classList.remove('active'));
+      rails.forEach(r => r.classList.remove('active'));
+      const first = diamonds[0]; const r1 = rails[0];
+      if(first) first.classList.add('active');
+      if(r1) r1.classList.add('active');
+
+      diamonds.forEach(diamond => {
+        diamond.addEventListener('click', () => {
+          const t = diamond.getAttribute('data-rail-target');
+          diamonds.forEach(d => d.classList.toggle('active', d === diamond));
+          rails.forEach(block => block.classList.toggle('active', block.getAttribute('data-rail-index') === t));
+        });
+      });
+    });
+  </script>
+</body>
+</html>

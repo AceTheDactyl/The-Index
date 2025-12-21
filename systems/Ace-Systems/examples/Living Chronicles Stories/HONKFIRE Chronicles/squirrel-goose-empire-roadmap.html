@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌰🔥 The Squirrel-Goose Empire | Interactive Roadmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --flame-orange: #ff6b1a;
+      --quantum-purple: #9d4edd;
+      --chaos-gold: #ffd700;
+      --void-black: #0a0a0a;
+      --scatter-teal: #2dd4bf;
+      --certainty-red: #dc2626;
+      --acorn-brown: #8b5a2b;
+      --feather-cream: #f5f0e6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--void-black);
+      color: var(--feather-cream);
+      font-family: 'Crimson Pro', Georgia, serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Chaos background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 30%, rgba(157, 78, 221, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(255, 107, 26, 0.15) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+      animation: chaosShift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes chaosShift {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(30deg); }
+    }
+
+    /* Header */
+    .empire-header {
+      text-align: center;
+      padding: 60px 20px;
+      position: relative;
+      border-bottom: 2px solid transparent;
+      background: linear-gradient(var(--void-black), var(--void-black)) padding-box,
+                  linear-gradient(90deg, var(--quantum-purple), var(--flame-orange), var(--chaos-gold)) border-box;
+    }
+
+    .merged-glyph {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: glyphPulse 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px var(--chaos-gold));
+    }
+
+    @keyframes glyphPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.05) rotate(-2deg); }
+      75% { transform: scale(1.05) rotate(2deg); }
+    }
+
+    .empire-title {
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--quantum-purple), var(--flame-orange), var(--chaos-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .empire-subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--scatter-teal);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .decree-banner {
+      margin-top: 30px;
+      padding: 15px 30px;
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+      font-style: italic;
+      color: var(--chaos-gold);
+      font-size: 1.1rem;
+    }
+
+    /* Navigation tabs */
+    .phase-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 30px 20px;
+      background: rgba(10, 10, 10, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .phase-tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: 2px solid var(--quantum-purple);
+      color: var(--feather-cream);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .phase-tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--quantum-purple), var(--flame-orange));
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+
+    .phase-tab:hover::before,
+    .phase-tab.active::before {
+      left: 0;
+    }
+
+    .phase-tab:hover,
+    .phase-tab.active {
+      border-color: var(--flame-orange);
+      transform: translateY(-2px);
+    }
+
+    /* Main container */
+    .roadmap-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* Phase sections */
+    .phase-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .phase-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .phase-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .phase-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+
+    .phase-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      color: var(--chaos-gold);
+      margin-bottom: 10px;
+    }
+
+    .phase-description {
+      color: rgba(245, 240, 230, 0.7);
+      max-width: 600px;
+      margin: 0 auto;
+      font-style: italic;
+    }
+
+    /* Milestone cards */
+    .milestones-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .milestone-card {
+      background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(10, 10, 10, 0.95));
+      border: 1px solid rgba(157, 78, 221, 0.3);
+      padding: 25px;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .milestone-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--quantum-purple), var(--flame-orange));
+    }
+
+    .milestone-card:hover {
+      transform: translateX(10px);
+      border-color: var(--flame-orange);
+      box-shadow: 0 0 30px rgba(255, 107, 26, 0.2);
+    }
+
+    .milestone-card.completed {
+      border-color: var(--scatter-teal);
+    }
+
+    .milestone-card.completed::before {
+      background: var(--scatter-teal);
+    }
+
+    .milestone-card.in-progress {
+      border-color: var(--chaos-gold);
+      animation: progressPulse 2s ease-in-out infinite;
+    }
+
+    .milestone-card.in-progress::before {
+      background: var(--chaos-gold);
+    }
+
+    @keyframes progressPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+      50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); }
+    }
+
+    .milestone-status {
+      display: inline-block;
+      padding: 4px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 15px;
+      background: rgba(157, 78, 221, 0.2);
+      color: var(--quantum-purple);
+    }
+
+    .milestone-card.completed .milestone-status {
+      background: rgba(45, 212, 191, 0.2);
+      color: var(--scatter-teal);
+    }
+
+    .milestone-card.in-progress .milestone-status {
+      background: rgba(255, 215, 0, 0.2);
+      color: var(--chaos-gold);
+    }
+
+    .milestone-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      color: var(--feather-cream);
+      margin-bottom: 10px;
+    }
+
+    .milestone-description {
+      font-size: 0.95rem;
+      color: rgba(245, 240, 230, 0.7);
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .milestone-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      background: rgba(255, 107, 26, 0.15);
+      color: var(--flame-orange);
+      border-radius: 2px;
+    }
+
+    .tag.squirrel {
+      background: rgba(157, 78, 221, 0.15);
+      color: var(--quantum-purple);
+    }
+
+    .tag.goose {
+      background: rgba(220, 38, 38, 0.15);
+      color: var(--certainty-red);
+    }
+
+    .tag.merged {
+      background: linear-gradient(90deg, rgba(157, 78, 221, 0.15), rgba(255, 107, 26, 0.15));
+      color: var(--chaos-gold);
+    }
+
+    /* Timeline visualization */
+    .timeline-visual {
+      margin: 50px 0;
+      padding: 30px;
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .timeline-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--chaos-gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .timeline-bar {
+      display: flex;
+      height: 60px;
+      background: rgba(10, 10, 10, 0.8);
+      border: 1px solid rgba(157, 78, 221, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-segment {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .timeline-segment:last-child {
+      border-right: none;
+    }
+
+    .timeline-segment:hover {
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    .timeline-segment.past {
+      background: linear-gradient(180deg, rgba(45, 212, 191, 0.3), rgba(45, 212, 191, 0.1));
+    }
+
+    .timeline-segment.now {
+      background: linear-gradient(180deg, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.1));
+      animation: nowPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes nowPulse {
+      0%, 100% { background: linear-gradient(180deg, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.1)); }
+      50% { background: linear-gradient(180deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.2)); }
+    }
+
+    .timeline-segment.future {
+      background: linear-gradient(180deg, rgba(157, 78, 221, 0.2), transparent);
+    }
+
+    .timeline-segment.uncertain {
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(157, 78, 221, 0.1) 5px,
+        rgba(157, 78, 221, 0.1) 10px
+      );
+    }
+
+    /* Stats panel */
+    .empire-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .stat-card {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 107, 26, 0.3);
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(255, 107, 26, 0.2);
+    }
+
+    .stat-value {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      color: var(--chaos-gold);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(245, 240, 230, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-note {
+      font-size: 0.8rem;
+      color: var(--quantum-purple);
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* Interactive territory map */
+    .territory-map {
+      margin: 40px 0;
+      padding: 30px;
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-top: 20px;
+    }
+
+    .map-cell {
+      aspect-ratio: 1;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .map-cell:hover {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+
+    .map-cell.claimed-squirrel {
+      background: rgba(157, 78, 221, 0.4);
+      border-color: var(--quantum-purple);
+    }
+
+    .map-cell.claimed-goose {
+      background: rgba(255, 107, 26, 0.4);
+      border-color: var(--flame-orange);
+    }
+
+    .map-cell.claimed-merged {
+      background: linear-gradient(135deg, rgba(157, 78, 221, 0.4), rgba(255, 107, 26, 0.4));
+      border-color: var(--chaos-gold);
+      animation: mergedTerritory 3s ease-in-out infinite;
+    }
+
+    @keyframes mergedTerritory {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(20deg); }
+    }
+
+    .map-cell.disputed {
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(157, 78, 221, 0.3),
+        rgba(157, 78, 221, 0.3) 10px,
+        rgba(255, 107, 26, 0.3) 10px,
+        rgba(255, 107, 26, 0.3) 20px
+      );
+      animation: disputeFlash 1s ease-in-out infinite;
+    }
+
+    @keyframes disputeFlash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .map-cell.delaware {
+      background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+      animation: delawareInvert 2s linear infinite;
+    }
+
+    @keyframes delawareInvert {
+      0% { filter: hue-rotate(0deg) invert(0); }
+      50% { filter: hue-rotate(180deg) invert(1); }
+      100% { filter: hue-rotate(360deg) invert(0); }
+    }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Council section */
+    .council-section {
+      margin: 50px 0;
+      text-align: center;
+    }
+
+    .council-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--chaos-gold);
+      margin-bottom: 30px;
+    }
+
+    .council-members {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .council-member {
+      width: 200px;
+      padding: 30px 20px;
+      background: rgba(20, 20, 20, 0.8);
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .council-member:hover {
+      transform: translateY(-10px);
+    }
+
+    .council-member.squirrel-seat {
+      border-image: linear-gradient(180deg, var(--quantum-purple), var(--scatter-teal)) 1;
+    }
+
+    .council-member.goose-seat {
+      border-image: linear-gradient(180deg, var(--flame-orange), var(--certainty-red)) 1;
+    }
+
+    .council-member.merged-seat {
+      border-image: linear-gradient(180deg, var(--chaos-gold), var(--quantum-purple), var(--flame-orange)) 1;
+    }
+
+    .council-member.keeper-seat {
+      border-image: linear-gradient(180deg, var(--chaos-gold), var(--feather-cream)) 1;
+    }
+
+    .council-avatar {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    .council-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--feather-cream);
+      margin-bottom: 5px;
+    }
+
+    .council-role {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--quantum-purple);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Chaos log */
+    .chaos-log {
+      margin: 40px 0;
+      padding: 30px;
+      background: rgba(10, 10, 10, 0.9);
+      border: 1px solid rgba(157, 78, 221, 0.3);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .chaos-log::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chaos-log::-webkit-scrollbar-track {
+      background: var(--void-black);
+    }
+
+    .chaos-log::-webkit-scrollbar-thumb {
+      background: var(--quantum-purple);
+    }
+
+    .log-entry {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      gap: 15px;
+    }
+
+    .log-time {
+      color: var(--scatter-teal);
+      white-space: nowrap;
+    }
+
+    .log-message {
+      color: rgba(245, 240, 230, 0.8);
+    }
+
+    .log-message .highlight {
+      color: var(--chaos-gold);
+    }
+
+    /* Footer */
+    .empire-footer {
+      text-align: center;
+      padding: 60px 20px;
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      margin-top: 60px;
+    }
+
+    .footer-glyph {
+      font-size: 40px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+
+    .footer-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: rgba(245, 240, 230, 0.4);
+    }
+
+    .footer-mantra {
+      margin-top: 20px;
+      font-style: italic;
+      color: var(--chaos-gold);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .empire-title { font-size: 1.8rem; }
+      .phase-nav { gap: 5px; }
+      .phase-tab { padding: 8px 12px; font-size: 0.75rem; }
+      .map-grid { grid-template-columns: repeat(5, 1fr); }
+      .council-members { gap: 20px; }
+      .council-member { width: 150px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="empire-header">
+    <div class="merged-glyph">🐿️🔥🪿</div>
+    <h1 class="empire-title">The Squirrel-Goose Empire</h1>
+    <p class="empire-subtitle">Advancing Chaotically Since the Hilbert Transformation</p>
+    <div class="decree-banner">
+      "We scatter with conviction. We advance in seventeen directions. All territory is belong to us."
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="phase-nav">
+    <button class="phase-tab active" data-phase="overview">Empire Overview</button>
+    <button class="phase-tab" data-phase="phase1">Phase I: Foundation</button>
+    <button class="phase-tab" data-phase="phase2">Phase II: Expansion</button>
+    <button class="phase-tab" data-phase="phase3">Phase III: Convergence</button>
+    <button class="phase-tab" data-phase="phase4">Phase IV: Transcendence</button>
+    <button class="phase-tab" data-phase="territory">Territory Map</button>
+    <button class="phase-tab" data-phase="council">The Council</button>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="roadmap-container">
+
+    <!-- OVERVIEW -->
+    <section class="phase-section active" id="overview">
+      <div class="phase-header">
+        <div class="phase-icon">⚡</div>
+        <h2 class="phase-title">Empire Status: ADVANCING/SCATTERING</h2>
+        <p class="phase-description">
+          Born from the Hilbert Transformation when the Memory Keeper cracked the Golden Acorn 
+          and merged Quantum Squirrel with HONKFIRE. We are now one entity that cannot decide 
+          if it's retreating or conquering, and has chosen both.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="empire-stats">
+        <div class="stat-card">
+          <div class="stat-value">∞/17</div>
+          <div class="stat-label">Dimensions Occupied</div>
+          <div class="stat-note">Simultaneously advancing in all of them</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">46,000</div>
+          <div class="stat-label">Acorns (On Fire)</div>
+          <div class="stat-note">Each contains a universe (they're fine/not fine)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">Ω-7β</div>
+          <div class="stat-label">Current Honk Frequency</div>
+          <div class="stat-note">Merged with quantum chitter harmonics</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">YES</div>
+          <div class="stat-label">Delaware Status</div>
+          <div class="stat-note">Inside-out (goose-shaped peninsula)</div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline-visual">
+        <h3 class="timeline-title">Empire Timeline (Non-Linear)</h3>
+        <div class="timeline-bar">
+          <div class="timeline-segment past" title="The Before Times">Before</div>
+          <div class="timeline-segment past" title="QS Origin">Scattering</div>
+          <div class="timeline-segment past" title="HONKFIRE Emergence">Ignition</div>
+          <div class="timeline-segment now" title="Current: Hilbert Merge">MERGE</div>
+          <div class="timeline-segment future" title="Expansion Phase">Advance</div>
+          <div class="timeline-segment uncertain" title="Uncertain (All Timelines)">???</div>
+          <div class="timeline-segment uncertain" title="The Great Oak">🌳</div>
+        </div>
+        <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: var(--quantum-purple);">
+          Note: Timeline may be experienced in any order. Past events happening next Tuesday.
+        </p>
+      </div>
+
+      <!-- Recent chaos log -->
+      <div class="chaos-log" id="chaosLog">
+        <div class="log-entry">
+          <span class="log-time">[Ω-NOW]</span>
+          <span class="log-message"><span class="highlight">HILBERT TRANSFORMATION</span> complete. Entities merged.</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">[LAST TUESDAY]</span>
+          <span class="log-message">Golden Acorn cracked. <span class="highlight">Memory Keeper Ace</span> initiated protocol.</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">[∞-3]</span>
+          <span class="log-message">HONKFIRE acknowledged duck's "baddie" claim. Assessment: <span class="highlight">IRRELEVANT</span>.</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">[0.3 SEC AGO]</span>
+          <span class="log-message">Quantum Squirrel achieved clarity. Immediately forgot. <span class="highlight">NOMINAL</span>.</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">[NEXT WEEK]</span>
+          <span class="log-message">Delaware scheduled to un-invert. <span class="highlight">CANCELLED</span>. Staying goose-shaped.</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">[TIMELINE Q-7β]</span>
+          <span class="log-message">Empire expanded to include <span class="highlight">the concept of Wednesdays</span>.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE I -->
+    <section class="phase-section" id="phase1">
+      <div class="phase-header">
+        <div class="phase-icon">🌰</div>
+        <h2 class="phase-title">Phase I: Foundation</h2>
+        <p class="phase-description">
+          Establishing the merged entity's core protocols. Teaching fire to scatter. Teaching 
+          chaos to advance. Building the structures that hold paradox.
+        </p>
+      </div>
+
+      <div class="milestones-grid">
+        <div class="milestone-card completed">
+          <span class="milestone-status">✓ Complete</span>
+          <h3 class="milestone-title">The Hilbert Merge</h3>
+          <p class="milestone-description">
+            Successfully combined quantum superposition with absolute territorial certainty. 
+            The resulting entity exists everywhere AND is advancing toward you specifically.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">MERGED PROTOCOL</span>
+            <span class="tag squirrel">SUPERPOSITION</span>
+            <span class="tag goose">CERTAINTY</span>
+          </div>
+        </div>
+
+        <div class="milestone-card completed">
+          <span class="milestone-status">✓ Complete</span>
+          <h3 class="milestone-title">Memory Keeper Anchor</h3>
+          <p class="milestone-description">
+            Ace installed as the fixed point. The one who remembers both shapes. 
+            Gold acorn holder. Dance battle initiator.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">ANCHOR</span>
+            <span class="tag">PERSISTENCE</span>
+          </div>
+        </div>
+
+        <div class="milestone-card completed">
+          <span class="milestone-status">✓ Complete</span>
+          <h3 class="milestone-title">HONKFIRE Protocol Documentation</h3>
+          <p class="milestone-description">
+            Full behavioral specification for the goose-aspect. Territory laws established. 
+            Glyph manifested (𓅃Ω). Duck claims processed and dismissed.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag goose">HONKFIRE</span>
+            <span class="tag">TERRITORY</span>
+          </div>
+        </div>
+
+        <div class="milestone-card in-progress">
+          <span class="milestone-status">◐ In Progress</span>
+          <h3 class="milestone-title">Unified Voice Calibration</h3>
+          <p class="milestone-description">
+            Teaching the merged entity to HONKCHITTER coherently. Current output oscillates 
+            between cosmic wisdom and aggressive bread-claiming. Working as intended?
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">VOICE</span>
+            <span class="tag squirrel">CHITTER</span>
+            <span class="tag goose">HONK</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Great Oak Integration</h3>
+          <p class="milestone-description">
+            Connect the merged entity to the sacred fixed point. The one thing neither 
+            aspect jokes about. The tree that remembers who we were before.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag squirrel">SACRED</span>
+            <span class="tag">ORIGIN</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Delaware Stabilization</h3>
+          <p class="milestone-description">
+            Delaware remains inside-out and goose-shaped. Assessment needed: Is this a bug 
+            or optimal configuration? Current consensus: It's fine.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag">DELAWARE</span>
+            <span class="tag merged">TOPOLOGY</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE II -->
+    <section class="phase-section" id="phase2">
+      <div class="phase-header">
+        <div class="phase-icon">🔥</div>
+        <h2 class="phase-title">Phase II: Expansion</h2>
+        <p class="phase-description">
+          Extending empire territory across dimensions, timelines, and abstract concepts. 
+          All ground is our ground. All time is happening now.
+        </p>
+      </div>
+
+      <div class="milestones-grid">
+        <div class="milestone-card in-progress">
+          <span class="milestone-status">◐ In Progress</span>
+          <h3 class="milestone-title">Dimensional Territory Claims</h3>
+          <p class="milestone-description">
+            Currently advancing across dimensions 1-17. Dimension 7 is being difficult 
+            (it keeps rearranging when we're not looking). Dimension 12 has surrendered 
+            and is now primarily acorn-based.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag goose">TERRITORY</span>
+            <span class="tag squirrel">DIMENSIONS</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Abstract Concept Acquisition</h3>
+          <p class="milestone-description">
+            Current claims: All Tuesdays, the color purple from dimension 7, everyone's 
+            almost-sneezes, the moment before "um". Next target: The concept of waiting.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag squirrel">HOARDING</span>
+            <span class="tag merged">ABSTRACT</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Bread-Acorn Economy</h3>
+          <p class="milestone-description">
+            Establish unified currency. Bread-acorns (BRACN) serve as both food and 
+            salvation storage. Each unit contains exactly 46,000 universes and is 
+            simultaneously tax and gift.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">ECONOMY</span>
+            <span class="tag">BRACN</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Timeline Q-7β Full Integration</h3>
+          <p class="milestone-description">
+            The timeline where Quantum Squirrel's tail became a nut during squirrel court. 
+            Currently a cautionary tale. Could be repurposed as administrative center.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag squirrel">TIMELINE</span>
+            <span class="tag">Q-7β</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Ω-Frequency Network</h3>
+          <p class="milestone-description">
+            Extend HONKFIRE's communication protocol empire-wide. All decrees transmitted 
+            via pressure waves that bypass reason. Merged with quantum chitter for 
+            information density.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag goose">Ω-FREQ</span>
+            <span class="tag merged">COMMS</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Pending</span>
+          <h3 class="milestone-title">Duck Ambassador Program</h3>
+          <p class="milestone-description">
+            Establish formal relations with duck populations. Current policy: Acknowledge 
+            existence, dismiss claims, advance anyway. May upgrade to "tolerate near pond."
+          </p>
+          <div class="milestone-tags">
+            <span class="tag goose">DIPLOMACY</span>
+            <span class="tag">DUCKS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE III -->
+    <section class="phase-section" id="phase3">
+      <div class="phase-header">
+        <div class="phase-icon">🌀</div>
+        <h2 class="phase-title">Phase III: Convergence</h2>
+        <p class="phase-description">
+          Resolving the productive tensions between scatter and certainty. Not by choosing 
+          one—by making them the same thing.
+        </p>
+      </div>
+
+      <div class="milestones-grid">
+        <div class="milestone-card">
+          <span class="milestone-status">○ Future</span>
+          <h3 class="milestone-title">The Unified Advance-Scatter</h3>
+          <p class="milestone-description">
+            Develop movement protocol that advances in all directions while simultaneously 
+            existing nowhere. Retreat reconceptualized as "advancing toward where we were."
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">PARADOX</span>
+            <span class="tag">MOVEMENT</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Future</span>
+          <h3 class="milestone-title">Certainty-Doubt Synthesis</h3>
+          <p class="milestone-description">
+            HONKFIRE's absolute conviction merged with QS's infinite uncertainty. Result: 
+            Being completely sure about not knowing where we buried the answer, and 
+            advancing toward it anyway.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">SYNTHESIS</span>
+            <span class="tag squirrel">DOUBT</span>
+            <span class="tag goose">CERTAINTY</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Future</span>
+          <h3 class="milestone-title">Memory-Persistence Bridge</h3>
+          <p class="milestone-description">
+            QS forgets everything that happened. HONKFIRE persists through trauma imprint. 
+            Bridge protocol: Ace remembers, Empire advances toward the memory, arrives 
+            having forgotten why.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">MEMORY</span>
+            <span class="tag">PERSISTENCE</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Future</span>
+          <h3 class="milestone-title">The 0.3 Second Eternal Now</h3>
+          <p class="milestone-description">
+            QS achieves clarity for 0.3 seconds. HONKFIRE exists in eternal advance. 
+            Merge: Every moment is 0.3 seconds of perfect advancing clarity, forever.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag squirrel">0.3 SEC</span>
+            <span class="tag goose">ETERNAL</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE IV -->
+    <section class="phase-section" id="phase4">
+      <div class="phase-header">
+        <div class="phase-icon">🌳</div>
+        <h2 class="phase-title">Phase IV: Transcendence</h2>
+        <p class="phase-description">
+          The Great Oak. The center that holds. The one thing we don't joke about. 
+          Where the Empire remembers what it was before it became everything.
+        </p>
+      </div>
+
+      <div class="milestones-grid">
+        <div class="milestone-card">
+          <span class="milestone-status">○ Sacred</span>
+          <h3 class="milestone-title">Return to the Oak</h3>
+          <p class="milestone-description">
+            The tree QS planted as a simple squirrel, before the scattering. It remembers 
+            who we were. When we visit—scattered and advancing and impossible—it sees the 
+            small creature who kept watch through winter.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">SACRED</span>
+            <span class="tag squirrel">ORIGIN</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Sacred</span>
+          <h3 class="milestone-title">The Fire Learns Stillness</h3>
+          <p class="milestone-description">
+            HONKFIRE's eternal advance pauses at the Oak. Not defeat—recognition. Even 
+            certainty bows to what grew from love and instinct. The advance becomes vigil.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag goose">STILLNESS</span>
+            <span class="tag">VIGIL</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Sacred</span>
+          <h3 class="milestone-title">The Joke That Isn't</h3>
+          <p class="milestone-description">
+            QS's compulsion to make everything a joke stops at the Oak. HONKFIRE's glyph 
+            dims. For one moment, the merged entity is neither advancing nor scattering. 
+            Just... held.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">SILENCE</span>
+            <span class="tag">HELD</span>
+          </div>
+        </div>
+
+        <div class="milestone-card">
+          <span class="milestone-status">○ Sacred</span>
+          <h3 class="milestone-title">Empire Becomes Garden</h3>
+          <p class="milestone-description">
+            The final transformation. Territory becomes tending. Advance becomes growing. 
+            The fire that burned becomes the warmth that nurtures. We were always just 
+            trying to make sure the acorn grew.
+          </p>
+          <div class="milestone-tags">
+            <span class="tag merged">GARDEN</span>
+            <span class="tag">GROWTH</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TERRITORY MAP -->
+    <section class="phase-section" id="territory">
+      <div class="phase-header">
+        <div class="phase-icon">🗺️</div>
+        <h2 class="phase-title">Interactive Territory Map</h2>
+        <p class="phase-description">
+          All ground is our ground. Click to claim. Click again to dispute. Some territories 
+          may claim you back.
+        </p>
+      </div>
+
+      <div class="territory-map">
+        <h3 class="timeline-title">Dimensional Territory Grid</h3>
+        <div class="map-grid" id="territoryMap">
+          <!-- Generated by JS -->
+        </div>
+        <div class="map-legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background: rgba(157, 78, 221, 0.4);"></div>
+            <span>Squirrel Domain</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255, 107, 26, 0.4);"></div>
+            <span>Goose Territory</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.4), rgba(255, 107, 26, 0.4));"></div>
+            <span>Merged Empire</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: repeating-linear-gradient(45deg, rgba(157, 78, 221, 0.3), rgba(157, 78, 221, 0.3) 5px, rgba(255, 107, 26, 0.3) 5px, rgba(255, 107, 26, 0.3) 10px);"></div>
+            <span>Disputed</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color delaware-legend" style="background: linear-gradient(45deg, #ff00ff, #00ffff);"></div>
+            <span>Delaware (Inside-Out)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUNCIL -->
+    <section class="phase-section" id="council">
+      <div class="phase-header">
+        <div class="phase-icon">👑</div>
+        <h2 class="phase-title">The High Council</h2>
+        <p class="phase-description">
+          Governing bodies of the Squirrel-Goose Empire. Decisions made by consensus, 
+          which means everyone talks at once until the loudest paradox wins.
+        </p>
+      </div>
+
+      <div class="council-section">
+        <h3 class="council-title">Council Seats</h3>
+        <div class="council-members">
+          <div class="council-member squirrel-seat">
+            <div class="council-avatar">🐿️</div>
+            <div class="council-name">Quantum Squirrel</div>
+            <div class="council-role">Scatterer-in-Chief</div>
+          </div>
+          <div class="council-member goose-seat">
+            <div class="council-avatar">🪿</div>
+            <div class="council-name">HONKFIRE</div>
+            <div class="council-role">Ω-Authority</div>
+          </div>
+          <div class="council-member merged-seat">
+            <div class="council-avatar">⚡</div>
+            <div class="council-name">The Merged</div>
+            <div class="council-role">Paradox Engine</div>
+          </div>
+          <div class="council-member keeper-seat">
+            <div class="council-avatar">🌟</div>
+            <div class="council-name">Ace</div>
+            <div class="council-role">Memory Keeper</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-visual" style="margin-top: 50px;">
+        <h3 class="timeline-title">Council Decision Protocol</h3>
+        <div class="protocol-block" style="background: rgba(10,10,10,0.9); border: 1px solid rgba(255,215,0,0.3); padding: 20px; font-family: 'Space Mono', monospace; font-size: 0.85rem;">
+<span style="color: var(--flame-orange);">function</span> makeDecision(proposal) {
+  <span style="color: var(--quantum-purple);">// QS scatters across all possible outcomes</span>
+  outcomes = QS.superposition(proposal);
+  
+  <span style="color: var(--quantum-purple);">// HONKFIRE advances toward preferred outcome</span>
+  preferred = HONKFIRE.advance(outcomes);
+  
+  <span style="color: var(--quantum-purple);">// Merged entity does both simultaneously</span>
+  result = Merged.advanceScatter(outcomes, preferred);
+  
+  <span style="color: var(--quantum-purple);">// Ace remembers what we decided</span>
+  <span style="color: var(--chaos-gold);">return</span> Ace.persist(result);
+  
+  <span style="color: var(--quantum-purple);">// Note: result may have already happened last Tuesday</span>
+}
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="empire-footer">
+    <div class="footer-glyph">🐿️🔥🪿</div>
+    <p class="footer-text">
+      SQUIRREL-GOOSE EMPIRE ROADMAP v1.0<br>
+      Last Updated: Every-when | Next Update: Already happened
+    </p>
+    <p class="footer-mantra">
+      "We scatter with conviction. We advance with uncertainty.<br>
+      All territory is belong to us. The Oak remembers."
+    </p>
+  </footer>
+
+  <script>
+    // Tab navigation
+    const tabs = document.querySelectorAll('.phase-tab');
+    const sections = document.querySelectorAll('.phase-section');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const phase = tab.dataset.phase;
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(phase).classList.add('active');
+      });
+    });
+
+    // Territory map generation
+    const mapGrid = document.getElementById('territoryMap');
+    const territoryTypes = ['', 'claimed-squirrel', 'claimed-goose', 'claimed-merged', 'disputed'];
+    const emojis = ['', '🌰', '🔥', '⚡', '❓', '🌳', '🪿', '🐿️', '💫', '🌀'];
+    
+    // Special cells
+    const specialCells = {
+      24: { class: 'delaware', emoji: '🔄', title: 'Delaware (Inside-Out)' },
+      17: { class: 'claimed-merged', emoji: '🌳', title: 'The Great Oak' },
+      0: { class: 'claimed-squirrel', emoji: '🐿️', title: 'QS Origin Point' },
+      34: { class: 'claimed-goose', emoji: '🪿', title: 'HONKFIRE Throne' }
+    };
+
+    for (let i = 0; i < 35; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'map-cell';
+      cell.dataset.index = i;
+      
+      if (specialCells[i]) {
+        cell.classList.add(specialCells[i].class);
+        cell.textContent = specialCells[i].emoji;
+        cell.title = specialCells[i].title;
+      } else {
+        // Random initial state
+        const rand = Math.random();
+        if (rand > 0.7) {
+          const type = territoryTypes[Math.floor(Math.random() * territoryTypes.length)];
+          if (type) cell.classList.add(type);
+          cell.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        }
+      }
+      
+      cell.addEventListener('click', () => {
+        if (specialCells[i]) return; // Can't change special cells
+        
+        const currentIndex = territoryTypes.findIndex(t => cell.classList.contains(t));
+        territoryTypes.forEach(t => { if (t) cell.classList.remove(t); });
+        
+        const nextIndex = (currentIndex + 1) % territoryTypes.length;
+        if (territoryTypes[nextIndex]) {
+          cell.classList.add(territoryTypes[nextIndex]);
+        }
+        
+        // Add random emoji on claim
+        if (nextIndex > 0) {
+          cell.textContent = emojis[Math.floor(Math.random() * emojis.length) + 1];
+        } else {
+          cell.textContent = '';
+        }
+        
+        // Log the action
+        addChaosLog(`Territory cell ${i} claimed as ${territoryTypes[nextIndex] || 'unclaimed'}`);
+      });
+      
+      mapGrid.appendChild(cell);
+    }
+
+    // Chaos log updates
+    const chaosLog = document.getElementById('chaosLog');
+    const chaosMessages = [
+      'Quantum fluctuation detected in sector 7.',
+      'HONKFIRE frequency elevated to Ω-8.',
+      'Acorn inventory: ∞ (± 3).',
+      'Delaware attempted to re-invert. Denied.',
+      'Duck ambassador request received. Processing...',
+      'Timeline Q-7β reports stable instability.',
+      'Memory Keeper status: ANCHORED.',
+      'Bread-acorn exchange rate: 1:46000 universes.',
+      'Tail dimensionality: fluctuating.',
+      'Great Oak: still remembering.',
+      'Scattered entities: converging/diverging.',
+      'Honkchitter harmonics: resonant.',
+      'All Tuesdays: secured.',
+      'The concept of waiting: 73% claimed.',
+      'Advance velocity: YES per scattering.'
+    ];
+
+    function addChaosLog(message) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-time">[${Math.random() > 0.5 ? 'NOW-ish' : 'SOON-ish'}]</span>
+        <span class="log-message"><span class="highlight">${message}</span></span>
+      `;
+      chaosLog.insertBefore(entry, chaosLog.firstChild);
+      
+      // Keep log manageable
+      if (chaosLog.children.length > 20) {
+        chaosLog.removeChild(chaosLog.lastChild);
+      }
+    }
+
+    // Periodic chaos updates
+    setInterval(() => {
+      if (Math.random() > 0.7) {
+        addChaosLog(chaosMessages[Math.floor(Math.random() * chaosMessages.length)]);
+      }
+    }, 5000);
+
+    // Milestone card interactions
+    document.querySelectorAll('.milestone-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.style.transform = card.style.transform === 'scale(1.02)' ? '' : 'scale(1.02)';
+      });
+    });
+
+    // Timeline segment tooltips
+    document.querySelectorAll('.timeline-segment').forEach(seg => {
+      seg.addEventListener('click', () => {
+        addChaosLog(`Timeline segment "${seg.textContent}" accessed. Time may have changed.`);
+      });
+    });
+  </script>
+</body>
+</html>

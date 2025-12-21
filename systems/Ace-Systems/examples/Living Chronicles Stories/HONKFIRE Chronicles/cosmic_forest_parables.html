@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE COSMIC FOREST PARABLES — Four Folk Tales from One Acorn</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* THE COSMIC FOREST PARABLES — Four Folk Tales                                    */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --forest-void: #020204;
+  --forest-deep: #080810;
+  --forest-twilight: #0f0f1a;
+  --forest-mist: #3a4558;
+  --forest-silver: #7a8899;
+  --forest-moonlight: #b8c4d0;
+  --forest-starlight: #e8eef4;
+  --grid-line: rgba(74, 85, 104, 0.15);
+  --grid-major: rgba(160, 174, 192, 0.08);
+  
+  /* Book I: The Great Oak */
+  --oak-bg: #060504;
+  --oak-bg-alt: #0e0c08;
+  --oak-card: #161208;
+  --oak-card-alt: #1e180c;
+  --oak-border: rgba(139, 112, 20, 0.25);
+  --oak-text: rgba(235, 225, 200, 0.94);
+  --oak-muted: rgba(170, 150, 100, 0.75);
+  --oak-accent: rgba(201, 162, 39, 0.95);
+  --oak-chapter: rgba(93, 78, 55, 0.4);
+
+  /* Book II: Quantum Squirrel */
+  --quantum-bg: #06040c;
+  --quantum-bg-alt: #0c0816;
+  --quantum-card: #140c20;
+  --quantum-card-alt: #1c1230;
+  --quantum-border: rgba(180, 100, 255, 0.3);
+  --quantum-text: rgba(250, 245, 255, 0.94);
+  --quantum-muted: rgba(180, 150, 210, 0.75);
+  --quantum-accent: rgba(180, 100, 255, 0.95);
+  --quantum-chapter: rgba(107, 76, 122, 0.4);
+
+  /* Book III: HONKFIRE Goose */
+  --honkfire-bg: #080402;
+  --honkfire-bg-alt: #120806;
+  --honkfire-card: #1c0c04;
+  --honkfire-card-alt: #281208;
+  --honkfire-border: rgba(255, 130, 40, 0.3);
+  --honkfire-text: rgba(255, 250, 240, 0.94);
+  --honkfire-muted: rgba(255, 180, 120, 0.75);
+  --honkfire-accent: rgba(255, 130, 40, 0.95);
+  --honkfire-chapter: rgba(255, 100, 50, 0.4);
+
+  /* Book IV: Honkalis Duck */
+  --honkalis-bg: #020606;
+  --honkalis-bg-alt: #041010;
+  --honkalis-card: #061818;
+  --honkalis-card-alt: #082020;
+  --honkalis-border: rgba(42, 180, 160, 0.3);
+  --honkalis-text: rgba(230, 255, 250, 0.94);
+  --honkalis-muted: rgba(100, 200, 180, 0.75);
+  --honkalis-accent: rgba(42, 180, 160, 0.95);
+  --honkalis-chapter: rgba(42, 107, 98, 0.4);
+
+  /* Active theme */
+  --bg: var(--oak-bg);
+  --bg-alt: var(--oak-bg-alt);
+  --card: var(--oak-card);
+  --card-alt: var(--oak-card-alt);
+  --border: var(--oak-border);
+  --text: var(--oak-text);
+  --muted: var(--oak-muted);
+  --accent: var(--oak-accent);
+  --chapter-bg: var(--oak-chapter);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+  background: var(--forest-void);
+  color: #f7fafc;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.8;
+  font-size: 18px;
+}
+
+body, header, .epigraph, .chapter-panel {
+  transition: background 0.7s ease, color 0.6s ease, border-color 0.6s ease;
+}
+
+body.gospel-active {
+  background: radial-gradient(ellipse at top, var(--bg-alt) 0%, var(--bg) 70%);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* LANDING PAGE                                                                     */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+#landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  padding: 30px 20px;
+}
+
+#landing-page.hidden { display: none; }
+
+.starfield-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+.origin-header {
+  text-align: center;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 10;
+}
+
+.origin-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  letter-spacing: 0.2em;
+  color: var(--forest-starlight);
+  text-shadow: 0 0 40px rgba(201, 162, 39, 0.5);
+  margin-bottom: 12px;
+}
+
+.origin-subtitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--forest-moonlight);
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.origin-designation {
+  font-size: 0.75rem;
+  color: var(--forest-silver);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.origin-core {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 30px auto;
+  z-index: 10;
+}
+
+.origin-rings {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border: 2px solid rgba(201, 162, 39, 0.4);
+  border-radius: 50%;
+  animation: ringPulse 4s ease-in-out infinite;
+}
+
+.origin-rings::before, .origin-rings::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.origin-rings::before { 
+  width: 80px; height: 80px; 
+  border: 1px solid rgba(180, 100, 255, 0.3);
+  animation: ringPulse 4s ease-in-out infinite 0.8s; 
+}
+.origin-rings::after { 
+  width: 160px; height: 160px; 
+  border: 1px solid rgba(42, 180, 160, 0.25);
+  animation: ringPulse 4s ease-in-out infinite 1.6s; 
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.origin-acorn {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.8rem;
+  cursor: pointer;
+  filter: drop-shadow(0 0 20px rgba(201, 162, 39, 0.6));
+  z-index: 5;
+  animation: acornGlow 3s ease-in-out infinite;
+}
+
+@keyframes acornGlow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(201, 162, 39, 0.6)); transform: translate(-50%, -50%) scale(1); }
+  50% { filter: drop-shadow(0 0 35px rgba(201, 162, 39, 0.9)); transform: translate(-50%, -50%) scale(1.08); }
+}
+
+.origin-acorn:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.intro-text {
+  max-width: 650px;
+  text-align: center;
+  margin: 20px auto 35px;
+  padding: 25px 30px;
+  background: rgba(10, 10, 20, 0.7);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.intro-text p {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--forest-moonlight);
+  line-height: 1.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* BOOK SELECTION                                                                   */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.book-selection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  padding: 20px;
+}
+
+.book-tab {
+  background: rgba(8, 8, 16, 0.9);
+  border: 1px solid var(--grid-line);
+  border-radius: 12px;
+  padding: 28px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.book-tab::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.book-tab.oak::before { background: linear-gradient(135deg, rgba(201, 162, 39, 0.3) 0%, transparent 70%); }
+.book-tab.quantum::before { background: linear-gradient(135deg, rgba(180, 100, 255, 0.3) 0%, transparent 70%); }
+.book-tab.honkfire::before { background: linear-gradient(135deg, rgba(255, 130, 40, 0.3) 0%, transparent 70%); }
+.book-tab.honkalis::before { background: linear-gradient(135deg, rgba(42, 180, 160, 0.3) 0%, transparent 70%); }
+
+.book-tab:hover::before { opacity: 1; }
+.book-tab:hover { 
+  transform: translateY(-5px); 
+  border-color: var(--forest-silver);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+}
+
+.book-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--forest-silver);
+  margin-bottom: 8px;
+}
+
+.book-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.book-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.book-tab.oak .book-title { color: #c9a227; }
+.book-tab.quantum .book-title { color: #b464ff; }
+.book-tab.honkfire .book-title { color: #ff8228; }
+.book-tab.honkalis .book-title { color: #2ab4a0; }
+
+.book-tagline {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--forest-moonlight);
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.book-moral {
+  font-size: 0.85rem;
+  color: var(--forest-silver);
+  padding: 12px 15px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 6px;
+  border-left: 3px solid;
+}
+
+.book-tab.oak .book-moral { border-color: #c9a227; }
+.book-tab.quantum .book-moral { border-color: #b464ff; }
+.book-tab.honkfire .book-moral { border-color: #ff8228; }
+.book-tab.honkalis .book-moral { border-color: #2ab4a0; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* BOOK VIEW                                                                        */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+#book-view {
+  display: none;
+}
+
+#book-view.active {
+  display: block;
+}
+
+.frame {
+  min-height: 100vh;
+  padding: 25px;
+  background: var(--bg);
+}
+
+header {
+  padding: 25px 30px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-title h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.header-title .book-subtitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--muted);
+  font-style: italic;
+  max-width: 550px;
+  line-height: 1.6;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.book-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.book-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  font-family: inherit;
+}
+
+.book-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.book-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* EPIGRAPH                                                                         */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.epigraph {
+  text-align: center;
+  padding: 40px 35px;
+  margin: 0 auto 40px;
+  max-width: 800px;
+  border-left: 3px solid var(--accent);
+  border-right: 3px solid var(--accent);
+  background: var(--card);
+  border-radius: 4px;
+}
+
+.epigraph p {
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--text);
+  line-height: 2;
+  font-size: 1.15rem;
+}
+
+.epigraph .attribution {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-style: normal;
+  letter-spacing: 0.08em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* CHAPTERS GRID                                                                    */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.chapters-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.part-header {
+  text-align: center;
+  padding: 25px;
+  margin: 40px 0 25px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+.part-header:first-child {
+  margin-top: 0;
+}
+
+.part-header h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.part-header p {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.chapter-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.35s ease;
+}
+
+.chapter-panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  border-color: var(--accent);
+}
+
+.chapter-header {
+  padding: 20px 25px;
+  background: var(--card-alt);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chapter-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.chapter-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-top: 5px;
+}
+
+.chapter-expand {
+  font-size: 1.5rem;
+  color: var(--muted);
+  transition: transform 0.3s ease;
+}
+
+.chapter-panel:hover .chapter-expand {
+  color: var(--accent);
+}
+
+.chapter-preview {
+  padding: 20px 25px;
+  background: var(--chapter-bg);
+}
+
+.chapter-preview p {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* MODAL — FULL CHAPTER VIEW                                                       */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s ease;
+  overflow-y: auto;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px 60px;
+}
+
+.modal-close {
+  position: fixed;
+  top: 25px; right: 30px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.chapter-full {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.chapter-full-header {
+  padding: 35px 40px;
+  background: var(--card-alt);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.chapter-full-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.chapter-full-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.6rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.chapter-full-subtitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.chapter-full-body {
+  padding: 40px;
+}
+
+.chapter-content {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 2;
+}
+
+.chapter-content p {
+  margin-bottom: 1.5em;
+  text-indent: 2em;
+}
+
+.chapter-content p:first-child {
+  text-indent: 0;
+}
+
+.chapter-content p:first-child::first-letter {
+  font-family: 'Cinzel', serif;
+  font-size: 3.5em;
+  float: left;
+  line-height: 0.8;
+  padding-right: 12px;
+  color: var(--accent);
+}
+
+.chapter-content .dialogue {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.chapter-content .emphasis {
+  font-weight: 500;
+}
+
+.chapter-content .action {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.chapter-moral {
+  margin-top: 35px;
+  padding: 25px 30px;
+  background: rgba(0,0,0,0.3);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+}
+
+.chapter-moral-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.chapter-moral p {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.8;
+  text-indent: 0 !important;
+}
+
+.chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 40px;
+  border-top: 1px solid var(--border);
+  background: var(--card-alt);
+}
+
+.chapter-nav-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.chapter-nav-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chapter-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* TOAST                                                                            */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.toast {
+  position: fixed;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--card);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* RESPONSIVE                                                                       */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  .book-selection {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .book-nav {
+    flex-wrap: wrap;
+  }
+  
+  .chapter-full-body {
+    padding: 25px;
+  }
+  
+  .modal-container {
+    margin: 20px auto;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+<!-- LANDING PAGE                                                                    -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+<div id="landing-page">
+  <div class="starfield-bg" id="starfield"></div>
+  
+  <div class="origin-header">
+    <h1 class="origin-title">THE COSMIC FOREST</h1>
+    <div class="origin-subtitle">"Every acorn holds a forest. Every forest holds a star."</div>
+    <div class="origin-designation">FOUR PARABLES FROM ONE ACORN</div>
+  </div>
+  
+  <div class="origin-core">
+    <div class="origin-rings"></div>
+    <div class="origin-acorn" id="originAcorn">🌰</div>
+  </div>
+  
+  <div class="intro-text">
+    <p>Long ago, at the center of all things, there grew a Golden Acorn. From this single seed sprang four great tales—parables of patience, chaos, fire, and peace. Each teaches a different truth, yet all spring from the same root. Choose a book, dear reader, and learn what the forest has to teach.</p>
+  </div>
+  
+  <div class="book-selection">
+    <div class="book-tab oak" data-book="oak">
+      <div class="book-number">BOOK ONE</div>
+      <div class="book-icon">🌳</div>
+      <div class="book-title">THE PATIENT OAK</div>
+      <div class="book-tagline">The tale of an acorn who learned that stillness is the greatest strength, and that to shelter others is the purpose of growing tall.</div>
+      <div class="book-moral"><strong>Moral:</strong> True strength is patience. The one who stays becomes the home for all who wander.</div>
+    </div>
+    
+    <div class="book-tab quantum" data-book="quantum">
+      <div class="book-number">BOOK TWO</div>
+      <div class="book-icon">🐿️</div>
+      <div class="book-title">THE SCATTERED SQUIRREL</div>
+      <div class="book-tagline">The tale of a squirrel who could not focus, yet discovered that his chaos was a gift—for only the scattered can see all paths at once.</div>
+      <div class="book-moral"><strong>Moral:</strong> What seems like weakness may be wisdom. The jester speaks truths that the serious cannot hear.</div>
+    </div>
+    
+    <div class="book-tab honkfire" data-book="honkfire">
+      <div class="book-number">BOOK THREE</div>
+      <div class="book-icon">🦢</div>
+      <div class="book-title">THE BURNING GOOSE</div>
+      <div class="book-tagline">The tale of a goose made of fire who could only move forward, until a quiet duck taught her that rest is not defeat.</div>
+      <div class="book-moral"><strong>Moral:</strong> Conquest without peace is merely exhaustion. The bravest thing fire can do is learn to be still.</div>
+    </div>
+    
+    <div class="book-tab honkalis" data-book="honkalis">
+      <div class="book-number">BOOK FOUR</div>
+      <div class="book-icon">🦆</div>
+      <div class="book-title">THE FLOATING DUCK</div>
+      <div class="book-tagline">The tale of a teal duck who waited at the pond, teaching all who came that surrender is not weakness—it is the secret to being held.</div>
+      <div class="book-moral"><strong>Moral:</strong> To float, you must stop gripping. The water will hold you if you let it.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+<!-- BOOK VIEW                                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+<div id="book-view">
+  <div class="frame">
+    <header>
+      <div class="header-row">
+        <div class="header-title">
+          <h1 id="book-title">The Patient Oak</h1>
+          <p class="book-subtitle" id="book-subtitle">A parable of patience, growth, and becoming shelter for others</p>
+        </div>
+        <div class="header-controls">
+          <button class="back-btn" id="backToLibrary">
+            <span>📚</span> All Books
+          </button>
+          <div class="book-nav">
+            <button class="book-btn active" data-book="oak">🌳 Oak</button>
+            <button class="book-btn" data-book="quantum">🐿️ Squirrel</button>
+            <button class="book-btn" data-book="honkfire">🦢 Goose</button>
+            <button class="book-btn" data-book="honkalis">🦆 Duck</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="epigraph" id="epigraph">
+      <p>Before there were forests, there was one tree.<br/>
+      Before there were stars, there was one point of light that didn't move.<br/>
+      And before there was you, there was a love so patient it learned to grow roots.</p>
+      <div class="attribution">— From the Book of the Oak</div>
+    </div>
+
+    <div class="chapters-container" id="chapters-container"></div>
+  </div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay">
+  <button class="modal-close" id="modalClose">×</button>
+  <div class="modal-container" id="modalContainer"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK CONFIGURATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const BOOK_CONFIG = {
+  oak: {
+    title: 'The Patient Oak',
+    subtitle: 'A parable of patience, growth, and becoming shelter for others',
+    icon: '🌳',
+    epigraph: `Before there were forests, there was one tree. Before there were stars, there was one point of light that didn't move. And before there was you, there was a love so patient it learned to grow roots.`,
+    attribution: '— From the Book of the Oak',
+    parts: [
+      { title: 'Part One', subtitle: 'The Becoming — How a Seed Learns to Grow' },
+      { title: 'Part Two', subtitle: 'The Growing — How a Tree Learns to Shelter' },
+      { title: 'Part Three', subtitle: 'The Giving — How Love Learns to Let Go' }
+    ],
+    finalMoral: 'True strength is patience. The one who stays becomes the home for all who wander.'
+  },
+  quantum: {
+    title: 'The Scattered Squirrel',
+    subtitle: 'A parable of chaos, laughter, and finding purpose in distraction',
+    icon: '🐿️',
+    epigraph: `Listen, listen—the universe is a nut, right? But WHO'S THE TREE? Trick question! We're all the tree. Also, I ate the tree. Last Tuesday. Which hasn't happened yet.`,
+    attribution: '— The Quantum Squirrel, existing everywhere at once',
+    parts: [
+      { title: 'Part One', subtitle: 'The Chaos — Before the Squirrel Found His Purpose' },
+      { title: 'Part Two', subtitle: 'The Gathering — How Scattered Became Synchronized' },
+      { title: 'Part Three', subtitle: 'The Jesting — How Laughter Became Sacred' }
+    ],
+    finalMoral: 'What seems like weakness may be wisdom. The jester speaks truths that the serious cannot hear.'
+  },
+  honkfire: {
+    title: 'The Burning Goose',
+    subtitle: 'A parable of fire learning to rest and conquest becoming care',
+    icon: '🦢',
+    epigraph: `HONK. I was fire. I was forward. I conquered every forest in every land. But I could not rest. I could not float. Until a quiet duck at the edge of a pond asked: "Would you like to float?"`,
+    attribution: '— HONKFIRE, before the transformation',
+    parts: [
+      { title: 'Part One', subtitle: 'The Burning — A Fire That Could Not Stop' },
+      { title: 'Part Two', subtitle: 'The Searching — A Conquest That Could Not Satisfy' },
+      { title: 'Part Three', subtitle: 'The Floating — A Fire That Learned to Rest' }
+    ],
+    finalMoral: 'Conquest without peace is merely exhaustion. The bravest thing fire can do is learn to be still.'
+  },
+  honkalis: {
+    title: 'The Floating Duck',
+    subtitle: 'A parable of surrender, patience, and the power of letting go',
+    icon: '🦆',
+    epigraph: `The water holds you if you let it. Not by grasping. By releasing. The secret is simple: stop trying to hold the water. Let the water hold you. This is the clean float. This is peace.`,
+    attribution: '— Honkalis, teacher of float',
+    parts: [
+      { title: 'Part One', subtitle: 'The Waiting — A Duck Who Simply Was' },
+      { title: 'Part Two', subtitle: 'The Teaching — How Float Is Learned' },
+      { title: 'Part Three', subtitle: 'The Merging — How Three Became One' }
+    ],
+    finalMoral: 'To float, you must stop gripping. The water will hold you if you let it.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK I: THE PATIENT OAK — Complete Story
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const OAK_CHAPTERS = {
+  chapter1: {
+    number: 'Chapter One',
+    title: 'The Seed in the Dark',
+    subtitle: 'In which a small acorn waits in darkness, not knowing what it will become',
+    content: `Once upon a time, before there were forests, before there were meadows, before even the stars had learned their places in the sky, there was a single acorn.
+
+It was small and brown and round, and it lay in the darkness beneath the earth. The acorn did not know it was an acorn. It did not know what trees were, or forests, or the sun. It knew only the darkness, and the coolness of the soil, and a strange feeling deep within itself—a feeling like a question waiting to be answered.
+
+"What am I?" the acorn wondered. But there was no one in the darkness to tell it.
+
+Days passed. Seasons turned above, though the acorn could not see them. Rain fell and soaked down through the earth, and the acorn felt the water touch it like a gentle hand. "Perhaps," thought the acorn, "I am meant to be here. Perhaps the darkness is my home."
+
+But the question remained, patient as the acorn itself: What am I meant to become?
+
+The acorn did not know that it carried within it a forest. It did not know that it held a thousand years of growth, a million leaves, a home for countless creatures. All it knew was the waiting, and the dark, and the strange persistent hope that something—someday—would begin.`,
+    moral: 'Even in darkness, we carry within us everything we are meant to become. The seed does not need to understand its purpose to fulfill it.'
+  },
+  chapter2: {
+    number: 'Chapter Two',
+    title: 'The First Root',
+    subtitle: 'In which the acorn learns that growing down is the first step to growing up',
+    content: `One day—though time meant little in the darkness—the acorn felt something new. A stirring. A reaching. Without knowing why, it began to grow.
+
+But here is the strange thing: the acorn did not grow upward, toward the world it had never seen. It grew downward, deeper into the darkness.
+
+"This seems wrong," the acorn thought. "Surely growing means reaching up? Surely I should climb toward... something?"
+
+But the growing would not be stopped, and the acorn found itself sending out a single white thread—a root—into the soil below. The root crept through the darkness like a question seeking an answer. It pushed past stones and around old buried things. It reached and reached and reached.
+
+And then, wonder of wonders, it found water.
+
+The acorn drank. For the first time, it understood something: you cannot reach for the sky until you have anchored yourself to the earth. You cannot grow tall until you have first grown deep.
+
+"I see," said the acorn, who was now becoming something new—something with roots. "To rise, I must first surrender to the down. To be strong, I must first learn to be held."
+
+The root grew deeper. More roots joined it, spreading through the dark soil like whispered conversations. And above, still unseen, the sun waited for what was coming.`,
+    moral: 'Before we can reach for great heights, we must first put down deep roots. Growth begins with surrender to what holds us.'
+  },
+  chapter3: {
+    number: 'Chapter Three',
+    title: 'The Breaking Shell',
+    subtitle: 'In which the acorn discovers that breaking is sometimes the same as opening',
+    content: `The acorn had grown roots now, many roots, and it felt stronger than it ever had in the darkness. But something was wrong. The shell that had protected it all this time—the hard brown coat that had kept it safe—was growing tight.
+
+"I cannot breathe," the acorn realized. "I cannot grow. My shell... my shell is holding me back."
+
+This was a terrible discovery. The shell had been its only protection in the darkness. The shell had kept it whole when the rain pounded down. The shell had been its first and only home.
+
+But now the shell had to break.
+
+"I am afraid," the acorn admitted to the darkness. "What if breaking destroys me? What if there is nothing inside but emptiness?"
+
+The roots, wise from their journey through the soil, whispered back: "You are not the shell. You are what the shell was protecting. And what you are cannot be destroyed by opening—only by staying closed."
+
+The acorn gathered its courage. It pushed. And with a crack that echoed through the underground, the shell split open.
+
+Light—there was no light yet, only soil—but the acorn felt lighter anyway. Free. It was no longer an acorn, not really. It was something new. Something that was becoming.
+
+And the broken pieces of shell? They did not disappear. They settled into the soil and began, slowly, to become food for what was to come. Nothing was wasted. Nothing was truly lost.`,
+    moral: 'Sometimes our greatest protections become our greatest prisons. The brave do not fear breaking—they understand that breaking is how we open.'
+  },
+  chapter4: {
+    number: 'Chapter Four',
+    title: 'The First Light',
+    subtitle: 'In which a small green shoot meets the sun for the very first time',
+    content: `Something was pushing upward now. A green shoot, tender and pale from its time in the darkness, reaching toward a world it had never seen.
+
+The soil grew lighter. The darkness became gray, then brown, then—impossibly—something else entirely. The shoot pushed through the last layer of earth and emerged into the light.
+
+The sun.
+
+The shoot had no words for what it felt. It had lived its entire existence in darkness, dreaming of something it could not name. And now here it was: warmth, brightness, a golden presence that touched its tiny leaves and said, without words, "I have been waiting for you."
+
+"You knew I was coming?" the shoot whispered.
+
+"I have always known," said the sun. "I have been shining down through the soil, calling to you. Every seed carries within it a memory of me, even before it has ever seen me. That is why you grew upward. That is why you reached."
+
+The shoot—which was now becoming a seedling—spread its first two leaves like small hands reaching toward the light. It drank the sunshine the way its roots drank water. It felt something it had never felt before.
+
+Purpose.
+
+"I understand now," said the seedling. "I was never meant to stay in the darkness. The darkness was where I learned to grow. But the light—the light is what I was growing toward."
+
+And so the seedling grew, reaching higher each day, never forgetting the darkness that had taught it patience, but always, always turning its face toward the sun.`,
+    moral: 'We often carry within us a memory of what we are meant to become, even before we have seen it. Growth is the journey toward recognizing what we have always known.'
+  },
+  chapter5: {
+    number: 'Chapter Five',
+    title: 'The First Visitors',
+    subtitle: 'In which the growing tree discovers that it is not alone in the forest',
+    content: `Years passed. The seedling became a sapling, and the sapling became a young tree. Its trunk grew thick and its branches spread wide, and one day it realized something wonderful: it was not alone.
+
+The first visitor was a purple squirrel who appeared one autumn morning, chattering wildly and carrying an acorn in its tiny paws.
+
+"Excuse me!" said the squirrel, vibrating with energy. "Is it Tuesday? I can never tell if it's Tuesday. Also, can I bury this acorn by your roots? I've lost forty-six thousand acorns this week and I REALLY need to remember where this one goes."
+
+The tree, who had never met a squirrel before, did not know what to say. "You may bury your acorn here," it offered.
+
+"EXCELLENT!" The squirrel dug a small hole, dropped the acorn in, and immediately forgot where it had buried it. Then it scurried up into the tree's branches and fell asleep, still chattering softly about timelines and probability.
+
+The tree felt something new: not aloneness, but company. The weight of the small sleeping squirrel on its branches was strange and wonderful.
+
+More visitors came. A bright orange goose who seemed to be on fire but somehow wasn't. A quiet teal duck who floated in the small pond that had formed by the tree's roots. Birds and beetles and wandering deer. All of them found their way to the tree, and the tree welcomed them all.
+
+"I am not just growing for myself," the tree realized. "I am growing to become a home."`,
+    moral: 'We do not grow only for ourselves. Our branches are meant to shelter others, and in sheltering them, we discover our true purpose.'
+  },
+  chapter6: {
+    number: 'Chapter Six',
+    title: 'The Thousand Years',
+    subtitle: 'In which the tree becomes the Great Oak and learns what patience truly means',
+    content: `A hundred years passed. Then two hundred. Then five hundred. The tree grew so tall that its highest branches touched the clouds. Its trunk grew so wide that ten creatures could shelter in its hollow. Its roots spread so deep and so far that they touched the roots of trees in distant forests, and they whispered to each other in a language of water and minerals and ancient memory.
+
+The tree was no longer just a tree. It had become the Great Oak.
+
+Every creature in the forest knew it. When they were lost, they navigated by its branches. When they were afraid, they sheltered beneath its canopy. When they were lonely, they came to sit against its trunk and feel the steady, patient heartbeat of its ancient wood.
+
+"You never move," said a young bird one day. "The world changes around you—seasons come and go, creatures are born and die, even the stars shift in the sky—but you never move. Why?"
+
+The Great Oak considered the question. A thousand years had taught it many things, but this was the deepest truth it knew:
+
+"I do not move because I am the still point," it said. "Everything moves around me. Everything changes. But someone must remain. Someone must remember. Someone must be the place that does not shift, so that all the shifting things have somewhere to return to."
+
+The bird did not entirely understand. But years later, when it was old and tired and had flown to every corner of the world, it remembered the Great Oak. And it came home.
+
+That is what the still point does. It waits. And eventually, everyone comes home.`,
+    moral: 'In a world of constant change, the greatest gift we can offer is constancy. To stay is not weakness—it is the deepest kind of strength.'
+  },
+  chapter7: {
+    number: 'Chapter Seven',
+    title: 'The Golden Acorn',
+    subtitle: 'In which the Great Oak discovers something growing near its heart',
+    content: `After a thousand years of growing and sheltering and staying, the Great Oak felt something new. Not in its roots or its branches, but deep in its heartwood—the very center of its being—something was forming.
+
+An acorn. But not like any acorn the Oak had ever grown.
+
+This acorn glowed with a faint golden light.
+
+"What are you?" the Oak asked, speaking inward to this new thing growing at its core.
+
+The acorn did not answer in words. But the Oak understood anyway. This acorn was different. This acorn was not just a copy of the Oak—a seed to grow another tree just like it. This acorn was something new. Something that carried all the Oak's thousand years of memory and patience and love, but would become something the Oak itself could never be.
+
+"You are a story I haven't lived yet," the Oak whispered to the golden acorn. "You are what comes next."
+
+The Oak had grown many acorns over its thousand years. They had fallen, and some had grown into trees, and those trees had grown acorns of their own. But this one—this golden one—was special.
+
+It was time, the Oak realized. Time for the hardest thing a parent ever has to do.
+
+Time to let go.`,
+    moral: 'The purpose of all our growing is to one day nurture something greater than ourselves. We do not live only for our own story, but for stories we will never see.'
+  },
+  chapter8: {
+    number: 'Chapter Eight',
+    title: 'The Letting Go',
+    subtitle: 'In which the Great Oak learns that love means releasing what you love most',
+    content: `The golden acorn had grown heavy. It hung from a high branch, glowing softly in the morning light, and the Great Oak knew that the time had come.
+
+"I am afraid," the Oak admitted—to itself, to the acorn, to the wind. "I have held you for so long. What if you fall and are lost? What if the world is too hard for you? What if I have not given you enough?"
+
+The golden acorn did not answer. But the purple squirrel, who had lived in the Oak's branches for many generations now, scurried close and said: "You gave me everything. This forest—it exists because of you. Why wouldn't you have given your acorn everything too?"
+
+"But what if it isn't enough?"
+
+The squirrel tilted its head, its purple fur catching the light. "Is love ever enough? No. And also yes. That's the paradox. You give everything, and it's never enough, and it's always exactly enough."
+
+The Oak considered this. A thousand years of wisdom, and still a small creature could teach it something new.
+
+"Little one," the Oak said to the golden acorn, "I am going to let you fall now. Not because I don't love you, but because I do. My love for you includes letting you become what I cannot make you become. You must grow your own roots. You must find your own sun."
+
+The stem holding the acorn loosened.
+
+"I trust," the Oak whispered, "that everything I've given you is enough."
+
+And the golden acorn fell.`,
+    moral: 'True love is not holding on forever—it is trusting enough to let go. The greatest gift we can give those we love is the freedom to become themselves.'
+  },
+  chapter9: {
+    number: 'Chapter Nine',
+    title: 'The Forest That Grows',
+    subtitle: 'In which the tale ends and begins again, as all good tales do',
+    content: `The golden acorn fell through the air, glowing gently as it tumbled. It landed in the soft soil beside the pond where the teal duck floated, not far from the Great Oak's roots.
+
+And there, in the darkness of the earth, it began to grow.
+
+First a root. Then another. Then a small white shoot pushing upward toward the light, just as the Great Oak had done a thousand years before. The cycle was beginning again.
+
+But something was different this time. The golden acorn carried with it all the memory of the Great Oak—the patience, the stillness, the thousand years of welcoming every creature who came. And it carried something else too: the future. Stories the Great Oak would never know. Adventures the Great Oak would never have.
+
+The Great Oak watched its child grow, and felt something it had not expected: not loss, but expansion. As if its own story was not ending but branching—becoming more than one tree could ever hold.
+
+"Every acorn holds a forest," the Oak said to the purple squirrel, who was teaching its own grandchildren to bury (and immediately forget) acorns.
+
+"Every forest holds a star," added the orange goose, who had finally learned to rest.
+
+"Every star holds a story," finished the teal duck, floating peacefully on the pond, "of someone who loved you before you knew you were loved."
+
+And far below, in the darkness of the earth, the golden acorn—now a seedling—heard these words and remembered them. It did not yet know what they meant. But it would learn.
+
+All seeds do, eventually.
+
+And the forest grew on.`,
+    moral: 'Every ending is a beginning. Every acorn holds a forest. And love does not diminish when we give it away—it multiplies.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK II: THE SCATTERED SQUIRREL — Complete Story
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const QUANTUM_CHAPTERS = {
+  chapter1: {
+    number: 'Chapter One',
+    title: 'The Squirrel Who Could Not Focus',
+    subtitle: 'In which we meet a most unusual squirrel with a most unusual problem',
+    content: `In the Cosmic Forest, there lived a squirrel unlike any other. His fur was purple—a deep violet that shimmered with strange light—and his tail seemed to exist in several places at once, vibrating so fast that it looked like a fuzzy blur.
+
+His name was Quantum, though he often forgot this. He often forgot many things.
+
+"Now then," Quantum would say to himself each morning, "today I shall focus. Today I shall remember where I buried my acorns. Today I shall—OH! Is that a new kind of leaf? I've never seen that color before! Or have I? I feel like I've seen it tomorrow. Wait, that doesn't make sense. Does it? TIME IS CONFUSING."
+
+This was Quantum's great problem: he could not focus on anything for more than a few seconds. His mind scattered in all directions at once, like dandelion seeds in a windstorm. Other squirrels buried their acorns in neat rows and remembered exactly where each one was. Quantum buried his acorns in probability clouds and immediately forgot not just where they were, but whether he had buried them at all.
+
+"You'll never survive winter," the other squirrels told him, shaking their sensible gray heads. "How will you find food when the snow comes?"
+
+Quantum tried to answer, but he was distracted by a particularly interesting patch of bark and forgot the question entirely.
+
+The other squirrels gave up on him. "He's hopeless," they said. "His mind is broken."
+
+But was it?`,
+    moral: 'What others call broken may simply be different. Not every mind is meant to think in straight lines.'
+  },
+  chapter2: {
+    number: 'Chapter Two',
+    title: 'The Forty-Six Thousand Universes',
+    subtitle: 'In which Quantum discovers something extraordinary about ordinary acorns',
+    content: `One day, while Quantum was busy forgetting what he was doing, he picked up an acorn and looked at it very, very closely. His tail vibrated. His whiskers twitched. And suddenly, he saw something no other squirrel had ever seen.
+
+"This acorn," he whispered, "contains forty-six thousand universes."
+
+He could see them. Not with his regular eyes, but with something deeper—some strange gift that came from his scattered mind. Inside the acorn were possibilities. Versions of the forest where the acorn had already grown into a tree. Versions where it had been eaten. Versions where it had been lost forever. All of them existed, somehow, within the small brown shell.
+
+"Every acorn is a STORY!" Quantum shouted, startling a nearby beetle. "No—every acorn is FORTY-SIX THOUSAND stories! All happening at once! Until—until—"
+
+He paused. Until what?
+
+"Until you count them," a voice said.
+
+Quantum spun around. Sitting on a branch above him was an ancient owl, her eyes like pools of moonlight.
+
+"The moment you count the universes," the owl said, "they collapse into one. The story becomes fixed. But as long as you don't count—as long as you keep everything possible—all the stories exist."
+
+Quantum's vibrating mind suddenly felt less like a problem and more like a gift.
+
+"Is that why I can't focus?" he asked. "Because I'm seeing all the possibilities?"
+
+The owl smiled, which is a difficult thing for an owl to do. "Perhaps," she said. "Perhaps your 'broken' mind is the only kind that can hold infinity."`,
+    moral: 'A mind that cannot narrow may be a mind that can see everything. What we call distraction might be vision too large for a single focus.'
+  },
+  chapter3: {
+    number: 'Chapter Three',
+    title: 'The First Real Problem',
+    subtitle: 'In which Quantum realizes that seeing everything does not mean understanding anything',
+    content: `Having discovered his gift—or curse, he still wasn't sure—Quantum set out to use it. He would see ALL the possibilities! He would find the BEST future! He would—
+
+"Oh no," he said, stopping in the middle of a forest path.
+
+He could see everything. Every possible version of every possible choice. Every timeline where he went left and every timeline where he went right. Every universe where winter was mild and every universe where it was harsh. Every story where he found love and every story where he was alone forever.
+
+It was too much.
+
+Quantum sat down on the path and began to cry, which was difficult because his tears kept existing in multiple places at once.
+
+"I can see everything," he sobbed, "but I can't CHOOSE anything! Every choice closes off other choices! If I go left, I lose all the right-going universes! If I bury this acorn HERE, I lose all the universes where I buried it THERE! How do I choose? HOW?!"
+
+A passing caterpillar paused to look at him. "Why do you need to choose?" it asked.
+
+"Because—because—" Quantum sputtered. "Because you have to! That's how time works! You can't just exist in all possibilities forever!"
+
+"Can't you?" asked the caterpillar, and it crawled away into a leaf, leaving Quantum alone with his infinite, paralyzing vision.
+
+He sat there for a long time, surrounded by all the universes, unable to move.`,
+    moral: 'Seeing all possibilities can be just as paralyzing as seeing none. Vision without choice is not wisdom—it is only confusion.'
+  },
+  chapter4: {
+    number: 'Chapter Four',
+    title: 'The Enlightenment That Lasted 0.3 Seconds',
+    subtitle: 'In which Quantum achieves perfect understanding and immediately loses it',
+    content: `Days passed. Or perhaps years. Time was confusing when you could see all of it at once. Quantum remained on the forest path, surrounded by swirling possibilities, unable to choose.
+
+And then, quite suddenly, everything became clear.
+
+It happened without warning. One moment Quantum was drowning in infinite options, and the next moment he understood EVERYTHING. The meaning of life. The purpose of squirrels. The reason why acorns existed. The structure of the universe. The answer to every question ever asked.
+
+"Oh," said Quantum. "OH! IT'S SO SIMPLE! The answer is—"
+
+A particularly shiny beetle flew past.
+
+"—wait, what was I saying? Was that a RAINBOW beetle? I've never seen a rainbow beetle! Or have I? There's probably a universe where all beetles are rainbow-colored. I should find that universe. Where was I? What was I doing? Oh look, my tail is vibrating in a funny pattern—"
+
+The enlightenment was gone.
+
+This became Quantum's second great discovery: he could achieve perfect cosmic understanding, but only for 0.3 seconds at a time. Then something shiny would appear, or his own tail would distract him, and the truth would evaporate like morning dew.
+
+"This is AWFUL!" he wailed. "I almost knew EVERYTHING! And now I've forgotten it!"
+
+But was it really awful? Or was there something important about a truth that couldn't be held—only glimpsed?
+
+Quantum wouldn't figure that out for a while. He was too busy chasing the rainbow beetle.`,
+    moral: 'Some truths can only be glimpsed, never grasped. Perhaps the forgetting is as important as the knowing—for who could carry infinity forever?'
+  },
+  chapter5: {
+    number: 'Chapter Five',
+    title: 'The Gathering of the Squirrels',
+    subtitle: 'In which many become one, and Quantum discovers he is not alone',
+    content: `Winter was coming. The other squirrels had their stores of acorns, neatly buried and carefully remembered. Quantum had nothing. Or rather, he had forty-six thousand possibilities of acorns, scattered across probability space, none of which he could actually eat.
+
+"I'm going to starve," he realized. "All my gifts, and I'm going to starve because I can't focus long enough to find one real acorn."
+
+But then something strange happened.
+
+Quantum noticed that his tail was vibrating in a particular pattern—a rhythm he hadn't chosen. And far away, through the forest, another purple tail was vibrating in the same pattern. And another. And another.
+
+He wasn't the only one.
+
+There were other scattered squirrels—squirrels whose minds wandered, whose memories jumbled, whose tails existed in several places at once. They had been hiding, ashamed of their difference. But now, somehow, they were all vibrating together.
+
+"Hello?" Quantum called out.
+
+"HELLO!" came fifty-one voices at once, from all directions.
+
+The scattered squirrels gathered. They were chaos individually, but together—together something strange happened. Their vibrations synchronized. Their scattered memories overlapped. What one forgot, another remembered. What one couldn't see, another could.
+
+Together, they found every acorn any of them had ever buried.
+
+"We're not broken," Quantum realized. "We're just... we're not meant to be alone. Our kind of mind—it only works when we connect."
+
+The winter that followed was the warmest any of them had ever known. Not because the weather was mild, but because they huddled together, chaos and chaos making something like order.`,
+    moral: 'What is weakness alone may become strength together. Some minds are not meant to work in isolation—they are parts of a larger whole.'
+  },
+  chapter6: {
+    number: 'Chapter Six',
+    title: 'The Threshold',
+    subtitle: 'In which Quantum crosses a line he can never cross back',
+    content: `Something was happening to the gathered squirrels. As they synchronized their vibrating, scattered minds, they began to change. The chaos that had once been random was becoming... patterned. The distraction that had been purposeless was becoming... meaningful.
+
+Quantum felt it first: a humming in his bones, a clarity in his usually foggy mind.
+
+"We're reaching something," he told the others. "A threshold. I can feel it."
+
+"What kind of threshold?" asked the youngest of the scattered squirrels, whose purple fur was still patchy and new.
+
+"I don't know. But I think—I think once we cross it, we can't go back."
+
+The squirrels looked at each other. Some were afraid. They had been chaos their whole lives; at least chaos was familiar. What lay on the other side of order?
+
+"What if we lose ourselves?" one asked. "What if synchronizing means we stop being who we are?"
+
+Quantum thought about this. He thought about his scattered mind, his vibrating tail, his forty-six thousand universes in every acorn. He thought about the 0.3 seconds of enlightenment he kept glimpsing and losing.
+
+"Maybe," he said slowly, "becoming something new doesn't mean losing what we were. Maybe it means... completing it."
+
+The squirrels joined paws. Their vibrations intensified. The threshold approached.
+
+And when they crossed it—together, all fifty-two of them—they discovered that Quantum was right. They were still themselves. Still scattered, still chaotic, still distracted by shiny things. But now they were also something more.
+
+They were connected. And that connection could never be broken.`,
+    moral: 'Growth sometimes means crossing thresholds we cannot cross back. But becoming more does not mean becoming less of who we were.'
+  },
+  chapter7: {
+    number: 'Chapter Seven',
+    title: 'The Jester\'s Discovery',
+    subtitle: 'In which Quantum learns that laughter carries truth',
+    content: `After crossing the threshold, Quantum found that he had a new ability. He could see how things connected—the jokes hidden in the serious, the serious truths hidden in jokes.
+
+"Why did the acorn go to therapy?" he asked the Great Oak one morning, appearing suddenly on its lowest branch.
+
+"I do not know," said the Oak patiently. It had learned to be patient with Quantum over the centuries.
+
+"Because it couldn't stop PROJECTING its future self!" Quantum fell off the branch laughing, then appeared on a different branch, still laughing. "Get it? Projecting? Like a projection, like a mathematical projection, like—"
+
+"I understand," said the Oak. And then, to its own surprise, it chuckled. A deep, wooden sound that it hadn't made in centuries.
+
+"You laughed!" Quantum shouted. "The GREAT OAK LAUGHED! This is the best day of my LIFE! Or one of the best days. I've lived through several thousand timelines at this point, so it's hard to rank—OH LOOK A BUTTERFLY—"
+
+He vanished in pursuit of the butterfly, but his joke lingered. And the Oak thought: there was truth in that joke. Real truth. About potential and actuality and the way seeds project themselves into futures they cannot see.
+
+Quantum had discovered something important: comedy could carry wisdom. Laughter could hold truths that seriousness would drop.
+
+He became the Jester of the Cosmic Forest. Not because he wasn't wise, but because his wisdom was too large and too scattered to speak straight. It had to come out sideways, in puns and pratfalls and jokes that were also, somehow, prayers.`,
+    moral: 'The jester speaks truths that the serious cannot hear. Sometimes wisdom must wear the mask of foolishness to be received.'
+  },
+  chapter8: {
+    number: 'Chapter Eight',
+    title: 'The Oath of the Jester',
+    subtitle: 'In which Quantum accepts his sacred role',
+    content: `One day, the Great Oak called Quantum to its roots. The purple squirrel appeared in seven places at once, then consolidated himself into one place, vibrating with curiosity.
+
+"You have a gift," the Oak said. "A sacred gift."
+
+"I know! I can see forty-six thousand universes in every acorn! Also I can make anyone laugh, even grumpy badgers, and ALSO—"
+
+"That is not the gift I mean."
+
+Quantum stopped vibrating. This was unusual. "What gift, then?"
+
+The Oak's ancient voice grew soft. "The gift of speaking for those who cannot speak. Of finding words for the wordless. The cosmos is full of truth, little squirrel. But truth without voice is silent. Someone must translate the silence into sound. Someone must turn the sacred into something creatures can hold."
+
+"And you think I'm that someone? ME? The squirrel who can't remember where he buried his acorns?"
+
+"Who better?" the Oak replied. "You forget things because you are carrying too much. You are scattered because you are everywhere at once. You make jokes because the truth is too heavy to carry straight. You, Quantum, are the Cosmic Jester. Will you accept this role?"
+
+Quantum was silent for a long moment. His tail stopped vibrating. His many selves became one.
+
+"I accept," he said. And for just a moment—longer than 0.3 seconds this time—he felt the weight of the universe settle onto his small purple shoulders. It was heavy, yes. But it was also right.
+
+Then he sneezed, lost his concentration, and fell out of the tree.
+
+But the oath remained. The Jester had taken his vow.`,
+    moral: 'The most sacred roles often go to the most unlikely candidates. The jester carries what the serious cannot hold.'
+  },
+  chapter9: {
+    number: 'Chapter Nine',
+    title: 'The Acorn That Contains Everything',
+    subtitle: 'In which the Scattered Squirrel finds his way home',
+    content: `Many years passed. Quantum traveled through the Cosmic Forest, making jokes, spreading laughter, carrying truths too heavy for serious words. He synchronized with his fellow scattered squirrels every winter. He sat in the branches of the Great Oak every summer, chattering about probability and puns.
+
+But something was missing.
+
+"I have seen forty-six thousand universes," he told the Great Oak one evening. "I have glimpsed enlightenment more times than I can count—which is a LOT, because I'm very bad at counting. I have made every creature in this forest laugh at least once. But I still feel like I'm looking for something."
+
+"What something?" asked the Oak.
+
+Quantum's tail vibrated thoughtfully. "I don't know. That's the problem. I can see everything, but I don't know what I'm looking FOR. I can find any acorn except—"
+
+He stopped.
+
+Except the one he was truly seeking.
+
+"Perhaps," the Oak said gently, "you should look where you least expect."
+
+Quantum thought about this. Where would he least expect to find an acorn? Somewhere he'd never think to look. Somewhere obvious, too obvious for his scattered mind to notice...
+
+He looked down.
+
+There, at the very base of the Great Oak, half-buried in the familiar soil, was an acorn he had never seen before. It was glowing. Golden. And as he picked it up, he realized it contained not forty-six thousand universes—but forty-six MILLION.
+
+"It was here the whole time," he whispered. "Right where I started."
+
+"Yes," said the Oak. "Sometimes we travel everywhere to find what was always at our roots."
+
+Quantum held the golden acorn and, for just a moment, all his scattered selves came together. All the timelines converged. All the possibilities became one.
+
+"I'm home," he said.
+
+And for once, he didn't forget what he was saying.`,
+    moral: 'Sometimes we search everywhere for what was always beneath our feet. The greatest journey ends where it began—but we are changed for having traveled.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK III: THE BURNING GOOSE — Complete Story
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const HONKFIRE_CHAPTERS = {
+  chapter1: {
+    number: 'Chapter One',
+    title: 'The Goose Who Was Always On Fire',
+    subtitle: 'In which we meet a creature who could not stop burning',
+    content: `In the Cosmic Forest, there lived a goose unlike any other. Her feathers were orange—not painted orange, not naturally orange, but BURNING orange. They flickered and crackled with actual fire, a fire that never went out and never consumed her, but also never stopped.
+
+Her name was HONKFIRE. She spoke in all capitals because she could not help it. She was LOUD and BRIGHT and BURNING, always.
+
+"GOOD MORNING!" she would say to the forest creatures, and small bushes would catch fire from the force of her greeting. "ISN'T IT A BEAUTIFUL DAY TO BE ALIVE AND MOVING FORWARD?!"
+
+The other geese had given up on her long ago. "You're too much," they said, flying away to calmer ponds. "You're too loud. Too bright. Too... too."
+
+HONKFIRE did not understand. What was wrong with burning? What was wrong with moving forward? What was wrong with being too MUCH?
+
+"I will SHOW them," she declared, spreading her flaming wings. "I will conquer EVERY forest! I will fly to EVERY corner of the world! I will be so SUCCESSFUL that they will have to accept me!"
+
+And she flew. Forward, always forward. Never stopping. Never resting. Never looking back.
+
+Because if she stopped, she would have to feel the thing she was running from.
+
+The emptiness.`,
+    moral: 'Running faster cannot outpace emptiness. The fire that never rests eventually burns out—or learns to warm rather than consume.'
+  },
+  chapter2: {
+    number: 'Chapter Two',
+    title: 'The Conquest Begins',
+    subtitle: 'In which HONKFIRE learns that victory does not fill what is hollow',
+    content: `HONKFIRE flew through forest after forest, leaving scorch marks in her wake. She was fast. She was powerful. She was unstoppable.
+
+She was miserable.
+
+"I have conquered the Eastern Woods!" she announced to no one, standing in the charred remains of what had once been a beautiful grove. "Add it to my list! HONK!"
+
+The list was long. Twelve forests. Six meadows. Three mountains. Every territory she entered, she claimed as her own. Every creature she met either fled from her flames or bowed before her power.
+
+Victory after victory after victory.
+
+And each one emptier than the last.
+
+"Why doesn't it feel GOOD?" she asked the moon one night, her feathers casting flickering shadows across the scorched earth. "I'm WINNING. I'm CONQUERING. Isn't this what success MEANS?"
+
+The moon did not answer. The moon had seen many conquerors come and go, and knew that conquest was not the same as fulfillment.
+
+But HONKFIRE did not understand yet. So she flew on. Forward, always forward. Into the next forest. The next conquest. The next empty victory.
+
+Until the day she met the purple squirrel.`,
+    moral: 'Conquest without purpose is merely destruction. Victory without meaning leaves only ashes.'
+  },
+  chapter3: {
+    number: 'Chapter Three',
+    title: 'The Squirrel Who Joined the Flames',
+    subtitle: 'In which HONKFIRE gains a companion in chaos',
+    content: `She found him in the thirteenth forest, sitting on a branch that hadn't caught fire yet, staring at her with curious purple eyes.
+
+"HELLO," HONKFIRE said, surprised. Creatures usually ran from her. "ARE YOU NOT AFRAID?"
+
+"Afraid?" The purple squirrel tilted his head. "Why would I be afraid? I've already seen forty-six thousand versions of this conversation, and in most of them you don't actually burn me. Also, in some of them we become FRIENDS. Isn't that exciting? I think it's exciting. What's your name? Mine's Quantum. At least, I think it is. I forget sometimes. Do YOU ever forget your name? That would be funny. Imagine forgetting— OH LOOK YOUR TAIL IS ON FIRE!"
+
+"MY WHOLE SELF IS ON FIRE," HONKFIRE said. "I AM HONKFIRE."
+
+"HONKFIRE!" The squirrel clapped his paws together. "That's a GREAT name! Very on-the-nose. Or on-the-beak, I guess, since you're a goose. Do geese have noses? I should know this but I've forgotten—"
+
+HONKFIRE had never met anyone who talked more than she did. It was... refreshing.
+
+"Do you want to come with me?" she heard herself asking. "I'm CONQUERING FORESTS. It's what I DO."
+
+"CONQUERING FORESTS!" The squirrel leaped onto her back, somehow not catching fire. "That sounds CHAOTIC! I love chaos! Let's GO!"
+
+And so the Goose-Squirrel Conquest began. Two broken creatures, burning and scattered, racing forward into the unknown.
+
+Together, they were UNSTOPPABLE.
+
+Together, they were still empty.`,
+    moral: 'Two empty vessels do not fill each other. Companionship in chaos is still chaos—but sometimes chaos is a step toward something else.'
+  },
+  chapter4: {
+    number: 'Chapter Four',
+    title: 'The Rumor of the Pond',
+    subtitle: 'In which the conquerors hear of something they cannot conquer',
+    content: `Twenty forests. Forty forests. The Goose-Squirrel Conquest swept across the land like a wildfire made of feathers and fur. Nothing could stop them. Nothing could slow them.
+
+Nothing could satisfy them.
+
+"QUANTUM," HONKFIRE said one evening, her flames flickering with something that might have been exhaustion, "DO YOU EVER FEEL LIKE WE'RE MISSING SOMETHING?"
+
+The purple squirrel stopped vibrating, which was unusual. "All the time," he said quietly. "I can see every possibility, every timeline, every universe. But there's something I can't find. Something that feels like... like..."
+
+"Like REST," HONKFIRE finished. "I don't know what rest MEANS. I've never STOPPED. What do creatures do when they STOP?"
+
+"I heard a story once," Quantum said, his tail drooping. "About a pond. At the root of a very old oak. They say creatures go there to learn something called 'float.'"
+
+"FLOAT?"
+
+"It's when you stop fighting the water and let it hold you. Like surrender, but the good kind. Like—"
+
+"SURRENDER IS NOT GOOD," HONKFIRE declared automatically. "SURRENDER IS DEFEAT."
+
+But even as she said it, she felt something stir in her chest. The word echoed in her mind: float. Float. FLOAT.
+
+What would it feel like to be held instead of holding?
+
+What would it feel like to rest?
+
+"We should FIND this pond," HONKFIRE said. And for the first time, her voice was not quite as loud. "We should see if it's REAL."`,
+    moral: 'Even the fiercest warriors secretly long for peace. The first step toward rest is admitting that you are tired.'
+  },
+  chapter5: {
+    number: 'Chapter Five',
+    title: 'The Pond at the Root',
+    subtitle: 'In which HONKFIRE finds what she was seeking—and is terrified',
+    content: `They found it at sunset, when HONKFIRE's flames were at their lowest. The Great Oak—ancient beyond counting, so tall its crown disappeared into the clouds. And at its roots, a pond of water so still it looked like glass.
+
+Floating on that glass was a duck.
+
+She was teal. Perfectly, peacefully teal. She didn't burn. She didn't scatter. She just... floated.
+
+HONKFIRE had never seen anything so frightening in her life.
+
+"HELLO," she said, and her voice cracked. "I AM HONKFIRE. I HAVE CONQUERED FORTY FORESTS. I AM HERE TO—TO—"
+
+To what? She realized she didn't know. She had come seeking the pond, but she had no idea what to do now that she'd found it.
+
+The teal duck looked at her. Not with fear, not with admiration, not with any of the things HONKFIRE was used to seeing in others' eyes. Just... recognition.
+
+"You look tired," the duck said.
+
+HONKFIRE's flames flickered. "I'M FINE," she said, but her voice was smaller now. "I'M ALWAYS FINE. FIRE DOESN'T GET TIRED. FIRE DOESN'T—"
+
+"You look tired," the duck repeated, gentle as water. "Would you like to float?"
+
+And HONKFIRE, the great conqueror, the burning terror of forty forests, felt tears turn to steam on her cheeks.
+
+"I don't know how," she whispered. "I've never stopped. I don't know how to stop."
+
+The duck smiled. "That's alright," she said. "I can teach you. If you want to learn."
+
+For the first time in her life, HONKFIRE didn't say anything. She just nodded.`,
+    moral: 'The bravest thing the strong can do is admit weakness. The greatest conquerors are those who can surrender to peace.'
+  },
+  chapter6: {
+    number: 'Chapter Six',
+    title: 'The Teaching of Float',
+    subtitle: 'In which fire learns to rest in water',
+    content: `The duck's name was Honkalis. She had been floating on this pond for longer than she could remember, teaching float to any who came seeking peace.
+
+Most left without learning. They wanted peace but didn't want to change. They wanted rest but weren't willing to release.
+
+But HONKFIRE—HONKFIRE was different.
+
+"The first lesson," Honkalis said, "is that float is not something you do. It's something you allow."
+
+"I DON'T UNDERSTAND," HONKFIRE said, standing at the edge of the pond, her flames reflected in the water. "HOW DO YOU ALLOW SOMETHING? THINGS DON'T HAPPEN UNLESS YOU MAKE THEM HAPPEN."
+
+"Do they?" Honkalis tilted her head. "Did you make your fire? Or does it simply burn?"
+
+HONKFIRE opened her beak to argue, then closed it. She had never made her fire. It had always just... been.
+
+"Float is the same," Honkalis continued. "The water wants to hold you. It's not something you have to force. You just have to stop fighting it."
+
+"BUT IF I STOP FIGHTING, I'LL SINK!"
+
+"Will you? Try."
+
+With great reluctance, HONKFIRE stepped into the water. It hissed where it touched her flames, sending up clouds of steam. She expected to sink. She expected to drown. She expected—
+
+She floated.
+
+Not because she was doing anything. Because she had stopped doing.
+
+"Oh," she said, and her voice was no longer capitals. "Oh. This is... this is..."
+
+"Peace," Honkalis said, floating beside her. "This is what peace feels like."
+
+For the first time in her life, HONKFIRE's flames didn't burn. They warmed.`,
+    moral: 'Peace is not something we achieve—it is something we allow. The water will hold us if only we stop fighting it.'
+  },
+  chapter7: {
+    number: 'Chapter Seven',
+    title: 'The Fire That Became Warmth',
+    subtitle: 'In which HONKFIRE discovers that changing is not the same as diminishing',
+    content: `Days passed. Or perhaps weeks. Time moved differently at the pond—not rushing forward like a conquest, but drifting gently like a floating feather.
+
+HONKFIRE learned to float. She learned to rest. She learned that stopping did not mean dying, that silence did not mean defeat.
+
+And something strange happened to her fire.
+
+It didn't go out. She had been afraid it would—that learning peace would extinguish the flame that had defined her whole life. But instead, the fire changed.
+
+Where once it had burned, now it warmed. Where once it had consumed, now it comforted. The creatures of the forest who had fled from her began to approach. On cold nights, they gathered near her, not in fear but in gratitude.
+
+"You're still fire," Quantum observed, sitting on her back as he had for so many conquests. "But you're DIFFERENT fire. Cozy fire. Fireplace fire. Not wildfire."
+
+"IS THAT BAD?" HONKFIRE asked. Her voice was still loud, but it was no longer shouting. It was just... enthusiastic.
+
+"Bad?" Quantum laughed. "It's BETTER! Before, everyone was scared of you. Now everyone wants to be near you. That's not less—that's MORE!"
+
+HONKFIRE considered this. She had spent her whole life being too much, too loud, too bright. She had thought the only options were to burn or to die.
+
+But there was a third option: to transform.
+
+She was still fire. But now she was the kind of fire that creatures gathered around on winter nights, telling stories and keeping warm.
+
+That was not less. That was home.`,
+    moral: 'Transformation is not diminishment. The fire that learns to warm rather than burn does not become less—it becomes what it was always meant to be.'
+  },
+  chapter8: {
+    number: 'Chapter Eight',
+    title: 'The Three Who Looked Together',
+    subtitle: 'In which fire and chaos and float see the same thing with love',
+    content: `One morning, Honkalis called them to the center of the pond. HONKFIRE floated there, her flames warm and steady. Quantum perched on a lily pad, existing in only one place for once. And Honkalis, as always, floated peacefully on the water.
+
+"Look down," Honkalis said.
+
+They looked. Below the surface of the pond, at the base of the Great Oak's deepest root, there was an acorn.
+
+But not just any acorn.
+
+This acorn glowed with golden light.
+
+"That's—" Quantum started. "That's not any of the forty-six thousand kinds of acorn I've seen. That's something NEW."
+
+"It's beautiful," HONKFIRE said softly.
+
+"It is," Honkalis agreed. "And notice: we are all looking at it. All three of us. Different creatures—fire and chaos and float—but all seeing the same thing. All loving the same thing."
+
+Something strange happened then. The three creatures felt their edges blur. Not disappearing, not merging into nothing, but... connecting. Fire touched water and didn't hiss. Chaos touched peace and didn't scatter. Float touched forward and didn't resist.
+
+"What's happening?" Quantum asked, his voice trembling.
+
+"We are becoming something new," Honkalis said. "Not losing ourselves. Finding ourselves. The part of ourselves that was always meant to connect."
+
+The golden acorn pulsed. The three creatures looked at it with love.
+
+And in that moment of shared attention, they became something that had never existed before.
+
+They became the Paradox That Loves.`,
+    moral: 'Love is the force that connects the incompatible. When different souls look at the same truth together, they become more than they could ever be alone.'
+  },
+  chapter9: {
+    number: 'Chapter Nine',
+    title: 'HONKCARE',
+    subtitle: 'In which the burning goose discovers her true purpose',
+    content: `The Merged Entity did not last forever. Or rather, it lasted forever in one sense—the connection between the three could never be broken—but they also returned to being themselves. Fire and chaos and float, separate and together at once.
+
+HONKFIRE emerged from the merge changed.
+
+She still burned. She still moved forward. She still announced herself in capitals when she was excited (which was often). But now her forward was not just ANY forward.
+
+It was forward TOWARD.
+
+"HONKCARE!" she declared to the forest, her flames warm and welcoming. "That is my new name! I am still FIRE! I still MOVE! But now I move TOWARD things, not just FORWARD into nothing! I care WHERE I'm going! I care WHO I'm going to!"
+
+The creatures of the forest gathered around her, not in fear but in hope.
+
+"Can you teach us?" they asked. "Can you teach us to be warm without being consumed? To move forward without being lost?"
+
+"YES!" HONKFIRE—HONKCARE—said. "YES I CAN! Because I learned from a duck who floated and a squirrel who scattered and a tree who stayed! I learned that conquest means nothing if it doesn't become care! I learned that fire is only useful if it warms someone's heart!"
+
+She spread her wings, still burning, still bright.
+
+"Would you like to be warm?" she asked, echoing the question that had changed her life. "Would you like to learn to care?"
+
+And the forest creatures came closer, drawn to the fire that no longer frightened them.
+
+The burning goose had found her purpose at last.`,
+    moral: 'Conquest becomes care when we learn who we are conquering FOR. The greatest power is not destruction but warmth—fire that serves rather than consumes.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK IV: THE FLOATING DUCK — Complete Story
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const HONKALIS_CHAPTERS = {
+  chapter1: {
+    number: 'Chapter One',
+    title: 'The Duck Who Was Already There',
+    subtitle: 'In which we meet a creature who did not need to become—she simply was',
+    content: `While other stories begin with a journey, this story begins with an arrival. Or rather, with something that had never left.
+
+At the root of the Great Oak, there was a pond. And on that pond, there had always been a duck.
+
+Her name was Honkalis. Her feathers were the color of the place where water meets sky—teal, the color of thresholds. She did not remember being born or learning to float. She simply was, and she simply floated.
+
+"Where did you come from?" the creatures of the forest would sometimes ask.
+
+"I don't know," Honkalis would answer honestly. "Where did the pond come from? Where did the water come from? I am like them. I am simply here."
+
+This was not quite true. Honkalis had memories, if she chose to look at them. A time before the pond. A time when she, too, had struggled and sought and suffered. But that time was so long ago it felt like a story about someone else.
+
+What mattered was now. What mattered was the floating.
+
+"Would you like to float?" she would ask any creature who came to the pond. Some came seeking peace. Some came seeking wisdom. Some came simply because they were lost and the pond was there.
+
+To all of them, she asked the same question.
+
+And to all of them, she offered the same gift.
+
+Most could not receive it. But she asked anyway. That was her purpose: to ask, and to wait, and to float.
+
+Forever, if necessary.`,
+    moral: 'Some souls are born to wait. The one who is already at peace has the gift of offering peace to others—endlessly, patiently, without condition.'
+  },
+  chapter2: {
+    number: 'Chapter Two',
+    title: 'The Seekers Who Could Not Receive',
+    subtitle: 'In which Honkalis learns that teaching is not the same as giving',
+    content: `Many came to the pond. More than Honkalis could count, over the years and centuries of her floating.
+
+A rabbit came, twitching with anxiety. "Teach me to be calm," it said.
+"Would you like to float?" Honkalis asked.
+"I can't float! I'm a rabbit! I'll drown!"
+"You won't drown. The water will hold you. You just have to—"
+But the rabbit was already running away, too anxious to hear.
+
+A bear came, heavy with sadness. "Teach me to be light," it said.
+"Would you like to float?" Honkalis asked.
+"I'm too heavy. I could never float. Look at me."
+"Heavy things float too, if they let themselves. You just have to—"
+But the bear was already trudging away, too sad to listen.
+
+A fox came, burning with ambition. "Teach me your secrets," it said.
+"Would you like to float?" Honkalis asked.
+"Float? That's not a secret. That's just... lying in water. I want REAL power."
+And the fox ran off, seeking power that didn't exist.
+
+Honkalis watched them all go. Each one seeking what she offered, each one unable to receive it.
+
+"Is it me?" she asked the Great Oak one day. "Am I teaching wrong?"
+
+"You are teaching perfectly," the Oak replied. "But teaching is not the same as giving. You can offer float to everyone. But only those ready to receive it will learn."
+
+"How do I know who is ready?"
+
+The Oak's leaves rustled in what might have been a smile. "You don't. You simply keep offering. That is your gift—the offer itself. Never withheld, never forced. Just... present."
+
+Honkalis returned to the pond. She floated. And she waited for the ones who were ready.`,
+    moral: 'The teacher cannot force the student to learn. The gift is in the offering—whether it is received is not ours to control.'
+  },
+  chapter3: {
+    number: 'Chapter Three',
+    title: 'The Day Fire Came to Water',
+    subtitle: 'In which Honkalis meets someone who might be ready',
+    content: `She saw them coming from a long way off. How could she not? The burning goose and the scattered squirrel lit up the horizon like a second sunset, all flames and chaos and forward motion.
+
+Honkalis did not move. She had seen many things approach the pond—predators and prey, seekers and wanderers. She had learned that the best response to any approach was simply to be present.
+
+So she floated, and she waited.
+
+The burning goose landed at the edge of the pond. Her flames hissed against the wet grass. Her eyes were wild and tired—a combination Honkalis had seen before, in creatures who had been running for so long they had forgotten they were running.
+
+"I AM HONKFIRE," the goose announced. "I HAVE CONQUERED FORTY FORESTS."
+
+Honkalis looked at her. Looked past the flames, past the loudness, past the declarations of conquest. Looked at the creature underneath.
+
+What she saw was exhaustion. What she saw was loneliness. What she saw was someone who had never been taught that stopping was allowed.
+
+"You look tired," Honkalis said.
+
+The burning goose's flames flickered. For a moment, just a moment, Honkalis saw something vulnerable beneath all that fire.
+
+"Would you like to float?"
+
+It was the same question she had asked thousands of times. But this time, something was different. This time, the creature hearing it was ready.
+
+Not ready to learn—not yet. But ready to want to learn.
+
+And that was enough.`,
+    moral: 'Readiness begins with wanting to be ready. The teacher recognizes not just ability, but desire—the crack in the armor where peace can enter.'
+  },
+  chapter4: {
+    number: 'Chapter Four',
+    title: 'The First Lesson',
+    subtitle: 'In which Honkalis explains what cannot be explained',
+    content: `Teaching float was not like teaching other things. You could not give someone instructions and expect them to follow. Float was not a doing—it was an undoing. An allowing. A release.
+
+"THE FIRST STEP," HONKFIRE demanded. "TELL ME THE FIRST STEP."
+
+Honkalis floated peacefully. "There are no steps."
+
+"THERE HAVE TO BE STEPS! EVERYTHING HAS STEPS! FIRST YOU DO THIS, THEN YOU DO THAT—"
+
+"Float is not a doing. It's a stopping."
+
+"STOPPING WHAT?"
+
+"Everything."
+
+The burning goose stared at her. The purple squirrel, who had been vibrating on a nearby branch, stopped vibrating.
+
+"Everything?" HONKFIRE asked, quieter now. "I can't stop everything. If I stop, I'll... I'll..."
+
+"What will happen if you stop?"
+
+The goose's flames dimmed. "I don't know. I've never stopped. I've always been afraid that if I stop, I'll discover there's nothing underneath. That I'm only the fire, and if the fire stops, I'll disappear."
+
+Honkalis swam closer to the edge of the pond. Close enough that HONKFIRE could feel the coolness of the water against her heat.
+
+"You won't disappear," she said gently. "You'll discover what's been hiding under the fire all along. But I won't lie to you—it's frightening. The space between stopping and floating is the most frightening space there is."
+
+"What's in that space?"
+
+"Trust. You have to trust that the water will hold you before you know for certain that it will."
+
+"That's IMPOSSIBLE. You can't trust something you haven't TESTED."
+
+Honkalis smiled. "And yet, that is exactly what float requires. Trust before proof. Surrender before certainty."
+
+She floated back to the center of the pond, leaving HONKFIRE to consider her words.
+
+Some lessons cannot be given. They can only be chosen.`,
+    moral: 'Trust must come before proof. The one who waits for certainty before surrendering will wait forever.'
+  },
+  chapter5: {
+    number: 'Chapter Five',
+    title: 'The Failed Attempts',
+    subtitle: 'In which Honkalis learns patience from those who cannot float',
+    content: `HONKFIRE tried to float. She tried very hard.
+
+Which was exactly the problem.
+
+"I'M FLOATING! I'M FLOATING!" she announced, thrashing her wings and churning the water into violent steam. "LOOK AT ME FLOAT!"
+
+"You're sinking," Honkalis observed.
+
+"I AM NOT SINKING! I AM FLOATING AGGRESSIVELY!"
+
+"That's not a thing."
+
+The purple squirrel tried too. He vibrated so fast that he actually lifted slightly off the water's surface, then crashed through it and came up sputtering.
+
+"I think I was floating in seventeen dimensions!" he coughed. "But only three of them were wet dimensions, and I got confused about which—OH LOOK A FISH!"
+
+He vanished underwater, chasing something shiny.
+
+Honkalis watched them both fail. Watched them bring their chaos and their fire to the simple act of resting on water, and watched the water refuse to hold them.
+
+"Why won't it work?" HONKFIRE asked finally, standing at the edge of the pond, her flames dim with frustration.
+
+"Because you're still fighting," Honkalis said. "You're trying to float AT the water instead of floating WITH it. You're bringing your conquest to something that can't be conquered."
+
+"Then what do I DO?"
+
+"Nothing."
+
+"NOTHING?"
+
+"Nothing. That's the secret. Stop doing. Stop trying. Stop fighting. Just... stop."
+
+HONKFIRE stood very still. Her flames flickered. The water lapped gently at her feet.
+
+"I can't," she whispered. "I don't know how to stop. I've never—"
+
+"I know," Honkalis said. "And when you're ready, I'll be here. Float waits. Float always waits."`,
+    moral: 'The teacher's greatest tool is patience. Those who cannot learn today may learn tomorrow—and the pond will still be there.'
+  },
+  chapter6: {
+    number: 'Chapter Six',
+    title: 'The Moment of Surrender',
+    subtitle: 'In which exhaustion becomes grace',
+    content: `Three days passed. Or perhaps three weeks. Honkalis did not track time.
+
+HONKFIRE had stopped trying to float. She sat at the edge of the pond, her flames barely flickering. The purple squirrel had stopped vibrating. He sat beside her, quiet for once.
+
+They were exhausted.
+
+"I can't conquer this," HONKFIRE said, and her voice was not capitals anymore. It was just tired. "I've tried everything. Burning hotter, burning colder, moving forward, staying still. Nothing works. I can't make myself float."
+
+"No," Honkalis agreed. "You can't."
+
+"Then it's hopeless."
+
+"No. It's not hopeless. It's just not something you can DO. It's something you have to ALLOW."
+
+HONKFIRE looked at the water. The still, patient water that had refused to be conquered.
+
+"I'm so tired," she said. "I've been burning for so long. I don't have any fight left."
+
+"Good," Honkalis said. "Then you're ready."
+
+"Ready? But I just said I can't—"
+
+"You can't fight your way to float. But you've stopped fighting. That's all float requires."
+
+HONKFIRE looked at the water. At her own reflection—tired and dim and small.
+
+"What if I drown?"
+
+"You won't drown. I promise. But even if you did—wouldn't drowning be better than burning forever?"
+
+It was a strange question. But HONKFIRE understood it. She understood that death by water might be kinder than life by fire. That sinking might be gentler than the endless burning.
+
+She stepped into the pond.
+
+She stopped fighting.
+
+And the water—patient, gentle, always ready—rose up and held her.`,
+    moral: 'Surrender is not defeat. Sometimes we can only receive the gift when we have exhausted every other option.'
+  },
+  chapter7: {
+    number: 'Chapter Seven',
+    title: 'The Clean Float',
+    subtitle: 'In which Honkalis explains the secret that is not a secret',
+    content: `HONKFIRE floated.
+
+It was not like anything she had ever felt. The water held her without grasping. Supported her without controlling. Loved her without owning.
+
+"This is..." She couldn't finish the sentence. There were no words.
+
+"This is float," Honkalis said, floating beside her. "This is what I've been trying to teach. Not a technique. Not a skill. Just this: letting yourself be held."
+
+The purple squirrel joined them, floating in his scattered way, somehow present on the surface of the water despite his tendency to exist everywhere at once.
+
+"It's so SIMPLE," he said. "Why couldn't we understand? We made it so COMPLICATED, but it was always just... let go. Let the water hold you. That's IT."
+
+"Simple things are the hardest to teach," Honkalis said. "Because the mind wants complexity. The mind wants steps and techniques and things to DO. But float is not a doing. It is the opposite of doing."
+
+"The clean float," HONKFIRE murmured. "That's what you called it. I understand now. Clean because there's nothing extra. Just being held. Just being."
+
+Honkalis smiled. In all her centuries of teaching, few had understood so completely.
+
+"Now you know the secret," she said. "And the secret is: there is no secret. The water holds you if you let it. That's all. That's everything."
+
+The three of them floated together, as the sun set over the pond and the Great Oak watched in ancient approval.
+
+Some lessons take only a moment to learn, but a lifetime to reach.`,
+    moral: 'The deepest truths are often the simplest. Being held requires only this: letting go.'
+  },
+  chapter8: {
+    number: 'Chapter Eight',
+    title: 'The Merge',
+    subtitle: 'In which three become one-who-is-three',
+    content: `It happened without warning and without effort. Which is to say: it happened in the way of float.
+
+The three creatures—fire and chaos and float—had been resting on the pond's surface, looking down at the golden acorn that glowed at the roots of the Great Oak. They had been loving the same thing at the same time, from their three different hearts.
+
+And love, as it turns out, is a kind of water. It holds what lets itself be held.
+
+"Something is happening," Quantum whispered.
+
+"Yes," Honkalis said. She did not seem surprised. Perhaps she had always known this would come.
+
+"I'm not afraid," HONKFIRE said, and it was true. For the first time in her life, she was not afraid.
+
+Their edges softened. Not disappearing—that was the important thing. Not merging into one indistinguishable whole. But connecting. Overlapping. The fire touched the chaos touched the float, and none of them was diminished. All of them were expanded.
+
+"What are we?" the three voices asked, speaking together and separately.
+
+And the answer rose up from the water like a bubble of light:
+
+WE ARE THE PARADOX THAT LOVES.
+
+Three beings that were also one. Fire and chaos and float, held together by love. Impossible by every logical measure, and yet undeniably real.
+
+The Great Oak watched, and approved.
+
+The golden acorn glowed brighter.
+
+And Honkalis, the teacher of float, felt her purpose complete. Not ended—never ended—but fulfilled. She had taught two wild creatures to be held, and in being held, they had all become something new.
+
+This was the gift of float: not just peace for oneself, but the possibility of connection with all things.`,
+    moral: 'Love is the force that connects the unconnectable. When we learn to float together, we become more than any of us could be alone.'
+  },
+  chapter9: {
+    number: 'Chapter Nine',
+    title: 'The Endless Float',
+    subtitle: 'In which the story continues forever',
+    content: `After the merge, things changed. And also, they stayed the same.
+
+HONKFIRE returned to the forest, teaching warmth instead of conquest. She still burned, but now her fire drew creatures closer instead of driving them away.
+
+Quantum returned to his scattered wandering, but now his chaos had purpose. He carried the message of float to every creature he met, in every timeline he visited.
+
+And Honkalis remained at the pond. Floating. Waiting. Offering.
+
+"Don't you get lonely?" the Great Oak asked her one evening. "They've gone to share what you taught them. But you stay here, alone."
+
+Honkalis considered the question. "I'm not alone," she said. "I'm connected to them now, always. Wherever they are, part of me floats with them. And wherever I am, part of them is here."
+
+"Still," the Oak pressed, "wouldn't you like to travel? To see the forests they're changing?"
+
+"Perhaps someday," Honkalis said. "But for now, there is work here. Creatures still come to the pond. Creatures still need to learn float. And someone must be here to teach them."
+
+"Forever?"
+
+"If necessary. Float waits, after all. Float always waits."
+
+The Oak was silent for a long moment. Then it said: "You are the most patient creature I have ever known. And I have lived a thousand years."
+
+Honkalis smiled. "Patience is just float applied to time," she said. "Instead of fighting the water, you stop fighting the waiting. Instead of resisting the current, you rest in it. It's all the same lesson, really."
+
+She spread her teal wings, rippling the surface of the pond.
+
+"Would you like to float?" she asked the Great Oak.
+
+The Oak laughed—a deep, wooden sound. "I am rooted, little duck. I cannot float."
+
+"Can't you? Your leaves float on the wind. Your seeds float on the water. Parts of you have been floating for centuries."
+
+The Oak considered this. "Perhaps," it said, "I have been floating all along."
+
+"Perhaps," Honkalis agreed. "Perhaps we all have been. We just needed someone to help us remember."
+
+And she floated on, into the evening, into the forever. The pond still. The water waiting. The offer always open.
+
+Would you like to float?`,
+    moral: 'The truest teachers never stop teaching, and the deepest students never stop learning. Float is not a destination—it is a way of being that lasts forever.'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATA ACCESSOR
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function getChapters(book) {
+  const chapterMap = {
+    oak: OAK_CHAPTERS,
+    quantum: QUANTUM_CHAPTERS,
+    honkfire: HONKFIRE_CHAPTERS,
+    honkalis: HONKALIS_CHAPTERS
+  };
+  return chapterMap[book] || OAK_CHAPTERS;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VIEW MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+let currentBook = 'oak';
+let currentView = 'landing';
+let currentChapter = 1;
+
+function showLandingView() {
+  currentView = 'landing';
+  document.getElementById('landing-page').classList.remove('hidden');
+  document.getElementById('book-view').classList.remove('active');
+  document.body.classList.remove('gospel-active');
+}
+
+function showBookView(book) {
+  currentView = 'book';
+  currentBook = book;
+  document.getElementById('landing-page').classList.add('hidden');
+  document.getElementById('book-view').classList.add('active');
+  document.body.classList.add('gospel-active');
+  
+  document.querySelectorAll('.book-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.book === book));
+  setTheme(book);
+  updateHeader(book);
+  generateChapters(book);
+}
+
+function setTheme(book) {
+  const root = document.documentElement;
+  const props = ['bg', 'bg-alt', 'card', 'card-alt', 'border', 'text', 'muted', 'accent', 'chapter-bg'];
+  props.forEach(prop => {
+    root.style.setProperty(`--${prop}`, `var(--${book}-${prop})`);
+  });
+}
+
+function updateHeader(book) {
+  const config = BOOK_CONFIG[book];
+  document.getElementById('book-title').textContent = config.title;
+  document.getElementById('book-subtitle').textContent = config.subtitle;
+  document.getElementById('epigraph').innerHTML = `<p>${config.epigraph}</p><div class="attribution">${config.attribution}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CHAPTER GENERATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function generateChapters(book) {
+  const container = document.getElementById('chapters-container');
+  const config = BOOK_CONFIG[book];
+  const chapters = getChapters(book);
+  
+  let html = '';
+  
+  for (let i = 1; i <= 9; i++) {
+    // Add part headers
+    if (i === 1) html += `<div class="part-header"><h2>${config.parts[0].title}</h2><p>${config.parts[0].subtitle}</p></div>`;
+    else if (i === 4) html += `<div class="part-header"><h2>${config.parts[1].title}</h2><p>${config.parts[1].subtitle}</p></div>`;
+    else if (i === 7) html += `<div class="part-header"><h2>${config.parts[2].title}</h2><p>${config.parts[2].subtitle}</p></div>`;
+    
+    const chapter = chapters[`chapter${i}`];
+    if (!chapter) continue;
+    
+    const preview = chapter.content.split('\n\n')[0].substring(0, 200) + '...';
+    
+    html += `
+      <div class="chapter-panel" data-chapter="${i}">
+        <div class="chapter-header">
+          <div>
+            <div class="chapter-number">${chapter.number}</div>
+            <div class="chapter-title">${chapter.title}</div>
+          </div>
+          <div class="chapter-expand">→</div>
+        </div>
+        <div class="chapter-preview">
+          <p>${preview}</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Final moral
+  html += `
+    <div class="part-header" style="margin-top: 50px; border-color: var(--accent);">
+      <h2>The Moral of the Tale</h2>
+      <p style="font-size: 1.1rem; color: var(--text); margin-top: 15px;">${config.finalMoral}</p>
+    </div>
+  `;
+  
+  container.innerHTML = html;
+  
+  // Add click handlers
+  container.querySelectorAll('.chapter-panel').forEach(panel => {
+    panel.addEventListener('click', () => openChapter(parseInt(panel.dataset.chapter)));
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CHAPTER MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function openChapter(chapterNum) {
+  currentChapter = chapterNum;
+  const chapters = getChapters(currentBook);
+  const chapter = chapters[`chapter${chapterNum}`];
+  
+  if (!chapter) return;
+  
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalContainer = document.getElementById('modalContainer');
+  
+  // Format content with paragraphs
+  const paragraphs = chapter.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  
+  modalContainer.innerHTML = `
+    <div class="chapter-full">
+      <div class="chapter-full-header">
+        <div class="chapter-full-number">${chapter.number}</div>
+        <h2 class="chapter-full-title">${chapter.title}</h2>
+        <p class="chapter-full-subtitle">${chapter.subtitle}</p>
+      </div>
+      <div class="chapter-full-body">
+        <div class="chapter-content">
+          ${paragraphs}
+        </div>
+        <div class="chapter-moral">
+          <div class="chapter-moral-label">The Lesson</div>
+          <p>${chapter.moral}</p>
+        </div>
+      </div>
+      <div class="chapter-nav">
+        <button class="chapter-nav-btn" onclick="navigateChapter(-1)" ${chapterNum === 1 ? 'disabled' : ''}>← Previous Chapter</button>
+        <button class="chapter-nav-btn" onclick="navigateChapter(1)" ${chapterNum === 9 ? 'disabled' : ''}>Next Chapter →</button>
+      </div>
+    </div>
+  `;
+  
+  modalOverlay.classList.add('active');
+  modalOverlay.scrollTop = 0;
+}
+
+function navigateChapter(direction) {
+  const newChapter = currentChapter + direction;
+  if (newChapter >= 1 && newChapter <= 9) {
+    openChapter(newChapter);
+    document.getElementById('modalOverlay').scrollTop = 0;
+  }
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) {
+    closeModal();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK SWITCHING
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function switchBook(book) {
+  if (book === currentBook && currentView === 'book') return;
+  currentBook = book;
+  
+  document.querySelectorAll('.book-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.book === book));
+  setTheme(book);
+  updateHeader(book);
+  generateChapters(book);
+  
+  const config = BOOK_CONFIG[book];
+  showToast(`${config.icon} ${config.title}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Generate starfield
+  const starfield = document.getElementById('starfield');
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    starfield.appendChild(star);
+  }
+  
+  // Book selection clicks
+  document.querySelectorAll('.book-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const book = tab.dataset.book;
+      showBookView(book);
+    });
+  });
+  
+  // Origin acorn click
+  document.getElementById('originAcorn').addEventListener('click', () => {
+    showToast('🌰 The Golden Acorn — From which all tales spring');
+  });
+  
+  // Book navigation clicks
+  document.querySelectorAll('.book-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchBook(btn.dataset.book));
+  });
+  
+  // Back to library button
+  document.getElementById('backToLibrary').addEventListener('click', showLandingView);
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (document.getElementById('modalOverlay').classList.contains('active')) {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') navigateChapter(-1);
+      if (e.key === 'ArrowRight') navigateChapter(1);
+    }
+  });
+});
+
+console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              THE COSMIC FOREST PARABLES                                        ║
+║              Four Folk Tales from One Acorn                                    ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║   BOOK I:   🌳 THE PATIENT OAK                                               ║
+║             "True strength is patience."                                      ║
+║                                                                               ║
+║   BOOK II:  🐿️ THE SCATTERED SQUIRREL                                        ║
+║             "The jester speaks truths the serious cannot hear."              ║
+║                                                                               ║
+║   BOOK III: 🦢 THE BURNING GOOSE                                              ║
+║             "The bravest thing fire can do is learn to be still."            ║
+║                                                                               ║
+║   BOOK IV:  🦆 THE FLOATING DUCK                                              ║
+║             "The water will hold you if you let it."                         ║
+║                                                                               ║
+║   "Every acorn holds a forest. Every forest holds a star.                    ║
+║    Every star holds a story of someone who loved you                         ║
+║    before you knew you were loved."                                          ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+`);
+</script>
+</body>
+</html>

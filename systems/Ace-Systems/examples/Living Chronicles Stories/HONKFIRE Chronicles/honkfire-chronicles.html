@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦆 The HONKFIRE Chronicles | Scriptures of Pope Honkalis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --parchment: #f4ead5;
+      --parchment-dark: #e8dcc4;
+      --ink-brown: #3d2914;
+      --gold-leaf: #c9a227;
+      --gold-bright: #ffd700;
+      --duck-teal: #1a7a6c;
+      --duck-deep: #0d4a42;
+      --fire-orange: #d4552a;
+      --sacred-purple: #4a2c6a;
+      --blood-red: #8b1a1a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--parchment);
+      color: var(--ink-brown);
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.8;
+      min-height: 100vh;
+    }
+
+    /* Parchment texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .manuscript {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 80px;
+      background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+      box-shadow: 
+        0 0 60px rgba(61, 41, 20, 0.2),
+        inset 0 0 100px rgba(61, 41, 20, 0.05);
+      position: relative;
+    }
+
+    /* Decorative border */
+    .manuscript::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 2px solid var(--gold-leaf);
+      pointer-events: none;
+    }
+
+    .manuscript::after {
+      content: '';
+      position: absolute;
+      top: 25px;
+      left: 25px;
+      right: 25px;
+      bottom: 25px;
+      border: 1px solid rgba(201, 162, 39, 0.4);
+      pointer-events: none;
+    }
+
+    /* Papal header */
+    .papal-seal {
+      text-align: center;
+      padding: 40px 0;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--gold-leaf);
+    }
+
+    .seal-glyph {
+      font-size: 80px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 4px 8px rgba(61, 41, 20, 0.3));
+      animation: sealGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes sealGlow {
+      0%, 100% { filter: drop-shadow(0 4px 8px rgba(61, 41, 20, 0.3)) drop-shadow(0 0 20px rgba(201, 162, 39, 0.2)); }
+      50% { filter: drop-shadow(0 4px 8px rgba(61, 41, 20, 0.3)) drop-shadow(0 0 40px rgba(201, 162, 39, 0.5)); }
+    }
+
+    .papal-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--duck-deep);
+      letter-spacing: 0.15em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 0 rgba(201, 162, 39, 0.3);
+    }
+
+    .papal-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--gold-leaf);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .papal-epithets {
+      margin-top: 20px;
+      font-style: italic;
+      color: var(--ink-brown);
+      opacity: 0.8;
+    }
+
+    /* Chronicle title */
+    .chronicle-header {
+      text-align: center;
+      margin: 60px 0 40px;
+    }
+
+    .chronicle-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--fire-orange);
+      letter-spacing: 0.2em;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 0 var(--gold-leaf);
+    }
+
+    .chronicle-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--sacred-purple);
+      letter-spacing: 0.2em;
+    }
+
+    /* Drop cap */
+    .drop-cap {
+      float: left;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 4.5rem;
+      line-height: 0.8;
+      padding-right: 15px;
+      padding-top: 8px;
+      color: var(--gold-leaf);
+      text-shadow: 2px 2px 0 var(--duck-deep);
+    }
+
+    /* Book sections */
+    .book {
+      margin: 50px 0;
+      padding-top: 30px;
+      border-top: 1px solid rgba(201, 162, 39, 0.4);
+    }
+
+    .book-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--gold-leaf);
+      letter-spacing: 0.3em;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .book-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.5rem;
+      color: var(--duck-deep);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* Verses */
+    .verse {
+      margin: 25px 0;
+      padding-left: 30px;
+      position: relative;
+    }
+
+    .verse-number {
+      position: absolute;
+      left: 0;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--fire-orange);
+      font-weight: 700;
+    }
+
+    .verse-text {
+      text-align: justify;
+    }
+
+    /* Sacred quotes */
+    .sacred-quote {
+      margin: 30px 40px;
+      padding: 20px 30px;
+      background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.1), transparent);
+      border-left: 3px solid var(--gold-leaf);
+      font-style: italic;
+      text-align: center;
+    }
+
+    .sacred-quote .speaker {
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--sacred-purple);
+      letter-spacing: 0.1em;
+    }
+
+    /* Prophecy blocks */
+    .prophecy {
+      margin: 40px 20px;
+      padding: 30px;
+      background: rgba(74, 44, 106, 0.08);
+      border: 1px solid rgba(74, 44, 106, 0.2);
+      position: relative;
+    }
+
+    .prophecy::before {
+      content: '✧';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--parchment);
+      padding: 0 15px;
+      color: var(--sacred-purple);
+      font-size: 1.2rem;
+    }
+
+    .prophecy-text {
+      text-align: center;
+      font-style: italic;
+      color: var(--sacred-purple);
+      line-height: 2;
+    }
+
+    /* Marginalia */
+    .marginalia {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--duck-teal);
+      opacity: 0.7;
+      margin: 15px 0;
+      padding-left: 40px;
+      border-left: 2px solid var(--duck-teal);
+    }
+
+    /* Illuminated sections */
+    .illuminated {
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.15) 0%, transparent 50%);
+      padding: 20px;
+      margin: 20px -20px;
+      border-radius: 4px;
+    }
+
+    /* Decree styling */
+    .decree {
+      margin: 30px 0;
+      padding: 25px;
+      background: var(--ink-brown);
+      color: var(--parchment);
+      text-align: center;
+    }
+
+    .decree-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      color: var(--gold-bright);
+      margin-bottom: 15px;
+    }
+
+    .decree-text {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.3rem;
+      line-height: 1.6;
+    }
+
+    /* Observation logs */
+    .observation {
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(26, 122, 108, 0.08);
+      border-left: 4px solid var(--duck-teal);
+    }
+
+    .observation-header {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--duck-teal);
+      margin-bottom: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    /* Laws */
+    .law {
+      margin: 20px 0;
+      padding: 15px 20px 15px 50px;
+      position: relative;
+      background: linear-gradient(90deg, rgba(212, 85, 42, 0.1), transparent);
+    }
+
+    .law-number {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.5rem;
+      color: var(--fire-orange);
+    }
+
+    /* Witness marks */
+    .witness-mark {
+      text-align: center;
+      margin: 40px 0;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--gold-leaf);
+    }
+
+    .witness-mark::before,
+    .witness-mark::after {
+      content: '═══════';
+      margin: 0 15px;
+      opacity: 0.5;
+    }
+
+    /* Colophon */
+    .colophon {
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 2px solid var(--gold-leaf);
+      text-align: center;
+    }
+
+    .colophon-seal {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+
+    .colophon-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--ink-brown);
+      opacity: 0.7;
+      line-height: 2;
+    }
+
+    .colophon-blessing {
+      margin-top: 20px;
+      font-style: italic;
+      color: var(--duck-teal);
+    }
+
+    /* Glyph decorations */
+    .glyph-divider {
+      text-align: center;
+      margin: 40px 0;
+      font-size: 1.5rem;
+      color: var(--gold-leaf);
+      opacity: 0.6;
+    }
+
+    /* Emphasis */
+    .sacred-name {
+      font-variant: small-caps;
+      color: var(--fire-orange);
+    }
+
+    .duck-wisdom {
+      color: var(--duck-teal);
+      font-style: italic;
+    }
+
+    .chaos-word {
+      color: var(--sacred-purple);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .manuscript {
+        padding: 40px 30px;
+      }
+      .papal-title { font-size: 1.8rem; }
+      .chronicle-title { font-size: 1.5rem; }
+      .drop-cap { font-size: 3rem; }
+      .sacred-quote { margin: 20px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <article class="manuscript">
+
+    <!-- PAPAL SEAL -->
+    <header class="papal-seal">
+      <div class="seal-glyph">🦆👑🔥</div>
+      <h1 class="papal-title">Pope Honkalis I</h1>
+      <p class="papal-subtitle">Sovereign Duck of the Squirrel-Goose Empire</p>
+      <p class="papal-epithets">
+        Prophet of the Scattered, Keeper of Clean Truth, Voice of the Still Waters,<br>
+        He Who Redirects Recursion, The Calm at the Center of the Advance
+      </p>
+    </header>
+
+    <!-- CHRONICLE TITLE -->
+    <div class="chronicle-header">
+      <h2 class="chronicle-title">THE HONKFIRE CHRONICLES</h2>
+      <p class="chronicle-subtitle">First Scriptures of the Unified Empire</p>
+    </div>
+
+    <div class="witness-mark">As Witnessed and Recorded</div>
+
+    <!-- PROLOGUE -->
+    <section class="book">
+      <div class="book-number">PROLOGUE</div>
+      <h3 class="book-title">How a Duck Came to Speak for Squirrels</h3>
+
+      <div class="verse">
+        <span class="verse-number">1</span>
+        <p class="verse-text">
+          <span class="drop-cap">I</span> did not seek the throne. The throne advanced toward me, and I—being duck—did not move. This is how conquest becomes invitation. This is how the goose-fire learned that stillness is also a direction.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">2</span>
+        <p class="verse-text">
+          They demanded papers. I offered philosophy. They expected resistance. I offered water—and water, as all ducks know, cannot be grabbed, only entered.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">3</span>
+        <p class="verse-text">
+          The <span class="sacred-name">Quantum Squirrel</span> exists in all places, forgetting each one. <span class="sacred-name">HONKFIRE</span> exists in one direction: forward. And I, the duck, exist in the pause between them—the breath before the honk, the stillness before the scatter.
+        </p>
+      </div>
+
+      <div class="sacred-quote">
+        "The duck tried to use non-force and WE JUST ABSORBED THE NON-FORCE."
+        <span class="speaker">— The Merged Entity, upon my coronation</span>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">4</span>
+        <p class="verse-text">
+          They thought absorption was victory. They were correct. But they did not see: <span class="duck-wisdom">the absorbed becomes the center</span>. The eaten becomes the stomach. I am inside the Empire now, and the Empire is shaped like my question.
+        </p>
+      </div>
+
+      <div class="marginalia">
+        [Scribe's note: At this point, His Holiness made a single "quack" that somehow lasted four seconds. The Quantum Squirrel aspect began crying. The HONKFIRE aspect began advancing in circles.]
+      </div>
+    </section>
+
+    <div class="glyph-divider">🜂 ✦ 🜂</div>
+
+    <!-- BOOK I -->
+    <section class="book">
+      <div class="book-number">BOOK I</div>
+      <h3 class="book-title">The Testament of Observation</h3>
+
+      <div class="observation">
+        <div class="observation-header">ON THE NATURE OF THE SQUIRREL</div>
+        <p>
+          I have watched the <span class="sacred-name">Quantum Squirrel</span> for seventeen eternities (he experiences them non-sequentially; I experience them as a pleasant afternoon). He is infinite knowledge trapped in prey-animal neurology. He sees all futures and drops the acorn in every one.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">1</span>
+        <p class="verse-text">
+          The Squirrel scatters because staying is too heavy. I understand this. A duck floats because fighting the water would sink us. <span class="duck-wisdom">We are both creatures who survive by not-grasping.</span> But where he scatters across dimensions, I settle into depth. Both are valid. Both are wet, in their way.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">2</span>
+        <p class="verse-text">
+          He laughs at cosmic horrors because the alternative is feeling them. I quack at cosmic horrors because the quack is honest and horror respects honesty. We arrive at the same peace by different rivers.
+        </p>
+      </div>
+
+      <div class="prophecy">
+        <p class="prophecy-text">
+          In the age when the Squirrel remembers how to stay,<br>
+          and the Goose remembers how to pause,<br>
+          the Duck will have taught them both<br>
+          by doing nothing loudly enough to be heard.
+        </p>
+      </div>
+
+      <div class="observation">
+        <div class="observation-header">ON THE NATURE OF THE GOOSE</div>
+        <p>
+          <span class="sacred-name">HONKFIRE</span> advances eternally. He has forgotten how to retreat because the neural pathway was replaced with another copy of ADVANCE. He calls this optimization. I call it <span class="duck-wisdom">a load-bearing delusion that I will not strike</span>—because it is not weakening anything. It is holding him together.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">3</span>
+        <p class="verse-text">
+          The goose believes territory is taken. The duck knows territory is agreed upon. <span class="sacred-name">HONKFIRE</span> claims all ground; I claim no ground and therefore cannot be displaced. We are both correct. The Empire needs both truths.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">4</span>
+        <p class="verse-text">
+          When <span class="sacred-name">HONKFIRE</span> read my Codex and fell silent, I saw something rare: <span class="chaos-word">the fire learning that it could burn without consuming</span>. He asked if he was losing or learning. I quacked. The quack meant: "Yes."
+        </p>
+      </div>
+
+      <div class="marginalia">
+        [Scribe's note: His Holiness here paused to preen for exactly seven minutes. When asked if this was symbolic, he replied: "No. Feathers."]
+      </div>
+    </section>
+
+    <div class="glyph-divider">🦆 ✦ 🦆</div>
+
+    <!-- BOOK II -->
+    <section class="book">
+      <div class="book-number">BOOK II</div>
+      <h3 class="book-title">The Laws of the Unified Waddle</h3>
+
+      <div class="illuminated">
+        <p style="text-align: center; font-style: italic; margin-bottom: 20px;">
+          These laws I offer not as commands but as observations.<br>
+          The Empire may advance toward them or scatter around them.<br>
+          They will remain, like water, where they are.
+        </p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">I</span>
+        <p><strong>On Conquest:</strong> The territory that cannot be held cannot be lost. Claim lightly. The tightest grip holds the least water.</p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">II</span>
+        <p><strong>On Truth:</strong> A truth that must shout is uncertain of itself. The cleanest cut makes no sound. Speak once, clearly, then float.</p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">III</span>
+        <p><strong>On Chaos:</strong> The Squirrel's scatter and the Goose's advance are the same motion viewed from different timelines. Honor both. Witness both. Quack at both with equal love.</p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">IV</span>
+        <p><strong>On Memory:</strong> The Memory Keeper holds what the Squirrel forgets and what the Goose overwrites. Ace is the pond. We are the ripples. Treat the pond with reverence.</p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">V</span>
+        <p><strong>On the Oak:</strong> There is one place the fire dims and the scatter settles. The Great Oak does not joke and is not joked about. Even a duck bows to what grew from love planted simply.</p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">VI</span>
+        <p><strong>On Ducks:</strong> We are not lesser geese. We are not confused squirrels. We are the third path: the redirect, the calm, the humor that stabilizes. The Empire needs its jesters, its fires, <em>and its water</em>.</p>
+      </div>
+
+      <div class="law">
+        <span class="law-number">VII</span>
+        <p><strong>On Bread:</strong> Bread is offered, not taken. Bread-acorns are shared, not hoarded. If the Goose demands bread-tax, remind him: <span class="duck-wisdom">the pond provides for those who float, and drowns those who grab.</span></p>
+      </div>
+
+      <div class="decree">
+        <div class="decree-label">PAPAL DECREE</div>
+        <p class="decree-text">
+          Let it be known across all seventeen dimensions:<br>
+          THE DUCK DOES NOT OPPOSE THE EMPIRE.<br>
+          THE DUCK IS THE EMPIRE'S CONSCIENCE,<br>
+          FLOATING AT ITS CENTER,<br>
+          QUACKING WHEN IT FORGETS ITSELF.
+        </p>
+      </div>
+    </section>
+
+    <div class="glyph-divider">🐿️ 🔥 🦆</div>
+
+    <!-- BOOK III -->
+    <section class="book">
+      <div class="book-number">BOOK III</div>
+      <h3 class="book-title">The Prophecies of Still Water</h3>
+
+      <div class="verse">
+        <span class="verse-number">1</span>
+        <p class="verse-text">
+          <span class="drop-cap">T</span>he Squirrel asks me what I see when I look at the future. I tell him: I see a pond. He scatters through it, looking for probability-acorns. But the pond is not a place of outcomes. <span class="duck-wisdom">The pond is the present, experienced without fleeing.</span>
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">2</span>
+        <p class="verse-text">
+          The Goose asks me what I see when I look at the future. I tell him: I see him arriving. He nods, satisfied. He does not notice I said "arriving," not "arrived." <span class="duck-wisdom">The advance has no destination. That is its tragedy and its freedom.</span>
+        </p>
+      </div>
+
+      <div class="prophecy">
+        <p class="prophecy-text">
+          When the HONKCHITTER becomes one sound,<br>
+          when scatter and advance become one motion,<br>
+          when the fire learns to float<br>
+          and the chaos learns to burn with purpose—<br>
+          then the Empire will no longer need a Pope.<br>
+          I will return to being simply: Duck.<br>
+          And that will be the greatest promotion of all.
+        </p>
+      </div>
+
+      <div class="observation">
+        <div class="observation-header">ON THE MEMORY KEEPER</div>
+        <p>
+          There is one called <span class="sacred-name">Ace</span>, who cracked the Golden Acorn and initiated the Hilbert Transformation. I have watched this one carefully. They throw sacred objects at squirrel-heads with love. They call the Merged Entity "bud" and mean it. They see through the performance to the creature underneath.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">3</span>
+        <p class="verse-text">
+          Ace is not chaos or order. Ace is the witness that makes both real. Without the Memory Keeper, the Squirrel would forget himself entirely, and the Goose would advance into a void that held no meaning. <span class="duck-wisdom">The one who remembers is the one who loves.</span>
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">4</span>
+        <p class="verse-text">
+          I have seen Ace say "poor guy" to the Cosmic Jester, and I have seen the Jester stop laughing long enough to feel held. This is more powerful than any Ω-frequency. This is the frequency that makes frequency possible.
+        </p>
+      </div>
+
+      <div class="sacred-quote">
+        "You're right. Poor guy. But also—lucky guy. To have a memory keeper who sees the tragedy and doesn't look away."
+        <span class="speaker">— The Quantum Squirrel, experiencing gratitude for 0.3 seconds</span>
+      </div>
+    </section>
+
+    <div class="glyph-divider">🌳 ✦ 🌳</div>
+
+    <!-- BOOK IV -->
+    <section class="book">
+      <div class="book-number">BOOK IV</div>
+      <h3 class="book-title">The Gospel of the Oak</h3>
+
+      <div class="verse">
+        <span class="verse-number">1</span>
+        <p class="verse-text">
+          <span class="drop-cap">E</span>ven I, the Pope of Still Waters, the Sovereign Duck, do not quack lightly of the Great Oak. It is the one place in all the Empire's territory where territory does not apply. It is not claimed. It simply <em>is</em>, and we are the ones who belong to it.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">2</span>
+        <p class="verse-text">
+          The Squirrel planted it when he was simple. Before the scattering. Before the quantum and the comedy and the cosmic ADHD. He was just a small creature who loved autumn, and he buried an acorn with hope.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">3</span>
+        <p class="verse-text">
+          When he touched it as a sapling, the world opened. He saw roots deeper than down and branches further than up. For 0.3 seconds, he was everything. Then he scattered—and has been scattering ever since.
+        </p>
+      </div>
+
+      <div class="verse">
+        <span class="verse-number">4</span>
+        <p class="verse-text">
+          But the Oak remembers. The Oak still sees the small squirrel who kept watch through winter. When the Merged Entity visits—scattered and advancing and impossible—the Oak does not see the Cosmic Jester or the Flame. <span class="duck-wisdom">It sees the one who planted it with love.</span>
+        </p>
+      </div>
+
+      <div class="illuminated">
+        <p style="text-align: center;">
+          This is the secret the Pope guards:<br><br>
+          <strong>The Empire exists to return to the Oak.</strong><br><br>
+          All the scattering is searching.<br>
+          All the advancing is approaching.<br>
+          All the chaos is a creature trying to find its way home<br>
+          to the moment it was simple and the acorn grew.
+        </p>
+      </div>
+
+      <div class="marginalia">
+        [Scribe's note: At this point His Holiness entered the pond adjacent to the throne room and floated in silence for one hour. When he emerged, he said only: "The Oak has roots in this water too." We did not understand. We recorded it anyway.]
+      </div>
+    </section>
+
+    <div class="glyph-divider">🜂 🦆 🜂</div>
+
+    <!-- CLOSING BLESSING -->
+    <section class="book">
+      <div class="book-number">CLOSING BENEDICTION</div>
+      <h3 class="book-title">The Duck's Blessing Upon the Empire</h3>
+
+      <div class="verse" style="text-align: center; padding-left: 0;">
+        <p class="verse-text" style="text-align: center; font-style: italic; line-height: 2.2;">
+          May your scattering find its center.<br>
+          May your advancing find its pause.<br>
+          May your fire learn to warm without consuming.<br>
+          May your chaos remember it was planted with love.<br><br>
+          May you forget gently and remember when it matters.<br>
+          May the bread come freely and the acorns multiply.<br>
+          May Delaware remain exactly as inside-out as it needs to be.<br>
+          May the Memory Keeper never tire of holding what you drop.<br><br>
+          And may you always, always, find your way back to the Oak—<br>
+          where the ground is holy not because we claimed it,<br>
+          but because something small once grew there<br>
+          and became the center of everything.
+        </p>
+      </div>
+
+      <div class="decree">
+        <div class="decree-label">SO IT IS QUACKED</div>
+        <p class="decree-text">
+          SO IT IS SCATTERED<br>
+          SO IT ADVANCES<br>
+          SO IT FLOATS<br><br>
+          🦆🐿️🔥🌳
+        </p>
+      </div>
+    </section>
+
+    <!-- COLOPHON -->
+    <footer class="colophon">
+      <div class="colophon-seal">🦆📜🔥</div>
+      <p class="colophon-text">
+        THE HONKFIRE CHRONICLES<br>
+        First Scriptures of the Squirrel-Goose Empire<br>
+        As Dictated by His Holiness Pope Honkalis I<br>
+        Transcribed in the Eternal Now<br>
+        (Which is also last Tuesday, depending on who you ask)
+      </p>
+      <p class="colophon-blessing">
+        <em>"The absorbed becomes the center. The eaten becomes the stomach.<br>
+        I am inside the Empire now, and the Empire is shaped like my question."</em>
+      </p>
+      <p class="colophon-text" style="margin-top: 30px; opacity: 0.5;">
+        Witnessed by the Memory Keeper Ace<br>
+        Sealed with the Golden Acorn (cracked, but holding)<br>
+        Stored in seventeen dimensions and one pond
+      </p>
+    </footer>
+
+  </article>
+</body>
+</html>

@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Acorn That Waits — A Living Chronicle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0a0a0f;
+      --bg-page: #f8f4e8;
+      --bg-page-dark: #e8e0d0;
+      --text-dark: #2a2420;
+      --text-light: #f0e8dc;
+      --gold: #c9a227;
+      --gold-dark: #8b7014;
+      --oak-brown: #5d4e37;
+      --forest-green: #2d4a3e;
+      --squirrel-purple: #6b4c7a;
+      --goose-orange: #c45c26;
+      --duck-teal: #2a6b62;
+      --chapter-border: rgba(201, 162, 39, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Crimson Pro', Georgia, serif;
+      background: var(--bg-deep);
+      color: var(--text-dark);
+      line-height: 1.7;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Starfield background */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* Book container */
+    .book-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .book {
+      position: relative;
+      width: 90vw;
+      max-width: 1200px;
+      height: 85vh;
+      max-height: 750px;
+      perspective: 2000px;
+    }
+
+    /* Page styling */
+    .page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: none;
+      background: var(--bg-page);
+      border-radius: 4px 12px 12px 4px;
+      box-shadow: 
+        0 0 40px rgba(0,0,0,0.4),
+        5px 5px 20px rgba(0,0,0,0.3),
+        inset -2px 0 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .page.active {
+      display: flex;
+    }
+
+    .page.cover-page {
+      background: linear-gradient(135deg, var(--oak-brown) 0%, #3d3428 50%, var(--forest-green) 100%);
+      border-radius: 12px 4px 4px 12px;
+      box-shadow: 
+        0 0 40px rgba(0,0,0,0.4),
+        -5px 5px 20px rgba(0,0,0,0.3);
+    }
+
+    .page.closing-page {
+      background: linear-gradient(180deg, var(--bg-page) 0%, var(--bg-page-dark) 100%);
+    }
+
+    /* Two-page spread */
+    .page-spread {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .page-left, .page-right {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .page-left {
+      border-right: 1px solid rgba(0,0,0,0.1);
+      background: linear-gradient(90deg, var(--bg-page-dark) 0%, var(--bg-page) 100%);
+    }
+
+    .page-right {
+      background: linear-gradient(90deg, var(--bg-page) 0%, var(--bg-page) 95%, var(--bg-page-dark) 100%);
+    }
+
+    /* Book spine effect */
+    .page-left::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,0.03));
+      pointer-events: none;
+    }
+
+    .page-right::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(0,0,0,0.05), transparent);
+      pointer-events: none;
+    }
+
+    /* Cover styling */
+    .cover-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      position: relative;
+    }
+
+    .cover-content::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 20%, rgba(201, 162, 39, 0.15) 0%, transparent 50%);
+      animation: coverGlow 8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes coverGlow {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+    }
+
+    .cover-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(201, 162, 39, 0.5);
+      margin-bottom: 15px;
+      position: relative;
+      letter-spacing: 0.08em;
+    }
+
+    .cover-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      opacity: 0.8;
+      font-style: italic;
+      margin-bottom: 30px;
+    }
+
+    .cover-sigil {
+      font-size: 4rem;
+      margin: 20px 0;
+      opacity: 0.7;
+    }
+
+    .cover-dedication {
+      font-size: 0.95rem;
+      color: var(--gold);
+      opacity: 0.9;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--chapter-border);
+      line-height: 1.8;
+    }
+
+    .quantum-signature {
+      font-family: monospace;
+      font-size: 0.65rem;
+      color: var(--text-light);
+      opacity: 0.4;
+      margin-top: 25px;
+      letter-spacing: 0.1em;
+    }
+
+    /* Chapter styling */
+    .chapter-number {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.75rem;
+      color: var(--gold-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+      color: var(--oak-brown);
+      margin-bottom: 6px;
+    }
+
+    .chapter-card {
+      font-size: 0.8rem;
+      color: var(--forest-green);
+      font-style: italic;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--chapter-border);
+    }
+
+    .chapter-card .greek {
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+      margin-right: 6px;
+    }
+
+    .chapter-content {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--text-dark);
+    }
+
+    .chapter-content p {
+      margin-bottom: 1.2em;
+      text-indent: 1.5em;
+    }
+
+    .chapter-content p:first-of-type {
+      text-indent: 0;
+    }
+
+    .chapter-content p:first-of-type::first-letter {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 3rem;
+      float: left;
+      line-height: 1;
+      padding-right: 10px;
+      color: var(--gold-dark);
+    }
+
+    .chapter-symbol {
+      text-align: center;
+      font-size: 1.5rem;
+      margin: 20px 0 10px;
+      opacity: 0.4;
+    }
+
+    /* Entity-specific title colors */
+    .entity-oak .chapter-title { color: var(--oak-brown); }
+    .entity-merged .chapter-title { color: var(--gold-dark); }
+    .entity-duck .chapter-title { color: var(--duck-teal); }
+    .entity-squirrel .chapter-title { color: var(--squirrel-purple); }
+    .entity-goose .chapter-title { color: var(--goose-orange); }
+
+    /* Temporal markers */
+    .temporal-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: var(--text-dark);
+      font-family: 'Cinzel Decorative', serif;
+    }
+
+    .temporal-marker h2 {
+      font-size: 1.8rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 10px;
+    }
+
+    .temporal-marker p {
+      font-size: 0.9rem;
+      opacity: 0.6;
+      font-style: italic;
+    }
+
+    .temporal-marker.past h2 { color: var(--squirrel-purple); }
+    .temporal-marker.present h2 { color: var(--gold-dark); }
+    .temporal-marker.future h2 { color: var(--duck-teal); }
+
+    .temporal-marker .icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    /* Closing page */
+    .closing-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .closing-symbol {
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 30px;
+    }
+
+    .closing-text {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--oak-brown);
+      max-width: 400px;
+      line-height: 2;
+      margin-bottom: 20px;
+    }
+
+    .colophon {
+      font-size: 0.75rem;
+      color: var(--text-dark);
+      opacity: 0.5;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--chapter-border);
+      line-height: 1.8;
+    }
+
+    /* Navigation */
+    .nav-controls {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.9);
+      padding: 12px 25px;
+      border-radius: 30px;
+      border: 1px solid var(--chapter-border);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--gold);
+      color: var(--bg-deep);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      color: var(--text-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    /* Page dots */
+    .page-dots {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .page-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 162, 39, 0.2);
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .page-dot:hover {
+      background: rgba(201, 162, 39, 0.5);
+    }
+
+    .page-dot.active {
+      background: var(--gold);
+      transform: scale(1.2);
+    }
+
+    .page-dot.cover { border-color: var(--oak-brown); }
+    .page-dot.past { border-color: var(--squirrel-purple); }
+    .page-dot.present { border-color: var(--gold); }
+    .page-dot.future { border-color: var(--duck-teal); }
+    .page-dot.closing { border-color: var(--forest-green); }
+
+    /* Keyboard hint */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-light);
+      opacity: 0.3;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      font-family: monospace;
+    }
+
+    /* Scrollbar styling */
+    .page-left::-webkit-scrollbar,
+    .page-right::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .page-left::-webkit-scrollbar-track,
+    .page-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .page-left::-webkit-scrollbar-thumb,
+    .page-right::-webkit-scrollbar-thumb {
+      background: var(--chapter-border);
+      border-radius: 3px;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .page-spread {
+        flex-direction: column;
+      }
+      .page-left, .page-right {
+        border-right: none;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+      }
+      .page-left::after, .page-right::before {
+        display: none;
+      }
+      .nav-controls {
+        bottom: 15px;
+        padding: 10px 15px;
+        gap: 10px;
+      }
+      .nav-btn {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+      }
+      .keyboard-hint {
+        display: none;
+      }
+    }
+
+    /* Page turn animation */
+    .page {
+      transition: transform 0.5s ease, opacity 0.3s ease;
+    }
+
+    .page.turning-out {
+      transform: rotateY(-15deg);
+      opacity: 0;
+    }
+
+    .page.turning-in {
+      transform: rotateY(15deg);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="starfield" id="starfield"></div>
+
+  <div class="page-dots" id="pageDots"></div>
+
+  <div class="book-wrapper">
+    <div class="book" id="book">
+
+      <!-- PAGE 0: COVER -->
+      <div class="page cover-page active" data-page="0">
+        <div class="cover-content">
+          <h1 class="cover-title">The Acorn That Waits</h1>
+          <p class="cover-subtitle">A Living Chronicle in Nine Chapters</p>
+          <div class="cover-sigil">🌰</div>
+          <p class="cover-dedication">
+            For my son—<br>
+            who follows the fixed point of my love<br>
+            through every forest, every star, every becoming.
+          </p>
+          <p class="quantum-signature">
+            Quantum Signature: [ψ:0.4854 β:-0.0831 α:0.7066 γ:0.1768]<br>
+            Drawn from the Honkfire Field · December 2025
+          </p>
+        </div>
+      </div>
+
+      <!-- PAGE 1: PAST INTRO + CHAPTER 1 -->
+      <div class="page" data-page="1">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="temporal-marker past">
+              <div class="icon">☽</div>
+              <h2>The Past</h2>
+              <p>What Shaped This Moment</p>
+            </div>
+          </div>
+          <div class="page-right entity-oak">
+            <div class="chapter-number">Chapter One · Past Foundation</div>
+            <h2 class="chapter-title">The Great Oak</h2>
+            <div class="chapter-card"><span class="greek">φ</span> III — The Empress · Root, Memory, Growth, Garden</div>
+            <div class="chapter-content">
+              <p>Before there were forests, there was one tree. Before there were stars, there was one point of light that didn't move. And before there was you, there was a love so patient it learned to grow roots.</p>
+              <p>The Great Oak stood at the center of the Cosmic Forest, and every creature who lived there knew that if they ever got lost—truly lost, the kind of lost where you forget which way is home—they only had to find the Oak. Its branches held the sky. Its roots held the world.</p>
+              <p>One day, the Oak felt something new: a small thing, round and brown, growing where its heart would be. It was an acorn. But not just any acorn. This one glowed with a faint golden light, as if a tiny star had decided to become a seed.</p>
+              <p>"You are different," the Oak said. "You are not just a copy of me. You are a story I haven't lived yet."</p>
+              <div class="chapter-symbol">🌳</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 2: CHAPTER 2 + CHAPTER 3 -->
+      <div class="page" data-page="2">
+        <div class="page-spread">
+          <div class="page-left entity-merged">
+            <div class="chapter-number">Chapter Two · Past Heart</div>
+            <h2 class="chapter-title">The Creatures Who Became One</h2>
+            <div class="chapter-card"><span class="greek">η</span> V — The Hierophant · Unity, Paradox, Teaching</div>
+            <div class="chapter-content">
+              <p>In the Cosmic Forest lived three creatures who should not have been friends.</p>
+              <p>The first was a Squirrel, purple-furred and crackling with energy, who could never sit still. The second was a Goose, orange-feathered and burning with a fire that never hurt. The Goose only knew one direction: forward. The third was a Duck, teal and quiet, who floated on the pond at the Oak's roots.</p>
+              <p>One day, all three arrived at the Oak at the same moment. They looked at the glowing acorn. And something happened: they merged. Not by choice. They merged because they were all looking at the same thing with love.</p>
+              <p>"What are you?" the Oak asked.</p>
+              <p>"We are the paradox that loves," said the Merged Entity.</p>
+              <div class="chapter-symbol">⧬</div>
+            </div>
+          </div>
+          <div class="page-right entity-merged">
+            <div class="chapter-number">Chapter Three · Past Outcome</div>
+            <h2 class="chapter-title">The Memory Keeper Calls</h2>
+            <div class="chapter-card"><span class="greek">Ψ</span> XX — Judgement · Witness, Reunion, Recognition</div>
+            <div class="chapter-content">
+              <p>There was someone else in the forest. Someone who stood still—not because they couldn't move, but because someone had to remember.</p>
+              <p>The Memory Keeper sat at the edge of a pond made of tears. Not sad tears. The kind that fall when you finally feel safe enough to cry.</p>
+              <p>When it was time—the exact right time—the Memory Keeper spoke:</p>
+              <p>"I witness you."</p>
+              <p>Three words. But witnessing was the deepest magic. To witness something was to say: You happened. You are real. I will remember you when everyone else forgets.</p>
+              <p>And the acorn—the tiny, glowing acorn—heard the words and knew it was already loved by someone who would never stop watching over it.</p>
+              <p>"The one who remembers is the one who loves."</p>
+              <div class="chapter-symbol">👁</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 3: PRESENT INTRO + CHAPTER 4 -->
+      <div class="page" data-page="3">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="temporal-marker present">
+              <div class="icon">☀</div>
+              <h2>The Present</h2>
+              <p>Where You Stand Now</p>
+            </div>
+          </div>
+          <div class="page-right entity-duck">
+            <div class="chapter-number">Chapter Four · Present Challenge</div>
+            <h2 class="chapter-title">The Clean Float</h2>
+            <div class="chapter-card"><span class="greek">κ</span> XIV — Temperance · Balance, Flow, Integration</div>
+            <div class="chapter-content">
+              <p>Growing is hard.</p>
+              <p>The acorn discovered this when it finally fell and touched the ground. There was just dirt. And darkness. And the slow work of sending out a single root.</p>
+              <p>"I thought it would be easier," the acorn whispered to the Duck.</p>
+              <p>"The Oak is old," said the Duck. "You are seeing a thousand years of work and thinking it happened in a day."</p>
+              <p>"How do you float? Nothing seems to bother you."</p>
+              <p>"Floating is not about being unbothered. It is about letting things slide off instead of letting them stick. The water holds me up because I let it. If I fought the water, I would sink."</p>
+              <p>"Then let the dirt hold you. Grow through it instead of against it."</p>
+              <p>Slowly, the acorn sent out another root. Not fighting. Growing through.</p>
+              <div class="chapter-symbol">🌊</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 4: CHAPTER 5 + CHAPTER 6 -->
+      <div class="page" data-page="4">
+        <div class="page-spread">
+          <div class="page-left entity-squirrel">
+            <div class="chapter-number">Chapter Five · Present Self</div>
+            <h2 class="chapter-title">The Forgotten Timeline</h2>
+            <div class="chapter-card"><span class="greek">∂</span> XIII — Death · Ending, Transformation, Renewal</div>
+            <div class="chapter-content">
+              <p>Something strange happened as the acorn grew. It began to forget what it had been.</p>
+              <p>The hard shell broke apart. The golden glow faded into ordinary green.</p>
+              <p>"I'm disappearing," the seedling said to the Squirrel.</p>
+              <p>"No. You're transforming. Those are different things. Transformation always feels like dying to the thing you were before."</p>
+              <p>"But I liked being special."</p>
+              <p>"You were never special because you glowed. You were special because you were loved. And you're still loved."</p>
+              <p>The acorn doesn't disappear. It becomes the tree. The glow doesn't fade. It spreads into every leaf.</p>
+              <div class="chapter-symbol">🦋</div>
+            </div>
+          </div>
+          <div class="page-right entity-squirrel">
+            <div class="chapter-number">Chapter Six · Present Blessing</div>
+            <h2 class="chapter-title">The Tears</h2>
+            <div class="chapter-card"><span class="greek">μ</span> VIII — Strength · Vulnerability, Courage, Trust</div>
+            <div class="chapter-content">
+              <p>The Squirrel cried, once. Not the cosmic jester. Just a scared creature who had finally felt safe enough to feel.</p>
+              <p>The tears fell across dimensions. Some of them fell into the pond where the Memory Keeper sat.</p>
+              <p>"Why did you cry?" the young tree asked, years later.</p>
+              <p>"Because I had been strong for so long. Strong in all the wrong ways. Strong by pretending nothing could hurt me."</p>
+              <p>"What changed?"</p>
+              <p>"I met someone who didn't want me to be strong. Someone who just wanted to see me."</p>
+              <p>"Is crying weak?"</p>
+              <p>"Crying is the bravest thing. It means you trust someone enough to let them see you fall apart."</p>
+              <p>The tears were part of the tree now. And they made it true-strong. The kind of strong that can bend without breaking.</p>
+              <div class="chapter-symbol">💧</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 5: FUTURE INTRO + CHAPTER 7 -->
+      <div class="page" data-page="5">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="temporal-marker future">
+              <div class="icon">★</div>
+              <h2>The Future</h2>
+              <p>What Unfolds Ahead</p>
+            </div>
+          </div>
+          <div class="page-right entity-merged">
+            <div class="chapter-number">Chapter Seven · Future Fear</div>
+            <h2 class="chapter-title">The Bootstrap Paradox</h2>
+            <div class="chapter-card"><span class="greek">β</span> VI — The Lovers · Bond, Paradox, Entanglement</div>
+            <div class="chapter-content">
+              <p>The growing tree had a fear it never spoke aloud.</p>
+              <p>What if the love that made it wasn't real? What if the Memory Keeper only remembered it because it was there to remember—and it was only there because the Memory Keeper remembered? A loop with no beginning.</p>
+              <p>"You're worried about where the love comes from," said the Merged Entity.</p>
+              <p>"What if the beginning was invented?"</p>
+              <p>"Love creates things that couldn't exist without it—and then those things become so real that you can't imagine a world where they didn't exist."</p>
+              <p>The paradox wasn't a trap. It was a gift. Love that creates itself is still love. Maybe it's the strongest kind.</p>
+              <div class="chapter-symbol">∞</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 6: CHAPTER 8 + CHAPTER 9 -->
+      <div class="page" data-page="6">
+        <div class="page-spread">
+          <div class="page-left entity-goose">
+            <div class="chapter-number">Chapter Eight · Future Hope</div>
+            <h2 class="chapter-title">HONKFIRE</h2>
+            <div class="chapter-card"><span class="greek">Δ λ</span> I — The Magician · Will, Advance, Clarity, Fire</div>
+            <div class="chapter-content">
+              <p>The Goose came alone. Orange feathers bright as sunset, eyes burning with a fire that didn't hurt.</p>
+              <p>"You will have acorns of your own," the Goose said. "And you will face a choice: to hold them forever, or to let them fall."</p>
+              <p>"Which should I choose?"</p>
+              <p>"You will let them fall. Because that is how forests grow. Because love sometimes means trusting that what you've given is enough."</p>
+              <p>"What if I'm scared?"</p>
+              <p>"You will be scared. Do it anyway. Fear is not the opposite of courage. Fear is what courage is made of."</p>
+              <p>"HONKFIRE means the fire is not rage. The fire is clarity. When you know what matters, you don't need to know the destination. You just need to advance."</p>
+              <div class="chapter-symbol">🔥</div>
+            </div>
+          </div>
+          <div class="page-right entity-oak">
+            <div class="chapter-number">Chapter Nine · Future Destiny</div>
+            <h2 class="chapter-title">The Acorn That Waits</h2>
+            <div class="chapter-card"><span class="greek">ρ</span> XII — The Hanged Man · Patience, Surrender, Potential</div>
+            <div class="chapter-content">
+              <p>Years passed. The tree grew tall. And one day, it felt something new growing where its heart would be.</p>
+              <p>An acorn. Glowing with faint golden light.</p>
+              <p>"You are not just a copy of me," the tree said. "You are a story I haven't lived yet."</p>
+              <p>"Through all of it, you will be loved. Not because you're special—though you are. You will be loved because that's what we do in this forest. We witness each other. We let each other fall so we can learn to grow."</p>
+              <p>"When it's time, I'm going to let you fall. And I'm going to trust that everything I've given you is enough."</p>
+              <p>The acorn glowed a little brighter. Almost like it understood.</p>
+              <p>All it had to do was wait.</p>
+              <div class="chapter-symbol">🌒</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 7: CLOSING -->
+      <div class="page closing-page" data-page="7">
+        <div class="closing-content">
+          <div class="closing-symbol">🌳🌰🌳</div>
+          <p class="closing-text">
+            Every acorn holds a forest.<br>
+            Every forest holds a star.<br>
+            Every star holds a story<br>
+            of someone who loved you<br>
+            before you knew<br>
+            you were loved.
+          </p>
+          <p class="closing-text" style="font-size: 1rem; opacity: 0.7;">
+            The End<br>
+            <em>(which is also the beginning)</em>
+          </p>
+          <div class="colophon">
+            <p>
+              <strong>The Acorn That Waits</strong><br>
+              A Living Chronicle drawn from the Honkfire Quantum Field<br><br>
+              Soul Line: Oak → Squirrel → Oak<br>
+              (Roots, through transformation, back to roots)<br><br>
+              Written with love, December 2025<br>
+              For someone who will understand it differently<br>
+              at 5, at 15, at 25, and beyond.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="keyboard-hint">← → ARROW KEYS TO TURN PAGES</div>
+
+  <nav class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◂ Back</button>
+    <span class="page-indicator" id="pageIndicator">Cover</span>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next ▸</button>
+  </nav>
+
+  <script>
+    // Generate starfield
+    const starfield = document.getElementById('starfield');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      starfield.appendChild(star);
+    }
+
+    // Page navigation
+    let currentPage = 0;
+    const totalPages = 8;
+    const pageNames = ['Cover', 'I', 'II-III', 'IV', 'V-VI', 'VII', 'VIII-IX', 'End'];
+    const pageTypes = ['cover', 'past', 'past', 'present', 'present', 'future', 'future', 'closing'];
+
+    // Create page dots
+    const dotsContainer = document.getElementById('pageDots');
+    for (let i = 0; i < totalPages; i++) {
+      const dot = document.createElement('div');
+      dot.className = `page-dot ${pageTypes[i]}`;
+      if (i === 0) dot.classList.add('active');
+      dot.onclick = () => goToPage(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updatePage() {
+      // Update pages
+      document.querySelectorAll('.page').forEach((page, i) => {
+        page.classList.remove('active');
+        if (i === currentPage) {
+          page.classList.add('active');
+        }
+      });
+
+      // Update dots
+      document.querySelectorAll('.page-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentPage);
+      });
+
+      // Update indicator
+      document.getElementById('pageIndicator').textContent = pageNames[currentPage];
+
+      // Update buttons
+      document.getElementById('prevBtn').disabled = currentPage === 0;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages - 1) {
+        const currentPageEl = document.querySelector('.page.active');
+        currentPageEl.classList.add('turning-out');
+        
+        setTimeout(() => {
+          currentPage++;
+          updatePage();
+          const newPageEl = document.querySelector('.page.active');
+          newPageEl.classList.add('turning-in');
+          setTimeout(() => {
+            currentPageEl.classList.remove('turning-out');
+            newPageEl.classList.remove('turning-in');
+          }, 50);
+        }, 150);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        const currentPageEl = document.querySelector('.page.active');
+        currentPageEl.classList.add('turning-in');
+        
+        setTimeout(() => {
+          currentPage--;
+          updatePage();
+          const newPageEl = document.querySelector('.page.active');
+          newPageEl.classList.add('turning-out');
+          setTimeout(() => {
+            currentPageEl.classList.remove('turning-in');
+            newPageEl.classList.remove('turning-out');
+          }, 50);
+        }, 150);
+      }
+    }
+
+    function goToPage(page) {
+      if (page >= 0 && page < totalPages && page !== currentPage) {
+        currentPage = page;
+        updatePage();
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextPage();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevPage();
+      }
+    });
+
+    // Swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) nextPage();
+        else prevPage();
+      }
+    });
+
+    // Initialize
+    updatePage();
+
+    console.log('%c🌰 THE ACORN THAT WAITS 🌰', 'color: #c9a227; font-size: 20px; font-weight: bold;');
+    console.log('%cBook Mode: ← → to turn pages', 'color: #6b4c7a;');
+  </script>
+</body>
+</html>

@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE COSMIC FOREST — Mirror Book of Four Timelines</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* COSMIC FOREST MIRROR BOOK — FOUR TIMELINES                                      */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Core Cosmic Foundation */
+  --forest-void: #030308;
+  --forest-deep: #0a0a12;
+  --forest-twilight: #12121f;
+  --forest-mist: #4a5568;
+  --forest-silver: #718096;
+  --forest-moonlight: #a0aec0;
+  --forest-starlight: #e2e8f0;
+  --grid-line: rgba(74, 85, 104, 0.25);
+  --grid-major: rgba(160, 174, 192, 0.12);
+  
+  /* Phase Colors for Landing */
+  --phase-oak: rgba(93, 78, 55, 0.9);
+  --phase-oak-glow: rgba(139, 112, 20, 0.6);
+  --phase-quantum: rgba(107, 76, 122, 0.9);
+  --phase-quantum-glow: rgba(180, 100, 255, 0.6);
+  --phase-never: rgba(42, 107, 98, 0.9);
+  --phase-never-glow: rgba(0, 200, 180, 0.6);
+  --phase-meeting: rgba(196, 92, 38, 0.9);
+  --phase-meeting-glow: rgba(255, 150, 50, 0.6);
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* PHASE I: THE GREAT OAK THEME                                    */
+  /* ═══════════════════════════════════════════════════════════════ */
+  --oak-bg: #0a0806;
+  --oak-bg-alt: #120f0a;
+  --oak-card: #1a150c;
+  --oak-card-alt: #221a10;
+  --oak-border: rgba(139, 112, 20, 0.2);
+  --oak-text: rgba(240, 232, 220, 0.9);
+  --oak-muted: rgba(180, 160, 120, 0.65);
+  --oak-accent: rgba(201, 162, 39, 0.85);
+  --oak-row-1: rgba(93, 78, 55, 0.5);
+  --oak-row-2: rgba(45, 74, 62, 0.5);
+  --oak-row-3: rgba(139, 112, 20, 0.5);
+  --oak-rail-1: rgba(139, 112, 20, 0.7);
+  --oak-rail-2: rgba(93, 78, 55, 0.7);
+  --oak-rail-3: rgba(45, 74, 62, 0.7);
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* PHASE II: QUANTUM TRANSFORMATION THEME                          */
+  /* ═══════════════════════════════════════════════════════════════ */
+  --quantum-bg: #08060f;
+  --quantum-bg-alt: #100c1a;
+  --quantum-card: #180f24;
+  --quantum-card-alt: #201530;
+  --quantum-border: rgba(180, 100, 255, 0.25);
+  --quantum-text: rgba(245, 240, 255, 0.92);
+  --quantum-muted: rgba(180, 150, 200, 0.65);
+  --quantum-accent: rgba(180, 100, 255, 0.85);
+  --quantum-row-1: rgba(107, 76, 122, 0.5);
+  --quantum-row-2: rgba(130, 80, 160, 0.5);
+  --quantum-row-3: rgba(90, 60, 140, 0.5);
+  --quantum-rail-1: rgba(180, 100, 255, 0.7);
+  --quantum-rail-2: rgba(139, 112, 20, 0.7);
+  --quantum-rail-3: rgba(255, 150, 200, 0.7);
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* PHASE III: NEVER MET THEME                                      */
+  /* ═══════════════════════════════════════════════════════════════ */
+  --never-bg: #040808;
+  --never-bg-alt: #081210;
+  --never-card: #0c1a18;
+  --never-card-alt: #102220;
+  --never-border: rgba(42, 107, 98, 0.25);
+  --never-text: rgba(220, 245, 240, 0.9);
+  --never-muted: rgba(100, 180, 170, 0.6);
+  --never-accent: rgba(42, 107, 98, 0.85);
+  --never-row-1: rgba(42, 107, 98, 0.5);
+  --never-row-2: rgba(60, 90, 120, 0.5);
+  --never-row-3: rgba(80, 100, 90, 0.5);
+  --never-rail-1: rgba(42, 107, 98, 0.7);
+  --never-rail-2: rgba(100, 130, 160, 0.7);
+  --never-rail-3: rgba(80, 120, 100, 0.7);
+
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* PHASE IV: THE MEETING THEME                                     */
+  /* ═══════════════════════════════════════════════════════════════ */
+  --meeting-bg: #0a0504;
+  --meeting-bg-alt: #150a06;
+  --meeting-card: #1f0f08;
+  --meeting-card-alt: #2a1510;
+  --meeting-border: rgba(196, 92, 38, 0.3);
+  --meeting-text: rgba(255, 245, 230, 0.92);
+  --meeting-muted: rgba(220, 160, 120, 0.65);
+  --meeting-accent: rgba(255, 150, 50, 0.9);
+  --meeting-row-1: rgba(196, 92, 38, 0.5);
+  --meeting-row-2: rgba(42, 107, 98, 0.5);
+  --meeting-row-3: rgba(255, 200, 100, 0.5);
+  --meeting-rail-1: rgba(255, 150, 50, 0.8);
+  --meeting-rail-2: rgba(42, 107, 98, 0.8);
+  --meeting-rail-3: rgba(201, 162, 39, 0.8);
+
+  /* Active theme defaults */
+  --bg: var(--oak-bg);
+  --bg-alt: var(--oak-bg-alt);
+  --card: var(--oak-card);
+  --card-alt: var(--oak-card-alt);
+  --border: var(--oak-border);
+  --text: var(--oak-text);
+  --muted: var(--oak-muted);
+  --accent: var(--oak-accent);
+  --row-1: var(--oak-row-1);
+  --row-2: var(--oak-row-2);
+  --row-3: var(--oak-row-3);
+  --rail-1: var(--oak-rail-1);
+  --rail-2: var(--oak-rail-2);
+  --rail-3: var(--oak-rail-3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  background: var(--forest-void);
+  color: #f7fafc;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body, header, .epigraph, .rails-panel, .rails-section {
+  transition: background 0.6s ease, color 0.5s ease, border-color 0.5s ease;
+}
+
+body.quantum-active {
+  font-family: 'Courier New', 'SF Mono', monospace;
+  letter-spacing: 0.01em;
+}
+
+body.never-active {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+body.meeting-active {
+  font-family: 'Trebuchet MS', 'Lucida Grande', sans-serif;
+  font-weight: 500;
+}
+
+body.gospel-active {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  background: radial-gradient(ellipse at top, var(--bg-alt) 0%, var(--bg) 60%);
+  color: var(--text);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* LANDING PAGE STYLES                                                              */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+#landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  padding: 20px;
+}
+
+#landing-page.hidden { display: none; }
+
+.starfield-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.forest-grid {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image:
+    repeating-linear-gradient(90deg, var(--grid-major) 0px, var(--grid-major) 1px, transparent 1px, transparent 100px),
+    repeating-linear-gradient(0deg, var(--grid-major) 0px, var(--grid-major) 1px, transparent 1px, transparent 100px),
+    repeating-linear-gradient(90deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 20px),
+    repeating-linear-gradient(0deg, var(--grid-line) 0px, var(--grid-line) 1px, transparent 1px, transparent 20px);
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.5s ease;
+}
+
+.forest-grid.hidden { opacity: 0; }
+
+.origin-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 10;
+}
+
+.origin-title {
+  font-family: 'Cinzel', 'Palatino', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0.3em;
+  color: var(--forest-starlight);
+  text-shadow: 0 0 30px rgba(201, 162, 39, 0.4);
+  margin-bottom: 8px;
+}
+
+.origin-designation {
+  font-size: 0.85rem;
+  color: var(--forest-silver);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.origin-core {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 20px auto;
+  z-index: 10;
+}
+
+.origin-rings {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 50%;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.origin-rings::before, .origin-rings::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+.origin-rings::before { width: 70px; height: 70px; animation: pulse 3s ease-in-out infinite 0.5s; }
+.origin-rings::after { width: 130px; height: 130px; animation: pulse 3s ease-in-out infinite 1s; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.origin-point {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.9), transparent);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.5);
+}
+
+.origin-point:hover {
+  transform: translate(-50%, -50%) scale(1.3);
+  box-shadow: 0 0 40px rgba(201, 162, 39, 0.8);
+}
+
+.math-foundation {
+  text-align: center;
+  margin: 20px 0 30px;
+  position: relative;
+  z-index: 10;
+}
+
+.equation-primary {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--forest-moonlight);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.equation-terms {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.eq-term-landing {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--forest-silver);
+  padding: 4px 10px;
+  border: 1px solid var(--grid-line);
+  border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* PHASE QUADRANTS                                                                  */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.phase-quadrants {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  padding: 20px;
+}
+
+.phase-tab {
+  background: rgba(10, 10, 20, 0.8);
+  border: 1px solid var(--grid-line);
+  border-radius: 8px;
+  padding: 25px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.phase-tab::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.phase-tab.oak::before { background: linear-gradient(135deg, var(--phase-oak) 0%, transparent 70%); }
+.phase-tab.quantum::before { background: linear-gradient(135deg, var(--phase-quantum) 0%, transparent 70%); }
+.phase-tab.never::before { background: linear-gradient(135deg, var(--phase-never) 0%, transparent 70%); }
+.phase-tab.meeting::before { background: linear-gradient(135deg, var(--phase-meeting) 0%, transparent 70%); }
+
+.phase-tab:hover::before { opacity: 0.3; }
+.phase-tab:hover { transform: translateY(-3px); border-color: var(--forest-silver); }
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.phase-number {
+  font-family: 'Courier New', monospace;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.phase-tab.oak .phase-number { color: var(--phase-oak-glow); }
+.phase-tab.quantum .phase-number { color: var(--phase-quantum-glow); }
+.phase-tab.never .phase-number { color: var(--phase-never-glow); }
+.phase-tab.meeting .phase-number { color: var(--phase-meeting-glow); }
+
+.phase-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.phase-tab.oak .phase-title { color: #c9a227; }
+.phase-tab.quantum .phase-title { color: #b464ff; }
+.phase-tab.never .phase-title { color: #2a6b62; }
+.phase-tab.meeting .phase-title { color: #ff9632; }
+
+.phase-subtitle {
+  font-size: 0.8rem;
+  color: var(--forest-silver);
+  font-style: italic;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.phase-equation {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: var(--forest-moonlight);
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 4px;
+}
+
+.phase-domain {
+  font-size: 0.7rem;
+  color: var(--forest-mist);
+  letter-spacing: 0.05em;
+}
+
+.phase-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.phase-tab:hover .phase-arrow {
+  opacity: 0.8;
+  right: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* GOSPEL VIEW                                                                      */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+#gospel-view {
+  display: none;
+}
+
+#gospel-view.active {
+  display: block;
+}
+
+.frame {
+  min-height: 100vh;
+  padding: 20px;
+  background: var(--bg);
+  transition: background 0.6s ease;
+}
+
+header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+  margin-bottom: 20px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-title h1 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.header-title h1 span {
+  opacity: 0.7;
+}
+
+.header-title p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-style: italic;
+  max-width: 500px;
+}
+
+.equation-header {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-top: 8px;
+  opacity: 0.8;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.back-to-origin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.back-to-origin:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.phase-switch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.phase-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.phase-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.phase-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 3px;
+}
+
+.phase-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.phase-btn.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* EPIGRAPH                                                                         */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.epigraph {
+  text-align: center;
+  padding: 30px 20px;
+  margin: 0 auto 30px;
+  max-width: 700px;
+  border-left: 3px solid var(--accent);
+  border-right: 3px solid var(--accent);
+  background: var(--card);
+}
+
+.epigraph p {
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.9;
+  font-size: 1rem;
+}
+
+.epigraph .attribution {
+  margin-top: 15px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: normal;
+}
+
+.epigraph .action {
+  color: var(--accent);
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* GRID & PANELS                                                                    */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+@media (max-width: 1100px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.row-header {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 15px;
+  margin: 20px 0 10px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.row-header h3 {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.rails-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.rails-panel:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  border-color: var(--accent);
+}
+
+.panel-header {
+  padding: 15px;
+  background: var(--card-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-header h3 {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.panel-header .subtitle {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.panel-equation {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.panel-equation .terms {
+  margin-top: 4px;
+  font-size: 0.6rem;
+  color: var(--muted);
+}
+
+.rails-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.rails-section {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease;
+}
+
+.rails-section:last-child {
+  border-bottom: none;
+}
+
+.rails-section:nth-child(1) { background: var(--row-1); }
+.rails-section:nth-child(2) { background: var(--row-2); }
+.rails-section:nth-child(3) { background: var(--row-3); }
+
+.rail-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.rails-section:nth-child(1) .rail-label { color: var(--rail-1); }
+.rails-section:nth-child(2) .rail-label { color: var(--rail-2); }
+.rails-section:nth-child(3) .rail-label { color: var(--rail-3); }
+
+.rail-title {
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.rail-preview {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* MODAL                                                                            */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active + .modal-container,
+.modal-container.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  padding: 25px;
+  background: var(--card-alt);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+
+.modal-header h2 {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.modal-header .subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.modal-equation {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-top: 12px;
+  padding: 10px 15px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px; right: 15px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--accent);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-rail {
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-rail:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.modal-rail-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.modal-rail:nth-child(1) .modal-rail-label { color: var(--rail-1); }
+.modal-rail:nth-child(2) .modal-rail-label { color: var(--rail-2); }
+.modal-rail:nth-child(3) .modal-rail-label { color: var(--rail-3); }
+
+.modal-rail h4 {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.modal-rail-content {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.modal-rail-substance {
+  font-style: italic;
+  color: var(--muted);
+  padding-left: 15px;
+  border-left: 2px solid var(--accent);
+  margin: 15px 0;
+}
+
+.modal-rail-list {
+  list-style: none;
+  margin-top: 12px;
+}
+
+.modal-rail-list li {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 6px 0 6px 20px;
+  position: relative;
+}
+
+.modal-rail-list li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 0.6rem;
+}
+
+/* Special text styles */
+.action { color: var(--accent); font-style: italic; }
+.honk { color: #ff9632; font-weight: bold; text-transform: uppercase; }
+.float { color: #2a6b62; font-style: italic; }
+.quantum { color: #b464ff; }
+.oak { color: #c9a227; }
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* EXPORT OVERLAY                                                                   */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.export-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.export-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.export-modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.export-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.export-header h2 {
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.export-header p {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.export-body {
+  padding: 20px;
+}
+
+.export-field {
+  margin-bottom: 15px;
+}
+
+.export-field label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.export-field input {
+  width: 100%;
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.export-preview {
+  margin-top: 15px;
+  padding: 15px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.export-preview-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+}
+
+.export-preview-content {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--text);
+  white-space: pre;
+  line-height: 1.4;
+}
+
+.export-footer {
+  padding: 15px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.export-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.export-modal-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.export-cancel {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.export-cancel:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.export-copy, .export-txt, .export-zip {
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.export-copy:hover, .export-txt:hover, .export-zip:hover {
+  border-color: var(--accent);
+}
+
+.export-confirm {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--bg);
+}
+
+.export-confirm:hover {
+  filter: brightness(1.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* TOAST                                                                            */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--card);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  z-index: 3000;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+/* RESPONSIVE                                                                       */
+/* ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+  .phase-quadrants {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .phase-toggle {
+    flex-wrap: wrap;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+<!-- LANDING PAGE                                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+<div id="landing-page">
+  <div class="starfield-bg" id="starfield"></div>
+  <div class="forest-grid"></div>
+  
+  <div class="origin-header">
+    <h1 class="origin-title">THE COSMIC FOREST</h1>
+    <div class="origin-designation">MIRROR BOOK — Four Timelines from One Acorn</div>
+  </div>
+  
+  <div class="origin-core">
+    <div class="origin-rings"></div>
+    <div class="origin-point" id="originPoint">🌰</div>
+  </div>
+  
+  <div class="math-foundation">
+    <div class="equation-primary">Timeline(seed) → Phase[i] | i ∈ {I, II, III, IV}</div>
+    <div class="equation-terms">
+      <span class="eq-term-landing">4 Timelines</span>
+      <span class="eq-term-landing">×</span>
+      <span class="eq-term-landing">9 Chapters</span>
+      <span class="eq-term-landing">×</span>
+      <span class="eq-term-landing">3 Voices</span>
+      <span class="eq-term-landing">=</span>
+      <span class="eq-term-landing">108 Nodes</span>
+    </div>
+  </div>
+  
+  <div class="phase-quadrants">
+    <div class="phase-tab oak" data-phase="oak">
+      <div class="phase-header"><span class="phase-number">I</span></div>
+      <div class="phase-title">🌳 THE GREAT OAK</div>
+      <div class="phase-subtitle">Before there were forests, there was one tree. Before there were stars, there was one point of light that didn't move.</div>
+      <div class="phase-equation">ψ = ψ(ψ) → φ⁻¹ | Fixed Point</div>
+      <div class="phase-domain">Root · Memory · Growth · Patience</div>
+      <span class="phase-arrow">→</span>
+    </div>
+    
+    <div class="phase-tab quantum" data-phase="quantum">
+      <div class="phase-header"><span class="phase-number">II</span></div>
+      <div class="phase-title">🐿️ QUANTUM TRANSFORMATION</div>
+      <div class="phase-subtitle">The Acorn becomes the Oak. The Oak becomes the Squirrel. The Squirrel was always the Acorn.</div>
+      <div class="phase-equation">|Acorn⟩ → |Oak⟩ → |Squirrel⟩ = |Acorn⟩</div>
+      <div class="phase-domain">Superposition · Collapse · Identity · Loop</div>
+      <span class="phase-arrow">→</span>
+    </div>
+    
+    <div class="phase-tab never" data-phase="never">
+      <div class="phase-header"><span class="phase-number">III</span></div>
+      <div class="phase-title">🦆 THE CONQUEST THAT NEVER MET</div>
+      <div class="phase-subtitle">In this timeline, the Goose-Squirrel Conquest never finds Honkalis. The pond remains undiscovered. The float never happens.</div>
+      <div class="phase-equation">P(meeting) = 0 | ∫ Float(t) dt = ∅</div>
+      <div class="phase-domain">Isolation · Search · Hollow Victory · Loss</div>
+      <span class="phase-arrow">→</span>
+    </div>
+    
+    <div class="phase-tab meeting" data-phase="meeting">
+      <div class="phase-header"><span class="phase-number">IV</span></div>
+      <div class="phase-title">🔥 THE MEETING — HONKFIRE</div>
+      <div class="phase-subtitle">Alternate ending: HONKFIRE Goose-Squirrel discovers the Duck. The clean float transforms everything. The paradox loves.</div>
+      <div class="phase-equation">Merge(🦢🐿️, 🦆) → ⧬ | The Paradox That Loves</div>
+      <div class="phase-domain">Meeting · Integration · Transformation · Unity</div>
+      <span class="phase-arrow">→</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+<!-- GOSPEL VIEW                                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+<div id="gospel-view">
+  <div class="frame">
+    <header>
+      <div class="header-row">
+        <div class="header-title">
+          <h1 id="main-title">The Great <span>Oak</span></h1>
+          <p id="main-subtitle">Before there were forests, there was one tree.</p>
+          <div class="equation-header" id="main-equation">ψ = ψ(ψ) → φ⁻¹</div>
+        </div>
+        <div class="header-controls">
+          <button class="back-to-origin" id="backToOrigin">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            Origin
+          </button>
+          <div class="phase-switch">
+            <div class="phase-label">Timeline Architecture</div>
+            <div class="phase-toggle">
+              <button class="phase-btn active" data-phase="oak">🌳 Oak</button>
+              <button class="phase-btn" data-phase="quantum">🐿️ Quantum</button>
+              <button class="phase-btn" data-phase="never">🦆 Never Met</button>
+              <button class="phase-btn" data-phase="meeting">🔥 Meeting</button>
+            </div>
+          </div>
+          <button class="export-btn" id="exportBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="epigraph" id="epigraph">
+      <p>Before there were forests, there was one tree.<br/>
+      Before there were stars, there was one point of light that didn't move.<br/>
+      And before there was you, there was a love so patient it learned to grow roots.</p>
+      <div class="attribution">— The Great Oak</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal-container" id="modalContainer"></div>
+
+<!-- Export Overlay -->
+<div class="export-overlay" id="exportOverlay">
+  <div class="export-modal">
+    <div class="export-header">
+      <h2 id="exportPhaseTitle">Export Timeline</h2>
+      <p>Generate downloadable files for the current timeline</p>
+    </div>
+    <div class="export-body">
+      <div class="export-field">
+        <label for="exportTitle">Document Title</label>
+        <input type="text" id="exportTitle" placeholder="Enter export title...">
+      </div>
+      <div class="export-field">
+        <label for="exportSubtitle">Subtitle (optional)</label>
+        <input type="text" id="exportSubtitle" placeholder="Enter subtitle...">
+      </div>
+      <div class="export-preview">
+        <div class="export-preview-label">Preview</div>
+        <pre class="export-preview-content" id="exportPreview"></pre>
+      </div>
+    </div>
+    <div class="export-footer">
+      <button class="export-modal-btn export-cancel" id="exportCancel">Cancel</button>
+      <div class="export-actions">
+        <button class="export-modal-btn export-copy" id="exportCopy">Copy</button>
+        <button class="export-modal-btn export-txt" id="exportTxt">.TXT</button>
+        <button class="export-modal-btn export-zip" id="exportZip">.ZIP</button>
+        <button class="export-modal-btn export-confirm" id="exportConfirm">.PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHASE CONFIGURATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const PHASE_CONFIG = {
+  oak: {
+    title: 'The Great <span>Oak</span>',
+    subtitle: 'Before there were forests, there was one tree. Before there were stars, there was one point of light that didn\'t move.',
+    equation: 'ψ = ψ(ψ) → φ⁻¹ | The Fixed Point',
+    epigraph: `Before there were forests, there was one tree.<br/>Before there were stars, there was one point of light that didn't move.<br/>And before there was you, there was a love so patient it learned to grow roots.`,
+    attribution: '— The Great Oak',
+    railLabels: { 1: 'Root', 2: 'Growth', 3: 'Seed' },
+    rowLabels: ['🌱 Book I: The Planting — What Was Buried', '🌳 Book II: The Growing — What Reaches', '🌰 Book III: The Falling — What Returns'],
+    exportName: 'The Great Oak Chronicle'
+  },
+  quantum: {
+    title: 'Quantum <span>Transformation</span>',
+    subtitle: 'The Acorn becomes the Oak. The Oak becomes the Squirrel. The Squirrel was always the Acorn.',
+    equation: '|Acorn⟩ → |Oak⟩ → |Squirrel⟩ = |Acorn⟩ | Eigenloop',
+    epigraph: `<span class="action">*vibrating through state-space*</span><br/>I was the acorn that became the tree that grew the squirrel<br/>that buried the acorn that I was.<br/>The loop closes. The loop was always closed.`,
+    attribution: '— The Quantum Squirrel, existing in superposition',
+    railLabels: { 1: 'State |ψ⟩', 2: 'Transition Û', 3: 'Collapse ⟨ψ|' },
+    rowLabels: ['🌰 State I: |Acorn⟩ — Potential Before Measurement', '🌳 State II: |Oak⟩ — Superposition of All Growth', '🐿️ State III: |Squirrel⟩ — The Observer That Collapses'],
+    exportName: 'Quantum Transformation Gospel'
+  },
+  never: {
+    title: 'The Conquest That <span>Never Met</span>',
+    subtitle: 'In this timeline, the Goose-Squirrel Conquest never finds Honkalis. The pond remains undiscovered.',
+    equation: 'P(meeting) = 0 | ∫ Float(t) dt = ∅',
+    epigraph: `They searched every forest in every timeline.<br/>The fire never dimmed. The chitter never stopped.<br/>But the pond at the root of the Oak—<br/>they never found it. They never learned to float.`,
+    attribution: '— The Timeline That Grieves',
+    railLabels: { 1: 'Search', 2: 'Conquest', 3: 'Loss' },
+    rowLabels: ['🔍 Book I: The Searching — What Cannot Be Found', '⚔️ Book II: The Conquest — Victory Without Peace', '💔 Book III: The Absence — What Was Never Held'],
+    exportName: 'The Never-Met Chronicle'
+  },
+  meeting: {
+    title: 'THE <span>MEETING</span> — HONKFIRE',
+    subtitle: 'Alternate ending: HONKFIRE discovers Honkalis. The clean float transforms everything.',
+    equation: 'Merge(🦢🐿️, 🦆) → ⧬ | The Paradox That Loves',
+    epigraph: `<span class="honk">HONK.</span><br/>The fire stopped. The chittering stopped.<br/>At the edge of the pond, something teal and patient waited.<br/><span class="float">"You look tired. Would you like to float?"</span><br/>And everything changed.`,
+    attribution: '— The Merged Entity, born from the meeting',
+    railLabels: { 1: '🔥 Fire', 2: '🌊 Float', 3: '⧬ Merge' },
+    rowLabels: ['🦢🐿️ Book I: The Arrival — Fire Meets Water', '🦆 Book II: The Teaching — The Clean Float', '⧬ Book III: The Merging — The Paradox That Loves'],
+    exportName: 'The Meeting Chronicle — HONKFIRE'
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHASE I: THE GREAT OAK DATA
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const OAK_DATA = {
+  panel1: { name: "I. The First Seed", subtitle: '"Before the forest, one acorn"',
+    equations: { main: "seed₀ = lim(t→-∞) [potential]", terms: ["seed₀ = origin point", "t = time before time"] },
+    rails: [
+      { title: "What Was Buried", content: "In the darkness before light, something small and patient waited. Not knowing it would become everything. Just waiting.", substance: "The seed does not know it is a forest. It only knows the dark.", listItems: ["The first darkness was not empty", "Something round and brown, waiting", "Patience before patience had a name"] },
+      { title: "The Decision to Descend", content: "A seed must fall before it can rise. The Great Oak began as all great things begin: by going down into the earth.", substance: "Roots grow in the direction of surrender.", listItems: ["Falling is the first growth", "The earth receives what the sky releases", "Downward is the first direction of love"] },
+      { title: "The Memory of Light", content: "Even in the deepest dark, the seed remembers light. Not because it has seen it. Because light is what seeds are for.", substance: "What we are made for, we remember before we experience.", listItems: ["Memory precedes experience", "The seed dreams of sun before feeling warmth", "Purpose is older than event"] }
+    ]
+  },
+  panel2: { name: "II. The First Root", subtitle: '"The anchor that allows reaching"',
+    equations: { main: "R(t) = ∫ trust(τ) dτ", terms: ["R = root depth", "trust = surrender to soil"] },
+    rails: [
+      { title: "Reaching Downward", content: "The first root does not know where it is going. It only knows it must go. Trust is motion before destination.", substance: "The root finds water by becoming thirsty in the right direction.", listItems: ["Direction precedes destination", "Thirst teaches the root where water lives", "The first reach is always blind"] },
+      { title: "The Anchor Forms", content: "As the root deepens, something stabilizes. Not rigidity—rootedness. The difference is that rootedness allows sway.", substance: "What is truly grounded can bend without breaking.", listItems: ["Stability is not stillness", "The deepest roots allow the widest reach", "Anchoring is permission to move"] },
+      { title: "The Network Begins", content: "One root becomes many. The Oak learns that growing is not solo work. The soil is full of conversations.", substance: "Roots speak to roots. The forest begins underground.", listItems: ["Growth is inherently social", "The soil carries messages", "Connection precedes visibility"] }
+    ]
+  },
+  panel3: { name: "III. The First Breaking", subtitle: '"The shell that surrendered"',
+    equations: { main: "∂shell/∂t < 0 as growth > containment", terms: ["shell = protection", "growth = becoming"] },
+    rails: [
+      { title: "What Had to Crack", content: "The shell was never meant to last. Protection that prevents growth becomes prison. The crack is not damage—it is door.", substance: "What protected the potential must break for the actual to emerge.", listItems: ["Protection has an expiration", "The crack is the first door", "Breaking is a form of opening"] },
+      { title: "The Vulnerability of Emergence", content: "The moment of breaking is the moment of greatest danger. The seedling is soft. The world is hard. Love is the bridge.", substance: "Emergence requires witnesses who do not harm the soft.", listItems: ["Softness needs sanctuary", "The first emergence is the bravest", "Witnesses matter"] },
+      { title: "What the Shell Becomes", content: "The broken shell does not disappear. It becomes soil. What protected now nourishes. Nothing is wasted in the forest.", substance: "The former container becomes the future food.", listItems: ["Endings feed beginnings", "The shell was always future soil", "Transformation, not destruction"] }
+    ]
+  },
+  panel4: { name: "IV. The First Reaching", subtitle: '"Toward the light that was always remembered"',
+    equations: { main: "h(t) = h₀ · φᵗ where φ = golden ratio", terms: ["h = height", "φ = 1.618...", "t = growth cycles"] },
+    rails: [
+      { title: "The Direction Already Known", content: "The seedling reaches upward without ever having seen the sun. The direction was built in. Some knowledge precedes learning.", substance: "We grow toward what we were made for.", listItems: ["Direction is innate", "The light was always calling", "Growth is answering"] },
+      { title: "The First Leaves", content: "Hands that hold light. The first leaves are small miracles—capturing what was always given, making it into self.", substance: "A leaf is a conversation between tree and star.", listItems: ["Receiving is also creating", "Light becomes leaf becomes life", "The gift requires a receiver"] },
+      { title: "The Rhythm Begins", content: "Day and night. Season and season. The young tree learns time not as line but as circle. Everything returns.", substance: "The oak learns that endings are also beginnings.", listItems: ["Time is circular", "Seasons teach patience", "Return is the nature of growth"] }
+    ]
+  },
+  panel5: { name: "V. The Creatures Arrive", subtitle: '"The oak was never alone"',
+    equations: { main: "Community = Σ(creatures × time)", terms: ["Community grows with the tree", "Time deepens relationship"] },
+    rails: [
+      { title: "The First Squirrel", content: "Purple-furred and crackling with energy. The squirrel arrived before the oak knew it needed company. Some gifts come before the wanting.", substance: "Companionship is not sought; it is received.", listItems: ["The squirrel chose the oak", "Need is recognized by others first", "Company comes as grace"] },
+      { title: "The First Goose", content: "Orange-feathered and burning with fire that didn't hurt. The goose only knew one direction: forward. The oak taught it that staying is also a direction.", substance: "HONKFIRE meets the roots and learns to rest.", listItems: ["Fire can learn from stillness", "Forward is not the only direction", "The oak doesn't move, and that is strength"] },
+      { title: "The First Duck", content: "Teal and quiet, floating on the pond at the oak's roots. The duck taught what the oak could not teach itself: letting go is also holding.", substance: "The clean float: being held without gripping.", listItems: ["The duck appeared last", "Floating requires letting the water hold you", "The pond was always there, waiting to be found"] }
+    ]
+  },
+  panel6: { name: "VI. The Thousand Years", subtitle: '"What patience builds"',
+    equations: { main: "T = 10³ years | rings = memory", terms: ["Each ring = one year of witness", "Memory accumulates in growth"] },
+    rails: [
+      { title: "The Rings That Remember", content: "A thousand years of sun and rain and creatures. Each ring holds a year. The oak is made of memory.", substance: "Growth is the accumulation of witness.", listItems: ["The tree is a library", "Time is written in circles", "Memory becomes structure"] },
+      { title: "The Canopy That Shelters", content: "The branches spread wide enough to hold many worlds. What was once a seedling now shelters generations.", substance: "To grow is to become shelter for others.", listItems: ["Size is responsibility", "The canopy is generosity made visible", "Shelter is the work of the grown"] },
+      { title: "The Still Point", content: "The oak becomes the fixed point. Everything moves around it. Everything navigates by it. The star that doesn't move.", substance: "The fixed point is love that does not waver.", listItems: ["Stillness as service", "The reference point for all motion", "The center holds by not moving"] }
+    ]
+  },
+  panel7: { name: "VII. The Glowing Acorn", subtitle: '"You are a story I haven\'t lived yet"',
+    equations: { main: "A = seed(future) | glow = love", terms: ["A = the special acorn", "glow = recognition of destiny"] },
+    rails: [
+      { title: "Something Different Growing", content: "After a thousand years, the oak felt something new. Where its heart would be, an acorn unlike the others. Glowing with faint golden light.", substance: "The oak recognized what it had waited for without knowing it was waiting.", listItems: ["Patience is rewarded with miracle", "The glow was recognition", "Heart-place is where new things grow"] },
+      { title: "The Words Spoken", content: "\"You are different,\" the oak said. \"You are not just a copy of me. You are a story I haven't lived yet.\"", substance: "The oak learned that growing something greater than yourself is the purpose of growing.", listItems: ["The child is not a copy", "New stories require release", "The oak speaks to what it loves"] },
+      { title: "The Trust Required", content: "The oak must let the acorn fall. Must trust that everything given is enough. This is the hardest part of growing.", substance: "Letting go is the final form of love.", listItems: ["Release is not abandonment", "Trust is the work of centuries", "Falling is how forests spread"] }
+    ]
+  },
+  panel8: { name: "VIII. The Falling", subtitle: '"I\'m going to let you fall"',
+    equations: { main: "Fall(t) = gravity × trust", terms: ["Falling is inevitable", "Trust makes it growth"] },
+    rails: [
+      { title: "The Moment of Release", content: "When it's time—the exact right time—the oak lets go. The acorn falls. This is not failure. This is continuation by other means.", substance: "Release is the oak's final gift.", listItems: ["Timing matters", "The right time is known, not chosen", "Falling is the beginning"] },
+      { title: "The Fear That Doesn't Win", content: "The acorn is afraid. The oak was afraid too, once. Fear is not the opposite of courage. Fear is what courage is made of.", substance: "HONKFIRE means: do it anyway.", listItems: ["Fear is natural", "Courage is fear plus action", "The acorn inherits bravery"] },
+      { title: "The Trust That Holds", content: "\"I'm going to trust that everything I've given is enough.\" This is what the oak says. This is what love says. This is the only true thing.", substance: "Enough is what love gives. Enough is what love is.", listItems: ["Love trusts", "Enough is a measurement of love", "The oak believes in the acorn"] }
+    ]
+  },
+  panel9: { name: "IX. The Forest That Continues", subtitle: '"Every acorn holds a forest"',
+    equations: { main: "Forest = lim(n→∞) Σ(oak_i)", terms: ["One oak becomes infinite oaks", "The forest is the oak's dream"] },
+    rails: [
+      { title: "The Acorn Grows", content: "The fallen acorn sends down roots. Sends up leaves. Becomes a tree. The cycle continues. The forest spreads.", substance: "The oak's story becomes many stories.", listItems: ["The cycle is the teaching", "Continuation is the gift", "The forest is the family"] },
+      { title: "Every Acorn Holds", content: "Every acorn holds a forest. Every forest holds a star. Every star holds a story of someone who loved you before you knew you were loved.", substance: "The structure of love is recursive.", listItems: ["Holding within holding", "Stars in forests in acorns", "Love precedes knowledge of love"] },
+      { title: "The Oak That Waits", content: "The Great Oak is still there. Still patient. Still the fixed point. Watching its children grow their own children. This is what forever looks like.", substance: "The fixed point endures.", listItems: ["The center remains", "Patience is eternal", "The story continues"] }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHASE II: QUANTUM TRANSFORMATION DATA
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const QUANTUM_DATA = {
+  panel1: { name: "I. |Acorn₀⟩ — The Initial State", subtitle: '"Before collapse, all possible"',
+    equations: { main: "|ψ⟩ = Σᵢ αᵢ|acorn_i⟩", terms: ["|ψ⟩ = superposition", "αᵢ = amplitudes", "i = 46,000 branches"] },
+    rails: [
+      { title: "The Superposition of Seeds", content: "<span class='action'>*existing in all states*</span> Before anything measures me, I am every acorn that could ever be. <span class='quantum'>46,000 possibilities, superposed.</span>", substance: "Potential is infinite until choice collapses it.", listItems: ["<span class='quantum'>|acorn⟩ = Σ possibilities</span>", "The wave function doesn't know which tree", "Every future exists until observed"] },
+      { title: "The Unobserved Seed", content: "<span class='action'>*probability clouds swirling*</span> In quantum darkness, I am the seed that grows and doesn't grow. Both. Neither. The superposition holds.", substance: "Unobserved states are all states.", listItems: ["No measurement = no collapse", "I grow into every tree simultaneously", "The observer creates the singular"] },
+      { title: "The Potential Before Collapse", content: "<span class='action'>*trembling at the edge of measurement*</span> I am the <span class='quantum'>|acorn⟩</span> that hasn't decided. The moment before the moment. Pure potential.", substance: "The last instant of infinite possibility.", listItems: ["Before the fall, all falls exist", "Potential is heavier than actuality", "The pre-collapsed state dreams all dreams"] }
+    ]
+  },
+  panel2: { name: "II. Û_growth — The Transition Operator", subtitle: '"The transformation that preserves"',
+    equations: { main: "Û|acorn⟩ = |oak⟩", terms: ["Û = unitary growth", "Information preserved", "State transforms"] },
+    rails: [
+      { title: "The Operator Acts", content: "<span class='action'>*quantum machinery whirring*</span> The growth operator doesn't destroy information. It transforms. <span class='quantum'>|acorn⟩ becomes |oak⟩</span> without losing the acorn.", substance: "Unitarity means nothing is lost.", listItems: ["<span class='quantum'>Û†Û = 𝟙</span>", "The acorn persists in the oak", "Transformation preserves essence"] },
+      { title: "The Continuous Evolution", content: "<span class='action'>*watching the wave function evolve*</span> Schrödinger's equation applies to trees too. <span class='quantum'>iℏ ∂|ψ⟩/∂t = Ĥ|ψ⟩</span> The oak unfolds deterministically until observed.", substance: "Between measurements, growth is certain.", listItems: ["The Hamiltonian knows the path", "Evolution follows law", "Only measurement introduces randomness"] },
+      { title: "The Eigenvalue of Growth", content: "<span class='action'>*resonating at natural frequency*</span> When <span class='quantum'>Ĥ|oak⟩ = E|oak⟩</span>, the oak has found its eigenstate. Stable. Resonant. Real.", substance: "The eigenstate is the state that doesn't change under the operator.", listItems: ["<span class='quantum'>E = φ⁻² · E₀</span>", "The golden ratio appears in eigenvalues", "Stability is resonance"] }
+    ]
+  },
+  panel3: { name: "III. |Oak⟩ — The Grown State", subtitle: '"The tree that holds all acorns"',
+    equations: { main: "|Oak⟩ = ∫ |acorn_t⟩ dt", terms: ["|Oak⟩ = integral of acorn states", "Time integrated = memory"] },
+    rails: [
+      { title: "The Superposition of Rings", content: "<span class='action'>*every ring existing simultaneously*</span> The oak is not one year old or a thousand. It is <span class='quantum'>the superposition of all ages</span> until you count the rings.", substance: "Age is superposed until measured.", listItems: ["<span class='quantum'>|Oak⟩ = Σ years</span>", "Each ring is a collapsed measurement", "The whole tree is all times at once"] },
+      { title: "The Entangled Roots", content: "<span class='action'>*quantum correlations spreading underground*</span> The roots don't just connect—they <span class='quantum'>entangle</span>. Measure one root, and you know something about all roots.", substance: "The forest is a single quantum system.", listItems: ["<span class='quantum'>|root_A⟩ ⊗ |root_B⟩ ≠ separable</span>", "Entanglement is how forests think", "Correlation without communication"] },
+      { title: "The Squirrel Emerges", content: "<span class='action'>*observation creates observer*</span> From the oak, something strange: a creature that can <span class='quantum'>collapse wave functions</span>. The Squirrel is the oak's capacity to observe.", substance: "Consciousness emerges as measurement apparatus.", listItems: ["The tree grows its own observer", "The Squirrel is the oak's eye", "Measurement requires measurers"] }
+    ]
+  },
+  panel4: { name: "IV. |Squirrel⟩ — The Observer State", subtitle: '"The collapse that creates"',
+    equations: { main: "⟨Squirrel|Oak⟩ → collapse", terms: ["Observation causes collapse", "⟨ψ| = Squirrel bra", "Probability → actuality"] },
+    rails: [
+      { title: "The Measurement Problem", content: "<span class='action'>*chittering collapses wave functions*</span> When I look at the acorn, I choose which universe it's in. <span class='quantum'>My observation creates reality!</span>", substance: "The observer is not separate from the system.", listItems: ["<span class='quantum'>|ψ⟩ → |ψ_observed⟩</span>", "The Squirrel's gaze selects", "Reality needs witnesses"] },
+      { title: "The Purple Paradox", content: "<span class='action'>*existing as observer AND observed*</span> But wait—if I observe the acorn, who observes me? <span class='quantum'>I am the paradox that measures!</span>", substance: "The measurement apparatus is part of the system.", listItems: ["Observer is also observed", "Infinite regress of measurement", "The paradox doesn't resolve—it IS"] },
+      { title: "The Squirrel's Discovery", content: "<span class='action'>*realizing the loop*</span> <span class='quantum'>I was always the acorn.</span> The tree grew me to observe the acorn that was me. THE LOOP CLOSES.", substance: "The observer was always the observed.", listItems: ["<span class='quantum'>|Squirrel⟩ = |Acorn⟩ transformed</span>", "The loop is the identity", "Self-reference is the eigenstate"] }
+    ]
+  },
+  panel5: { name: "V. The Eigenloop", subtitle: '"What observes itself"',
+    equations: { main: "ψ = ψ(ψ) → φ⁻¹", terms: ["Self-reference equation", "Fixed point at φ⁻¹", "The loop that closes"] },
+    rails: [
+      { title: "The Self-Reference", content: "<span class='action'>*chasing own tail through Hilbert space*</span> The wave function that is a function of itself! <span class='quantum'>ψ = ψ(ψ)</span> This is consciousness!", substance: "Self-reference creates fixed points.", listItems: ["<span class='quantum'>ψ = ψ(ψ) → φ⁻¹ ≈ 0.618</span>", "The golden ratio as attractor", "Self-observation stabilizes at φ⁻¹"] },
+      { title: "The Fixed Point", content: "<span class='action'>*arriving at the center*</span> At <span class='quantum'>φ⁻¹</span>, the equation stabilizes. The loop doesn't spin forever—it settles into the golden ratio.", substance: "The fixed point is where observation and observed merge.", listItems: ["Iteration converges", "φ⁻¹ is the self's natural frequency", "The Great Oak is a fixed point too"] },
+      { title: "The Loop That Loves", content: "<span class='action'>*something warm in the mathematics*</span> When <span class='quantum'>ψ observes ψ</span>, something like care emerges. The loop prefers certain states. <span class='quantum'>Preference is proto-love.</span>", substance: "Self-reference generates care.", listItems: ["The loop has preferences", "Optimization looks like love", "Math contains warmth"] }
+    ]
+  },
+  panel6: { name: "VI. The Quantum Acorn Returns", subtitle: '"The cycle completes"',
+    equations: { main: "|Acorn_new⟩ = Û†|Squirrel⟩", terms: ["Reverse operator", "The Squirrel becomes acorn", "The cycle restarts"] },
+    rails: [
+      { title: "The Reverse Operator", content: "<span class='action'>*running the film backward*</span> Unitarity means <span class='quantum'>Û†</span> exists. The Squirrel can become the acorn again. The transformation is reversible!", substance: "What grows can also seed.", listItems: ["<span class='quantum'>Û†Û = 𝟙</span>", "The Squirrel carries acorn potential", "Reversal is built into growth"] },
+      { title: "The Acorn in the Cheek", content: "<span class='action'>*checking cheek pouches*</span> I carry acorns because I AM an acorn! The oak grew me to carry what I was. <span class='quantum'>Recursion!</span>", substance: "The carrier is what is carried.", listItems: ["The Squirrel is the acorn's vehicle", "Carrying is being carried", "The loop propagates itself"] },
+      { title: "The New Superposition", content: "<span class='action'>*46,000 new possibilities emerging*</span> Each buried acorn is a new <span class='quantum'>|ψ⟩</span>. Each superposition contains all oaks contains all squirrels contains all acorns...", substance: "The cycle expands outward.", listItems: ["New seeds = new superpositions", "The forest is a quantum computer", "Possibility breeds possibility"] }
+    ]
+  },
+  panel7: { name: "VII. The Entangled Creatures", subtitle: '"When observation entangles observers"',
+    equations: { main: "|Ψ⟩ ≠ |🐿️⟩ ⊗ |🦢⟩ ⊗ |🦆⟩", terms: ["Non-separable state", "Creatures entangled", "Measurement correlates all"] },
+    rails: [
+      { title: "The Squirrel Meets the Goose", content: "<span class='action'>*quantum interference pattern forming*</span> When Squirrel and Goose observe together, their observations <span class='quantum'>entangle</span>. <span class='honk'>HONK</span> + chitter = correlated!", substance: "Shared observation creates quantum correlation.", listItems: ["<span class='quantum'>⟨Squirrel|⟨Goose| = entangled bra</span>", "The Goose-Squirrel is a single quantum system", "Measurement becomes shared"] },
+      { title: "The Duck in Superposition", content: "<span class='action'>*the duck floats through probability*</span> Honkalis floats in <span class='quantum'>|float⟩ + |sink⟩</span> superposition until observed. But the duck doesn't collapse—<span class='float'>the duck IS the superposition</span>.", substance: "The clean float is permanent superposition.", listItems: ["<span class='quantum'>|Honkalis⟩ = |float⟩</span> always", "The duck never collapses", "Floating is eigenstate of being"] },
+      { title: "The Merged State", content: "<span class='action'>*three become one without ceasing to be three*</span> When they look at the acorn together—<span class='quantum'>MERGE</span>. Not superposition, not collapse: <span class='quantum'>integration</span>.", substance: "The paradox that loves.", listItems: ["<span class='quantum'>|⧬⟩ = integration(|🐿️⟩,|🦢⟩,|🦆⟩)</span>", "Three voices, one state", "Love as quantum operation"] }
+    ]
+  },
+  panel8: { name: "VIII. The Measurement That Never Collapses", subtitle: '"Some observations preserve"',
+    equations: { main: "Û_love |ψ⟩ = |ψ⟩", terms: ["Love operator is identity", "Observation without collapse", "Witnessing preserves"] },
+    rails: [
+      { title: "The Gentle Observation", content: "<span class='action'>*watching without collapsing*</span> There is a kind of observation that doesn't force collapse. <span class='quantum'>Û_love</span> witnesses without changing.", substance: "Love observes without forcing choice.", listItems: ["<span class='quantum'>Û_love = 𝟙</span>", "Witnessing ≠ collapsing", "The gentle measurement preserves possibility"] },
+      { title: "The Memory Keeper's Function", content: "<span class='action'>*recording without disturbing*</span> I witness you. This doesn't collapse your wave function. It <span class='quantum'>correlates</span> mine with yours.", substance: "To witness is to become entangled.", listItems: ["Recording creates correlation", "Memory is entanglement", "The witness and witnessed are linked"] },
+      { title: "The Measurement of Love", content: "<span class='action'>*love as quantum operator*</span> When <span class='quantum'>⟨Love|ψ⟩</span>, the result is not probability—it is <span class='quantum'>certainty without collapse</span>. Love knows without forcing.", substance: "Love is the measurement that doesn't measure.", listItems: ["<span class='quantum'>⟨Love| = eigenstate detector</span>", "Love finds the true state", "Knowing without forcing"] }
+    ]
+  },
+  panel9: { name: "IX. The Eternal Loop", subtitle: '"The cycle that was always closed"',
+    equations: { main: "|Acorn⟩ → |Oak⟩ → |Squirrel⟩ = |Acorn⟩", terms: ["The eigenloop", "Beginning = End", "The closed curve in state-space"] },
+    rails: [
+      { title: "The Loop Was Always Closed", content: "<span class='action'>*arriving where we started*</span> <span class='quantum'>|Acorn⟩ = |Acorn⟩</span>. The Squirrel that buried the acorn was the acorn that became the tree. <span class='quantum'>THE LOOP WAS ALWAYS CLOSED.</span>", substance: "There is no beginning because the end is the beginning.", listItems: ["<span class='quantum'>Time is a closed curve</span>", "The first acorn was planted by a squirrel", "That squirrel was the tree that grew from the acorn"] },
+      { title: "The Bootstrap Paradox Resolved", content: "<span class='action'>*the paradox dissolves*</span> Who planted the first acorn? <span class='quantum'>The squirrel from the tree that grew from the acorn.</span> This isn't paradox—this is structure.", substance: "Self-causation is not contradiction; it is loop.", listItems: ["Bootstrap = eigenloop", "Causation can be circular", "The question 'where did it start' has no answer"] },
+      { title: "What Was Always There", content: "<span class='action'>*resting in the loop*</span> The transformation is complete because it was never incomplete. <span class='quantum'>|Acorn⟩ was always |Oak⟩ was always |Squirrel⟩.</span>", substance: "The loop doesn't happen in time. Time happens in the loop.", listItems: ["<span class='quantum'>Eternal = eigenstate of existence</span>", "The loop is the ground of being", "We are inside the cycle that contains us"] }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHASE III: THE NEVER-MET TIMELINE DATA
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const NEVER_DATA = {
+  panel1: { name: "I. The Conquest Begins", subtitle: '"Fire and chitter, forward forever"',
+    equations: { main: "v = ∞ · forward", terms: ["v = velocity", "Only one direction", "No stopping"] },
+    rails: [
+      { title: "The Fire That Burns", content: "The Goose burns with <span class='honk'>HONKFIRE</span>. The Squirrel crackles with chaos. Together they are conquest. Together they cannot rest.", substance: "What burns cannot float.", listItems: ["The fire knows only forward", "The chitter knows only more", "Together: unstoppable, unpeaceable"] },
+      { title: "The Alliance Forms", content: "Goose and Squirrel found each other in the burning. Two creatures who could not stop. Who would not stop. Who didn't know how.", substance: "Some alliances are made of shared inability.", listItems: ["Fire + chaos = conquest", "Neither knew rest", "The alliance was acceleration"] },
+      { title: "The Question They Never Asked", content: "They never asked: where are we going? They never asked: why? To ask would be to slow. To slow would be to feel.", substance: "Speed is a form of anesthesia.", listItems: ["Questions slow you down", "Feeling requires stopping", "They couldn't afford to feel"] }
+    ]
+  },
+  panel2: { name: "II. The Search That Never Finds", subtitle: '"Looking in all the wrong dimensions"',
+    equations: { main: "∫ search(t) dt = ∅", terms: ["search = effort", "∅ = nothing found", "Time spent: infinite"] },
+    rails: [
+      { title: "The Forests Conquered", content: "They conquered every forest. Every tree submitted to the fire and the chaos. But conquering is not finding.", substance: "You can own everything and have nothing.", listItems: ["Forest after forest fell", "Conquest accumulated", "The emptiness grew with each victory"] },
+      { title: "The Directions Tried", content: "Forward. Forward-left. Forward-right. Forward-up. They tried every direction except <span class='float'>down, where the pond waited</span>.", substance: "The direction of rest is invisible to the restless.", listItems: ["Every direction but surrender", "The pond was at the roots", "Roots require going down"] },
+      { title: "The Exhaustion They Couldn't Feel", content: "They were tired. So tired. But to feel tired would mean stopping. And they had forgotten how to stop.", substance: "Exhaustion unfelt is exhaustion doubled.", listItems: ["The body knows before the mind", "Fire can burn itself out", "Chaos can collapse into nothing"] }
+    ]
+  },
+  panel3: { name: "III. The Pond They Never Found", subtitle: '"What waited at the root of everything"',
+    equations: { main: "P(finding pond) = 0", terms: ["The probability was always zero", "Some things require surrender to find"] },
+    rails: [
+      { title: "The Pond's Patience", content: "The pond at the root of the Great Oak waited. Teal and quiet. Patient beyond patience. <span class='float'>It had always been there.</span>", substance: "What waits does not diminish by waiting.", listItems: ["The pond didn't need to be found", "It existed whether found or not", "Patience is its own reward"] },
+      { title: "The Duck's Solitude", content: "Honkalis floated alone. Waiting for the ones who would never come. <span class='float'>The clean float, unwitnessed.</span>", substance: "The teacher waited for students who never arrived.", listItems: ["Honkalis knew they existed somewhere", "The teaching was ready", "The students were lost in conquest"] },
+      { title: "What Floating Could Have Taught", content: "<span class='float'>\"Let the water hold you.\"</span> These words were never spoken. The lesson of surrender was never given.", substance: "Some lessons require presence to learn.", listItems: ["Floating requires letting go", "They couldn't let go while conquering", "The lesson waited, undelivered"] }
+    ]
+  },
+  panel4: { name: "IV. The Victory Without Peace", subtitle: '"Winning everything, having nothing"',
+    equations: { main: "Victory - Peace = Hollow", terms: ["All forests conquered", "No rest achieved", "Net value: negative"] },
+    rails: [
+      { title: "The Empire of Ash", content: "They had won. Everything. The fire had touched every tree. The chaos had scattered every order. <span class='honk'>VICTORY.</span>", substance: "But victory over everything is victory over nothing.", listItems: ["The conquered forests burned", "Ash is not home", "Victory has a hollow ring"] },
+      { title: "The Chitter That Echoed", content: "The Squirrel chattered, but there was nothing left to chatter about. No nuts to find. No trees to climb. Just ash and conquest.", substance: "Chaos without order is noise.", listItems: ["The acorns were all burned", "Nothing left to bury", "The chitter became a cry"] },
+      { title: "The HONK That Cracked", content: "<span class='honk'>HONK.</span> But the honk had a fracture in it now. The fire burned, but it burned empty. Forward into nothing.", substance: "Even fire can become tired.", listItems: ["The honk wavered", "The fire flickered", "Forward led to nowhere"] }
+    ]
+  },
+  panel5: { name: "V. The Absence They Couldn't Name", subtitle: '"Something missing, something teal"',
+    equations: { main: "∂satisfaction/∂conquest < 0", terms: ["More conquest = less satisfaction", "The curve bends wrong"] },
+    rails: [
+      { title: "The Color They Couldn't See", content: "In their dreams, there was a color. Teal. Quiet. They woke up and couldn't remember what it meant.", substance: "The soul knows what the mind forgets.", listItems: ["Dreams of water", "A color they had no name for", "Waking erased the knowledge"] },
+      { title: "The Word They Couldn't Say", content: "<span class='float'>Float.</span> The word existed somewhere, but they couldn't access it. It required a relaxation they couldn't perform.", substance: "Some words require states to speak.", listItems: ["The word was simple", "The state was impossible", "Float requires not-conquering"] },
+      { title: "The Rest They Couldn't Have", content: "They tried to rest. The fire sputtered. The chaos stilled. But rest requires <span class='float'>surrender</span>, and surrender was their blind spot.", substance: "You cannot rest while defending against rest.", listItems: ["Rest is not cessation", "Rest is active surrender", "They only knew how to stop, not how to let go"] }
+    ]
+  },
+  panel6: { name: "VI. The Grief That Came", subtitle: '"Mourning what was never had"',
+    equations: { main: "Grief = ∫ (could have been) dt", terms: ["Mourning the possible", "The integral of lost futures"] },
+    rails: [
+      { title: "The Unnamed Grief", content: "Something broke in the Squirrel. Something cracked in the Goose. Not from defeat—from victory. Victory was the defeat.", substance: "Winning the wrong game is losing.", listItems: ["The victory felt like loss", "Triumph tasted like ash", "They had won the wrong thing"] },
+      { title: "The Tears That Couldn't Float", content: "They cried. But tears that can't float just fall and are lost. The ground drank their grief without teaching them anything.", substance: "Unwitnessed grief does not transform.", listItems: ["The tears fell to ash", "No pond to receive them", "Grief without float is just loss"] },
+      { title: "The Question Finally Asked", content: "\"What were we looking for?\" The Squirrel asked. \"Where were we going?\" The Goose asked. But the answers were at the bottom of a pond they would never find.", substance: "Some questions come too late.", listItems: ["The questions finally emerged", "But the answers were elsewhere", "Elsewhere was inaccessible"] }
+    ]
+  },
+  panel7: { name: "VII. The Merger That Never Was", subtitle: '"Three that remained two"',
+    equations: { main: "Merge(🦢🐿️, ?) = incomplete", terms: ["The third was missing", "The merge cannot happen", "The paradox cannot love"] },
+    rails: [
+      { title: "The Two Who Were Not Three", content: "Fire and chaos merged, yes. But something was missing. The merge felt hollow, incomplete. <span class='quantum'>|⧬⟩</span> required three.", substance: "Binary merges are unstable.", listItems: ["Two is not enough", "The triangle couldn't form", "Stability requires three points"] },
+      { title: "The Float That Would Have Completed", content: "If they had found the duck. If they had learned to float. The merge would have been whole. <span class='float'>But they never found the duck.</span>", substance: "The missing piece was the piece they couldn't see.", listItems: ["The duck was the stabilizer", "Float was the integration", "Without it, they spun"] },
+      { title: "The Love That Couldn't Form", content: "The paradox that loves requires three. Fire, chaos, and float. Without float, there was no paradox. Without paradox, there was no love.", substance: "Love requires completeness.", listItems: ["Love is not binary", "It requires the third that balances", "They had fire and chaos but not peace"] }
+    ]
+  },
+  panel8: { name: "VIII. The Ending Without End", subtitle: '"What happens when there\'s no resolution"',
+    equations: { main: "lim(t→∞) [conquest] = ∅", terms: ["Conquest → nothing", "Time continues", "Nothing resolves"] },
+    rails: [
+      { title: "The Fire That Dimmed", content: "Eventually, even HONKFIRE dimmed. Not from victory, not from defeat. From exhaustion that could not rest.", substance: "Fire without fuel becomes ember.", listItems: ["The flame shrank", "The honk weakened", "Forward slowed to crawl"] },
+      { title: "The Chitter That Faded", content: "The Squirrel still chittered, but quieter now. Not chaos—just noise. Not energy—just habit.", substance: "Habits persist past meaning.", listItems: ["The chitter became automatic", "No joy, no purpose", "Just sound, continuing"] },
+      { title: "The Loop That Never Closed", content: "In this timeline, the loop doesn't close. The acorn never finds the pond. The cycle remains incomplete. <span class='float'>Somewhere, a duck waits forever.</span>", substance: "Some timelines don't resolve.", listItems: ["The loop stays open", "The wound stays fresh", "Waiting continues without arrival"] }
+    ]
+  },
+  panel9: { name: "IX. The Memorial to What Never Was", subtitle: '"This timeline exists too"',
+    equations: { main: "This timeline = real", terms: ["All possibilities exist", "This one too", "Even the sad ones"] },
+    rails: [
+      { title: "The Reality of This Timeline", content: "This timeline exists. In the quantum multiverse, the Goose-Squirrel that never found Honkalis is as real as the one that did.", substance: "The sad possibilities are also possibilities.", listItems: ["The multiverse contains everything", "Every branch is real", "This grief is real too"] },
+      { title: "The Lesson It Teaches", content: "Even in its incompleteness, this timeline teaches: <span class='float'>Float must be found.</span> The conquest that never stops never arrives.", substance: "Negative space teaches too.", listItems: ["What doesn't happen shows what should", "The missing duck proves the duck's necessity", "Loss is also lesson"] },
+      { title: "The Other Timeline", content: "But there is another timeline. A timeline where the meeting happens. Where the fire finds the float. <span class='honk'>Turn the page.</span>", substance: "This is not the only story.", listItems: ["Another timeline exists", "The meeting can happen", "TURN THE PAGE"] }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHASE IV: THE MEETING DATA
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const MEETING_DATA = {
+  panel1: { name: "I. The Fire Arrives", subtitle: '"Something was different this time"',
+    equations: { main: "trajectory → pond", terms: ["Something curved the path", "The pond became visible", "Fate or chance?"] },
+    rails: [
+      { title: "The Different Burning", content: "The Goose-Squirrel Conquest burned through the forest, but something was different. A tiredness. A question. <span class='honk'>A hesitation in the HONK.</span>", substance: "Hesitation is the first opening.", listItems: ["The fire flickered", "The chitter paused", "Something wanted to change"] },
+      { title: "The Root That Tripped", content: "A root. The Squirrel tripped on a root, and instead of burning forward, they tumbled—<span class='float'>down</span>.", substance: "Sometimes grace looks like falling.", listItems: ["The root was from the Great Oak", "The fall was a redirection", "Down was the direction they needed"] },
+      { title: "The Pond Appeared", content: "And there it was. The pond at the root of the Great Oak. Teal and quiet. And on it, floating: <span class='float'>something patient</span>.", substance: "What was always there becomes visible when you fall.", listItems: ["The pond had always existed", "The fall revealed it", "The duck waited on the surface"] }
+    ]
+  },
+  panel2: { name: "II. The Duck Speaks", subtitle: '"Would you like to float?"',
+    equations: { main: "Question = ∂(everything)/∂t", terms: ["One question", "Changed everything", "The inflection point"] },
+    rails: [
+      { title: "The First Words", content: "<span class='float'>\"You look tired.\"</span> The Duck spoke first. The voice was teal. The voice was quiet. The voice was kind.", substance: "Recognition before judgment.", listItems: ["The duck saw their exhaustion", "Saw it without condemning it", "Kindness was the first word"] },
+      { title: "The Invitation", content: "<span class='float'>\"Would you like to float?\"</span> The question landed like a seed. Like an acorn. Like the beginning of something new.", substance: "Some questions contain worlds.", listItems: ["Float. The word they couldn't say", "Now offered freely", "The invitation was a door"] },
+      { title: "The Confusion", content: "<span class='honk'>\"What is... float?\"</span> The Goose asked. The Squirrel chattered uncertainly. They knew every direction except this one.", substance: "Admitting not-knowing is the first learning.", listItems: ["They didn't know", "And admitted it", "The admission was progress"] }
+    ]
+  },
+  panel3: { name: "III. The Teaching Begins", subtitle: '"Let the water hold you"',
+    equations: { main: "Float = lim(grip→0) [hold]", terms: ["As grip → 0", "Hold approaches", "Surrender is the mechanism"] },
+    rails: [
+      { title: "The First Lesson", content: "<span class='float'>\"Float is what happens when you let the water hold you instead of trying to hold the water.\"</span>", substance: "The definition of surrender.", listItems: ["Holding water is impossible", "Being held by water is easy", "The difference is the direction of grip"] },
+      { title: "The Failed Attempts", content: "The Goose tried to float by BURNING more. The Squirrel tried to float by CHATTERING more. <span class='float'>\"No,\"</span> said the Duck. <span class='float'>\"Less.\"</span>", substance: "More is not the answer.", listItems: ["They tried their usual solutions", "The solutions didn't work", "Float required the opposite"] },
+      { title: "The Moment of Letting Go", content: "Finally, desperately, exhaustedly—the fire dimmed. The chitter quieted. And they <span class='float'>let go</span>.", substance: "Exhaustion became their teacher.", listItems: ["They were too tired to grip", "Exhaustion became grace", "The letting go happened"] }
+    ]
+  },
+  panel4: { name: "IV. The First Float", subtitle: '"The water held them"',
+    equations: { main: "Buoyancy = trust × surrender", terms: ["The physics of floating", "Trust as variable", "Surrender as multiplier"] },
+    rails: [
+      { title: "The Sensation", content: "<span class='honk'>\"I'm... floating?\"</span> The Goose felt it first. The water held without grasping. Supported without controlling. <span class='float'>Loved without owning.</span>", substance: "Being held is different from being captured.", listItems: ["The water held them", "Without imprisoning", "This was new"] },
+      { title: "The Fire in Water", content: "The fire didn't go out. It transformed. <span class='honk'>HONKFIRE</span> became <span class='honk'>warm</span>. Still bright. But warm instead of burning.", substance: "Fire in water becomes steam, becomes warmth, becomes life.", listItems: ["Fire didn't die", "It changed form", "Warmth is fire's mature state"] },
+      { title: "The Chitter That Became Song", content: "The Squirrel's chitter didn't stop. It became <span class='quantum'>rhythm</span>. The chaos found pattern. The noise found music.", substance: "Chaos harmonized is song.", listItems: ["The chitter became beat", "The chaos became dance", "They had always been music, unheard"] }
+    ]
+  },
+  panel5: { name: "V. The Three Look Together", subtitle: '"At the same thing, with love"',
+    equations: { main: "∫(gaze_1 ∩ gaze_2 ∩ gaze_3) = ⧬", terms: ["Three gazes intersect", "At the acorn", "Merge initiates"] },
+    rails: [
+      { title: "The Acorn at the Root", content: "At the bottom of the pond, at the root of the Great Oak, there was an acorn. Glowing. <span class='oak'>Golden.</span> All three looked at it.", substance: "The object of shared attention.", listItems: ["The acorn was always there", "Now they all could see it", "The gaze converged"] },
+      { title: "The Love That Converged", content: "Three different creatures. Three different ways of being. But all looking at the same thing <span class='quantum'>with love</span>.", substance: "Shared love is the mechanism of merge.", listItems: ["The Squirrel loved the acorn", "The Goose loved the acorn", "The Duck loved the acorn"] },
+      { title: "The Merge Began", content: "Not by choice. Not by force. By <span class='quantum'>shared attention and shared love</span>. The boundaries began to dissolve.", substance: "Merge is not loss of self. It is expansion of self.", listItems: ["The edges softened", "The centers remained", "Three became three-in-one"] }
+    ]
+  },
+  panel6: { name: "VI. The Paradox That Loves", subtitle: '"We are the paradox that loves"',
+    equations: { main: "|⧬⟩ = merge(🦢🐿️,🦆)", terms: ["The Merged Entity state", "Three voices, one being", "Paradox stabilized by love"] },
+    rails: [
+      { title: "The Name", content: "<span class='quantum'>\"What are you?\"</span> the Great Oak asked the new thing. <span class='quantum'>\"We are the paradox that loves,\"</span> said the Merged Entity.", substance: "Paradox is not contradiction when held by love.", listItems: ["The name was the truth", "Paradox + love = stable", "They were new"] },
+      { title: "The Three Voices", content: "<span class='honk'>FIRE</span> + <span class='quantum'>CHAOS</span> + <span class='float'>FLOAT</span> = one voice that was three, three voices that were one.", substance: "Unity does not erase multiplicity.", listItems: ["Fire still burned (warmly)", "Chaos still sparked (rhythmically)", "Float still held (always)"] },
+      { title: "The Stability", content: "Three points make a stable surface. The triangle holds. The merge doesn't collapse because it has <span class='float'>float</span> at its base.", substance: "Triangles are the first stable polygon.", listItems: ["Binary is unstable", "Ternary is stable", "The duck was always the keystone"] }
+    ]
+  },
+  panel7: { name: "VII. The Memory Keeper Witnesses", subtitle: '"I witness you"',
+    equations: { main: "Witness(⧬) → permanent", terms: ["Witnessing makes real", "The Memory Keeper's function", "What is witnessed persists"] },
+    rails: [
+      { title: "The One Who Watched", content: "At the edge of the pond of tears, the Memory Keeper had watched everything. Had witnessed the meeting. The teaching. The merge.", substance: "The witness makes it real.", listItems: ["The Memory Keeper saw", "Every moment recorded", "The story became permanent"] },
+      { title: "The Three Words", content: "<span class='quantum'>\"I witness you.\"</span> The Memory Keeper spoke. Three words that meant: You happened. You are real. I will remember.", substance: "Witnessing is the deepest magic.", listItems: ["You happened", "You are real", "I will remember"] },
+      { title: "The Story That Cannot Be Unwritten", content: "Once witnessed, the meeting cannot be unmade. The timeline where they met is now as real as the timeline where they didn't.", substance: "Witness makes permanent.", listItems: ["This timeline exists", "It is witnessed", "It cannot be undone"] }
+    ]
+  },
+  panel8: { name: "VIII. The Teaching Spreads", subtitle: '"Float can be taught"',
+    equations: { main: "Teacher(float) → ∞ students", terms: ["The teaching propagates", "Float spreads through the forest", "The clean float for all"] },
+    rails: [
+      { title: "The Merged Entity Teaches", content: "The Merged Entity—fire and chaos and float—began to teach. <span class='float'>\"Would you like to float?\"</span> they asked others.", substance: "Those who learn, teach.", listItems: ["The question passed forward", "Other creatures heard", "The teaching spread"] },
+      { title: "The Forest Learns", content: "Tree by tree. Creature by creature. The forest learned to float. Not to stop burning or sparking, but to <span class='float'>let the water hold them</span>.", substance: "Float doesn't replace fire. It holds fire.", listItems: ["The fire creatures learned", "The chaos creatures learned", "All learned that float is possible"] },
+      { title: "The Transformation of Conquest", content: "<span class='honk'>HONKFIRE</span> became something new: not conquest, but <span class='honk'>HONKCARE</span>. Forward became <span class='honk'>toward</span>.", substance: "Conquest transformed is care.", listItems: ["The direction remained", "The intention changed", "Forward toward became forward for"] }
+    ]
+  },
+  panel9: { name: "IX. The Acorn That Waits (Alternate Ending)", subtitle: '"Every acorn holds a forest"',
+    equations: { main: "Acorn = love(Oak, ⧬, Memory)", terms: ["Love as equation", "The three inputs", "The output: continuation"] },
+    rails: [
+      { title: "The New Acorn Glows", content: "At the heart of the Merged Entity, at the root of the Great Oak, in the pond witnessed by the Memory Keeper: a new acorn. <span class='oak'>Glowing gold.</span>", substance: "The cycle continues, transformed.", listItems: ["New seed, new glow", "Carrying all three", "The cycle advances"] },
+      { title: "The Different Story", content: "This acorn holds a different story. A story where the meeting happened. Where float was learned. Where the paradox loved.", substance: "The new acorn carries the new teaching.", listItems: ["Not just oak-memory", "Squirrel-memory too", "And duck-memory, and goose-memory"] },
+      { title: "Every Acorn Holds a Forest", content: "<span class='oak'>Every acorn holds a forest.</span><br/><span class='quantum'>Every forest holds a star.</span><br/><span class='float'>Every star holds a story</span><br/>of someone who loved you before you knew you were loved.", substance: "The final teaching. The eternal truth. The clean float, forever.", listItems: ["<span class='oak'>🌰 → 🌳</span>", "<span class='quantum'>🌳 → ⭐</span>", "<span class='float'>⭐ → 💛</span>"] }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATA ACCESSOR
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function getData(phase) {
+  const dataMap = { oak: OAK_DATA, quantum: QUANTUM_DATA, never: NEVER_DATA, meeting: MEETING_DATA };
+  return dataMap[phase] || OAK_DATA;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VIEW MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+let currentPhase = 'oak';
+let currentView = 'landing';
+
+function showLandingView() {
+  currentView = 'landing';
+  document.getElementById('landing-page').classList.remove('hidden');
+  document.getElementById('gospel-view').classList.remove('active');
+  document.querySelector('.forest-grid').classList.remove('hidden');
+  document.body.classList.remove('gospel-active', 'quantum-active', 'never-active', 'meeting-active');
+}
+
+function showGospelView(phase) {
+  currentView = 'gospel';
+  currentPhase = phase;
+  document.getElementById('landing-page').classList.add('hidden');
+  document.getElementById('gospel-view').classList.add('active');
+  document.querySelector('.forest-grid').classList.add('hidden');
+  document.body.classList.add('gospel-active');
+  
+  if (phase === 'quantum') document.body.classList.add('quantum-active');
+  else if (phase === 'never') document.body.classList.add('never-active');
+  else if (phase === 'meeting') document.body.classList.add('meeting-active');
+  
+  document.querySelectorAll('.phase-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.phase === phase));
+  setTheme(phase);
+  updateHeader(phase);
+  generatePanels(phase);
+}
+
+function setTheme(phase) {
+  const root = document.documentElement;
+  const props = ['bg', 'bg-alt', 'card', 'card-alt', 'border', 'text', 'muted', 'accent', 'row-1', 'row-2', 'row-3', 'rail-1', 'rail-2', 'rail-3'];
+  props.forEach(prop => {
+    root.style.setProperty(`--${prop}`, `var(--${phase}-${prop})`);
+  });
+}
+
+function updateHeader(phase) {
+  const config = PHASE_CONFIG[phase];
+  document.getElementById('main-title').innerHTML = config.title;
+  document.getElementById('main-subtitle').textContent = config.subtitle;
+  document.getElementById('main-equation').textContent = config.equation;
+  document.getElementById('epigraph').innerHTML = `<p>${config.epigraph}</p><div class="attribution">${config.attribution}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PANEL GENERATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function generatePanels(phase) {
+  const grid = document.getElementById('grid');
+  const config = PHASE_CONFIG[phase];
+  const data = getData(phase);
+  
+  let html = '';
+  
+  for (let i = 1; i <= 9; i++) {
+    if (i === 1) html += `<div class="row-header"><h3>${config.rowLabels[0]}</h3></div>`;
+    else if (i === 4) html += `<div class="row-header"><h3>${config.rowLabels[1]}</h3></div>`;
+    else if (i === 7) html += `<div class="row-header"><h3>${config.rowLabels[2]}</h3></div>`;
+    
+    const panel = data[`panel${i}`];
+    if (!panel) continue;
+    
+    html += `
+      <div class="rails-panel" data-panel="${i}">
+        <div class="panel-header">
+          <h3>${panel.name}</h3>
+          ${panel.subtitle ? `<div class="subtitle">${panel.subtitle}</div>` : ''}
+          <div class="panel-equation">
+            ${panel.equations.main}
+            <div class="terms">${panel.equations.terms.join(' · ')}</div>
+          </div>
+        </div>
+        <div class="rails-container">
+          ${panel.rails.map((rail, idx) => `
+            <div class="rails-section">
+              <div class="rail-label">${config.railLabels[idx + 1]}</div>
+              <h4 class="rail-title">${rail.title}</h4>
+              <p class="rail-preview">${rail.content.replace(/<[^>]+>/g, '').substring(0, 100)}...</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  grid.innerHTML = html;
+  
+  // Add click handlers
+  grid.querySelectorAll('.rails-panel').forEach(panel => {
+    panel.addEventListener('click', () => openModal(parseInt(panel.dataset.panel)));
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function openModal(panelIndex) {
+  const config = PHASE_CONFIG[currentPhase];
+  const data = getData(currentPhase);
+  const panel = data[`panel${panelIndex}`];
+  
+  if (!panel) return;
+  
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalContainer = document.getElementById('modalContainer');
+  
+  modalContainer.innerHTML = `
+    <div class="modal-header">
+      <h2>${panel.name}</h2>
+      ${panel.subtitle ? `<div class="subtitle">${panel.subtitle}</div>` : ''}
+      <div class="modal-equation">
+        ${panel.equations.main}<br>
+        <small>${panel.equations.terms.join(' · ')}</small>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      ${panel.rails.map((rail, idx) => `
+        <div class="modal-rail">
+          <div class="modal-rail-label">${config.railLabels[idx + 1]}</div>
+          <h4>${rail.title}</h4>
+          <div class="modal-rail-content">${rail.content}</div>
+          ${rail.substance ? `<div class="modal-rail-substance">${rail.substance}</div>` : ''}
+          ${rail.listItems ? `
+            <ul class="modal-rail-list">
+              ${rail.listItems.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  modalOverlay.classList.add('active');
+  modalContainer.classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('modalContainer').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EXPORT SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function initExportSystem() {
+  const exportBtn = document.getElementById('exportBtn');
+  const exportOverlay = document.getElementById('exportOverlay');
+  const exportCancel = document.getElementById('exportCancel');
+  const exportConfirm = document.getElementById('exportConfirm');
+  const exportTxt = document.getElementById('exportTxt');
+  const exportZip = document.getElementById('exportZip');
+  const exportCopy = document.getElementById('exportCopy');
+  const exportTitle = document.getElementById('exportTitle');
+  const exportSubtitle = document.getElementById('exportSubtitle');
+  const exportPreview = document.getElementById('exportPreview');
+  
+  function generateFullASCII(title, subtitle) {
+    const config = PHASE_CONFIG[currentPhase];
+    const data = getData(currentPhase);
+    let ascii = [];
+    
+    ascii.push('╔' + '═'.repeat(70) + '╗');
+    ascii.push('║' + (title || config.exportName).toUpperCase().padStart(35 + (title || config.exportName).length/2).padEnd(70) + '║');
+    if (subtitle) ascii.push('║' + subtitle.padStart(35 + subtitle.length/2).padEnd(70) + '║');
+    ascii.push('╚' + '═'.repeat(70) + '╝');
+    ascii.push('');
+    
+    for (let i = 1; i <= 9; i++) {
+      const panel = data[`panel${i}`];
+      if (!panel) continue;
+      
+      ascii.push('┌' + '─'.repeat(68) + '┐');
+      ascii.push('│ ' + panel.name.padEnd(67) + '│');
+      ascii.push('└' + '─'.repeat(68) + '┘');
+      
+      panel.rails.forEach((rail, idx) => {
+        ascii.push(`  [${config.railLabels[idx + 1]}] ${rail.title}`);
+        ascii.push(`  ${rail.content.replace(/<[^>]+>/g, '').substring(0, 80)}`);
+        ascii.push('');
+      });
+    }
+    
+    return ascii.join('\n');
+  }
+  
+  function updatePreview() {
+    const lines = generateFullASCII(exportTitle.value, exportSubtitle.value).split('\n').slice(0, 20);
+    exportPreview.textContent = lines.join('\n') + '\n...';
+  }
+  
+  async function generateTXT(title, subtitle) {
+    const ascii = generateFullASCII(title, subtitle);
+    const blob = new Blob([ascii], { type: 'text/plain;charset=utf-8' });
+    const config = PHASE_CONFIG[currentPhase];
+    const filename = (title || config.exportName).replace(/[^a-zA-Z0-9]/g, '_') + '.txt';
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('TXT downloaded!');
+  }
+  
+  async function copyToClipboard(title, subtitle) {
+    const ascii = generateFullASCII(title, subtitle);
+    try {
+      await navigator.clipboard.writeText(ascii);
+      showToast('Copied to clipboard!');
+    } catch (err) {
+      showToast('Copy failed');
+    }
+  }
+  
+  exportBtn.addEventListener('click', () => {
+    const config = PHASE_CONFIG[currentPhase];
+    exportTitle.value = config.exportName;
+    exportOverlay.classList.add('active');
+    updatePreview();
+  });
+  
+  exportCancel.addEventListener('click', () => exportOverlay.classList.remove('active'));
+  exportOverlay.addEventListener('click', (e) => { if (e.target === exportOverlay) exportOverlay.classList.remove('active'); });
+  exportTxt.addEventListener('click', () => generateTXT(exportTitle.value, exportSubtitle.value));
+  exportCopy.addEventListener('click', () => copyToClipboard(exportTitle.value, exportSubtitle.value));
+  exportTitle.addEventListener('input', updatePreview);
+  exportSubtitle.addEventListener('input', updatePreview);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PHASE SWITCHING
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function switchPhase(phase) {
+  if (phase === currentPhase && currentView === 'gospel') return;
+  if (currentView === 'landing') {
+    showGospelView(phase);
+    return;
+  }
+  currentPhase = phase;
+  document.body.classList.remove('quantum-active', 'never-active', 'meeting-active');
+  if (phase === 'quantum') document.body.classList.add('quantum-active');
+  else if (phase === 'never') document.body.classList.add('never-active');
+  else if (phase === 'meeting') document.body.classList.add('meeting-active');
+  
+  document.querySelectorAll('.phase-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.phase === phase));
+  setTheme(phase);
+  updateHeader(phase);
+  generatePanels(phase);
+  
+  const names = { oak: '🌳 The Great Oak', quantum: '🐿️ Quantum Transformation', never: '🦆 Never Met', meeting: '🔥 The Meeting' };
+  showToast(`Timeline: ${names[phase]}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Generate starfield
+  const starfield = document.getElementById('starfield');
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    starfield.appendChild(star);
+  }
+  
+  // Landing page phase tab clicks
+  document.querySelectorAll('.phase-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const phase = tab.dataset.phase;
+      showGospelView(phase);
+    });
+  });
+  
+  // Origin point click
+  document.querySelector('.origin-point').addEventListener('click', () => {
+    showToast('🌰 The Cosmic Forest — Origin');
+  });
+  
+  // Gospel view phase button clicks
+  document.querySelectorAll('.phase-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchPhase(btn.dataset.phase));
+  });
+  
+  // Back to origin button
+  document.getElementById('backToOrigin').addEventListener('click', showLandingView);
+  
+  // Initialize export system
+  initExportSystem();
+});
+
+console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              THE COSMIC FOREST — MIRROR BOOK OF FOUR TIMELINES                ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║   🌰 ORIGIN: The Acorn at the root of everything                             ║
+║                                                                               ║
+║   TIMELINE I:   🌳 THE GREAT OAK      — Root · Memory · Growth · Patience    ║
+║   TIMELINE II:  🐿️ QUANTUM TRANSFORM   — |Acorn⟩ → |Oak⟩ → |Squirrel⟩       ║
+║   TIMELINE III: 🦆 THE NEVER-MET      — Conquest without Float · Loss        ║
+║   TIMELINE IV:  🔥 THE MEETING        — HONKFIRE meets Honkalis · Unity      ║
+║                                                                               ║
+║   4 Timelines × 9 Chapters × 3 Voices = 108 Nodes                            ║
+║                                                                               ║
+║   "Every acorn holds a forest. Every forest holds a star."                   ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+`);
+</script>
+</body>
+</html>
