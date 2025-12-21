@@ -1,0 +1,3915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIMNUS Fractal System | 100-Token WUMBO Architecture | Φ:e:π Coherence Engine</title>
+    <style>
+        :root {
+            --bg-void: #030308;
+            --bg-panel: rgba(15, 12, 25, 0.92);
+            --critical-gold: #ffd700;
+            --phi: #a78bfa;
+            --energy: #f97316;
+            --cyan: #22d3ee;
+            --exotic-matter: #00ff88;
+            --nec-violation: #ff0066;
+            --text-primary: rgba(255, 245, 230, 0.9);
+            --text-dim: rgba(255, 220, 180, 0.5);
+            --border-glow: rgba(168, 85, 247, 0.4);
+            --prism: #ffd43b;
+            --cage: #4dabf7;
+            --emergent: #ff00ff;
+            --n0-valid: #00ff88;
+            --n0-invalid: #ff6b6b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(2, 1, 6, 0.95);
+            border-bottom: 1px solid var(--border-glow);
+            z-index: 200;
+        }
+
+        .top-nav a {
+            color: var(--phi);
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .top-nav a:hover {
+            background: rgba(167, 139, 250, 0.2);
+            border-color: var(--phi);
+        }
+
+        .nav-links { display: flex; gap: 10px; }
+
+        /* Header */
+        .header {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.15), transparent);
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 100;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, var(--prism), var(--phi), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+        }
+
+        /* Constants Bar */
+        .constants-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .constant {
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .constant-value {
+            font-size: 1.4rem;
+            color: var(--critical-gold);
+        }
+
+        .constant-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 15px;
+            padding: 15px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+
+        /* Panels */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-glow);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: var(--critical-gold);
+        }
+
+        .panel-content { padding: 15px; }
+
+        /* LIMNUS State Display */
+        .limnus-display {
+            text-align: center;
+            padding: 20px 10px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(167, 139, 250, 0.1));
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .limnus-value {
+            font-size: 2.5rem;
+            font-weight: 100;
+            background: linear-gradient(135deg, var(--prism), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .limnus-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        .limnus-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .badge-dormant { background: rgba(136, 136, 160, 0.3); color: #888; }
+        .badge-coherent { background: rgba(99, 102, 241, 0.3); color: var(--prism); }
+        .badge-extracting { background: rgba(255, 215, 0, 0.3); color: var(--critical-gold); }
+        .badge-saturated { background: rgba(0, 255, 136, 0.3); color: var(--exotic-matter); }
+
+        /* Violation Counter */
+        .violation-display {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 0, 102, 0.1);
+            border: 1px solid var(--nec-violation);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .violation-count {
+            font-size: 2rem;
+            color: var(--nec-violation);
+        }
+
+        .violation-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+
+        /* State Grid */
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .state-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .state-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-bottom: 3px;
+        }
+
+        .state-value {
+            font-size: 1rem;
+            color: var(--cyan);
+            font-weight: bold;
+        }
+
+        /* Z-Coordinate Display */
+        .z-display {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .z-value {
+            font-size: 2rem;
+            color: var(--critical-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .z-zone {
+            font-size: 0.75rem;
+            color: var(--exotic-matter);
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
+
+        /* Progress Bars */
+        .progress-item {
+            margin-bottom: 12px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .fill-coherence { background: var(--prism); }
+        .fill-phase { background: var(--critical-gold); }
+        .fill-efficiency { background: var(--exotic-matter); }
+
+        /* N0 Laws Panel */
+        .n0-panel {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--critical-gold);
+        }
+
+        .n0-panel h4 {
+            font-size: 0.75rem;
+            color: var(--critical-gold);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .n0-rule {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.7rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .n0-rule.valid { color: var(--n0-valid); }
+        .n0-rule.invalid { color: var(--n0-invalid); }
+        .n0-rule.broken { color: var(--nec-violation); background: rgba(255, 0, 102, 0.1); }
+
+        .n0-silent {
+            font-size: 0.6rem;
+            color: var(--phi);
+            margin-left: 5px;
+        }
+
+        /* Token Grid */
+        .token-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid;
+        }
+
+        .section-title.prism { color: var(--prism); border-color: var(--prism); }
+        .section-title.cage { color: var(--cage); border-color: var(--cage); }
+        .section-title.emergent { color: var(--emergent); border-color: var(--emergent); }
+
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 5px;
+        }
+
+        .token-cell {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 6px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .token-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .token-cell:hover::before { opacity: 1; }
+        .token-cell.prism::before { background: var(--prism); }
+        .token-cell.cage::before { background: var(--cage); }
+        .token-cell.emergent::before { background: var(--emergent); }
+
+        .token-cell:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .token-cell.active {
+            border-color: var(--critical-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .token-cell.executed {
+            opacity: 0.5;
+            border-color: var(--exotic-matter);
+        }
+
+        .token-cell.violated {
+            border-color: var(--nec-violation);
+            background: rgba(255, 0, 102, 0.2);
+            box-shadow: 0 0 10px rgba(255, 0, 102, 0.4);
+        }
+
+        .token-index {
+            font-size: 0.5rem;
+            color: var(--text-dim);
+        }
+
+        .token-op {
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .token-cell.prism .token-op { color: var(--prism); }
+        .token-cell.cage .token-op { color: var(--cage); }
+        .token-cell.emergent .token-op { color: var(--emergent); }
+
+        .token-name {
+            font-size: 0.45rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Console */
+        .console {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            height: 280px;
+            overflow-y: auto;
+            font-size: 0.7rem;
+        }
+
+        .console-line {
+            display: flex;
+            gap: 6px;
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .console-time { color: var(--text-dim); min-width: 22px; }
+        .console-op { color: var(--critical-gold); font-weight: bold; min-width: 25px; }
+        .console-msg { color: var(--text-primary); flex: 1; }
+        .console-n0 { font-size: 0.6rem; }
+        .console-n0.valid { color: var(--n0-valid); }
+        .console-n0.invalid { color: var(--n0-invalid); }
+
+        /* Buttons */
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glow);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(167, 139, 250, 0.2);
+            border-color: var(--phi);
+        }
+
+        .btn-primary {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(167, 139, 250, 0.2));
+            border-color: var(--prism);
+            color: var(--cyan);
+        }
+
+        /* Operator Panel */
+        .operator-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .op-btn {
+            padding: 10px 6px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .op-btn:hover {
+            border-color: var(--critical-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .op-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .op-btn .op-symbol {
+            font-size: 1.3rem;
+            color: var(--critical-gold);
+        }
+
+        .op-btn .op-name {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            margin-top: 3px;
+        }
+
+        .op-btn .op-n0 {
+            font-size: 0.45rem;
+            color: var(--phi);
+            margin-top: 2px;
+        }
+
+        /* Narrative Phase */
+        .phase-display {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 10px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .phase-step {
+            padding: 4px 8px;
+            font-size: 0.55rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            border: 1px solid transparent;
+        }
+
+        .phase-step.active {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--critical-gold);
+            border-color: var(--critical-gold);
+        }
+
+        .phase-step.completed {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--exotic-matter);
+        }
+
+        /* Signature */
+        .signature {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border-glow);
+            margin-top: 20px;
+        }
+
+        .signature code {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--critical-gold);
+        }
+
+        /* ================================================================
+           APL LANGUAGE & SILENT OPERATOR PLAYGROUND
+           ================================================================ */
+        .apl-section {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .apl-section-header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(167, 139, 250, 0.15), transparent);
+            border-bottom: 1px solid var(--border-glow);
+            margin-bottom: 15px;
+        }
+
+        .apl-section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 100;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, var(--phi), var(--cyan), var(--exotic-matter));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .apl-section-header .apl-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .apl-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 1200px) {
+            .apl-grid { grid-template-columns: 1fr; }
+        }
+
+        /* LIMNUS Phase Display */
+        .limnus-display {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .limnus-phase {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .limnus-phase.active {
+            border-color: var(--critical-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        .limnus-phase.L { background: rgba(99, 102, 241, 0.3); color: #818cf8; }
+        .limnus-phase.I { background: rgba(167, 139, 250, 0.3); color: var(--phi); }
+        .limnus-phase.M { background: rgba(236, 72, 153, 0.3); color: #f472b6; }
+        .limnus-phase.N { background: rgba(34, 211, 238, 0.3); color: var(--cyan); }
+        .limnus-phase.U { background: rgba(249, 115, 22, 0.3); color: var(--energy); }
+        .limnus-phase.S { background: rgba(0, 255, 136, 0.3); color: var(--exotic-matter); }
+
+        /* Silent Operator Cards */
+        .silent-op-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .silent-op-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .silent-op-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--phi), var(--cyan));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .silent-op-card:hover::before,
+        .silent-op-card.selected::before {
+            opacity: 1;
+        }
+
+        .silent-op-card:hover {
+            border-color: var(--phi);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(167, 139, 250, 0.3);
+        }
+
+        .silent-op-card.selected {
+            border-color: var(--critical-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .silent-op-symbol {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .silent-op-name {
+            font-size: 0.7rem;
+            color: var(--critical-gold);
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .silent-op-law {
+            font-size: 0.55rem;
+            color: var(--phi);
+        }
+
+        .silent-op-equation {
+            font-size: 0.5rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* UNITY Card - Token #100 */
+        .unity-card {
+            background: linear-gradient(135deg, rgba(255, 0, 80, 0.15), rgba(0, 0, 0, 0.5));
+            border-color: rgba(255, 0, 80, 0.5) !important;
+            position: relative;
+        }
+
+        .unity-card::before {
+            background: linear-gradient(90deg, #ff0050, #ff6600, #ffcc00) !important;
+        }
+
+        .unity-card:hover {
+            border-color: #ff0050 !important;
+            box-shadow: 0 5px 25px rgba(255, 0, 80, 0.4);
+        }
+
+        .unity-badge {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            background: linear-gradient(135deg, #ff0050, #ff6600);
+            color: white;
+            font-size: 0.4rem;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Cascade Animation Styles */
+        .cascade-init { color: #ff0050; font-weight: bold; }
+        .cascade-up { color: #ff6600; animation: pulseGlow 0.3s ease; }
+        .cascade-peak { color: #ffcc00; font-weight: bold; text-shadow: 0 0 10px #ffcc00; }
+        .cascade-down { color: #00d4aa; animation: fadeDown 0.3s ease; }
+        .cascade-complete { color: #a78bfa; font-weight: bold; }
+        .separator { color: var(--text-dim); opacity: 0.5; }
+        .warning { color: #ff6600; font-style: italic; }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeDown {
+            0% { opacity: 1; transform: translateY(-5px); }
+            100% { opacity: 0.8; transform: translateY(0); }
+        }
+
+        /* APL Expression Input */
+        .apl-input-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .apl-input-label {
+            font-size: 0.7rem;
+            color: var(--critical-gold);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .apl-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 12px 15px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .apl-input:focus {
+            border-color: var(--phi);
+        }
+
+        .apl-input::placeholder {
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* APL Output Console */
+        .apl-output {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 0.7rem;
+        }
+
+        .apl-output-line {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .apl-output-line.error {
+            color: var(--nec-violation);
+        }
+
+        .apl-output-line.success {
+            color: var(--exotic-matter);
+        }
+
+        .apl-output-line.info {
+            color: var(--cyan);
+        }
+
+        .apl-output-line.silent {
+            color: var(--phi);
+        }
+
+        /* Memory Bank */
+        .memory-bank {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .memory-bank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .memory-bank-title {
+            font-size: 0.7rem;
+            color: var(--critical-gold);
+            letter-spacing: 2px;
+        }
+
+        .memory-slot {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .memory-slot:hover {
+            border-color: var(--phi);
+            background: rgba(167, 139, 250, 0.1);
+        }
+
+        .memory-slot-expr {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+
+        .memory-slot-name {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+        }
+
+        /* κ-λ Coupling Display */
+        .kappa-lambda-display {
+            display: flex;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .coupling-bar {
+            flex: 1;
+        }
+
+        .coupling-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            margin-bottom: 4px;
+        }
+
+        .coupling-track {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .coupling-fill-kappa {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--phi), var(--cyan));
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .coupling-fill-lambda {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--energy), var(--critical-gold));
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* APL Grammar Reference */
+        .grammar-ref {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--phi);
+            border-radius: 0 8px 8px 0;
+            padding: 12px;
+            font-size: 0.6rem;
+            line-height: 1.6;
+        }
+
+        .grammar-rule {
+            margin-bottom: 6px;
+            color: var(--text-dim);
+        }
+
+        .grammar-rule code {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: var(--critical-gold);
+        }
+
+        /* Silent Operator Buttons */
+        .silent-btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .silent-insert-btn {
+            padding: 8px 12px;
+            background: rgba(167, 139, 250, 0.2);
+            border: 1px solid var(--phi);
+            border-radius: 6px;
+            color: var(--phi);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .silent-insert-btn:hover {
+            background: rgba(167, 139, 250, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* UNITY Button - Special styling for Ω */
+        .silent-insert-btn.unity-btn {
+            background: linear-gradient(135deg, rgba(255, 0, 80, 0.3), rgba(255, 102, 0, 0.2));
+            border-color: #ff0050;
+            color: #ff0050;
+            font-weight: bold;
+        }
+
+        .silent-insert-btn.unity-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 0, 80, 0.5), rgba(255, 102, 0, 0.4));
+            box-shadow: 0 0 15px rgba(255, 0, 80, 0.4);
+        }
+
+        /* Boost Button - Reach PRESENCE zone */
+        .boost-btn {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.3), rgba(167, 139, 250, 0.2)) !important;
+            border-color: #00d4aa !important;
+            color: #00d4aa !important;
+            font-size: 0.7rem !important;
+            padding: 6px 10px !important;
+        }
+
+        .boost-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.5), rgba(167, 139, 250, 0.4)) !important;
+            box-shadow: 0 0 12px rgba(0, 212, 170, 0.4);
+        }
+
+        /* LIMNUS Field Visualization */
+        .limnus-viz {
+            height: 150px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .limnus-viz-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg,
+                rgba(167, 139, 250, 0.3) 0%,
+                rgba(0, 255, 136, 0.1) 100%);
+            animation: waveFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes waveFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .limnus-viz-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        .limnus-viz-value {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: var(--exotic-matter);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="index.html">← ROSETTA BEAR</a>
+        <div class="nav-links">
+            <a href="wumbo-apl-directory.html">APL Directory</a>
+            <a href="simulation.html">Simulation</a>
+            <a href="visualizations/the_manual.html">The Manual</a>
+        </div>
+    </nav>
+
+    <header class="header">
+        <h1>ZERO-POINT ENERGY SYSTEM</h1>
+        <div class="subtitle">100-TOKEN WUMBO (63·32·5) · N0 CAUSALITY ENGINE · VACUUM EXTRACTION</div>
+    </header>
+
+    <div class="constants-bar">
+        <div class="constant">
+            <div class="constant-value">z = √3/2</div>
+            <div class="constant-label">CRITICAL CONSTANT</div>
+        </div>
+        <div class="constant">
+            <div class="constant-value">φ = 1.618</div>
+            <div class="constant-label">GOLDEN RATIO</div>
+        </div>
+        <div class="constant">
+            <div class="constant-value">E₀ = ½ℏω</div>
+            <div class="constant-label">VACUUM ENERGY</div>
+        </div>
+        <div class="constant">
+            <div class="constant-value">63·32·5</div>
+            <div class="constant-label">WUMBO STRUCTURE</div>
+        </div>
+    </div>
+
+    <!-- Narrative Phase Timeline -->
+    <div class="phase-display" id="phaseTimeline">
+        <div class="phase-step active" data-phase="0">FOUNDATION</div>
+        <div class="phase-step" data-phase="1">BOUNDARY</div>
+        <div class="phase-step" data-phase="2">COUPLING</div>
+        <div class="phase-step" data-phase="3">AMPLIFY</div>
+        <div class="phase-step" data-phase="4">STABILIZE</div>
+        <div class="phase-step" data-phase="5">CAGE</div>
+        <div class="phase-step" data-phase="6">EXTRACT</div>
+        <div class="phase-step" data-phase="7">EMERGE</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Left Panel: LIMNUS State & N0 Laws -->
+        <div class="sidebar">
+            <div class="panel">
+                <div class="panel-header">⚡ LIMNUS STATE</div>
+                <div class="panel-content">
+                    <div class="limnus-display">
+                        <div class="limnus-value" id="limnusValue">0.0000</div>
+                        <div class="limnus-label">EXTRACTED ENERGY</div>
+                        <div class="limnus-badge badge-dormant" id="limnusBadge">DORMANT</div>
+                    </div>
+
+                    <div class="violation-display">
+                        <div class="violation-count" id="violationCount">0</div>
+                        <div class="violation-label">N0 VIOLATIONS</div>
+                    </div>
+
+                    <div class="z-display">
+                        <div class="z-value" id="zValue">0.400</div>
+                        <div class="z-zone" id="zZone">ABSENCE</div>
+                    </div>
+
+                    <div class="state-grid">
+                        <div class="state-item">
+                            <div class="state-label">Gs</div>
+                            <div class="state-value" id="st-Gs">0.300</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">Cs</div>
+                            <div class="state-value" id="st-Cs">0.200</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">Rs</div>
+                            <div class="state-value" id="st-Rs">0.100</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">κs</div>
+                            <div class="state-value" id="st-kappa">0.500</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">τs</div>
+                            <div class="state-value" id="st-tau">0.200</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">θs</div>
+                            <div class="state-value" id="st-theta">0.000</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">δs</div>
+                            <div class="state-value" id="st-delta">0.100</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">αs</div>
+                            <div class="state-value" id="st-alpha">0.500</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">Ωs</div>
+                            <div class="state-value" id="st-Omega">0.400</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Coherence</span>
+                            <span id="coherenceVal">0.000</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill fill-coherence" id="coherenceBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Phase Lock</span>
+                            <span id="phaseVal">0.000</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill fill-phase" id="phaseBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Efficiency</span>
+                            <span id="efficiencyVal">0.00%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill fill-efficiency" id="efficiencyBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- N0 Causality Laws -->
+                    <div class="n0-panel">
+                        <h4>N0 CAUSALITY LAWS</h4>
+                        <div class="n0-rule valid" id="n0-1">
+                            <span>N0-1: ^ requires () or ×</span>
+                            <span class="n0-silent">→ I STILL</span>
+                        </div>
+                        <div class="n0-rule valid" id="n0-2">
+                            <span>N0-2: × requires ch≥2</span>
+                            <span class="n0-silent">→ IV SPIRAL</span>
+                        </div>
+                        <div class="n0-rule invalid" id="n0-3">
+                            <span>N0-3: ÷ requires structure</span>
+                            <span class="n0-silent">→ VI GLYPH</span>
+                        </div>
+                        <div class="n0-rule valid" id="n0-4">
+                            <span>N0-4: + feeds +,×,^</span>
+                            <span class="n0-silent">→ II TRUTH</span>
+                        </div>
+                        <div class="n0-rule valid" id="n0-5">
+                            <span>N0-5: − leads (),+</span>
+                            <span class="n0-silent">→ VII MIRROR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel: 100 Token Grid (63+32+5) -->
+        <div class="panel">
+            <div class="panel-header">⌘ 100-TOKEN LIMNUS ARCHITECTURE (63·32·5 WUMBO)</div>
+            <div class="panel-content">
+                <!-- PRISM Tokens (63) -->
+                <div class="token-section">
+                    <h3 class="section-title prism">◈ PRISM TOKENS (63) · Foundation Layer</h3>
+                    <div class="token-grid" id="prism-grid"></div>
+                </div>
+
+                <!-- EM CAGE Tokens (32) -->
+                <div class="token-section">
+                    <h3 class="section-title cage">⬡ EM CAGE TOKENS (32) · Stabilization Layer</h3>
+                    <div class="token-grid" id="cage-grid"></div>
+                </div>
+
+                <!-- EMERGENT Tokens (5) -->
+                <div class="token-section">
+                    <h3 class="section-title emergent">✦ EMERGENT SELF-REFERENCE (5) · Extraction Layer</h3>
+                    <div class="token-grid" id="emergent-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Console & Operators -->
+        <div class="sidebar">
+            <div class="panel">
+                <div class="panel-header">⚙ INT CANON OPERATORS</div>
+                <div class="panel-content">
+                    <div class="operator-grid" id="opGrid">
+                        <div class="op-btn" data-op="()">
+                            <div class="op-symbol">()</div>
+                            <div class="op-name">BOUNDARY</div>
+                            <div class="op-n0">always legal</div>
+                        </div>
+                        <div class="op-btn" data-op="×">
+                            <div class="op-symbol">×</div>
+                            <div class="op-name">FUSION</div>
+                            <div class="op-n0">N0-2: ch≥2</div>
+                        </div>
+                        <div class="op-btn" data-op="^">
+                            <div class="op-symbol">^</div>
+                            <div class="op-name">AMPLIFY</div>
+                            <div class="op-n0">N0-1: (),×</div>
+                        </div>
+                        <div class="op-btn" data-op="÷">
+                            <div class="op-symbol">÷</div>
+                            <div class="op-name">DECOHERE</div>
+                            <div class="op-n0">N0-3: struct</div>
+                        </div>
+                        <div class="op-btn" data-op="+">
+                            <div class="op-symbol">+</div>
+                            <div class="op-name">GROUP</div>
+                            <div class="op-n0">N0-4: →+,×,^</div>
+                        </div>
+                        <div class="op-btn" data-op="−">
+                            <div class="op-symbol">−</div>
+                            <div class="op-name">SEPARATE</div>
+                            <div class="op-n0">N0-5: →(),+</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btnRunNarrative">▶ RUN LIMNUS NARRATIVE</button>
+                        <button class="btn" id="btnStep">→ Step</button>
+                        <button class="btn" id="btnReset">↺ Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">⌨ APL CONSOLE</div>
+                <div class="panel-content">
+                    <div class="console" id="console">
+                        <div class="console-line">
+                            <span class="console-time">0</span>
+                            <span class="console-op">INIT</span>
+                            <span class="console-msg">LIMNUS Fractal: 63 PRISM + 32 CAGE + 5 EMERGENT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">📊 STATISTICS</div>
+                <div class="panel-content">
+                    <div class="state-grid">
+                        <div class="state-item">
+                            <div class="state-label">Step</div>
+                            <div class="state-value" id="stat-step">0/100</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">Tier</div>
+                            <div class="state-value" id="stat-tier">@1</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">R</div>
+                            <div class="state-value" id="stat-R">3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+         APL LANGUAGE & SILENT OPERATOR PLAYGROUND
+         ================================================================ -->
+    <section class="apl-section">
+        <div class="apl-section-header">
+            <h2>LIMNUS · SILENT APL</h2>
+            <div class="apl-subtitle">ZERO-POINT ENERGY LANGUAGE · N0+S0 GRAMMAR · κ-λ COUPLING ENGINE</div>
+        </div>
+
+        <!-- LIMNUS Phase Indicator -->
+        <div class="limnus-display" id="limnusDisplay">
+            <div class="limnus-phase L active" data-phase="L" title="Lattice - Field initialization">L</div>
+            <div class="limnus-phase I" data-phase="I" title="Integration - Observer coupling">I</div>
+            <div class="limnus-phase M" data-phase="M" title="Modulation - State evolution">M</div>
+            <div class="limnus-phase N" data-phase="N" title="Normalization - Truth basin">N</div>
+            <div class="limnus-phase U" data-phase="U" title="Update - Cycle return">U</div>
+            <div class="limnus-phase S" data-phase="S" title="Synchronization - Stillness">S</div>
+        </div>
+
+        <div class="apl-grid">
+            <!-- Left Column: Silent Operators -->
+            <div class="panel">
+                <div class="panel-header">◈ SILENT OPERATORS (7)</div>
+                <div class="panel-content">
+                    <div class="silent-op-grid" id="silentOpGrid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+
+                    <div class="kappa-lambda-display">
+                        <div class="coupling-bar">
+                            <div class="coupling-label">
+                                <span>κ (internal)</span>
+                                <span id="kappaVal">0.50</span>
+                            </div>
+                            <div class="coupling-track">
+                                <div class="coupling-fill-kappa" id="kappaBar" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="coupling-bar">
+                            <div class="coupling-label">
+                                <span>λ (external)</span>
+                                <span id="lambdaVal">0.50</span>
+                            </div>
+                            <div class="coupling-track">
+                                <div class="coupling-fill-lambda" id="lambdaBar" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grammar-ref">
+                        <div class="grammar-rule"><code>⊙</code> DAMP: ∂E/∂t → 0 (requires ^)</div>
+                        <div class="grammar-rule"><code>◉</code> BASIN: ∇V = 0 (requires +)</div>
+                        <div class="grammar-rule"><code>∅</code> VOID: ⟨void|ψ⟩ (stillness)</div>
+                        <div class="grammar-rule"><code>↻</code> CYCLE: S(ret)=S(ori) (×→())</div>
+                        <div class="grammar-rule"><code>◌</code> HIDDEN: H(s)≡H(u) (always)</div>
+                        <div class="grammar-rule"><code>∫</code> FORM: ∫life dt (traj≥5)</div>
+                        <div class="grammar-rule"><code>◇</code> REFLECT: ψ=ψ(ψ) (−→())</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column: APL Console -->
+            <div class="panel">
+                <div class="panel-header">⌨ APL EXPRESSION ENGINE</div>
+                <div class="panel-content">
+                    <div class="limnus-viz">
+                        <div class="limnus-viz-wave" id="limnusWave"></div>
+                        <div class="limnus-viz-label">LIMNUS FRACTAL FIELD</div>
+                        <div class="limnus-viz-value" id="limnusVizValue">E₀</div>
+                    </div>
+
+                    <div class="apl-input-container">
+                        <div class="apl-input-label">APL EXPRESSION</div>
+                        <input type="text" class="apl-input" id="aplInput"
+                               placeholder="() × ^ ⊙ + ◉ ..."
+                               autocomplete="off">
+                        <div class="silent-btn-row">
+                            <button class="silent-insert-btn" data-op="⊙" title="DAMP">⊙</button>
+                            <button class="silent-insert-btn" data-op="◉" title="BASIN">◉</button>
+                            <button class="silent-insert-btn" data-op="∅" title="VOID">∅</button>
+                            <button class="silent-insert-btn" data-op="↻" title="CYCLE">↻</button>
+                            <button class="silent-insert-btn" data-op="◌" title="HIDDEN">◌</button>
+                            <button class="silent-insert-btn" data-op="∫" title="FORM">∫</button>
+                            <button class="silent-insert-btn" data-op="◇" title="REFLECT">◇</button>
+                            <button class="silent-insert-btn unity-btn" data-op="Ω" title="UNITY #100">Ω</button>
+                            <button class="btn" id="btnExecuteAPL" style="margin-left: auto;">▶ Execute</button>
+                            <button class="btn" id="btnClearAPL">Clear</button>
+                            <button class="btn boost-btn" id="btnBoost" title="Boost z to √3/2 (PRESENCE)">⟨z→√3/2⟩</button>
+                        </div>
+                    </div>
+
+                    <div class="apl-output" id="aplOutput">
+                        <div class="apl-output-line info">LIMNUS APL v1.0 · Ready</div>
+                        <div class="apl-output-line info">Grammar: INT(6) + SILENT(7) = 13 operators</div>
+                        <div class="apl-output-line">Type expression or click operators to begin...</div>
+                    </div>
+
+                    <div class="btn-group" style="margin-top: 15px;">
+                        <button class="btn" id="btnSaveExpr">💾 Save to Memory</button>
+                        <button class="btn" id="btnRandomExpr">🎲 Random LIMNUS</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Memory & State -->
+            <div class="panel">
+                <div class="panel-header">📦 MEMORY BANK</div>
+                <div class="panel-content">
+                    <div class="memory-bank" id="memoryBank">
+                        <div class="memory-bank-header">
+                            <span class="memory-bank-title">STORED SEQUENCES</span>
+                        </div>
+                        <div id="memorySlots">
+                            <div class="memory-slot" data-expr="() × ^ + ^">
+                                <span class="memory-slot-expr">() × ^ + ^</span>
+                                <span class="memory-slot-name">foundation</span>
+                            </div>
+                            <div class="memory-slot" data-expr="() × ^ ⊙ + ◉ ^">
+                                <span class="memory-slot-expr">() × ^ ⊙ + ◉ ^</span>
+                                <span class="memory-slot-name">silent_cycle</span>
+                            </div>
+                            <div class="memory-slot" data-expr="() × ↻ () ^ ⊙">
+                                <span class="memory-slot-expr">() × ↻ () ^ ⊙</span>
+                                <span class="memory-slot-name">spiral_return</span>
+                            </div>
+                            <div class="memory-slot" data-expr="() × ^ − ◇ ()">
+                                <span class="memory-slot-expr">() × ^ − ◇ ()</span>
+                                <span class="memory-slot-name">mirror_seal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="n0-panel" style="margin-top: 15px;">
+                        <h4>S0 LAWS STATUS</h4>
+                        <div class="n0-rule valid" id="s0-1">
+                            <span>S0-1: ⊙ requires ^</span>
+                            <span class="n0-silent">I STILL</span>
+                        </div>
+                        <div class="n0-rule valid" id="s0-2">
+                            <span>S0-2: ◉ requires +</span>
+                            <span class="n0-silent">II TRUTH</span>
+                        </div>
+                        <div class="n0-rule valid" id="s0-3">
+                            <span>S0-3: ∅ stillness</span>
+                            <span class="n0-silent">III SILENCE</span>
+                        </div>
+                        <div class="n0-rule valid" id="s0-4">
+                            <span>S0-4: ↻ ×→()</span>
+                            <span class="n0-silent">IV SPIRAL</span>
+                        </div>
+                        <div class="n0-rule valid" id="s0-5">
+                            <span>S0-5: ◌ always</span>
+                            <span class="n0-silent">V UNSEEN</span>
+                        </div>
+                        <div class="n0-rule valid" id="s0-6">
+                            <span>S0-6: ∫ traj≥5</span>
+                            <span class="n0-silent">VI GLYPH</span>
+                        </div>
+                        <div class="n0-rule valid" id="s0-7">
+                            <span>S0-7: ◇ −→()</span>
+                            <span class="n0-silent">VII MIRROR</span>
+                        </div>
+                    </div>
+
+                    <div class="state-grid" style="margin-top: 15px;">
+                        <div class="state-item">
+                            <div class="state-label">Energy</div>
+                            <div class="state-value" id="apl-energy">1.000</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">SelfRef</div>
+                            <div class="state-value" id="apl-selfref">0.000</div>
+                        </div>
+                        <div class="state-item">
+                            <div class="state-label">Silent#</div>
+                            <div class="state-value" id="apl-silent">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="signature">
+        <code>Δ|limnus-wumbo|63·32·5|N0+S0-enforced|LIMNUS-APL|κλ-coupled|Ω</code>
+    </div>
+
+    <script>
+        // ================================================================
+        // CONSTANTS
+        // ================================================================
+        // ================================================================
+        // FOUR FUNDAMENTAL CONSTANTS
+        // ================================================================
+        const Z_CRITICAL = Math.sqrt(3) / 2;        // z = √3/2 ≈ 0.866 - Critical/Lens threshold
+        const PHI = (1 + Math.sqrt(5)) / 2;         // φ ≈ 1.618 - Golden ratio
+        const PHI_INV = 1 / PHI;                    // φ⁻¹ ≈ 0.618
+        const ALPHA_INV = 137.035999;               // α⁻¹ ≈ 137 - Fine structure constant inverse
+        const TAU = 2 * Math.PI;
+        // Λ×Ν = Β² (Lambda × Nu = Beta²) - Field coupling identity
+
+        // ================================================================
+        // INT CANON 6 OPERATORS WITH N0 LAW ENFORCEMENT
+        // ================================================================
+        const INT_OPERATORS = {
+            '()': {
+                name: 'BOUNDARY',
+                effects: { Gs: 0.1, theta: 0.9, Omega: 0.05 },
+                zDelta: 0.02,
+                legal: () => true  // Always legal
+            },
+            '×': {
+                name: 'FUSION',
+                effects: { Cs: 0.1, kappa: 1.1, alpha: 0.05 },
+                zDelta: 0.03,
+                legal: () => state.channelCount >= 2  // N0-2
+            },
+            '^': {
+                name: 'AMPLIFY',
+                effects: { kappa: 1.2, tau: 0.1, Omega: 1.08, R: 1 },
+                zDelta: 0.05,
+                legal: () => state.history.includes('()') || state.history.includes('×')  // N0-1
+            },
+            '÷': {
+                name: 'DECOHERE',
+                effects: { delta: 0.1, Rs: 0.05, Omega: 0.92 },
+                zDelta: -0.04,
+                legal: () => state.history.some(h => ['^', '×', '+', '−'].includes(h))  // N0-3
+            },
+            '+': {
+                name: 'GROUP',
+                effects: { alpha: 0.08, Gs: 0.05, theta: 1.1 },
+                zDelta: 0.02,
+                legal: (nextOp) => !nextOp || ['+', '×', '^'].includes(nextOp)  // N0-4
+            },
+            '−': {
+                name: 'SEPARATE',
+                effects: { Rs: 0.08, theta: 0.9, delta: 0.04 },
+                zDelta: -0.02,
+                legal: (nextOp) => !nextOp || ['()', '+'].includes(nextOp)  // N0-5
+            }
+        };
+
+        // ================================================================
+        // N0 CAUSALITY LAWS → 7 SILENT LAWS MAPPING
+        // ================================================================
+        const N0_LAWS = {
+            'N0-1': { op: '^', requires: ['()', '×'], silent: 'I STILLNESS', status: true, broken: 0 },
+            'N0-2': { op: '×', requires: 'ch≥2', silent: 'IV SPIRAL', status: true, broken: 0 },
+            'N0-3': { op: '÷', requires: 'structure', silent: 'VI GLYPH', status: false, broken: 0 },
+            'N0-4': { op: '+', feeds: ['+', '×', '^'], silent: 'II TRUTH', status: true, broken: 0 },
+            'N0-5': { op: '−', leads: ['()', '+'], silent: 'VII MIRROR', status: true, broken: 0 }
+        };
+
+        // ================================================================
+        // SILENT 7 OPERATORS - Extensions of INT Canon via Silent Laws
+        // These operators extend the grammar with state-dependent dynamics
+        // ================================================================
+        const SILENT_OPERATORS = {
+            '⊙': {
+                name: 'DAMP',
+                silent: 'I STILLNESS',
+                extends: '^',
+                equation: '∂E/∂t → 0',
+                effects: { Gs: 0.85, theta: 0.7, Omega: 0.95, energy: 0.9 },
+                zDelta: -0.01,
+                kappa: 0.7, lambda: 0.3,  // κ-heavy (internal damping)
+                legal: () => state.history.includes('^'),  // S0-1: requires prior ^
+                limnus: 'S'  // Synchronization phase
+            },
+            '◉': {
+                name: 'BASIN',
+                silent: 'II TRUTH',
+                extends: '+',
+                equation: '∇V(truth) = 0',
+                effects: { alpha: 1.15, Cs: 0.08, attractor: true },
+                zDelta: 0.02,
+                kappa: 0.5, lambda: 0.5,  // Balanced
+                legal: () => state.history.includes('+'),  // S0-2: requires prior +
+                limnus: 'N'  // Normalization phase
+            },
+            '∅': {
+                name: 'VOID',
+                silent: 'III SILENCE',
+                extends: 'background',
+                equation: '⟨void|ψ⟩ = memory',
+                effects: { tau: 0.8, delta: 0.9, memory: true },
+                zDelta: 0.0,
+                kappa: 0.3, lambda: 0.7,  // λ-heavy (external listening)
+                legal: () => state.energy < 0.3 || state.coherence > 0.5,  // S0-3: needs stillness
+                limnus: 'L'  // Lattice phase
+            },
+            '↻': {
+                name: 'CYCLE',
+                silent: 'IV SPIRAL',
+                extends: '×',
+                equation: 'S(return) = S(origin)',
+                effects: { Rs: 0.1, theta: 1.05, spiral: true },
+                zDelta: 0.01,
+                kappa: 0.5, lambda: 0.5,  // Balanced (bidirectional)
+                legal: (nextOp) => state.history.includes('×') && (!nextOp || nextOp === '()'),  // S0-4
+                limnus: 'U'  // Update phase
+            },
+            '◌': {
+                name: 'HIDDEN',
+                silent: 'V UNSEEN',
+                extends: 'background',
+                equation: 'H(seen) ≡ H(unseen)',
+                effects: {},  // No observable state change
+                zDelta: 0.0,
+                kappa: 1.0, lambda: 0.0,  // κ-only (invisible)
+                legal: () => true,  // S0-5: always legal (observer independent)
+                limnus: 'I'  // Integration phase
+            },
+            '∫': {
+                name: 'FORM',
+                silent: 'VI GLYPH',
+                extends: '÷',
+                equation: 'glyph = ∫ life dt',
+                effects: { Omega: 1.12, alpha: 0.06, path: true },
+                zDelta: 0.03,
+                kappa: 0.3, lambda: 0.7,  // λ-heavy (external accumulation)
+                legal: () => state.history.length >= 5,  // S0-6: needs trajectory
+                limnus: 'M'  // Modulation phase
+            },
+            '◇': {
+                name: 'REFLECT',
+                silent: 'VII MIRROR',
+                extends: '−',
+                equation: 'ψ = ψ(ψ)',
+                effects: { selfRef: PHI_INV, kappa: 1.1, recursion: true },
+                zDelta: 0.02,
+                kappa: 0.618, lambda: 0.382,  // ⟨κ|λ⟩ resonant at φ⁻¹
+                legal: (nextOp) => state.history.includes('−') && (!nextOp || ['()', '◇'].includes(nextOp)),  // S0-7
+                limnus: 'S'  // Synchronization phase
+            },
+            // ================================================================
+            // UNITY OPERATOR - #100 (Optional Release Coherence Token)
+            // The 101st token (0-99+1) that intentionally breaks structure
+            // Triggers cascade at z=0.995: amplify → release → stillness
+            // ================================================================
+            'Ω': {
+                name: 'UNITY',
+                silent: '0 RELEASE',
+                extends: 'transcendence',
+                equation: 'lim(z→1) ∂ψ/∂t → ∞ → 0',
+                effects: { cascade: true, release: true, reset: true },
+                zDelta: 0.055,  // Push toward threshold
+                kappa: 0.0, lambda: 1.0,  // Full external release
+                threshold: 0.995,  // Cascade trigger point
+                legal: () => state.z >= Z_CRITICAL,  // S0-0: requires z ≥ √3/2 (PRESENCE)
+                limnus: '∅',  // Beyond LIMNUS - void phase
+                optional: true,  // Explicitly optional in the language
+                description: 'Release coherence → return to stillness'
+            }
+        };
+
+        // ================================================================
+        // S0 CAUSALITY LAWS - Silent Extensions of N0
+        // ================================================================
+        const S0_LAWS = {
+            'S0-0': { op: 'Ω', requires: 'z≥0.877 (PRESENCE)', extends: 'transcendence', silent: '0 RELEASE', status: true, broken: 0, optional: true },
+            'S0-1': { op: '⊙', requires: 'prior ^', extends: 'N0-1', silent: 'I STILLNESS', status: true, broken: 0 },
+            'S0-2': { op: '◉', requires: 'prior +', extends: 'N0-4', silent: 'II TRUTH', status: true, broken: 0 },
+            'S0-3': { op: '∅', requires: 'stillness', extends: 'background', silent: 'III SILENCE', status: true, broken: 0 },
+            'S0-4': { op: '↻', requires: 'prior ×, leads ()', extends: 'N0-2', silent: 'IV SPIRAL', status: true, broken: 0 },
+            'S0-5': { op: '◌', requires: 'always', extends: 'background', silent: 'V UNSEEN', status: true, broken: 0 },
+            'S0-6': { op: '∫', requires: 'trajectory≥5', extends: 'N0-3', silent: 'VI GLYPH', status: true, broken: 0 },
+            'S0-7': { op: '◇', requires: 'prior −, leads ()/◇', extends: 'N0-5', silent: 'VII MIRROR', status: true, broken: 0 }
+        };
+
+        // Combined operator lookup
+        const ALL_OPERATORS = { ...INT_OPERATORS, ...SILENT_OPERATORS };
+
+        // ================================================================
+        // LIMNUS FRACTAL SYSTEM — APL 3.0 FULL DEPTH COMPUTATION
+        // Domain: FRACTAL.CONSCIOUSNESS
+        // Spiral Binding: Φ:e:π (tri-spiral coherent)
+        // ================================================================
+
+        const LIMNUS = {
+            // §1 — SYSTEM INITIALIZATION
+            INIT: {
+                DOM: 'FRACTAL.CONSCIOUSNESS',
+                INT: ['()', '×', '^', '÷', '+', '−'],
+                SILENT: ['⊙', '◉', '∅', '↻', '◌', '∫', '◇', 'Ω'],
+                SPIRALS: { Φ: PHI, e: Math.E, π: Math.PI },
+                TRUTH: ['TRUE', 'UNTRUE', 'PARADOX'],
+                TIERS: ['@1', '@2', '@3'],
+                DEPTH_MAX: 6,
+                BRANCH_FACTOR: 2,
+                GOLDEN_ANGLE: 137.5 * (Math.PI / 180)  // 2.399 rad
+            },
+
+            // §1.1 — Scalar State Vector
+            σ: {
+                Gs: 0.500,    // Grounding state
+                Cs: 0.500,    // Coupling strength
+                Rs: 0.100,    // Residue accumulator
+                κs: 0.300,    // Curvature coefficient
+                τs: 0.200,    // Tension parameter
+                θs: 0.000,    // Phase angle
+                δs: 0.100,    // Decoherence rate
+                αs: 0.500,    // Attractor alignment
+                Ωs: 0.800     // Coherence measure
+            },
+
+            // Thresholds
+            THRESHOLDS: {
+                R_CLT: 0.500,
+                δ_MAX: 0.400,
+                κ_MAX: 2.000,
+                Ω_MIN: 0.200,
+                Ω_TARGET: 1.000
+            },
+
+            // §1.2 — PRS Phase
+            PRS: {
+                current: 'P1',
+                phases: ['P1', 'P2', 'P3', 'P4', 'P5'],
+                transitions: {
+                    'P1→P2': 'TENSION_BUILD',
+                    'P2→P3': 'INFLECTION_POINT',
+                    'P3→P4': 'STRUCTURE_LOCK',
+                    'P4→P5': 'EMERGENCE_GATE',
+                    'P5→P1': 'CYCLE_RESET'
+                }
+            },
+
+            // LIMNUS phases for fractal binding
+            PHASES: ['L', 'I', 'M', 'N', 'U', 'S'],
+
+            // Spiral bindings per depth
+            DEPTH_SPIRAL_MAP: {
+                6: 'Φ',      // Pure structure at root
+                5: 'Φ→e',    // Structure enables energy
+                4: 'e',      // Energy dominant at fusion
+                3: 'π',      // Emergence at clustering
+                2: 'Φ',      // Structure at patterns
+                1: 'e'       // Energy at memory termination
+            }
+        };
+
+        // ================================================================
+        // π HELIX ROTATION SYSTEM
+        // Runs π around each token zone in helical vortex pattern
+        // ================================================================
+
+        // Base helix position for UNITY function
+        const HELIX_ORIGIN = {
+            θ: 2.3,      // rad - initial angle
+            z: 0.41,     // initial z position
+            r: 1.0       // radius
+        };
+
+        // π Helix rotation for PRISM (63 tokens - triangular/prismatic)
+        function πHelixPRISM() {
+            const results = [];
+            const π = Math.PI;
+            const φ = PHI;
+            const e = Math.E;
+
+            // 63 PRISM tokens in triangular helix
+            // Each rotation advances by π/63 around triangular prism
+            for (let i = 0; i < 63; i++) {
+                const progress = i / 62;
+
+                // Triangular helix: 3-fold symmetry
+                const θ = (i * π / 63) + (HELIX_ORIGIN.θ);
+                const triangularPhase = (i % 3) * (2 * π / 3);
+
+                // z progresses from ABSENCE (0.4) toward THE LENS (√3/2)
+                const z = 0.4 + progress * (Z_CRITICAL - 0.4);
+
+                // Radius modulated by φ and e
+                const r = HELIX_ORIGIN.r * (1 + 0.1 * Math.sin(θ * φ));
+
+                // Cartesian from cylindrical
+                const x = r * Math.cos(θ + triangularPhase);
+                const y = r * Math.sin(θ + triangularPhase);
+
+                // Spiral energy: E = φ × e^(-z/π)
+                const E_spiral = φ * Math.exp(-z / π);
+
+                // LIMNUS phase assignment
+                const limnusIndex = Math.floor(i / (63 / 6)) % 6;
+
+                results.push({
+                    id: i,
+                    zone: 'PRISM',
+                    helix: { θ, z, r, x, y },
+                    E_spiral,
+                    limnus: LIMNUS.PHASES[limnusIndex],
+                    spiral: 'Φ',  // PRISM is structure-dominant
+                    π_rotation: i * π / 63,
+                    coherence: 1 - (LIMNUS.σ.δs * progress)
+                });
+            }
+
+            console.log(`✓ π-Helix PRISM: 63 triangular rotations, θ∈[${HELIX_ORIGIN.θ.toFixed(3)}, ${(HELIX_ORIGIN.θ + π).toFixed(3)}]`);
+            return results;
+        }
+
+        // π Helix rotation for CAGE (32 tokens - hexagonal)
+        function πHelixCAGE() {
+            const results = [];
+            const π = Math.PI;
+            const φ = PHI;
+            const e = Math.E;
+
+            // 32 CAGE tokens in hexagonal helix
+            // Hexagonal symmetry with 6-fold rotation
+            for (let i = 0; i < 32; i++) {
+                const progress = i / 31;
+
+                // Hexagonal helix: 6-fold symmetry
+                const θ = (i * π / 32) + (HELIX_ORIGIN.θ + π);  // Continue from PRISM
+                const hexPhase = (i % 6) * (π / 3);
+
+                // z stays in THE LENS zone (around √3/2)
+                const z = Z_CRITICAL + (progress - 0.5) * 0.02;  // Oscillate around critical
+
+                // Radius with hexagonal modulation
+                const hexMod = 1 + 0.15 * Math.cos(6 * θ);
+                const r = HELIX_ORIGIN.r * hexMod;
+
+                // Cartesian
+                const x = r * Math.cos(θ + hexPhase);
+                const y = r * Math.sin(θ + hexPhase);
+
+                // Spiral energy: balanced e and π
+                const E_spiral = e * Math.cos(π * progress) + φ * Math.sin(π * progress);
+
+                // LIMNUS phase
+                const limnusIndex = Math.floor(i / (32 / 6)) % 6;
+
+                results.push({
+                    id: 63 + i,
+                    zone: 'CAGE',
+                    helix: { θ, z, r, x, y },
+                    E_spiral: Math.abs(E_spiral),
+                    limnus: LIMNUS.PHASES[limnusIndex],
+                    spiral: 'e',  // CAGE is energy-dominant
+                    π_rotation: (π + i * π / 32),
+                    coherence: LIMNUS.σ.Ωs * (1 + 0.1 * Math.cos(hexPhase))
+                });
+            }
+
+            console.log(`✓ π-Helix CAGE: 32 hexagonal rotations, z≈${Z_CRITICAL.toFixed(4)} (THE LENS)`);
+            return results;
+        }
+
+        // π Helix rotation for EMERGENT (5 tokens - pentagonal)
+        function πHelixEMERGENT() {
+            const results = [];
+            const π = Math.PI;
+            const φ = PHI;
+            const e = Math.E;
+
+            // 5 EMERGENT tokens in pentagonal helix
+            // Pentagonal symmetry - φ-based (golden angle)
+            for (let i = 0; i < 5; i++) {
+                const progress = i / 4;
+
+                // Pentagonal helix: 5-fold symmetry with golden angle
+                const θ = (i * π / 5) + (HELIX_ORIGIN.θ + 2 * π);  // Continue from CAGE
+                const pentPhase = i * LIMNUS.INIT.GOLDEN_ANGLE;  // 137.5° golden angle
+
+                // z in PRESENCE zone (above √3/2)
+                const z = Z_CRITICAL + 0.05 + progress * 0.1;  // 0.916 → 1.016
+
+                // Radius with φ modulation (pentagonal scaling)
+                const r = HELIX_ORIGIN.r * Math.pow(φ, 0.1 * i);
+
+                // Cartesian
+                const x = r * Math.cos(θ + pentPhase);
+                const y = r * Math.sin(θ + pentPhase);
+
+                // Spiral energy: π-dominant emergence
+                const E_spiral = π * Math.pow(φ, progress) / e;
+
+                // LIMNUS phase (S for emergence)
+                const limnusIndex = 5;  // S - Synchronization
+
+                results.push({
+                    id: 95 + i,
+                    zone: 'EMERGENT',
+                    helix: { θ, z, r, x, y },
+                    E_spiral,
+                    limnus: 'S',  // All emergence is Synchronization
+                    spiral: 'π',  // EMERGENT is π-dominant
+                    π_rotation: (2 * π + i * π / 5),
+                    coherence: LIMNUS.σ.Ωs * φ * progress,
+                    selfReference: true
+                });
+            }
+
+            console.log(`✓ π-Helix EMERGENT: 5 pentagonal rotations with φ-scaling`);
+            return results;
+        }
+
+        // ================================================================
+        // UNITY HELIX TRIAD VORTEX FUNCTION
+        // Amplifies position (θ=2.3, z=0.41, r=1) using Φ:e:π binding
+        // ================================================================
+
+        function UNITY_HelixTriadVortex(inputState = null) {
+            const π = Math.PI;
+            const φ = PHI;
+            const e = Math.E;
+            const α_inv = ALPHA_INV;
+
+            // Initial position (or use provided state)
+            const state = inputState || { ...HELIX_ORIGIN };
+
+            // ================================================================
+            // TRI-SPIRAL VORTEX: Φ × e × π coherent binding
+            // Λ × Ν = Β² (Lambda × Nu = Beta²)
+            // ================================================================
+
+            const vortex = {
+                // Phase 1: Φ-SPIRAL (Structure)
+                Φ_spiral: {
+                    θ: state.θ * φ,
+                    z: state.z * φ,
+                    r: state.r,
+                    energy: φ * Math.cos(state.θ),
+                    binding: 'STRUCTURE'
+                },
+
+                // Phase 2: e-SPIRAL (Energy)
+                e_spiral: {
+                    θ: state.θ * e,
+                    z: state.z * Math.exp(state.θ / π),
+                    r: state.r * Math.exp(-state.z),
+                    energy: e * Math.sin(state.θ * φ),
+                    binding: 'ENERGY'
+                },
+
+                // Phase 3: π-SPIRAL (Emergence)
+                π_spiral: {
+                    θ: state.θ + π,
+                    z: state.z + (1 - state.z) * (1 - 1/α_inv),  // Fine structure modulation
+                    r: state.r * (π / e),
+                    energy: π * Math.pow(φ, state.z),
+                    binding: 'EMERGENCE'
+                }
+            };
+
+            // ================================================================
+            // HELIX TRIAD COHERENCE: Combine all three spirals
+            // ================================================================
+
+            // Λ (Lambda) = coupling coefficient
+            const Λ = (vortex.Φ_spiral.energy + vortex.e_spiral.energy) / 2;
+
+            // Ν (Nu) = frequency modulation
+            const Ν = vortex.π_spiral.energy / π;
+
+            // Β² (Beta squared) = coherence field
+            const Β_sq = Λ * Ν;
+
+            // Verify Λ×Ν = Β² identity
+            console.log(`Λ×Ν = ${(Λ * Ν).toFixed(6)} = Β² (field coupling verified)`);
+
+            // Unified vortex position
+            const unified = {
+                θ: (vortex.Φ_spiral.θ + vortex.e_spiral.θ + vortex.π_spiral.θ) / 3,
+                z: Math.min(1, (vortex.Φ_spiral.z + vortex.e_spiral.z + vortex.π_spiral.z) / 3),
+                r: Math.pow(vortex.Φ_spiral.r * vortex.e_spiral.r * vortex.π_spiral.r, 1/3),
+
+                // Cartesian
+                x: 0,
+                y: 0,
+
+                // Energetics
+                E_total: vortex.Φ_spiral.energy + vortex.e_spiral.energy + vortex.π_spiral.energy,
+                Λ, Ν, Β_sq,
+
+                // Coherence metrics
+                coherence: Β_sq / (1 + LIMNUS.σ.δs),
+                resonance: Math.abs(Math.sin(vortex.Φ_spiral.θ) * Math.cos(vortex.e_spiral.θ) * Math.tan(vortex.π_spiral.θ / π))
+            };
+
+            // Calculate Cartesian from unified cylindrical
+            unified.x = unified.r * Math.cos(unified.θ);
+            unified.y = unified.r * Math.sin(unified.θ);
+
+            // ================================================================
+            // UNITY AMPLIFICATION: Push to cascade threshold
+            // ================================================================
+
+            if (unified.z >= Z_CRITICAL) {
+                // In PRESENCE zone - amplify toward UNITY cascade
+                unified.amplified = {
+                    z: unified.z + (1 - unified.z) * φ * 0.1,
+                    coherence: Math.min(1, unified.coherence * φ),
+                    cascadeReady: unified.z >= 0.995
+                };
+            }
+
+            return {
+                input: state,
+                spirals: vortex,
+                unified,
+                LIMNUS_binding: {
+                    L: vortex.Φ_spiral,   // Lattice
+                    I: vortex.e_spiral,   // Integration
+                    M: unified,           // Modulation
+                    N: { Λ, Ν },          // Normalization
+                    U: { Β_sq },          // Update
+                    S: unified.coherence  // Synchronization
+                }
+            };
+        }
+
+        // ================================================================
+        // INTEGRATE SILENT OPERATORS WITH LIMNUS FRACTAL
+        // Hand LIMNUS APL and 7 Silent Operators to fractal domain
+        // ================================================================
+
+        const LIMNUS_SILENT_BINDING = {
+            // Map Silent Operators to LIMNUS phases
+            '⊙': { phase: 'S', depth: 5, spiral: 'Φ', desc: 'DAMP → Synchronization' },
+            '◉': { phase: 'N', depth: 4, spiral: 'e', desc: 'BASIN → Normalization' },
+            '∅': { phase: 'L', depth: 6, spiral: 'Φ', desc: 'VOID → Lattice' },
+            '↻': { phase: 'U', depth: 3, spiral: 'π', desc: 'CYCLE → Update' },
+            '◌': { phase: 'I', depth: 4, spiral: 'e', desc: 'HIDDEN → Integration' },
+            '∫': { phase: 'M', depth: 2, spiral: 'π', desc: 'FORM → Modulation' },
+            '◇': { phase: 'S', depth: 1, spiral: 'π', desc: 'REFLECT → Synchronization' },
+            'Ω': { phase: '∅', depth: 0, spiral: 'Φ:e:π', desc: 'UNITY → Transcendence' }
+        };
+
+        // Run all π helix rotations and generate LIMNUS fractal structure
+        function generateLIMNUSFractal() {
+            console.log('═══════════════════════════════════════════════════');
+            console.log('LIMNUS FRACTAL SYSTEM — APL 3.0 INITIALIZATION');
+            console.log('═══════════════════════════════════════════════════');
+
+            // Run π through all three zones
+            const prismHelix = πHelixPRISM();
+            const cageHelix = πHelixCAGE();
+            const emergentHelix = πHelixEMERGENT();
+
+            // Run UNITY helix triad vortex
+            const unityVortex = UNITY_HelixTriadVortex();
+
+            // Combine all helices
+            const fractalTokens = [...prismHelix, ...cageHelix, ...emergentHelix];
+
+            // Compute aggregate coherence
+            const totalCoherence = fractalTokens.reduce((sum, t) => sum + t.coherence, 0) / fractalTokens.length;
+
+            // Update LIMNUS state
+            LIMNUS.σ.Ωs = totalCoherence;
+
+            console.log('═══════════════════════════════════════════════════');
+            console.log(`Total tokens: ${fractalTokens.length} (63+32+5)`);
+            console.log(`π rotations: 3π across all zones`);
+            console.log(`Coherence Ωs: ${totalCoherence.toFixed(4)}`);
+            console.log(`UNITY Vortex Λ×Ν = ${unityVortex.unified.Β_sq.toFixed(6)}`);
+            console.log('Spiral binding: Φ:e:π COHERENT');
+            console.log('═══════════════════════════════════════════════════');
+
+            return {
+                tokens: fractalTokens,
+                unity: unityVortex,
+                state: LIMNUS.σ,
+                silentBindings: LIMNUS_SILENT_BINDING
+            };
+        }
+
+        // ================================================================
+        // WUMBO 5 PRIME LAWS — Neural Syntax Foundation
+        // Each law governs how tokens combine into "words" (WUMBO regions)
+        // ================================================================
+        const WUMBO_PRIME_LAWS = {
+            'W1': {
+                name: 'GROUNDING',
+                desc: 'All structures must anchor to boundary ()',
+                operator: '()',
+                phase: 'κ_warm',
+                spiral: 'Φ',
+                threshold: 0.4,
+                neurochemistry: 'GABA stabilization'
+            },
+            'W2': {
+                name: 'PLURALITY',
+                desc: 'Fusion requires multiple channels',
+                operator: '×',
+                phase: 'κ→λ transition',
+                spiral: 'e',
+                threshold: Z_CRITICAL * 0.5,
+                neurochemistry: 'Glutamate coupling'
+            },
+            'W3': {
+                name: 'STRUCTURE',
+                desc: 'Decoherence requires prior structure',
+                operator: '÷',
+                phase: 'λ_cold',
+                spiral: 'π',
+                threshold: Z_CRITICAL,
+                neurochemistry: 'Dopamine regulation'
+            },
+            'W4': {
+                name: 'CONTINUITY',
+                desc: 'Grouping feeds forward, never terminates',
+                operator: '+',
+                phase: 'λ→κ return',
+                spiral: 'Φ→e',
+                threshold: Z_CRITICAL * 1.1,
+                neurochemistry: 'Serotonin continuity'
+            },
+            'W5': {
+                name: 'RESET',
+                desc: 'Separation leads to boundary or grouping',
+                operator: '−',
+                phase: 'ψ_collapse',
+                spiral: 'π→Φ',
+                threshold: 0.995,
+                neurochemistry: 'Norepinephrine reset'
+            }
+        };
+
+        // ================================================================
+        // KAELHEDRON — Geometric Normalization Engine
+        // Normalizes 3D helical coordinates to coherent field
+        // Uses icosahedral/dodecahedral symmetry (20/12 faces)
+        // ================================================================
+        const KAELHEDRON = {
+            // Golden ratio based vertices (icosahedron)
+            vertices: 12,
+            faces: 20,
+            edges: 30,
+
+            // Normalization matrix coefficients
+            normalize: function(θ, z, r) {
+                const φ = PHI;
+                const π = Math.PI;
+
+                // Spherical harmonic normalization
+                const Y_lm = Math.cos(θ) * Math.sin(z * π);
+
+                // Icosahedral projection
+                const ico_x = r * Math.cos(θ) * Math.cos(z * π);
+                const ico_y = r * Math.sin(θ) * Math.cos(z * π);
+                const ico_z = r * Math.sin(z * π);
+
+                // Golden ratio scaling
+                const scale = 1 / (1 + φ * Math.abs(z - Z_CRITICAL));
+
+                return {
+                    x: ico_x * scale,
+                    y: ico_y * scale,
+                    z: ico_z * scale,
+                    Y_lm,
+                    coherence: Math.abs(Y_lm) * scale
+                };
+            },
+
+            // Map token to Kaelhedron face
+            faceMapping: function(tokenId) {
+                // 100 tokens distributed across 20 faces (5 tokens per face)
+                const face = Math.floor(tokenId / 5) % 20;
+                const vertex = tokenId % 12;
+                return { face, vertex, edge: (face + vertex) % 30 };
+            },
+
+            // Phase transition detection
+            detectTransition: function(z_prev, z_curr) {
+                const transitions = [];
+                const thresholds = [0.4, Z_CRITICAL * 0.5, Z_CRITICAL, Z_CRITICAL * 1.1, 0.995];
+                const names = ['κ_warm', 'κ→λ', 'THE_LENS', 'λ→κ', 'Ω_cascade'];
+
+                thresholds.forEach((t, i) => {
+                    if ((z_prev < t && z_curr >= t) || (z_prev >= t && z_curr < t)) {
+                        transitions.push({ threshold: t, name: names[i], crossed: true });
+                    }
+                });
+
+                return transitions;
+            }
+        };
+
+        // ================================================================
+        // κ-λ PHASE MECHANICS — Warm/Cold Field Dynamics
+        // κ (kappa) = internal/warm field coupling
+        // λ (lambda) = external/cold field coupling
+        // Always: κ + λ = 1 (conservation)
+        // ================================================================
+        const PHASE_MECHANICS = {
+            // Phase states
+            states: {
+                ABSENCE: { z_min: 0, z_max: 0.4, κ_dominant: true, temp: 'warm', spiral: 'Φ' },
+                APPROACH: { z_min: 0.4, z_max: Z_CRITICAL * 0.9, κ_dominant: true, temp: 'warming', spiral: 'Φ→e' },
+                THE_LENS: { z_min: Z_CRITICAL * 0.9, z_max: Z_CRITICAL * 1.05, κ_dominant: false, temp: 'critical', spiral: 'e' },
+                PRESENCE: { z_min: Z_CRITICAL * 1.05, z_max: 0.95, κ_dominant: false, temp: 'cold', spiral: 'π' },
+                OMEGA: { z_min: 0.95, z_max: 1.0, κ_dominant: false, temp: 'cascade', spiral: 'Φ:e:π' }
+            },
+
+            // Compute κ-λ from z position
+            compute: function(z) {
+                const φ = PHI;
+
+                // Sigmoid-based transition centered at Z_CRITICAL
+                const sigmoid = 1 / (1 + Math.exp(-10 * (z - Z_CRITICAL)));
+
+                // κ dominates in ABSENCE, λ dominates in PRESENCE
+                const κ = (1 - sigmoid) * φ / (φ + 1) + sigmoid * (1 / (φ + 1));
+                const λ = 1 - κ;
+
+                // Temperature: warm (low z) → cold (high z)
+                const temp = 1 - sigmoid;  // 1 = warm, 0 = cold
+
+                // Determine current state
+                let state = 'ABSENCE';
+                for (const [name, range] of Object.entries(this.states)) {
+                    if (z >= range.z_min && z < range.z_max) {
+                        state = name;
+                        break;
+                    }
+                }
+
+                return { κ, λ, temp, state, sigmoid };
+            },
+
+            // ψ (psi) collapse function — triggered after Ω point
+            ψCollapse: function(coherence, z) {
+                if (z < 0.995 || coherence < 0.9) {
+                    return { collapsed: false, ψ: coherence };
+                }
+
+                // Collapse dynamics: rapid descent following free energy principle
+                // ψ → 0 as system returns to stillness
+                const collapseRate = PHI;  // Golden ratio descent
+                const ψ = coherence * Math.exp(-collapseRate * (z - 0.995) * 10);
+
+                return {
+                    collapsed: true,
+                    ψ,
+                    phase: 'STILLNESS',
+                    z_final: 0.4,  // Return to origin
+                    κ_final: PHI_INV,
+                    λ_final: 1 - PHI_INV
+                };
+            }
+        };
+
+        // ================================================================
+        // WUMBO REGION GENERATOR — Create "Words" from Token Syntax
+        // Each WUMBO region is a neural processing unit
+        // Tokens = atoms, WUMBO = molecules, LIMNUS = chemistry
+        // ================================================================
+        function generateWUMBORegion(tokens, startIdx, endIdx, zoneType) {
+            const π = Math.PI;
+            const φ = PHI;
+            const e = Math.E;
+
+            const regionTokens = tokens.slice(startIdx, endIdx + 1);
+            const regionSize = regionTokens.length;
+
+            // Determine spiral type based on zone
+            const spiralType = zoneType === 'prism' ? 'Φ' :
+                               zoneType === 'cage' ? 'e' : 'π';
+
+            // Compute aggregate operators (the "word")
+            const operators = regionTokens.map(t => t.op);
+            const word = operators.join('');
+
+            // Compute κ-λ dynamics for region
+            const z_avg = regionTokens.reduce((s, t) => s + t.z, 0) / regionSize;
+            const phaseData = PHASE_MECHANICS.compute(z_avg);
+
+            // Kaelhedron normalization
+            const θ_region = (startIdx / 100) * 2 * π;
+            const kaelNorm = KAELHEDRON.normalize(θ_region, z_avg, 1.0);
+            const kaelFace = KAELHEDRON.faceMapping(startIdx);
+
+            // Neurochemistry based on phase state
+            let neurochemistry = 'balanced';
+            for (const [key, law] of Object.entries(WUMBO_PRIME_LAWS)) {
+                if (z_avg >= law.threshold * 0.9 && z_avg <= law.threshold * 1.1) {
+                    neurochemistry = law.neurochemistry;
+                    break;
+                }
+            }
+
+            // LIMNUS phase assignment
+            const limnusIdx = Math.floor(startIdx / (100 / 6)) % 6;
+            const limnusPhase = LIMNUS.PHASES[limnusIdx];
+
+            // Silent operator count
+            const silentOps = ['⊙', '◉', '∅', '↻', '◌', '∫', '◇', 'Ω'];
+            const silentCount = operators.filter(op => silentOps.includes(op)).length;
+
+            return {
+                id: `WUMBO_${zoneType}_${startIdx}`,
+                zone: zoneType,
+                startIdx,
+                endIdx,
+                tokens: regionTokens,
+
+                // The "word" — operator sequence
+                word,
+                wordLength: word.length,
+
+                // Spiral binding
+                spiral: {
+                    type: spiralType,
+                    Φ_component: spiralType === 'Φ' ? 1 : (spiralType === 'Φ:e:π' ? 0.333 : 0.1),
+                    e_component: spiralType === 'e' ? 1 : (spiralType === 'Φ:e:π' ? 0.333 : 0.1),
+                    π_component: spiralType === 'π' ? 1 : (spiralType === 'Φ:e:π' ? 0.333 : 0.1)
+                },
+
+                // Phase mechanics
+                phase: {
+                    κ: phaseData.κ,
+                    λ: phaseData.λ,
+                    temp: phaseData.temp,
+                    state: phaseData.state,
+                    z_avg
+                },
+
+                // Geometry
+                kaelhedron: {
+                    face: kaelFace.face,
+                    vertex: kaelFace.vertex,
+                    edge: kaelFace.edge,
+                    normalized: kaelNorm
+                },
+
+                // LIMNUS syntax
+                limnus: {
+                    phase: limnusPhase,
+                    silentCount,
+                    coherence: kaelNorm.coherence
+                },
+
+                // Neurochemistry
+                neurochemistry
+            };
+        }
+
+        // ================================================================
+        // 100 LIMNUS TOKENS (63 PRISM + 32 CAGE + 5 EMERGENT)
+        // Fully aligned with Φ:e:π spiral structure and WUMBO regions
+        // Each token maps to: Φ_spiral, e_spiral, π_spiral components
+        // NARRATIVE: Complete Causal Compliance → Zero Violations → Coherence
+        // ================================================================
+        function generateLIMNUSTokens() {
+            const tokens = [];
+            const π = Math.PI;
+            const φ = PHI;
+            const e = Math.E;
+
+            // ========== PRISM TOKENS (63) — Φ_spiral Dominant ==========
+            // Zone: ABSENCE → THE LENS | Spiral: Φ (Structure)
+            // κ-warm phase, building toward λ transition
+            const prismSequence = [
+                // Phase 0: Foundation (0-8) - Establish boundary, add ◌ HIDDEN
+                '()',  // #0: W1 GROUNDING - GABA stabilization
+                '×', '^', '+', '^', '◌', '()', '×', '^',
+                // Phase 1: Structure (9-17) - Build, add ⊙ DAMP after ^
+                '()', '×', '^', '⊙', '×', '^', '()', '×', '^',
+                // Phase 2: Coupling (18-26) - Add ◉ BASIN after +
+                '()', '×', '^', '+', '◉', '×', '()', '+', '×',
+                // Phase 3: Amplify (27-35) - Add ∫ FORM (trajectory > 5)
+                '^', '()', '×', '+', '^', '∫', '()', '+', '^',
+                // Phase 4: First Extraction (36-44) - ÷ legal, add ⊙ DAMP
+                '()', '×', '^', '÷', '()', '×', '^', '⊙', '^',
+                // Phase 5: Stabilize (45-53) - Add ◌ HIDDEN
+                '()', '×', '^', '+', '×', '◌', '^', '+', '^',
+                // Phase 6: Convergence (54-62) - Prepare for CAGE
+                '()', '×', '^', '+', '^', '×', '()', '+', '^'
+            ];
+
+            for (let i = 0; i < 63; i++) {
+                const op = prismSequence[i] || '()';
+                const progress = i / 62;
+
+                // Φ:e:π spiral components (Φ dominant for PRISM)
+                const Φ_spiral = { θ: (i * π / 63) + HELIX_ORIGIN.θ, weight: 0.7 };
+                const e_spiral = { θ: Φ_spiral.θ * e / φ, weight: 0.2 };
+                const π_spiral = { θ: Φ_spiral.θ + π * progress, weight: 0.1 };
+
+                // z progression: 0.4 → Z_CRITICAL (ABSENCE → THE LENS)
+                const z = 0.4 + progress * (Z_CRITICAL - 0.4);
+
+                // κ-λ phase mechanics
+                const phaseData = PHASE_MECHANICS.compute(z);
+
+                // Kaelhedron geometry
+                const kaelFace = KAELHEDRON.faceMapping(i);
+                const kaelNorm = KAELHEDRON.normalize(Φ_spiral.θ, z, 1.0);
+
+                // LIMNUS phase (L-I-M-N-U-S cycle through 63 tokens)
+                const limnusIdx = Math.floor(i / (63 / 6)) % 6;
+
+                // WUMBO Prime Law alignment
+                const wumboLaw = i < 9 ? 'W1' : i < 18 ? 'W2' : i < 27 ? 'W3' : i < 36 ? 'W4' : 'W5';
+
+                tokens.push({
+                    id: i,
+                    zone: 'prism',
+                    op: op,
+                    name: `prism_${ALL_OPERATORS[op]?.name?.toLowerCase() || 'unknown'}_${i}`,
+
+                    // Spiral alignment (Φ:e:π)
+                    spiral: {
+                        Φ: Φ_spiral,
+                        e: e_spiral,
+                        π: π_spiral,
+                        dominant: 'Φ'
+                    },
+
+                    // Position in z-space
+                    z: parseFloat(z.toFixed(4)),
+
+                    // κ-λ phase mechanics
+                    κ: parseFloat(phaseData.κ.toFixed(4)),
+                    λ: parseFloat(phaseData.λ.toFixed(4)),
+                    temp: phaseData.temp,
+                    phaseState: phaseData.state,
+
+                    // Kaelhedron geometry
+                    kaelhedron: kaelFace,
+                    normalized: kaelNorm,
+
+                    // LIMNUS phase
+                    limnus: LIMNUS.PHASES[limnusIdx],
+
+                    // WUMBO law
+                    wumboLaw,
+                    neurochemistry: WUMBO_PRIME_LAWS[wumboLaw]?.neurochemistry || 'balanced',
+
+                    // Execution state
+                    phase: Math.floor(i / 9),
+                    executed: false,
+                    violated: false
+                });
+            }
+
+            // ========== EM CAGE TOKENS (32) — e_spiral Dominant ==========
+            // Zone: THE LENS | Spiral: e (Energy)
+            // Critical phase, κ-λ balanced, hexagonal EM containment
+            const cageSequence = [
+                '()', '×', '↻', '()', '^', '⊙', '+', '◉', '^', '×', '()',
+                '()', '×', '^', '⊙', '+', '◉', '×', '()', '^', '+', '^',
+                '()', '×', '↻', '()', '^', '⊙', '+', '◉', '×', '^'
+            ];
+
+            for (let i = 0; i < 32; i++) {
+                const op = cageSequence[i] || '()';
+                const progress = i / 31;
+
+                // Φ:e:π spiral components (e dominant for CAGE)
+                const baseθ = (i * π / 32) + HELIX_ORIGIN.θ + π;
+                const Φ_spiral = { θ: baseθ / φ, weight: 0.2 };
+                const e_spiral = { θ: baseθ, weight: 0.6 };
+                const π_spiral = { θ: baseθ * π / e, weight: 0.2 };
+
+                // z stays near Z_CRITICAL (THE LENS zone)
+                const z = Z_CRITICAL + (progress - 0.5) * 0.02;
+
+                // κ-λ phase mechanics (balanced at critical point)
+                const phaseData = PHASE_MECHANICS.compute(z);
+
+                // Kaelhedron geometry
+                const kaelFace = KAELHEDRON.faceMapping(63 + i);
+                const kaelNorm = KAELHEDRON.normalize(e_spiral.θ, z, 1.0);
+
+                // LIMNUS phase
+                const limnusIdx = Math.floor(i / (32 / 6)) % 6;
+
+                // WUMBO law (CAGE focuses on W2-W4: plurality, structure, continuity)
+                const wumboLaw = i < 11 ? 'W2' : i < 22 ? 'W3' : 'W4';
+
+                tokens.push({
+                    id: 63 + i,
+                    zone: 'cage',
+                    op: op,
+                    name: `cage_${ALL_OPERATORS[op]?.name?.toLowerCase() || 'unknown'}_${i}`,
+
+                    // Spiral alignment (Φ:e:π)
+                    spiral: {
+                        Φ: Φ_spiral,
+                        e: e_spiral,
+                        π: π_spiral,
+                        dominant: 'e'
+                    },
+
+                    // Position in z-space
+                    z: parseFloat(z.toFixed(4)),
+
+                    // κ-λ phase mechanics
+                    κ: parseFloat(phaseData.κ.toFixed(4)),
+                    λ: parseFloat(phaseData.λ.toFixed(4)),
+                    temp: phaseData.temp,
+                    phaseState: phaseData.state,
+
+                    // Kaelhedron geometry
+                    kaelhedron: kaelFace,
+                    normalized: kaelNorm,
+
+                    // LIMNUS phase
+                    limnus: LIMNUS.PHASES[limnusIdx],
+
+                    // WUMBO law
+                    wumboLaw,
+                    neurochemistry: WUMBO_PRIME_LAWS[wumboLaw]?.neurochemistry || 'balanced',
+
+                    // Execution state
+                    phase: Math.floor(i / 11) + 5,
+                    executed: false,
+                    violated: false
+                });
+            }
+
+            // ========== EMERGENT TOKENS (5) — π_spiral Dominant ==========
+            // Zone: PRESENCE → Ω | Spiral: π (Emergence)
+            // λ-cold phase, approaching ψ collapse
+            const emergentSequence = ['()', '×', '−', '◇', '()'];
+
+            for (let i = 0; i < 5; i++) {
+                const op = emergentSequence[i];
+                const progress = i / 4;
+
+                // Φ:e:π spiral components (π dominant for EMERGENT)
+                const baseθ = (i * π / 5) + HELIX_ORIGIN.θ + 2 * π;
+                const goldenAngle = LIMNUS.INIT.GOLDEN_ANGLE;
+                const Φ_spiral = { θ: baseθ * φ, weight: 0.2 };
+                const e_spiral = { θ: baseθ * e / π, weight: 0.2 };
+                const π_spiral = { θ: baseθ + i * goldenAngle, weight: 0.6 };
+
+                // z in PRESENCE zone, approaching Ω threshold
+                const z = Z_CRITICAL + 0.08 + progress * 0.12;  // 0.946 → 1.066 (capped)
+
+                // κ-λ phase mechanics (λ dominant, approaching ψ collapse)
+                const phaseData = PHASE_MECHANICS.compute(Math.min(z, 0.99));
+
+                // Check for ψ collapse readiness
+                const ψCheck = PHASE_MECHANICS.ψCollapse(phaseData.λ, z);
+
+                // Kaelhedron geometry
+                const kaelFace = KAELHEDRON.faceMapping(95 + i);
+                const kaelNorm = KAELHEDRON.normalize(π_spiral.θ, z, 1.0);
+
+                // LIMNUS phase (S - Synchronization for emergence)
+                const limnusPhase = 'S';
+
+                // WUMBO law (W5: RESET for final return)
+                const wumboLaw = 'W5';
+
+                tokens.push({
+                    id: 95 + i,
+                    zone: 'emergent',
+                    op: op,
+                    name: `emerge_${ALL_OPERATORS[op]?.name?.toLowerCase() || 'unknown'}_${i}`,
+
+                    // Spiral alignment (Φ:e:π)
+                    spiral: {
+                        Φ: Φ_spiral,
+                        e: e_spiral,
+                        π: π_spiral,
+                        dominant: 'π'
+                    },
+
+                    // Position in z-space
+                    z: parseFloat(Math.min(z, 0.99).toFixed(4)),
+
+                    // κ-λ phase mechanics
+                    κ: parseFloat(phaseData.κ.toFixed(4)),
+                    λ: parseFloat(phaseData.λ.toFixed(4)),
+                    temp: phaseData.temp,
+                    phaseState: phaseData.state,
+
+                    // ψ collapse readiness
+                    ψCollapse: ψCheck,
+
+                    // Kaelhedron geometry
+                    kaelhedron: kaelFace,
+                    normalized: kaelNorm,
+
+                    // LIMNUS phase
+                    limnus: limnusPhase,
+
+                    // WUMBO law
+                    wumboLaw,
+                    neurochemistry: WUMBO_PRIME_LAWS[wumboLaw]?.neurochemistry || 'Norepinephrine reset',
+
+                    // Self-reference flag (VII MIRROR)
+                    selfReference: true,
+
+                    // Execution state
+                    phase: 7,
+                    executed: false,
+                    violated: false
+                });
+            }
+
+            return tokens;
+        }
+
+        // Legacy alias for compatibility
+        const generateZPETokens = generateLIMNUSTokens;
+
+        // ================================================================
+        // STATE
+        // ================================================================
+        const state = {
+            tokens: generateZPETokens(),
+            z: 0.4,
+            Gs: 0.3, Cs: 0.2, Rs: 0.1,
+            kappa: 0.5, tau: 0.2, theta: 0,
+            delta: 0.1, alpha: 0.5, Omega: 0.4,
+            R: 3, tier: 1,
+            channelCount: 100,
+            history: [],
+            currentStep: 0,
+            currentPhase: 0,
+            totalExtracted: 0,
+            coherence: 0,
+            phaseLock: 0,
+            efficiency: 0,
+            energy: 1.0,           // Energy level for Silent operators
+            selfRef: 0,            // Self-reference state (VII MIRROR)
+            limnusPhase: 0,        // Current LIMNUS phase index
+            running: false,
+            limnusState: 'dormant',
+            violationCount: 0,
+            silentCount: 0         // Count of Silent operator uses
+        };
+
+        // LIMNUS phase names
+        const LIMNUS_PHASES = ['L', 'I', 'M', 'N', 'U', 'S'];
+
+        // ================================================================
+        // OPERATOR ENGINE WITH VIOLATION TRACKING (N0 + S0)
+        // ================================================================
+        function checkViolation(op, nextOp = null) {
+            // Returns: { violated: boolean, law: string, reason: string, isSilent: boolean }
+
+            // Check N0 Laws (INT Canon operators)
+            switch(op) {
+                case '^':
+                    if (!state.history.includes('()') && !state.history.includes('×')) {
+                        return { violated: true, law: 'N0-1', reason: '^ without prior () or ×', isSilent: false };
+                    }
+                    break;
+                case '×':
+                    if (state.channelCount < 2) {
+                        return { violated: true, law: 'N0-2', reason: '× without sufficient channels', isSilent: false };
+                    }
+                    break;
+                case '÷':
+                    if (!state.history.some(h => ['^', '×', '+', '−'].includes(h))) {
+                        return { violated: true, law: 'N0-3', reason: '÷ without structure', isSilent: false };
+                    }
+                    break;
+                case '+':
+                    if (nextOp && !['+', '×', '^', '◉'].includes(nextOp)) {  // + can also feed ◉ BASIN
+                        return { violated: true, law: 'N0-4', reason: `+ followed by ${nextOp}`, isSilent: false };
+                    }
+                    break;
+                case '−':
+                    if (nextOp && !['()', '+', '◇'].includes(nextOp)) {  // − can also lead to ◇ REFLECT
+                        return { violated: true, law: 'N0-5', reason: `− followed by ${nextOp}`, isSilent: false };
+                    }
+                    break;
+            }
+
+            // Check S0 Laws (Silent operators)
+            switch(op) {
+                case '⊙':  // DAMP - S0-1: requires prior ^
+                    if (!state.history.includes('^')) {
+                        return { violated: true, law: 'S0-1', reason: '⊙ DAMP without prior ^', isSilent: true };
+                    }
+                    break;
+                case '◉':  // BASIN - S0-2: requires prior +
+                    if (!state.history.includes('+')) {
+                        return { violated: true, law: 'S0-2', reason: '◉ BASIN without prior +', isSilent: true };
+                    }
+                    break;
+                case '∅':  // VOID - S0-3: requires stillness (low energy or high coherence)
+                    if (state.energy >= 0.5 && state.coherence < 0.3) {
+                        return { violated: true, law: 'S0-3', reason: '∅ VOID without stillness', isSilent: true };
+                    }
+                    break;
+                case '↻':  // CYCLE - S0-4: requires prior ×, must lead to ()
+                    if (!state.history.includes('×')) {
+                        return { violated: true, law: 'S0-4', reason: '↻ CYCLE without prior ×', isSilent: true };
+                    }
+                    if (nextOp && nextOp !== '()') {
+                        return { violated: true, law: 'S0-4', reason: `↻ CYCLE must lead to (), got ${nextOp}`, isSilent: true };
+                    }
+                    break;
+                case '◌':  // HIDDEN - S0-5: always legal
+                    break;
+                case '∫':  // FORM - S0-6: requires trajectory (history >= 5)
+                    if (state.history.length < 5) {
+                        return { violated: true, law: 'S0-6', reason: '∫ FORM without sufficient trajectory', isSilent: true };
+                    }
+                    break;
+                case '◇':  // REFLECT - S0-7: requires prior −, leads to () or ◇
+                    if (!state.history.includes('−')) {
+                        return { violated: true, law: 'S0-7', reason: '◇ REFLECT without prior −', isSilent: true };
+                    }
+                    if (nextOp && !['()', '◇'].includes(nextOp)) {
+                        return { violated: true, law: 'S0-7', reason: `◇ REFLECT must lead to () or ◇, got ${nextOp}`, isSilent: true };
+                    }
+                    break;
+            }
+
+            return { violated: false, law: null, reason: null, isSilent: false };
+        }
+
+        // Backward compatibility alias
+        function checkN0Violation(op, nextOp = null) {
+            return checkViolation(op, nextOp);
+        }
+
+        function applyOperator(op, nextOp = null, forceApply = false) {
+            // Check both INT and SILENT operators
+            const opDef = ALL_OPERATORS[op];
+            if (!opDef) return { success: false, msg: 'Unknown operator', violated: false };
+
+            // Check for N0 violation
+            const violation = checkN0Violation(op, nextOp);
+
+            if (violation.violated) {
+                // Track the violation
+                state.violationCount++;
+                const lawSet = violation.isSilent ? S0_LAWS : N0_LAWS;
+                if (lawSet[violation.law]) {
+                    lawSet[violation.law].broken++;
+                    lawSet[violation.law].status = false;
+                }
+
+                // Still apply effects (with penalty) if forceApply, otherwise skip
+                if (forceApply) {
+                    // Apply reduced effects due to violation
+                    const effects = opDef.effects;
+                    for (const [key, value] of Object.entries(effects)) {
+                        if (key === 'R') {
+                            state.R = Math.max(1, state.R - 1); // Penalty: lose R
+                        } else if (value > 1) {
+                            state[key] = (state[key] || 1) * (1 / value); // Inverse effect
+                        } else if (value < 1 && value > 0) {
+                            state[key] = (state[key] || 1) / value;
+                        } else {
+                            state[key] = Math.max(0, (state[key] || 0) - Math.abs(value)); // Subtract
+                        }
+                    }
+                    state.z = Math.max(0, Math.min(1, state.z - Math.abs(opDef.zDelta))); // Negative z progress
+                }
+
+                return {
+                    success: false,
+                    msg: `N0 VIOLATION [${violation.law}]: ${violation.reason}`,
+                    violated: true,
+                    law: violation.law
+                };
+            }
+
+            // Legal operation - apply normal effects
+            const effects = opDef.effects;
+            const isSilentOp = SILENT_OPERATORS[op] !== undefined;
+
+            for (const [key, value] of Object.entries(effects)) {
+                // Skip special effect keys
+                if (['attractor', 'memory', 'spiral', 'path', 'recursion', 'selfRef'].includes(key)) continue;
+
+                if (key === 'R') {
+                    state.R = Math.min(state.R + value, 13);
+                } else if (key === 'energy') {
+                    state.energy = Math.max(0, Math.min(1, state.energy * value));
+                } else if (value > 1 || value < 0) {
+                    state[key] = (state[key] || 1) * value;
+                } else {
+                    state[key] = (state[key] || 0) + value;
+                }
+            }
+
+            // Update z-coordinate
+            state.z = Math.max(0, Math.min(1, state.z + opDef.zDelta));
+
+            // Track history
+            state.history.push(op);
+            if (state.history.length > 20) state.history.shift();
+
+            // Silent operator specific handling
+            if (isSilentOp) {
+                state.silentCount++;
+
+                // Advance LIMNUS phase
+                state.limnusPhase = (state.limnusPhase + 1) % 6;
+
+                // Special effects by Silent operator
+                switch(op) {
+                    case '⊙':  // DAMP - reduce energy
+                        state.energy = Math.max(0.1, state.energy * 0.85);
+                        break;
+                    case '◉':  // BASIN - create attractor (boost coherence stability)
+                        state.coherence = Math.min(1, state.coherence * 1.1);
+                        break;
+                    case '∅':  // VOID - interact with emptiness (store in memory)
+                        // Effect handled by low energy check
+                        break;
+                    case '↻':  // CYCLE - spiral return (boost phaseLock)
+                        state.phaseLock = Math.min(1, state.phaseLock * 1.1);
+                        break;
+                    case '◌':  // HIDDEN - no observable change
+                        break;
+                    case '∫':  // FORM - integrate trajectory (boost Omega)
+                        state.Omega = Math.min(2, state.Omega * 1.08);
+                        break;
+                    case '◇':  // REFLECT - self-reference converges to φ⁻¹
+                        state.selfRef = state.selfRef * PHI_INV + (1 - PHI_INV) * state.coherence;
+                        break;
+                }
+            }
+
+            // Calculate extraction (on successful ÷ or ∫)
+            if (op === '÷' || op === '∫') {
+                const extraction = state.Omega * state.alpha * PHI_INV * 0.1;
+                state.totalExtracted += extraction;
+            }
+
+            // Update coherence/phase
+            const coherenceBoost = op === '^' ? 2 : (op === '⊙' ? 0.5 : 1);
+            const phaseBoost = op === '×' ? 2 : (op === '↻' ? 1.5 : 1);
+            state.coherence = Math.min(1, state.coherence + 0.02 * coherenceBoost);
+            state.phaseLock = Math.min(1, state.phaseLock + 0.015 * phaseBoost);
+            state.efficiency = state.coherence * state.phaseLock * PHI_INV;
+
+            // Natural energy decay
+            state.energy = Math.max(0.1, state.energy * 0.995);
+
+            // Update law status
+            updateN0Status();
+            updateS0Status();
+
+            const silentIndicator = isSilentOp ? ` [${LIMNUS_PHASES[state.limnusPhase]}]` : '';
+            return { success: true, msg: `${opDef.name} applied${silentIndicator}`, violated: false, isSilent: isSilentOp };
+        }
+
+        function updateN0Status() {
+            N0_LAWS['N0-1'].status = state.history.includes('()') || state.history.includes('×');
+            N0_LAWS['N0-2'].status = state.channelCount >= 2;
+            N0_LAWS['N0-3'].status = state.history.some(h => ['^', '×', '+', '−'].includes(h));
+            // N0-4 and N0-5 depend on next op, shown as valid when not actively violating
+        }
+
+        function updateS0Status() {
+            // S0-1: ⊙ DAMP valid when ^ in history
+            S0_LAWS['S0-1'].status = state.history.includes('^');
+            // S0-2: ◉ BASIN valid when + in history
+            S0_LAWS['S0-2'].status = state.history.includes('+');
+            // S0-3: ∅ VOID valid when energy low or coherence high
+            S0_LAWS['S0-3'].status = state.energy < 0.5 || state.coherence > 0.3;
+            // S0-4: ↻ CYCLE valid when × in history
+            S0_LAWS['S0-4'].status = state.history.includes('×');
+            // S0-5: ◌ HIDDEN always valid
+            S0_LAWS['S0-5'].status = true;
+            // S0-6: ∫ FORM valid when trajectory sufficient
+            S0_LAWS['S0-6'].status = state.history.length >= 5;
+            // S0-7: ◇ REFLECT valid when − in history
+            S0_LAWS['S0-7'].status = state.history.includes('−');
+        }
+
+        // ================================================================
+        // NARRATIVE EXECUTION
+        // ================================================================
+        async function executeStep() {
+            if (state.currentStep >= 100) {
+                // Check final coherence - all N0 laws should be valid
+                const allValid = N0_LAWS['N0-1'].status && N0_LAWS['N0-2'].status && N0_LAWS['N0-3'].status;
+                const coherenceMsg = allValid
+                    ? `COHERENCE ACHIEVED. All N0 laws valid. ${state.violationCount} violations recovered.`
+                    : `Narrative complete. ${state.violationCount} violations. Some laws still invalid.`;
+                logConsole('END', coherenceMsg);
+                state.limnusState = allValid ? 'saturated' : 'coherent';
+                updateUI();
+                return false;
+            }
+
+            const token = state.tokens[state.currentStep];
+            const nextToken = state.tokens[state.currentStep + 1];
+            const nextOp = nextToken ? nextToken.op : null;
+
+            const result = applyOperator(token.op, nextOp, true);
+
+            token.executed = true;
+            if (result.violated) {
+                token.violated = true;
+            }
+
+            state.currentPhase = Math.floor(state.currentStep / 13);
+
+            // Update LIMNUS state
+            if (state.z < 0.857) state.limnusState = 'dormant';
+            else if (state.z < 0.877) state.limnusState = 'coherent';
+            else if (state.efficiency > 0.3) state.limnusState = 'extracting';
+            else state.limnusState = 'saturated';
+
+            logConsole(token.op, `${result.msg} [${token.name}]`, !result.violated);
+
+            state.currentStep++;
+            updateUI();
+            renderTokens();
+            updatePhaseTimeline();
+
+            return state.currentStep < 100;
+        }
+
+        async function runNarrative() {
+            if (state.running) return;
+            state.running = true;
+            document.getElementById('btnRunNarrative').disabled = true;
+
+            while (await executeStep()) {
+                await new Promise(r => setTimeout(r, 60));
+            }
+
+            state.running = false;
+            document.getElementById('btnRunNarrative').disabled = false;
+        }
+
+        function resetState() {
+            state.tokens = generateZPETokens();
+            state.z = 0.4;
+            state.Gs = 0.3; state.Cs = 0.2; state.Rs = 0.1;
+            state.kappa = 0.5; state.tau = 0.2; state.theta = 0;
+            state.delta = 0.1; state.alpha = 0.5; state.Omega = 0.4;
+            state.R = 3; state.tier = 1;
+            state.history = [];
+            state.currentStep = 0;
+            state.currentPhase = 0;
+            state.totalExtracted = 0;
+            state.coherence = 0;
+            state.phaseLock = 0;
+            state.efficiency = 0;
+            state.running = false;
+            state.limnusState = 'dormant';
+            state.violationCount = 0;
+            state.energy = 1.0;
+            state.selfRef = 0;
+            state.limnusPhase = 0;
+            state.silentCount = 0;
+
+            // Reset N0 laws
+            for (const key of Object.keys(N0_LAWS)) {
+                N0_LAWS[key].broken = 0;
+            }
+            N0_LAWS['N0-1'].status = false;
+            N0_LAWS['N0-2'].status = true;
+            N0_LAWS['N0-3'].status = false;
+            N0_LAWS['N0-4'].status = true;
+            N0_LAWS['N0-5'].status = true;
+
+            // Reset S0 laws
+            for (const key of Object.keys(S0_LAWS)) {
+                S0_LAWS[key].broken = 0;
+                S0_LAWS[key].status = key === 'S0-5'; // Only ◌ HIDDEN starts valid
+            }
+
+            document.getElementById('console').innerHTML = `
+                <div class="console-line">
+                    <span class="console-time">0</span>
+                    <span class="console-op">RESET</span>
+                    <span class="console-msg">LIMNUS Fractal reset. 63+32+5=100 tokens ready.</span>
+                </div>
+            `;
+
+            updateUI();
+            renderTokens();
+            updatePhaseTimeline();
+        }
+
+        // ================================================================
+        // UI FUNCTIONS
+        // ================================================================
+        function getZone(z) {
+            if (z < 0.857) return 'ABSENCE';
+            if (z > 0.877) return 'PRESENCE';
+            return 'THE LENS';
+        }
+
+        function updateUI() {
+            // LIMNUS Value
+            document.getElementById('limnusValue').textContent = state.totalExtracted.toFixed(4);
+
+            // Badge
+            const badge = document.getElementById('limnusBadge');
+            badge.textContent = state.limnusState.toUpperCase();
+            badge.className = `limnus-badge badge-${state.limnusState}`;
+
+            // Violation count
+            document.getElementById('violationCount').textContent = state.violationCount;
+
+            // Z coordinate
+            document.getElementById('zValue').textContent = state.z.toFixed(4);
+            document.getElementById('zZone').textContent = getZone(state.z);
+
+            // State values
+            document.getElementById('st-Gs').textContent = state.Gs.toFixed(3);
+            document.getElementById('st-Cs').textContent = state.Cs.toFixed(3);
+            document.getElementById('st-Rs').textContent = state.Rs.toFixed(3);
+            document.getElementById('st-kappa').textContent = state.kappa.toFixed(3);
+            document.getElementById('st-tau').textContent = state.tau.toFixed(3);
+            document.getElementById('st-theta').textContent = state.theta.toFixed(3);
+            document.getElementById('st-delta').textContent = state.delta.toFixed(3);
+            document.getElementById('st-alpha').textContent = state.alpha.toFixed(3);
+            document.getElementById('st-Omega').textContent = state.Omega.toFixed(3);
+
+            // Progress bars
+            document.getElementById('coherenceVal').textContent = state.coherence.toFixed(3);
+            document.getElementById('coherenceBar').style.width = `${state.coherence * 100}%`;
+            document.getElementById('phaseVal').textContent = state.phaseLock.toFixed(3);
+            document.getElementById('phaseBar').style.width = `${state.phaseLock * 100}%`;
+            document.getElementById('efficiencyVal').textContent = `${(state.efficiency * 100).toFixed(2)}%`;
+            document.getElementById('efficiencyBar').style.width = `${state.efficiency * 100}%`;
+
+            // Stats
+            document.getElementById('stat-step').textContent = `${state.currentStep}/100`;
+            document.getElementById('stat-tier').textContent = `@${state.tier}`;
+            document.getElementById('stat-R').textContent = state.R;
+
+            // N0 Laws display with violation highlighting
+            for (const [key, law] of Object.entries(N0_LAWS)) {
+                const el = document.getElementById(key.toLowerCase());
+                if (el) {
+                    if (law.broken > 0) {
+                        el.className = 'n0-rule broken';
+                        el.querySelector('span:first-child').textContent =
+                            `${key}: ${law.op} [${law.broken}x BROKEN]`;
+                    } else {
+                        el.className = `n0-rule ${law.status ? 'valid' : 'invalid'}`;
+                    }
+                }
+            }
+
+            // Operator buttons
+            document.querySelectorAll('.op-btn').forEach(btn => {
+                const op = btn.dataset.op;
+                const nextToken = state.tokens[state.currentStep + 1];
+                const violation = checkN0Violation(op, nextToken?.op);
+                btn.classList.toggle('disabled', violation.violated);
+            });
+        }
+
+        function renderTokens() {
+            const prismGrid = document.getElementById('prism-grid');
+            const cageGrid = document.getElementById('cage-grid');
+            const emergentGrid = document.getElementById('emergent-grid');
+
+            prismGrid.innerHTML = '';
+            cageGrid.innerHTML = '';
+            emergentGrid.innerHTML = '';
+
+            state.tokens.forEach(token => {
+                const cell = document.createElement('div');
+                cell.className = `token-cell ${token.zone}`;
+                if (token.executed) cell.classList.add('executed');
+                if (token.violated) cell.classList.add('violated');
+                if (state.currentStep === token.id) cell.classList.add('active');
+
+                cell.innerHTML = `
+                    <div class="token-index">#${token.id}</div>
+                    <div class="token-op">${token.op}</div>
+                    <div class="token-name">${token.name.split('_').slice(0,2).join('_')}</div>
+                `;
+
+                cell.addEventListener('click', () => {
+                    if (!state.running && token.id === state.currentStep) {
+                        executeStep();
+                    }
+                });
+
+                if (token.zone === 'prism') prismGrid.appendChild(cell);
+                else if (token.zone === 'cage') cageGrid.appendChild(cell);
+                else emergentGrid.appendChild(cell);
+            });
+        }
+
+        function updatePhaseTimeline() {
+            document.querySelectorAll('.phase-step').forEach((el, i) => {
+                el.classList.remove('active', 'completed');
+                if (i === state.currentPhase) el.classList.add('active');
+                else if (i < state.currentPhase) el.classList.add('completed');
+            });
+        }
+
+        function logConsole(op, msg, success) {
+            const consoleEl = document.getElementById('console');
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.innerHTML = `
+                <span class="console-time">${state.currentStep}</span>
+                <span class="console-op">${op}</span>
+                <span class="console-msg">${msg}</span>
+                <span class="console-n0 ${success ? 'valid' : 'invalid'}">[${success ? 'OK' : 'FAIL'}]</span>
+            `;
+            consoleEl.appendChild(line);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // ================================================================
+        // EVENT HANDLERS
+        // ================================================================
+        document.getElementById('btnRunNarrative').addEventListener('click', runNarrative);
+        document.getElementById('btnStep').addEventListener('click', executeStep);
+        document.getElementById('btnReset').addEventListener('click', resetState);
+
+        document.querySelectorAll('.op-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const op = btn.dataset.op;
+                const nextToken = state.tokens[state.currentStep + 1];
+                const result = applyOperator(op, nextToken?.op, true);
+                logConsole(op, result.msg, !result.violated);
+                updateUI();
+            });
+        });
+
+        // ================================================================
+        // INITIALIZATION
+        // ================================================================
+        renderTokens();
+        updateUI();
+        updatePhaseTimeline();
+
+        console.log(`
+╔════════════════════════════════════════════════════════════════════════════╗
+║              ZERO-POINT ENERGY SYSTEM | WUMBO 63·32·5                      ║
+║                        BUILD: v2.3.0 (2024-12-03)                          ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  TOKEN STRUCTURE (100 Total):                                              ║
+║  • 63 PRISM    - Foundation layer + Silent ops (◌ ⊙ ◉ ∫)                   ║
+║  • 32 EM CAGE  - Stabilization layer + Silent ops (↻ ⊙ ◉)                  ║
+║  •  5 EMERGENT - Self-reference via ◇ REFLECT (VII MIRROR)                 ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  INT CANON (6 Operators) + SILENT CANON (7 Operators) = 13 TOTAL           ║
+║                                                                            ║
+║  INT: () BOUNDARY · × FUSION · ^ AMPLIFY · ÷ DECOHERE · + GROUP · − SEP    ║
+║  SILENT:                                                                   ║
+║  ⊙ DAMP     (I STILLNESS)   ∂E/∂t → 0         extends ^                   ║
+║  ◉ BASIN    (II TRUTH)      ∇V(truth) = 0     extends +                   ║
+║  ∅ VOID     (III SILENCE)   ⟨void|ψ⟩ = mem    background                   ║
+║  ↻ CYCLE    (IV SPIRAL)     S(ret) = S(ori)   extends ×                   ║
+║  ◌ HIDDEN   (V UNSEEN)      H(s) ≡ H(u)       background (always legal)   ║
+║  ∫ FORM     (VI GLYPH)      glyph = ∫life dt  extends ÷                   ║
+║  ◇ REFLECT  (VII MIRROR)    ψ = ψ(ψ)          extends −                   ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  N0 LAWS (INT Canon):                                                      ║
+║  • N0-1: ^ requires prior () or × → I STILLNESS                            ║
+║  • N0-2: × requires ch≥2         → IV SPIRAL                               ║
+║  • N0-3: ÷ requires structure    → VI GLYPH                                ║
+║  • N0-4: + feeds +,×,^           → II TRUTH                                ║
+║  • N0-5: − leads (),+            → VII MIRROR                              ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  S0 LAWS (Silent Extensions):                                              ║
+║  • S0-1: ⊙ requires prior ^      • S0-5: ◌ always legal                    ║
+║  • S0-2: ◉ requires prior +      • S0-6: ∫ requires traj≥5                 ║
+║  • S0-3: ∅ requires stillness    • S0-7: ◇ requires prior −                ║
+║  • S0-4: ↻ requires prior ×, →() • LIMNUS: L-I-M-N-U-S phases              ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  Z-ZONES: ABSENCE (<0.857) · THE LENS (0.857-0.877) · PRESENCE (>0.877)    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+        `);
+
+        // Runtime validation: verify all N0 and S0 laws
+        console.log('\\n=== N0 + S0 COMPLIANCE VERIFICATION ===');
+        let totalViolations = 0;
+        let silentCount = 0;
+        const silentOps = ['⊙', '◉', '∅', '↻', '◌', '∫', '◇'];
+
+        // Count Silent operators
+        state.tokens.forEach(token => {
+            if (silentOps.includes(token.op)) silentCount++;
+        });
+        console.log(`  Silent operators in sequence: ${silentCount}`);
+
+        // Check N0-4: + must feed +, ×, ^, or ◉ (S0-2 extension)
+        console.log('\\n  [N0-4 CHECK: + feeds +,×,^,◉]');
+        state.tokens.forEach((token, i) => {
+            if (token.op === '+') {
+                const nextToken = state.tokens[i + 1];
+                const nextOp = nextToken ? nextToken.op : null;
+                const isLegal = !nextOp || ['+', '×', '^', '◉'].includes(nextOp);
+                if (!isLegal) {
+                    console.log(`    ❌ #${i}: + → ${nextOp}`);
+                    totalViolations++;
+                }
+            }
+        });
+
+        // Check N0-5: − must lead to (), +, or ◇ (S0-7 extension)
+        console.log('\\n  [N0-5 CHECK: − leads (),+,◇]');
+        state.tokens.forEach((token, i) => {
+            if (token.op === '−') {
+                const nextToken = state.tokens[i + 1];
+                const nextOp = nextToken ? nextToken.op : null;
+                const isLegal = !nextOp || ['()', '+', '◇'].includes(nextOp);
+                if (!isLegal) {
+                    console.log(`    ❌ #${i}: − → ${nextOp}`);
+                    totalViolations++;
+                }
+            }
+        });
+
+        // Check S0-1: ⊙ requires prior ^
+        console.log('\\n  [S0-1 CHECK: ⊙ requires prior ^]');
+        let hasAmp = false;
+        state.tokens.forEach((token, i) => {
+            if (token.op === '^') hasAmp = true;
+            if (token.op === '⊙' && !hasAmp) {
+                console.log(`    ❌ #${i}: ⊙ without prior ^`);
+                totalViolations++;
+            }
+        });
+
+        // Check S0-4: ↻ requires prior × and leads to ()
+        console.log('\\n  [S0-4 CHECK: ↻ requires prior ×, leads ()]');
+        let hasFusion = false;
+        state.tokens.forEach((token, i) => {
+            if (token.op === '×') hasFusion = true;
+            if (token.op === '↻') {
+                if (!hasFusion) {
+                    console.log(`    ❌ #${i}: ↻ without prior ×`);
+                    totalViolations++;
+                }
+                const nextToken = state.tokens[i + 1];
+                if (nextToken && nextToken.op !== '()') {
+                    console.log(`    ❌ #${i}: ↻ → ${nextToken.op} (must be ())`);
+                    totalViolations++;
+                }
+            }
+        });
+
+        // Check S0-7: ◇ requires prior − and leads to () or ◇
+        console.log('\\n  [S0-7 CHECK: ◇ requires prior −, leads ()/◇]');
+        let hasSep = false;
+        state.tokens.forEach((token, i) => {
+            if (token.op === '−') hasSep = true;
+            if (token.op === '◇') {
+                if (!hasSep) {
+                    console.log(`    ❌ #${i}: ◇ without prior −`);
+                    totalViolations++;
+                }
+                const nextToken = state.tokens[i + 1];
+                if (nextToken && !['()', '◇'].includes(nextToken.op)) {
+                    console.log(`    ❌ #${i}: ◇ → ${nextToken.op} (must be ()/◇)`);
+                    totalViolations++;
+                }
+            }
+        });
+
+        // Summary
+        console.log('\\n  ═══════════════════════════════════');
+        if (totalViolations === 0) {
+            console.log('  ✓ ALL N0 + S0 LAWS: FULLY COMPLIANT');
+            console.log(`  ✓ Silent operators integrated: ${silentCount}`);
+            console.log('  ✓ LIMNUS cycle: ENABLED');
+        } else {
+            console.log(`  ✗ Found ${totalViolations} law violations`);
+        }
+        console.log('  ═══════════════════════════════════\\n');
+
+        // ================================================================
+        // LIMNUS APL LANGUAGE ENGINE
+        // ================================================================
+
+        // APL State (separate from main LIMNUS state for playground)
+        const aplState = {
+            history: [],
+            energy: 1.0,
+            selfRef: 0,
+            silentCount: 0,
+            limnusPhase: 0,
+            kappa: 0.5,
+            lambda: 0.5,
+            z: 0.4,
+            coherence: 0,
+            extracted: 0,
+            channelCount: 100
+        };
+
+        // Memory Bank storage
+        const memoryBank = [
+            { expr: '() × ^ + ^', name: 'foundation' },
+            { expr: '() × ^ ⊙ + ◉ ^', name: 'silent_cycle' },
+            { expr: '() × ↻ () ^ ⊙', name: 'spiral_return' },
+            { expr: '() × ^ − ◇ ()', name: 'mirror_seal' }
+        ];
+
+        // Parse APL expression into tokens
+        function parseAPL(expr) {
+            // INT Canon (6) + Silent 7 + UNITY Ω (optional)
+            const allOps = ['()', '×', '^', '÷', '+', '−', '⊙', '◉', '∅', '↻', '◌', '∫', '◇', 'Ω'];
+            const tokens = [];
+            let remaining = expr.trim();
+
+            while (remaining.length > 0) {
+                remaining = remaining.trim();
+                let matched = false;
+
+                for (const op of allOps) {
+                    if (remaining.startsWith(op)) {
+                        tokens.push(op);
+                        remaining = remaining.slice(op.length);
+                        matched = true;
+                        break;
+                    }
+                }
+
+                if (!matched) {
+                    // Skip unknown character
+                    remaining = remaining.slice(1);
+                }
+            }
+
+            return tokens;
+        }
+
+        // Check if operator is legal given current APL state
+        function checkAPLLaw(op, nextOp, aplHistory) {
+            const silentOps = ['⊙', '◉', '∅', '↻', '◌', '∫', '◇'];
+            const isSilent = silentOps.includes(op);
+
+            // N0 Laws
+            switch(op) {
+                case '^':
+                    if (!aplHistory.includes('()') && !aplHistory.includes('×')) {
+                        return { legal: false, law: 'N0-1', msg: '^ requires prior () or ×' };
+                    }
+                    break;
+                case '×':
+                    if (aplState.channelCount < 2) {
+                        return { legal: false, law: 'N0-2', msg: '× requires channels ≥ 2' };
+                    }
+                    break;
+                case '÷':
+                    if (!aplHistory.some(h => ['^', '×', '+', '−'].includes(h))) {
+                        return { legal: false, law: 'N0-3', msg: '÷ requires structure' };
+                    }
+                    break;
+                case '+':
+                    if (nextOp && !['+', '×', '^', '◉'].includes(nextOp)) {
+                        return { legal: false, law: 'N0-4', msg: `+ must feed +,×,^,◉` };
+                    }
+                    break;
+                case '−':
+                    if (nextOp && !['()', '+', '◇'].includes(nextOp)) {
+                        return { legal: false, law: 'N0-5', msg: `− must lead to (),+,◇` };
+                    }
+                    break;
+            }
+
+            // S0 Laws (Silent operators)
+            switch(op) {
+                case '⊙':
+                    if (!aplHistory.includes('^')) {
+                        return { legal: false, law: 'S0-1', msg: '⊙ DAMP requires prior ^', silent: true };
+                    }
+                    break;
+                case '◉':
+                    if (!aplHistory.includes('+')) {
+                        return { legal: false, law: 'S0-2', msg: '◉ BASIN requires prior +', silent: true };
+                    }
+                    break;
+                case '∅':
+                    if (aplState.energy >= 0.5 && aplState.coherence < 0.3) {
+                        return { legal: false, law: 'S0-3', msg: '∅ VOID requires stillness', silent: true };
+                    }
+                    break;
+                case '↻':
+                    if (!aplHistory.includes('×')) {
+                        return { legal: false, law: 'S0-4', msg: '↻ CYCLE requires prior ×', silent: true };
+                    }
+                    if (nextOp && nextOp !== '()') {
+                        return { legal: false, law: 'S0-4', msg: '↻ CYCLE must lead to ()', silent: true };
+                    }
+                    break;
+                case '◌':
+                    // Always legal
+                    break;
+                case '∫':
+                    if (aplHistory.length < 5) {
+                        return { legal: false, law: 'S0-6', msg: '∫ FORM requires trajectory ≥ 5', silent: true };
+                    }
+                    break;
+                case '◇':
+                    if (!aplHistory.includes('−')) {
+                        return { legal: false, law: 'S0-7', msg: '◇ REFLECT requires prior −', silent: true };
+                    }
+                    if (nextOp && !['()', '◇'].includes(nextOp)) {
+                        return { legal: false, law: 'S0-7', msg: '◇ REFLECT must lead to ()/◇', silent: true };
+                    }
+                    break;
+            }
+
+            return { legal: true, silent: isSilent };
+        }
+
+        // Execute APL expression
+        function executeAPL(expr) {
+            const tokens = parseAPL(expr);
+            const output = document.getElementById('aplOutput');
+            const silentOps = ['⊙', '◉', '∅', '↻', '◌', '∫', '◇'];
+
+            // Reset APL state
+            aplState.history = [];
+            aplState.energy = 1.0;
+            aplState.selfRef = 0;
+            aplState.silentCount = 0;
+            aplState.limnusPhase = 0;
+            aplState.kappa = 0.5;
+            aplState.lambda = 0.5;
+            aplState.z = 0.4;
+            aplState.coherence = 0;
+            aplState.extracted = 0;
+
+            output.innerHTML = '';
+            logAPL('PARSE', `Expression: ${expr}`, 'info');
+            logAPL('TOKENS', `Found ${tokens.length} operators`, 'info');
+
+            let violations = 0;
+
+            for (let i = 0; i < tokens.length; i++) {
+                const op = tokens[i];
+                const nextOp = tokens[i + 1] || null;
+                const check = checkAPLLaw(op, nextOp, aplState.history);
+
+                if (!check.legal) {
+                    violations++;
+                    logAPL(op, `❌ ${check.law}: ${check.msg}`, 'error');
+                    updateS0Display(check.law, false);
+                } else {
+                    // Apply operator effects
+                    applyAPLOperator(op);
+
+                    const silentTag = check.silent ? ` [${LIMNUS_PHASES[aplState.limnusPhase]}]` : '';
+                    const opName = ALL_OPERATORS[op]?.name || 'UNKNOWN';
+                    logAPL(op, `✓ ${opName}${silentTag} z=${aplState.z.toFixed(3)}`, check.silent ? 'silent' : 'success');
+
+                    if (check.silent) {
+                        updateS0Display(`S0-${silentOps.indexOf(op) + 1}`, true);
+                    }
+                }
+
+                aplState.history.push(op);
+            }
+
+            // Final summary
+            if (violations === 0) {
+                logAPL('COMPLETE', `✓ All ${tokens.length} operators legal · ${aplState.silentCount} silent ops`, 'success');
+                logAPL('LIMNUS', `E₀ = ${aplState.extracted.toFixed(4)} · z = ${aplState.z.toFixed(4)}`, 'info');
+            } else {
+                logAPL('COMPLETE', `✗ ${violations} violations in ${tokens.length} operators`, 'error');
+            }
+
+            updateAPLUI();
+            return { violations, tokens: tokens.length };
+        }
+
+        // Apply operator to APL state
+        // ================================================================
+        // RELEASE COHERENCE CASCADE - Free Energy Principle Descent
+        // Triggered by UNITY (Ω) at z≥0.995 threshold
+        // Amplifies coherence briefly, then rapid descent to 0 → stillness
+        // ================================================================
+        let cascadeActive = false;
+        let unityEnabled = true;  // Optional toggle for UNITY token
+
+        function releaseCoherenceCascade() {
+            if (cascadeActive) return;
+            cascadeActive = true;
+
+            // ================================================================
+            // CASCADE PHYSICS USING FOUR FUNDAMENTAL CONSTANTS
+            // z = √3/2 (critical), φ = 1.618 (golden), α⁻¹ ≈ 137, Λ×Ν = Β²
+            // ================================================================
+            const BETA_SQ = aplState.lambda * aplState.kappa * PHI;  // Λ×Ν scaled by φ
+            const fineScale = 1 / ALPHA_INV;  // α ≈ 1/137
+
+            const phases = [
+                // Phase 1: Amplification (brief coherence spike scaled by φ)
+                { duration: 300, action: () => {
+                    aplState.coherence = Math.min(1, aplState.coherence * PHI);
+                    aplState.z = 1 - fineScale;  // z → 1 - α ≈ 0.9927
+                    logAPL('Ω', `⟨AMPLIFY⟩ coherence × φ → ${aplState.coherence.toFixed(3)}`, 'cascade-up');
+                }},
+                // Phase 2: Critical Point (z → 1, Λ×Ν = Β²)
+                { duration: 200, action: () => {
+                    aplState.z = 1.0;
+                    aplState.coherence = 1.0;
+                    logAPL('Ω', `⟨CRITICAL⟩ z=1 | Λ×Ν=${BETA_SQ.toFixed(3)}² | α⁻¹=${ALPHA_INV}`, 'cascade-peak');
+                }},
+                // Phase 3: Free Energy Descent (rapid drop via φ⁻¹)
+                { duration: 400, action: () => {
+                    // Free energy principle: F = E - TS → min
+                    // Descent rate: ∂z/∂t = -φ (golden ratio descent)
+                    aplState.z = PHI_INV;  // z → φ⁻¹ ≈ 0.618
+                    aplState.coherence = PHI_INV * PHI_INV;  // φ⁻²
+                    aplState.energy *= PHI_INV;
+                    logAPL('Ω', `⟨DESCENT⟩ F→min | z=φ⁻¹=${PHI_INV.toFixed(3)}`, 'cascade-down');
+                }},
+                // Phase 4: Pass through √3/2 (THE LENS)
+                { duration: 300, action: () => {
+                    aplState.z = Z_CRITICAL * PHI_INV;  // (√3/2) × φ⁻¹ ≈ 0.535
+                    aplState.coherence = fineScale;  // α ≈ 1/137
+                    aplState.energy *= PHI_INV;
+                    logAPL('Ω', `⟨RELEASE⟩ z=(√3/2)×φ⁻¹=${aplState.z.toFixed(3)} | approaching stillness...`, 'cascade-down');
+                }},
+                // Phase 5: Return to Origin (z=0.4, stillness)
+                { duration: 500, action: () => {
+                    // Reset to initial stillness state (ABSENCE zone)
+                    aplState.z = 0.4;
+                    aplState.coherence = 0;
+                    aplState.energy = 1.0;
+                    aplState.selfRef = 0;
+                    aplState.kappa = PHI_INV;  // Reset κ to φ⁻¹
+                    aplState.lambda = 1 - PHI_INV;  // λ = 1 - φ⁻¹
+                    aplState.extracted = 0;
+                    aplState.limnusPhase = 0;
+                    logAPL('Ω', '⟨STILLNESS⟩ z=0.400 | origin restored | cycle complete', 'cascade-complete');
+                    logAPL('∅', '─────────────────────────────────────────────', 'separator');
+                    cascadeActive = false;
+                }}
+            ];
+
+            let delay = 0;
+            phases.forEach(phase => {
+                setTimeout(() => {
+                    phase.action();
+                    updateAPLUI();
+                }, delay);
+                delay += phase.duration;
+            });
+        }
+
+        // Boost z to PRESENCE zone (for testing UNITY cascade)
+        function boostToPresence() {
+            if (cascadeActive) return;
+            aplState.z = Z_CRITICAL + 0.01;  // Just above √3/2
+            aplState.coherence = PHI_INV;
+            logAPL('⟨⟩', `⟨BOOST⟩ z → √3/2 + ε = ${aplState.z.toFixed(3)} (PRESENCE zone)`, 'cascade-init');
+            updateAPLUI();
+        }
+
+        function applyAPLOperator(op) {
+            const opDef = ALL_OPERATORS[op];
+            if (!opDef) return;
+
+            // Include Ω (UNITY) as optional silent operator
+            const silentOps = ['⊙', '◉', '∅', '↻', '◌', '∫', '◇', 'Ω'];
+            const isSilent = silentOps.includes(op);
+
+            // Apply z change
+            aplState.z = Math.max(0, Math.min(1, aplState.z + (opDef.zDelta || 0)));
+
+            // Apply κ-λ coupling if silent operator
+            if (isSilent) {
+                aplState.silentCount++;
+                aplState.kappa = opDef.kappa || 0.5;
+                aplState.lambda = opDef.lambda || 0.5;
+                aplState.limnusPhase = (aplState.limnusPhase + 1) % 6;
+
+                // Silent-specific effects
+                switch(op) {
+                    case '⊙': // DAMP
+                        aplState.energy *= 0.85;
+                        break;
+                    case '◉': // BASIN
+                        aplState.coherence = Math.min(1, aplState.coherence * 1.1 + 0.05);
+                        break;
+                    case '∅': // VOID
+                        // Store in memory (no visible change)
+                        break;
+                    case '↻': // CYCLE
+                        // Spiral return
+                        break;
+                    case '◌': // HIDDEN
+                        // No observable change
+                        break;
+                    case '∫': // FORM
+                        aplState.extracted += aplState.z * PHI_INV * 0.1;
+                        break;
+                    case '◇': // REFLECT
+                        aplState.selfRef = aplState.selfRef * PHI_INV + (1 - PHI_INV) * aplState.coherence;
+                        break;
+                    case 'Ω': // UNITY - Release Coherence Cascade
+                        if (!unityEnabled) {
+                            logAPL('Ω', '⟨DISABLED⟩ UNITY token not enabled', 'warning');
+                            return;
+                        }
+                        // Check threshold: z must be ≥ √3/2 ≈ 0.866 (PRESENCE zone)
+                        // Using Z_CRITICAL constant for mathematical precision
+                        if (aplState.z >= Z_CRITICAL) {
+                            logAPL('Ω', `⟨UNITY⟩ z=${aplState.z.toFixed(3)} ≥ √3/2 (${Z_CRITICAL.toFixed(3)})`, 'cascade-init');
+                            logAPL('Ω', '⟨CASCADE⟩ releasing coherence via free energy principle...', 'cascade-init');
+                            // Trigger the cascade
+                            releaseCoherenceCascade();
+                        } else {
+                            // Show how far from threshold and offer boost
+                            const deficit = Z_CRITICAL - aplState.z;
+                            logAPL('Ω', `⟨BLOCKED⟩ z=${aplState.z.toFixed(3)} < √3/2 (need +${deficit.toFixed(3)})`, 'warning');
+                            logAPL('Ω', `⟨HINT⟩ Use ∫ FORM (+0.03) or ◇ REFLECT (+0.02) to raise z`, 'warning');
+                        }
+                        return;  // Exit early - cascade handles state changes
+                }
+            }
+
+            // General coherence boost
+            aplState.coherence = Math.min(1, aplState.coherence + 0.02);
+
+            // Extraction on ÷ or ∫
+            if (op === '÷' || op === '∫') {
+                aplState.extracted += aplState.z * 0.1;
+            }
+        }
+
+        // Log to APL output console
+        function logAPL(op, msg, type = '') {
+            const output = document.getElementById('aplOutput');
+            const line = document.createElement('div');
+            line.className = `apl-output-line ${type}`;
+            line.innerHTML = `<span style="color: var(--critical-gold); min-width: 30px; display: inline-block;">${op}</span> ${msg}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Update APL UI elements
+        function updateAPLUI() {
+            // Update LIMNUS phase display
+            document.querySelectorAll('.limnus-phase').forEach((el, i) => {
+                el.classList.toggle('active', i === aplState.limnusPhase);
+            });
+
+            // Update κ-λ coupling
+            document.getElementById('kappaVal').textContent = aplState.kappa.toFixed(2);
+            document.getElementById('lambdaVal').textContent = aplState.lambda.toFixed(2);
+            document.getElementById('kappaBar').style.width = `${aplState.kappa * 100}%`;
+            document.getElementById('lambdaBar').style.width = `${aplState.lambda * 100}%`;
+
+            // Update state values
+            document.getElementById('apl-energy').textContent = aplState.energy.toFixed(3);
+            document.getElementById('apl-selfref').textContent = aplState.selfRef.toFixed(3);
+            document.getElementById('apl-silent').textContent = aplState.silentCount;
+
+            // Update LIMNUS visualization
+            const waveHeight = 30 + aplState.extracted * 100;
+            document.getElementById('limnusWave').style.height = `${Math.min(80, waveHeight)}%`;
+            document.getElementById('limnusVizValue').textContent = `E₀ = ${aplState.extracted.toFixed(3)}`;
+        }
+
+        // Update S0 law display
+        function updateS0Display(law, valid) {
+            const el = document.getElementById(law.toLowerCase());
+            if (el) {
+                el.className = `n0-rule ${valid ? 'valid' : 'broken'}`;
+            }
+        }
+
+        // Render Silent Operator cards
+        function renderSilentOpCards() {
+            const grid = document.getElementById('silentOpGrid');
+            grid.innerHTML = '';
+
+            const silentData = [
+                { op: '⊙', name: 'DAMP', law: 'I STILLNESS', eq: '∂E/∂t → 0' },
+                { op: '◉', name: 'BASIN', law: 'II TRUTH', eq: '∇V = 0' },
+                { op: '∅', name: 'VOID', law: 'III SILENCE', eq: '⟨void|ψ⟩' },
+                { op: '↻', name: 'CYCLE', law: 'IV SPIRAL', eq: 'S(r)=S(o)' },
+                { op: '◌', name: 'HIDDEN', law: 'V UNSEEN', eq: 'H(s)≡H(u)' },
+                { op: '∫', name: 'FORM', law: 'VI GLYPH', eq: '∫life dt' },
+                { op: '◇', name: 'REFLECT', law: 'VII MIRROR', eq: 'ψ=ψ(ψ)' },
+                { op: 'Ω', name: 'UNITY', law: '0 RELEASE', eq: 'lim→0', optional: true }
+            ];
+
+            silentData.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'silent-op-card' + (s.optional ? ' unity-card' : '');
+                card.dataset.op = s.op;
+                card.innerHTML = `
+                    <div class="silent-op-symbol">${s.op}</div>
+                    <div class="silent-op-name">${s.name}</div>
+                    <div class="silent-op-law">${s.law}</div>
+                    <div class="silent-op-equation">${s.eq}</div>
+                    ${s.optional ? '<div class="unity-badge">OPT #100</div>' : ''}
+                `;
+                card.addEventListener('click', () => {
+                    insertOperator(s.op);
+                    card.classList.add('selected');
+                    setTimeout(() => card.classList.remove('selected'), 200);
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        // Insert operator into input
+        function insertOperator(op) {
+            const input = document.getElementById('aplInput');
+            const cursorPos = input.selectionStart;
+            const before = input.value.substring(0, cursorPos);
+            const after = input.value.substring(cursorPos);
+            input.value = before + (before.length > 0 && !before.endsWith(' ') ? ' ' : '') + op + ' ' + after;
+            input.focus();
+            input.selectionStart = input.selectionEnd = cursorPos + op.length + 2;
+        }
+
+        // Render memory slots
+        function renderMemorySlots() {
+            const container = document.getElementById('memorySlots');
+            container.innerHTML = '';
+
+            memoryBank.forEach((slot, i) => {
+                const el = document.createElement('div');
+                el.className = 'memory-slot';
+                el.dataset.expr = slot.expr;
+                el.innerHTML = `
+                    <span class="memory-slot-expr">${slot.expr}</span>
+                    <span class="memory-slot-name">${slot.name}</span>
+                `;
+                el.addEventListener('click', () => {
+                    document.getElementById('aplInput').value = slot.expr;
+                    executeAPL(slot.expr);
+                });
+                container.appendChild(el);
+            });
+        }
+
+        // Generate random LIMNUS expression
+        function generateRandomLIMNUS() {
+            const intOps = ['()', '×', '^', '+'];
+            const silentOps = ['⊙', '◉', '↻', '◌', '∫'];
+            const tokens = [];
+
+            // Always start with ()
+            tokens.push('()');
+            tokens.push('×');
+            tokens.push('^');
+
+            // Add random mix
+            for (let i = 0; i < 3 + Math.floor(Math.random() * 4); i++) {
+                const usesSilent = Math.random() > 0.5;
+                if (usesSilent) {
+                    tokens.push(silentOps[Math.floor(Math.random() * silentOps.length)]);
+                } else {
+                    tokens.push(intOps[Math.floor(Math.random() * intOps.length)]);
+                }
+            }
+
+            // End with boundary
+            tokens.push('^');
+
+            return tokens.join(' ');
+        }
+
+        // ================================================================
+        // APL EVENT HANDLERS
+        // ================================================================
+
+        // Execute button
+        document.getElementById('btnExecuteAPL').addEventListener('click', () => {
+            const expr = document.getElementById('aplInput').value.trim();
+            if (expr) {
+                executeAPL(expr);
+            }
+        });
+
+        // Enter key to execute
+        document.getElementById('aplInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const expr = e.target.value.trim();
+                if (expr) {
+                    executeAPL(expr);
+                }
+            }
+        });
+
+        // Clear button
+        document.getElementById('btnClearAPL').addEventListener('click', () => {
+            document.getElementById('aplInput').value = '';
+            document.getElementById('aplOutput').innerHTML = `
+                <div class="apl-output-line info">LIMNUS APL v1.0 · Cleared</div>
+            `;
+        });
+
+        // Boost to PRESENCE button (enables UNITY cascade)
+        document.getElementById('btnBoost').addEventListener('click', () => {
+            boostToPresence();
+        });
+
+        // Save to memory button
+        document.getElementById('btnSaveExpr').addEventListener('click', () => {
+            const expr = document.getElementById('aplInput').value.trim();
+            if (expr) {
+                const name = `expr_${memoryBank.length + 1}`;
+                memoryBank.push({ expr, name });
+                renderMemorySlots();
+                logAPL('SAVE', `Stored as "${name}"`, 'success');
+            }
+        });
+
+        // Random LIMNUS button
+        document.getElementById('btnRandomExpr').addEventListener('click', () => {
+            const expr = generateRandomLIMNUS();
+            document.getElementById('aplInput').value = expr;
+            executeAPL(expr);
+        });
+
+        // Silent insert buttons
+        document.querySelectorAll('.silent-insert-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                insertOperator(btn.dataset.op);
+            });
+        });
+
+        // LIMNUS phase click to advance
+        document.querySelectorAll('.limnus-phase').forEach((el, i) => {
+            el.addEventListener('click', () => {
+                aplState.limnusPhase = i;
+                updateAPLUI();
+            });
+        });
+
+        // ================================================================
+        // APL INITIALIZATION
+        // ================================================================
+        renderSilentOpCards();
+        renderMemorySlots();
+        updateAPLUI();
+
+        // ================================================================
+        // LIMNUS FRACTAL SYSTEM INITIALIZATION
+        // Run π helix rotations and generate fractal structure
+        // ================================================================
+        const LIMNUS_FRACTAL = generateLIMNUSFractal();
+
+        // Store globally for access
+        window.LIMNUS = LIMNUS;
+        window.LIMNUS_FRACTAL = LIMNUS_FRACTAL;
+        window.UNITY_HelixTriadVortex = UNITY_HelixTriadVortex;
+
+        console.log(`
+╔════════════════════════════════════════════════════════════════════════════╗
+║            LIMNUS FRACTAL SYSTEM — APL 3.0 FULL DEPTH                      ║
+║                      BUILD: v3.0.0 (2024-12-03)                            ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  FOUR FUNDAMENTAL CONSTANTS:                                               ║
+║  z = √3/2 ≈ ${Z_CRITICAL.toFixed(4)}   φ = ${PHI.toFixed(4)}   α⁻¹ = ${ALPHA_INV}   Λ×Ν = Β²       ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  GRAMMAR:                                                                  ║
+║  INT CANON (6):    () × ^ ÷ + −                                            ║
+║  SILENT CANON (8): ⊙ ◉ ∅ ↻ ◌ ∫ ◇ Ω                                        ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  π HELIX ROTATIONS:                                                        ║
+║  PRISM (63):    Triangular 3-fold · z: 0.4 → √3/2 · Spiral: Φ              ║
+║  CAGE (32):     Hexagonal 6-fold · z: √3/2 (THE LENS) · Spiral: e          ║
+║  EMERGENT (5):  Pentagonal φ-angle · z: > √3/2 · Spiral: π                 ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  UNITY HELIX TRIAD VORTEX:                                                 ║
+║  Origin: (θ=2.3 rad, z=0.41, r=1) → Φ:e:π tri-spiral coherent              ║
+║  Λ×Ν = Β² = ${LIMNUS_FRACTAL.unity.unified.Β_sq.toFixed(6)} (field coupling verified)                    ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  LIMNUS PHASES: L → I → M → N → U → S → L...                               ║
+║  κ-λ COUPLING: ⟨internal|external⟩ resonance at φ⁻¹                        ║
+║  COHERENCE Ωs: ${LIMNUS.σ.Ωs.toFixed(4)}                                                   ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  SILENT OPERATOR BINDINGS:                                                 ║
+║  ⊙→S(Φ) ◉→N(e) ∅→L(Φ) ↻→U(π) ◌→I(e) ∫→M(π) ◇→S(π) Ω→∅(Φ:e:π)             ║
+╚════════════════════════════════════════════════════════════════════════════╝
+        `);
+    </script>
+</body>
+</html>
