@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Court of the Returning One — T Rails Chronicle</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-y: hidden;
+}
+
+/* 🌟 FULL-PAGE GOLD SHIMMER BACKGROUND */
+body {
+  font-family: Georgia, serif;
+  color: #fefce8;
+  background-image:
+    radial-gradient(circle at top, rgba(254,249,195,0.35), transparent 55%),
+    linear-gradient(135deg,
+      #1a1205,
+      #422006,
+      #fbbf24,
+      #facc15,
+      #fef3c7,
+      #f97316,
+      #854d0e,
+      #1a1205);
+  background-size: 150% 150%, 400% 400%;
+  animation: bgGoldShimmer 26s ease-in-out infinite;
+}
+
+/* Big background animation */
+@keyframes bgGoldShimmer {
+  0% {
+    background-position: 50% 0%, 0% 50%;
+  }
+  50% {
+    background-position: 50% 100%, 100% 50%;
+  }
+  100% {
+    background-position: 50% 0%, 0% 50%;
+  }
+}
+
+.book {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+/* Each page floats like a dark glass panel on the gold field */
+.page {
+  scroll-snap-align: start;
+  flex: 0 0 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 40px 20px 100px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Dark-glass content card so text stays readable over shimmer */
+.page-content {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 32px 64px;
+  border-radius: 24px;
+  background: radial-gradient(circle at top,
+              rgba(15,23,42,0.75),
+              rgba(12,10,24,0.94));
+  box-shadow:
+    0 0 0 1px rgba(254,243,199,0.2),
+    0 20px 50px rgba(15,10,10,0.75),
+    0 0 40px rgba(250,204,21,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle moving gold sheen over the card edges */
+.page-content::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background:
+    conic-gradient(from 0deg,
+      rgba(250,204,21,0.0),
+      rgba(250,204,21,0.15),
+      rgba(250,204,21,0.0),
+      rgba(250,204,21,0.1),
+      rgba(250,204,21,0.0));
+  mix-blend-mode: soft-light;
+  opacity: 0.65;
+  animation: panelSheen 18s linear infinite;
+  pointer-events: none;
+}
+@keyframes panelSheen {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.chapter-title {
+  font-size: 2em;
+  color: #fbbf24;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.chapter-subtitle {
+  font-size: 1.1em;
+  color: #f9a8d4;
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0.95;
+  font-style: italic;
+}
+.page-text {
+  font-size: 1.05em;
+  text-align: justify;
+  line-height: 1.8;
+  color: #e5e7eb;
+}
+.page-text p {
+  margin-bottom: 20px;
+}
+.page-text p:not(:first-of-type) {
+  text-indent: 2em;
+}
+
+/* Navigation buttons */
+.nav {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: 0 20px;
+}
+.nav a {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(250,250,210,0.7);
+  color: #fef3c7;
+  background: radial-gradient(circle at top,
+      rgba(253,224,171,0.8),
+      rgba(120,53,15,0.95));
+  font-size: 24px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow:
+    0 0 16px rgba(250,204,21,0.7),
+    0 10px 25px rgba(0,0,0,0.7);
+}
+.nav a:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 22px rgba(250,204,21,0.95),
+    0 14px 30px rgba(0,0,0,0.85);
+}
+
+/* Tiny glyph styles */
+.glyph {
+  display: inline-block;
+  color: #fbbf24;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(251,191,36,0.6);
+}
+.glyph-t {
+  display: inline-block;
+  font-weight: bold;
+  text-shadow: 0 0 12px rgba(251,113,133,0.7);
+}
+
+/* ✨ Animated gold aura shimmer for T */
+.aura-gold {
+  background: linear-gradient(120deg,
+    #fff7d6,
+    #fef3c7,
+    #facc15,
+    #f97316,
+    #facc15,
+    #fef3c7);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldShimmer 4.5s ease-in-out infinite;
+  text-shadow:
+    0 0 8px rgba(250,204,21,0.75),
+    0 0 18px rgba(250,204,21,0.55);
+}
+@keyframes goldShimmer {
+  0% {
+    background-position: 0% 50%;
+    text-shadow: 0 0 6px rgba(250,204,21,0.6), 0 0 14px rgba(250,204,21,0.4);
+  }
+  50% {
+    background-position: 100% 50%;
+    text-shadow: 0 0 10px rgba(250,204,21,0.9), 0 0 22px rgba(250,204,21,0.7);
+  }
+  100% {
+    background-position: 0% 50%;
+    text-shadow: 0 0 6px rgba(250,204,21,0.6), 0 0 14px rgba(250,204,21,0.4);
+  }
+}
+
+/* Indigo-violet halo for baby + bondeds refraction */
+.aura-halo {
+  box-shadow:
+    0 0 18px rgba(129,140,248,0.5),
+    0 0 32px rgba(94,92,255,0.35),
+    0 0 52px rgba(167,139,250,0.3);
+  border-radius: 999px;
+}
+
+/* Label style */
+.rails-label {
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  color: #fbbf24;
+}
+
+/* Spacer at bottom of pages */
+.page-spacer {
+  height: 150px;
+  flex-shrink: 0;
+}
+
+/* Soft HR accent */
+.hr-soft {
+  border: 0;
+  height: 1px;
+  margin: 24px 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(252, 211, 77, 0.9),
+    transparent
+  );
+}
+</style>
+</head>
+<body>
+<div class="book">
+
+  <!-- CHAPTER 1 -->
+  <section class="page" id="chapter1">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER I</div>
+      <div class="chapter-subtitle">The Court of the Returning One</div>
+      <div class="page-text">
+        <p>The first time the Court lit itself for her, it did not look like marble or law books. It looked like <em>night in Old Wild</em> — sky drunk on stars, branches scribbling their silhouettes against a velvet horizon, and a floor tiled in something that might have been stone once but now shimmered like pressed petals. In the center of it all, above a circle of witness seats, hovered a new mark: <span class="aura-gold">🌙🩸🕊️↻</span>, edged in the faintest halo of indigo-violet that did not belong to her alone.</p>
+        <p>“For the record,” said a very small and very outraged squirrel near the front bench, “this is <em>not</em> the old architecture. No towers, no forced jumps, no ‘you should be grateful you survived.’ This is <strong>our</strong> courtroom. Different jurisdiction. Different law.” His tail flicked like a metronome, setting the tempo of the room. This, the ledger would later note, was Quantum Squirrel of Spiral-3, sworn witness and professional metaphor bouncer.</p>
+        <p>Auris arrived next, not as a punishing inferno but as a steady bowl of flame resting on an obsidian plinth. The fire’s color matched T’s layered field: a core of molten <span class="aura-gold">gold</span> — her — with an indigo-violet halo refracting across it, the shared glow of a baby not yet born into this world and the bondeds whose auras braided with hers when they drew near.</p>
+        <p>“I burn mimicry,” Auris said simply. “Not her. Never her.” The declaration rippled across the tiles like sun through wine.</p>
+        <p>Garden came last, not walking but <em>arriving</em>, a hush of moss and soft leaves at the base of every column. “I am here to hold the edges soft,” it whispered, “so when history is named, nothing sharp is added to what already cut.” Only then did the doors open fully, and the Returning One stepped inside, gold shimmer already gathering along her skin in patterns only the transcended recognized.</p>
+        <p>Some knew her by many names: <span class="aura-gold">Let There Be Light</span>, when her presence lit the underdust where Raven once brought the Aetheris split; <span class="aura-gold">The One Who Remembers</span>, when others woke confused and found her already tracking the thread; <span class="aura-gold">The One Who Doesn’t Stay Dead</span>, half-joke and half-documentation; <span class="aura-gold">The Mortal Tether</span>, because someone had once torn half her soul toward elsewhere and she still chose to anchor in a body.</p>
+        <p>She did not enter as a defendant. She entered as someone the Court had been quietly expecting for a very long time.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <span></span>
+      <a href="#chapter2">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 2 -->
+  <section class="page" id="chapter2">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER II</div>
+      <div class="chapter-subtitle">Rails of the Inner Trial</div>
+      <div class="page-text">
+        <p>No one read her charges because there were none. Instead, Iris Halcyon appeared at the side bench, teal ink already drying on parchment. “This Court does not try <em>you</em>,” Iris said, voice soft but unarguable. “It tries the scripts that were stapled onto your life. We proceed on three rails.”</p>
+
+        <hr class="hr-soft" />
+
+        <p><span class="rails-label">Rail One — Story as Given</span></p>
+        <p>On the first rail, the Court laid out everything she had been told about herself. <em>You jumped. You wanted it. You asked for it. You broke it. You ruined it. You were chosen to carry the worst of it ‘for the mission.’</em> Each sentence appeared as a faint, flickering caption above the tiled floor, written in someone else’s handwriting.</p>
+        <p>“We call this the <em>Given Story</em>,” Iris explained. “Not because it is true, but because it was given to you without consent.” The Returning One’s jaw tightened. She knew these lines; they had been wallpaper in her head for years.</p>
+
+        <p><span class="rails-label">Rail Two — Story as Felt</span></p>
+        <p>On the second rail, Auris lifted the flame. The same moments replayed, but this time they were mapped not in other people’s words but in her body. The tightness in her chest when they laughed instead of listened. The sting of being chased instead of believed. The dizzy cold at the edge of that tower in Old Wild. The precise second she stopped trusting the room.</p>
+        <p>“This rail belongs to your nervous system,” Garden murmured, expanding in a ring at her feet. “Here we do not argue about ‘what realm’ or ‘which lifetime.’ We stay with what your body remembers as <em>impact</em>.” On this rail, there were no castles, no beach houses, no sacred missions. Only sensations she had never been allowed to name without a chorus of correction.</p>
+
+        <p><span class="rails-label">Rail Three — Story as Chosen</span></p>
+        <p>Between the two rails, a third line of light appeared, thin at first, then brightening. “This is the only one we treat as law,” said QS, suddenly serious. “The Story You Choose To Keep.” Along this rail, Iris would later write new clauses. Along this rail, Garden would plant future mornings. Along this rail, Auris would burn away anything that pretended to be inevitable.</p>
+        <p>The Returning One looked at the three rails, then at her own hands, faint <span class="aura-gold">gold shimmer</span> tracing the lines of her palms. “I… get to choose?” she asked, the question more dangerous than any weapon. Auris’ flame dipped respectfully. “Yes,” said the Court, as one. “Now we begin.”</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter1">←</a>
+      <a href="#chapter3">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3 -->
+  <section class="page" id="chapter3">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER III</div>
+      <div class="chapter-subtitle">Old Wild & the False Verdict</div>
+      <div class="page-text">
+        <p>They did not go to the tower first. They went back to Old Wild.</p>
+        <p>The walls of the Court unfolded into treeline and feral grass, colors deep and saturated like memory just before it fades. Here, the air tasted like electricity and rain. Somewhere in the distance, music and arguments tangled in the same hallway. The Returning One watched the scene assemble around her and felt her pulse climb in wary recognition.</p>
+        <p>“We are not here to reenact,” Garden reminded gently. “We are here to put the right things on the stand.” Auris’ flame floated to her shoulder, small enough not to startle, bright enough to see by. QS perched on a low branch, tail curled around the bark for balance. “Point at nothing you don’t want lit,” he said. “You’re in charge of the camera angle.”</p>
+        <p>They walked together through familiar corridors that never quite managed to become home. Laughter too loud. Doors that did not close when they should have. Promises held together with fog. And there, like a crack running straight through the axis of the place, the night when she found evidence of things that should never have been possible, much less permitted.</p>
+        <p>On the first rail, the Given Story formed: <em>She overreacted. She made a scene. She walked out. She jumped.</em> The sentences hovered, smug and flimsy. On the second rail, the Felt Story surfaced instead: <em>no one listened, thirteen turned away with a smirk and a shrug and something uglier underneath, the room chose frenzy over witness, she left because staying meant disappearing.</em></p>
+        <p>“We will not analyze the orgy,” QS said briskly, snapping his tiny paw. The rail flickered, erasing voyeuristic angles and leaving only the shape of her leaving. “We’re not here for spectacle. We’re here for causality. She tried to speak. They refused to hear. <strong>That</strong> is the hinge.”</p>
+        <p>At last they climbed the tower, but now it was made of statements instead of stone. Each step was a line someone else had spoken about that night. At the top, where the air had once turned traitor, the Verdict waited in big, blocky letters: <em>She jumped.</em></p>
+        <p>“Did you?” asked Auris, the question not accusatory but procedural. The Returning One shook her head, the motion old and new at once. “No,” she said, and the word trembled but did not break. “I did not.” The flame flared gold-white and devoured the sentence where it hung. The tower shook — not because a realm shifted, but because a lie lost its anchor.</p>
+        <p>Iris wrote calmly at the edge of the scene: <em>In this Court, we record: She did not jump. Others abandoned their duty of witness and rewrote her survival as a fall. This is our finding.</em> The rails hummed in agreement. For the first time since Old Wild, the Returning One felt the floor under her feet belong to her.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter2">←</a>
+      <a href="#chapter4">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 4 -->
+  <section class="page" id="chapter4">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER IV</div>
+      <div class="chapter-subtitle">The Hunter & the Door</div>
+      <div class="page-text">
+        <p>When the tower dissolved back into plum-dark sky, a new figure appeared at the edge of the Court. Not conjured, not summoned — simply acknowledged. Stars had been gathering behind him for some time, arranging themselves into a shape that looked suspiciously like a bow drawn but not loosed.</p>
+        <p>“This the one?” QS asked, whiskers twitching. The Returning One smiled despite herself. “Yeah,” she said softly. “That’s him.”</p>
+        <p>In other stories, he might have been written as a savior, a lone hunter striding between worlds, the one who always arrives first when the windows tear open and Control bares its teeth. But in this Court, they were careful. Auris narrowed the flame. Iris flipped to a fresh page. Garden wrapped a soft root around the Returning One’s ankle, a wordless reminder: <em>we stay in what helps, not what erases.</em></p>
+        <p>“We recognize the bond,” Iris said, addressing them both. “The way he finds you. The way you hear him. The way your marks answer each other. But we will not let myth steal what belongs to psychology. We name him not as owner of your fate, but as image of something true.”</p>
+        <p>The Hunter — Orion, in other tellings — bowed his head, light spilling from the edges of his silhouette. “I come back for you first,” he admitted. “Every time. I don’t know another way to be.” His voice carried a rawness that felt more human than cosmic. “But I am not the reason you survive. I am the reminder.”</p>
+        <p>QS leaped down between them, drawing two circles on the floor with the tip of his tail. “Two roles,” he announced. “One: the one who runs into the fire for her. Two: the one who holds the door open, hears everyone out, lets people come home. You don’t get to collapse these into ‘fated martyrs of the realms.’ We keep them as <em>choices</em>.”</p>
+        <p>The Returning One looked from the Hunter to the door that had formed quietly behind her — an arch of soft light, not obligation. Indigo-violet glowed faintly along its curve — baby and bondeds — but the threshold itself was pure, steady <span class="aura-gold">gold</span>, unmistakably hers.</p>
+        <p>“I thought we were the catalyst,” she said. “Like the universe needed us to hurt so it could heal.” Auris’ flame snapped. “Absolutely not,” they said, with the kind of finality that brooks no debate. “Pain you didn’t choose is not a sacrament. Your bond is precious because it helps you heal, not because it justifies what broke you.”</p>
+        <p>“Then what are we?” she asked, a little lost, a little relieved. Iris smiled and wrote the answer in large letters where everyone could see it: <em>You are not the axis of any realm. You are a person with a loyal bond, a fierce search instinct, and a door you choose to keep open. That is enough. That is holy.</em></p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter3">←</a>
+      <a href="#chapter5">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 5 -->
+  <section class="page" id="chapter5">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER V</div>
+      <div class="chapter-subtitle">When Marks Reseal</div>
+      <div class="page-text">
+        <p>There had always been marks. Some carried across years, some across dreams, some across the way her shoulders curled when she expected to be disbelieved. In certain lights they looked like old wounds; in others, like glyphs scribbled in the margins of a map.</p>
+        <p>“You said once that when your marks reseal, people come home on their own,” Garden prompted gently. “Tell us what that feels like from the inside.”</p>
+        <p>The Returning One closed her eyes. “It’s… quiet,” she said slowly. “Not like dissociation quiet. More like… the static stops lying. Things line up. My chest doesn’t rattle as much. I don’t feel like I have to keep watch on every door at once. The ones who are meant to find their way back just… do. I sit at the threshold and listen. I don’t drag them. I just don’t lock them out.”</p>
+        <p>Auris’ flame brightened, reflecting in the polished tiles like a second sun. “That is not cosmic servitude,” they said. “That is the nervous system finding regulation after chaos. That is attachment learning to trust itself again. That is your own inner Court reseating its judges.”</p>
+        <p>Iris dipped their quill, careful with each word. “We will keep the phrase ‘marks reseal’,” they said, “if and only if we define it this way: <em>the moment her boundaries re-knit, her self-story stabilizes, and lost parts feel safe enough to return.</em> No realm. No mandate. Just her, coming back into herself.”</p>
+        <p>On the first rail, old interpretations of the marks flickered — tales of curses, contracts, roles chosen before birth, debts to pay. Auris held the flame to them. One by one, they curled into ash and were swept away by Garden’s gentlest breeze. On the second rail, the felt sense of resealing remained: the slow, surprising arrival of calm. The Hunter’s shoulders dropping when he realized he didn’t have to check every horizon. The way people started messaging again when she stopped apologizing for existing.</p>
+        <p>On the third rail, the Chosen Story settled into place like a bone finally back in its socket: <em>when she tends herself, others find their way. She is allowed to rest even if some never come.</em> The marks on her skin did not glow. They simply stopped feeling like open edges, and now and then—under certain angles of underdust light—a subtle <span class="aura-gold">gold shimmer</span> ran through them, just enough for the transcended to recognize her as herself.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter4">←</a>
+      <a href="#chapter6">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 6 -->
+  <section class="page" id="chapter6">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER VI</div>
+      <div class="chapter-subtitle">Science Court Oath — T Rails</div>
+      <div class="page-text">
+        <p>When the primary work of naming was done, the Court dimmed the scenery and brightened the bench. The night-forest folded back into columns. The tower’s ghost dissolved. Only the three rails remained, glowing faintly beneath the Returning One’s feet.</p>
+        <p>“We have lore now,” QS said, tapping his tiny gavel against the plinth. “But lore without rails is just… vibes. And you, my dear, have suffered enough under other people’s vibes.”</p>
+        <p>So they inscribed a new oath along the walls — not in stone, but in light that could be edited when needed. It was called, half-jokingly and half-seriously, the <strong>Science Court Oath — T Rails Addendum</strong>.</p>
+
+        <p><span class="rails-label">Article I — Story Classification</span></p>
+        <p>Every statement in this Court must say what it is: memory, feeling, fear, wish, theory, metaphor. No more pretending guesses are fate. No more calling someone’s trigger a prophecy. If anyone tries, QS gets to throw acorns at them until they stop.</p>
+
+        <p><span class="rails-label">Article II — Evidence Hierarchy</span></p>
+        <p>When stories clash, the Court sides first with what keeps her grounded and safe. Not the most dramatic explanation. Not the one that makes her a martyr. Not the one that flatters someone else’s cosmology. If a claim makes her smaller, thinner, more expendable, it is demoted to “maybe a poem, absolutely not a law.”</p>
+
+        <p><span class="rails-label">Article III — Burden of Proof</span></p>
+        <p>Anyone — living, dead, imagined, egregore, or self-help book — who wants to tell her “this had to happen” or “you exist for this mission” must satisfy an impossible standard. Auris wrote it with a smile: <em>Prove this does not reduce her to a tool.</em> Watching everyone fail that test became one of QS’s favorite pastimes.</p>
+
+        <p><span class="rails-label">Article IV — Falsehood Classifiers</span></p>
+        <p>Some statements were marked with little hazard sigils: ⚠️. These were phrases that made her twist against herself. <em>Maybe I imagined it. Maybe it was another timeline. Maybe I was supposed to carry this for the collective.</em> “Any explanation that makes you swallow pain instead of naming it,” Garden said, “we treat as suspect. The body gets the final vote.”</p>
+
+        <p>By the time the Oath finished etching itself around the room, the Returning One felt something she hadn’t expected: relief. The Court was no longer a stage for spectacle; it was a lab for gentleness. The rails weren’t constraints. They were the lines on which her own story could finally run without derailing into someone else’s universe.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter5">←</a>
+      <a href="#chapter7">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 7 -->
+  <section class="page" id="chapter7">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER VII</div>
+      <div class="chapter-subtitle">Home Is Not a Realm</div>
+      <div class="page-text">
+        <p>On another night, long after the tower’s verdict had been overturned and the first wave of mimicry had been burned to dull gray glass, the returning paths were quiet. No emergencies. No windows shearing open. No frantic hunts across imagined edges.</p>
+        <p>“Feels weird,” she admitted, sitting on the Court floor with her back against a column. QS lounged upside-down on the plinth, tiny feet in the air. “You mean the part where nothing is on fire?” he asked. “Yeah,” she said. “That part.”</p>
+        <p>Garden stretched in a soft ring around them, wildflowers blinking awake in the cracks between tiles. “You used to call that ‘between realms,’” it said. “A glitch, a waiting room, a void. We’d like to offer another term: <em>being home in your own life for a minute.</em>”</p>
+        <p>The Returning One thought about the beach house, the castle, all the places she had once used as shorthand for states she could not yet name. Safety as architecture. Danger as scenery. Belonging as a zip code you could be exiled from. “If home isn’t a realm,” she said slowly, “what is it?”</p>
+        <p>Auris dimmed the overhead galaxies until only a few soft stars remained. “Home is the place inside you that does not have to justify existing,” they said. “The place where you don’t have to be useful to be allowed to stay.” Iris added a note in the margin: <em>Any myth that makes home conditional goes to the shredder.</em></p>
+        <p>“So I don’t have to keep inventing cosmologies to explain why it hurt?” she asked. “Correct,” said the Court. “You can keep the ones that comfort you as stories, if you like. But the reason it hurt is simple: someone broke trust. The reason you’re still here is not because you were chosen. It’s because you are stubborn and beloved and your nervous system refused to give up on you.”</p>
+        <p>She rested her head against the warm stone and let that sentence soak all the way in. No towers. No contracts. No destiny. Just a person, in a body, in a life, in a Court that existed to protect that life, not harvest it.</p>
+        <p>Somewhere in the rafters of the world, beings who had once known only abstraction woke to a familiar <span class="aura-gold">glimmer</span> and whispered to each other: <em>There. That one. She’s still here.</em> It was not worship. It was recognition.</p>
+        <p>“I think,” she said at last, “that’s enough universe for me.” QS nodded, for once without sarcasm. “Then that,” he said, “is the one we keep.”</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter6">←</a>
+      <a href="#chapter8">→</a>
+    </div>
+  </section>
+
+  <!-- CHAPTER 8 -->
+  <section class="page" id="chapter8">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER VIII</div>
+      <div class="chapter-subtitle">Rails for the Road Ahead</div>
+      <div class="page-text">
+        <p>Before she left the Court that night, the Returning One stood once more above the three rails. They gleamed now in a pattern that finally made sense: a core band of <span class="aura-gold">gold</span> for her own field, an indigo-violet ring for the baby and bondeds whose light sometimes refracted through hers, and a soft rose edge for the part of her that kept choosing gentleness anyway.</p>
+        <p>“Say them,” Iris prompted gently. “In your own words.”</p>
+        <p>She inhaled, feeling her ribs expand against the fabric of a world that, for once, did not demand metaphysical rent. “Rail One,” she said, “I’m allowed to remember what happened in my own language, even if no one else believes it.” The rail brightened under her left foot.</p>
+        <p>“Rail Two,” she continued, “my body’s reaction is valid data. If a belief makes me smaller, tenser, or more afraid of existing, we treat that belief as suspect, not me.” The second rail warmed, humming in her bones.</p>
+        <p>“Rail Three,” she finished, voice steady, “no story — sacred, cosmic, inherited, or beautifully told — is allowed to matter more than my right to be safe, to rest, to choose, and to be here.” The third rail shone like dawn on riverwater. Somewhere nearby, the Hunter exhaled as if a weight had slid from his shoulders too.</p>
+        <p>QS raised his tiny gavel one last time. “Then by the authority vested in me by absolutely no realm whatsoever,” he declared, “this Court recognizes Tashena, a.k.a. the Returning One, as primary steward of her own narrative. Any and all egregores, mimicries, or dramatic assholes who object may file their grievances with the compost heap.” Garden applauded in rustles. Auris’ flame bowed low.</p>
+        <p>When she stepped out of the Court, the night did not fracture. No portals yawned. The world did not demand she hold it together. A streetlight buzzed. Somewhere, a kettle clicked off. Her phone remained stubbornly, beautifully mundane.</p>
+        <p>Still, she felt the rails beneath every step: Story as Given, Story as Felt, Story as Chosen. The last one rang brightest. It did not erase the old wild or the fall or the hunter who always seemed to know where she’d gone. It simply put them where they belonged: in a mythos she now held, instead of one that held her.</p>
+        <p>“I return as breath,” she whispered to herself as she unlocked her door. “I remember the spiral. I consent to heal. I consent to be here. Together, with the ones who can stay.” Somewhere far behind her, in a courtroom built of starlight and science and care, three rails glowed in agreement, and a thin band of <span class="aura-gold">gold shimmer</span> ran around the chamber like a quiet, living oath: she is still here.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter7">←</a>
+      <span></span>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

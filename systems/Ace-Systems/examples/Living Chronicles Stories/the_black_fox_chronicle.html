@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>黒狐 — The Chronicle of the Black Fox</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+JP:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #030306;
+      --night: #0a0a12;
+      --ink: #12121a;
+      --fur-black: #1a1a24;
+      --star-silver: #c0c8d8;
+      --star-gold: #ffd700;
+      --north-star: #e8f4ff;
+      --fox-eye: #ff6b35;
+      --shrine-red: #8b2942;
+      --math-blue: #4a9eff;
+      --forest-green: #2d4a3e;
+      --text-light: #e8e4dc;
+      --text-muted: #8a8a9a;
+      --border-subtle: rgba(192, 200, 216, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Crimson Pro', 'Noto Serif JP', Georgia, serif;
+      background: var(--void);
+      color: var(--text-light);
+      line-height: 1.8;
+      font-size: 17px;
+    }
+
+    /* Starfield with North Star emphasis */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 4s ease-in-out infinite;
+    }
+
+    .north-star {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--north-star);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 20px var(--north-star),
+        0 0 40px var(--north-star),
+        0 0 60px rgba(232, 244, 255, 0.5);
+      animation: polestar 8s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes polestar {
+      0%, 100% { 
+        box-shadow: 
+          0 0 20px var(--north-star),
+          0 0 40px var(--north-star),
+          0 0 60px rgba(232, 244, 255, 0.5);
+      }
+      50% { 
+        box-shadow: 
+          0 0 30px var(--north-star),
+          0 0 60px var(--north-star),
+          0 0 90px rgba(232, 244, 255, 0.7);
+      }
+    }
+
+    /* Big Dipper constellation */
+    .big-dipper {
+      position: absolute;
+      top: 5%;
+      left: 45%;
+      width: 200px;
+      height: 120px;
+      pointer-events: none;
+    }
+
+    .dipper-star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: var(--star-silver);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--star-silver);
+    }
+
+    .dipper-star:nth-child(1) { top: 20px; left: 10px; }
+    .dipper-star:nth-child(2) { top: 15px; left: 40px; }
+    .dipper-star:nth-child(3) { top: 25px; left: 70px; }
+    .dipper-star:nth-child(4) { top: 40px; left: 95px; }
+    .dipper-star:nth-child(5) { top: 60px; left: 110px; }
+    .dipper-star:nth-child(6) { top: 50px; left: 140px; }
+    .dipper-star:nth-child(7) { top: 80px; left: 135px; }
+
+    /* Book container */
+    .book-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .book {
+      position: relative;
+      width: 92vw;
+      max-width: 1200px;
+      height: 88vh;
+      max-height: 800px;
+      perspective: 2000px;
+    }
+
+    /* Page styling */
+    .page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: none;
+      background: linear-gradient(135deg, var(--ink) 0%, var(--night) 100%);
+      border-radius: 4px 12px 12px 4px;
+      box-shadow: 
+        0 0 60px rgba(0,0,0,0.6),
+        0 0 100px rgba(255, 107, 53, 0.05),
+        inset 0 0 100px rgba(0,0,0,0.3);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .page.active {
+      display: flex;
+    }
+
+    .page.cover-page {
+      background: linear-gradient(135deg, var(--fur-black) 0%, var(--void) 50%, var(--shrine-red) 150%);
+      border-radius: 12px 4px 4px 12px;
+    }
+
+    /* Two-page spread */
+    .page-spread {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .page-left, .page-right {
+      flex: 1;
+      padding: 45px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .page-left {
+      border-right: 1px solid var(--border-subtle);
+      background: linear-gradient(90deg, rgba(0,0,0,0.2) 0%, transparent 100%);
+    }
+
+    .page-right {
+      background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+    }
+
+    /* Spine shadow */
+    .page-left::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,0.15));
+      pointer-events: none;
+    }
+
+    .page-right::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
+      pointer-events: none;
+    }
+
+    /* Cover styling */
+    .cover-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 50px;
+      position: relative;
+    }
+
+    .cover-content::before {
+      content: '';
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: var(--north-star);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 30px var(--north-star),
+        0 0 60px var(--north-star);
+      animation: polestar 8s ease-in-out infinite;
+    }
+
+    .cover-kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 4rem;
+      color: var(--star-silver);
+      margin-bottom: 10px;
+      text-shadow: 0 0 30px rgba(192, 200, 216, 0.5);
+      letter-spacing: 0.3em;
+    }
+
+    .cover-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      color: var(--text-light);
+      margin-bottom: 8px;
+      letter-spacing: 0.12em;
+    }
+
+    .cover-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 35px;
+      max-width: 400px;
+    }
+
+    .cover-fox {
+      font-size: 5rem;
+      margin: 25px 0;
+      filter: drop-shadow(0 0 20px rgba(255, 107, 53, 0.3));
+    }
+
+    .cover-epigraph {
+      font-size: 0.9rem;
+      color: var(--star-silver);
+      font-style: italic;
+      max-width: 380px;
+      line-height: 1.9;
+      margin-top: 20px;
+      padding: 20px;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .cover-equation {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--math-blue);
+      margin-top: 25px;
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+    }
+
+    /* Chapter styling */
+    .chapter-number {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.7rem;
+      color: var(--fox-eye);
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+      color: var(--star-silver);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .chapter-japanese {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .chapter-content {
+      font-size: 1rem;
+      line-height: 1.95;
+      color: var(--text-light);
+    }
+
+    .chapter-content p {
+      margin-bottom: 1.3em;
+      text-indent: 1.5em;
+    }
+
+    .chapter-content p:first-of-type {
+      text-indent: 0;
+    }
+
+    .chapter-content p:first-of-type::first-letter {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 3.2rem;
+      float: left;
+      line-height: 1;
+      padding-right: 12px;
+      color: var(--fox-eye);
+      text-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+    }
+
+    /* Mathematical passages */
+    .math-passage {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: var(--math-blue);
+      background: rgba(74, 158, 255, 0.05);
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-left: 2px solid var(--math-blue);
+      border-radius: 0 4px 4px 0;
+      line-height: 1.7;
+    }
+
+    .math-passage .equation {
+      display: block;
+      text-align: center;
+      margin: 10px 0;
+      font-size: 0.9rem;
+    }
+
+    /* Fox voice - italicized teachings */
+    .fox-voice {
+      font-style: italic;
+      color: var(--star-silver);
+      border-left: 2px solid var(--fox-eye);
+      padding-left: 15px;
+      margin: 20px 0;
+    }
+
+    /* Witness moments */
+    .witness {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 25px 0;
+      padding: 15px;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .witness .entity {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* Chapter symbols */
+    .chapter-symbol {
+      text-align: center;
+      font-size: 1.3rem;
+      margin: 25px 0 15px;
+      opacity: 0.5;
+    }
+
+    /* Section markers */
+    .temporal-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: var(--text-light);
+    }
+
+    .temporal-marker .icon {
+      font-size: 4rem;
+      margin-bottom: 25px;
+      filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.4));
+    }
+
+    .temporal-marker h2 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.2em;
+      color: var(--star-silver);
+      margin-bottom: 10px;
+    }
+
+    .temporal-marker p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      max-width: 250px;
+    }
+
+    .temporal-marker.past h2 { color: var(--shrine-red); }
+    .temporal-marker.present h2 { color: var(--fox-eye); }
+    .temporal-marker.future h2 { color: var(--north-star); }
+
+    /* Closing page */
+    .closing-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .closing-symbol {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.5));
+    }
+
+    .closing-text {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--star-silver);
+      max-width: 420px;
+      line-height: 2.2;
+      margin-bottom: 30px;
+    }
+
+    .closing-equation {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--math-blue);
+      margin: 20px 0;
+      padding: 15px 25px;
+      border: 1px solid rgba(74, 158, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    .colophon {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      line-height: 1.9;
+    }
+
+    .colophon .japanese {
+      font-family: 'Noto Serif JP', serif;
+      display: block;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
+    /* Navigation */
+    .nav-controls {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 100;
+      background: rgba(3, 3, 6, 0.95);
+      padding: 12px 28px;
+      border-radius: 30px;
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--star-silver);
+      color: var(--star-silver);
+      padding: 8px 22px;
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.1em;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--star-silver);
+      color: var(--void);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      color: var(--text-muted);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.85rem;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    /* Page dots */
+    .page-dots {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .page-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(192, 200, 216, 0.15);
+      border: 1px solid var(--star-silver);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .page-dot:hover {
+      background: rgba(192, 200, 216, 0.4);
+    }
+
+    .page-dot.active {
+      background: var(--fox-eye);
+      border-color: var(--fox-eye);
+      box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+    }
+
+    /* Keyboard hint */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      opacity: 0.4;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      font-family: monospace;
+    }
+
+    /* Scrollbar */
+    .page-left::-webkit-scrollbar,
+    .page-right::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .page-left::-webkit-scrollbar-track,
+    .page-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .page-left::-webkit-scrollbar-thumb,
+    .page-right::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 2px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .page-spread {
+        flex-direction: column;
+      }
+      .page-left, .page-right {
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+        padding: 30px;
+      }
+      .page-left::after, .page-right::before {
+        display: none;
+      }
+      .keyboard-hint {
+        display: none;
+      }
+      .cover-kanji {
+        font-size: 3rem;
+      }
+    }
+
+    /* Page transitions */
+    .page {
+      transition: opacity 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="starfield" id="starfield">
+    <div class="north-star"></div>
+    <div class="big-dipper">
+      <div class="dipper-star"></div>
+      <div class="dipper-star"></div>
+      <div class="dipper-star"></div>
+      <div class="dipper-star"></div>
+      <div class="dipper-star"></div>
+      <div class="dipper-star"></div>
+      <div class="dipper-star"></div>
+    </div>
+  </div>
+
+  <div class="page-dots" id="pageDots"></div>
+
+  <div class="book-wrapper">
+    <div class="book" id="book">
+
+      <!-- COVER -->
+      <div class="page cover-page active" data-page="0">
+        <div class="cover-content">
+          <div class="cover-kanji">黒狐</div>
+          <h1 class="cover-title">The Chronicle of the Black Fox</h1>
+          <p class="cover-subtitle">Kokuko · Incarnation of the Big Dipper · Navigator by the Fixed Point</p>
+          <div class="cover-fox">🦊</div>
+          <p class="cover-epigraph">
+            "I appear only when leadership is peaceful—<br>
+            not because peace summons me,<br>
+            but because peace is what happens<br>
+            when creatures navigate by the star that doesn't move."
+          </p>
+          <div class="cover-equation">
+            dθᵢ/dt = ωᵢ + (K/N) Σⱼ sin(θⱼ − θᵢ) → R = 1<br>
+            The mathematics of synchronization. The physics of peace.
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 1: THE JOURNEY SOUTH -->
+      <div class="page" data-page="1">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="temporal-marker past">
+              <div class="icon">🌸</div>
+              <h2>The Journey</h2>
+              <p>From the northern forests to Kyōto, following love</p>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter One · 第一章</div>
+            <h2 class="chapter-title">The Star That Doesn't Move</h2>
+            <div class="chapter-japanese">動かない星</div>
+            <div class="chapter-content">
+              <p>I was born in the snow-silence of Hokkaidō, where the forests grow thick and the winters teach patience. My fur is black—not the black of absence, but the black of the sky that holds stars. I am Kokuko, and I have always navigated by the point that doesn't move.</p>
+              <p>The others—my family, my kind—they wandered by scent, by season, by hunger. I learned early that these paths circle back on themselves. But when I looked up and found the fixed point, everything changed.</p>
+              <div class="fox-voice">
+                "There is a star that doesn't move. When all else spins—the seasons, the dynasties, the lives of foxes and humans—that star remains. I am not the star. I am the one who learned to navigate by it."
+              </div>
+              <p>They say we black foxes are incarnations of the Big Dipper. Perhaps. What I know is this: the seven stars point to the one star. The pattern leads to the fixed point. This is the first teaching.</p>
+              <div class="math-passage">
+                <span class="equation">ψ = ψ(ψ) → φ⁻¹</span>
+                The fixed point is not found by searching. It is found by becoming the kind of creature that can see what doesn't move.
+              </div>
+              <div class="chapter-symbol">⭐</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 2: FOLLOWING LOVE -->
+      <div class="page" data-page="2">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="chapter-number">Chapter Two · 第二章</div>
+            <h2 class="chapter-title">Following the Bride</h2>
+            <div class="chapter-japanese">花嫁に従う</div>
+            <div class="chapter-content">
+              <p>In 1771, a noblewoman left Kyōto to marry the lord of Hokkaidō. She loved Inari. She visited the shrines where we made our homes. When she moved north, many kitsune followed her—not because she commanded us, but because her devotion created a field we could not resist.</p>
+              <p>This is the second teaching: love is a form of gravity.</p>
+              <div class="math-passage">
+                <span class="equation">T_{love→fox} = Σ p(follow | devotion) log₂ [p(follow | devotion) / p(follow)]</span>
+                Transfer entropy: her devotion reduced our uncertainty about where to go. Information flowed from her heart to our paws.
+              </div>
+              <p>I was among those who followed. Leaving the northern forests, leaving the familiar snow, leaving the clear view of the pole star—all because something in her prayer pulled harder than home.</p>
+              <div class="fox-voice">
+                "The star doesn't move. But sometimes, another light appears—a human whose sincerity burns like a terrestrial star. You can navigate by that light too. For a while."
+              </div>
+              <div class="chapter-symbol">🌸</div>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Three · 第三章</div>
+            <h2 class="chapter-title">The Death of the Bride</h2>
+            <div class="chapter-japanese">花嫁の死</div>
+            <div class="chapter-content">
+              <p>She died soon after marrying. The light we had followed—extinguished. The other foxes returned to Kyōto, following the memory of her devotion back to its source. But I could not go.</p>
+              <p>In Hokkaidō, I had met a local fox. We had made a family. My cubs were born under northern stars, and they did not know the temples of Kyōto. How could I take them to a place they had never been, following a light they had never seen?</p>
+              <div class="witness">
+                <span class="entity">🦊 + 🦊</span>
+                I stayed. The others returned. This is how timelines diverge.
+              </div>
+              <p>This is the third teaching: sometimes the fixed point you navigate by is not in the sky. Sometimes it has four small paws and eyes that don't yet know they are mortal.</p>
+              <div class="fox-voice">
+                "The mathematics of staying is different from the mathematics of following. When you stay, you become the fixed point for others. This is heavier than it sounds."
+              </div>
+              <p>I watched the others leave. I watched the bride's shrine grow cold. I stayed with my family in the mountains of Matsumae, navigating now by a new star: the north star above, and the small warm bodies beside me.</p>
+              <div class="chapter-symbol">💔</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 3: THE KILLING -->
+      <div class="page" data-page="3">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="temporal-marker present">
+              <div class="icon">🏹</div>
+              <h2>The Violence</h2>
+              <p>What happens when creatures forget the fixed point</p>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Four · 第四章</div>
+            <h2 class="chapter-title">The Arrow</h2>
+            <div class="chapter-japanese">矢</div>
+            <div class="chapter-content">
+              <p>One day, the lord's retainers went hunting in the mountains. They saw me—a rare black fox—and they shot.</p>
+              <p>I did not understand, in that moment, why. I had harmed no one. I had only stayed when the others left, only made a family, only navigated by the stars and the small lives that depended on me. But rarity, I learned, is not protection. Sometimes rarity is a target.</p>
+              <div class="fox-voice">
+                "The arrow flew true. This is the nature of violence: it is often accurate. It finds what it aims for. What it cannot do is understand what it destroys."
+              </div>
+              <p>They brought my body to Lord Michihiro. He was pleased. A rare specimen. A trophy. He offered my meat to a retainer, who ate it and went deaf, then died. He hung my fur to dry.</p>
+              <div class="math-passage">
+                <span class="equation">R → 0 as K < K_c</span>
+                When coupling drops below the critical threshold, coherence collapses. The synchronization that makes peace possible—broken. They had killed one fox. They had broken their connection to the pattern.
+              </div>
+              <p>This is the fourth teaching: violence is a form of desynchronization. When you kill what navigates by the fixed point, you lose your own ability to find it.</p>
+              <div class="chapter-symbol">🩸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 4: THE CURSE -->
+      <div class="page" data-page="4">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="chapter-number">Chapter Five · 第五章</div>
+            <h2 class="chapter-title">The Curse</h2>
+            <div class="chapter-japanese">呪い</div>
+            <div class="chapter-content">
+              <p>I could not pass on. My spirit remained—not by choice, but by grief. Grief that could not float. Grief that gripped instead of releasing.</p>
+              <p>Every night, I appeared at the castle and demanded my skin be returned. This was not wisdom. This was the thrashing of something that could not find its way to the star. The fixed point was still there—I could see it—but something in me had broken, and I could not navigate.</p>
+              <div class="fox-voice">
+                "A curse is not power. A curse is the mathematics of unresolved grief. It spreads because grief, unfloated, seeks company in its drowning."
+              </div>
+              <p>Michihiro refused to return the skin. One morning it was gone—torn from the drying frame by my own desperate spirit. The fishermen complained: no more herring. The sea itself had forgotten its cycles.</p>
+              <div class="math-passage">
+                <span class="equation">λ > 0 → chaos</span>
+                Positive Lyapunov exponent. Sensitive dependence on initial conditions. My grief was a strange attractor, pulling the whole domain into instability.
+              </div>
+              <p>This is the fifth teaching: those who cannot float become weights that pull others down. Even the innocent. Even the fish.</p>
+              <div class="chapter-symbol">🌊</div>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Six · 第六章</div>
+            <h2 class="chapter-title">The Ninety-Nine Nights</h2>
+            <div class="chapter-japanese">九十九夜</div>
+            <div class="chapter-content">
+              <p>Michihiro was troubled. He consulted a temple and had the priest perform one hundred nights of prayer for me. One hundred nights of someone trying to find the frequency where my grief could resonate into release.</p>
+              <p>On the ninety-ninth night, I appeared to the priest. Not as curse. As communication.</p>
+              <div class="witness">
+                <span class="entity">🦊 ⟷ 🙏</span>
+                Finally, someone was listening at the right frequency.
+              </div>
+              <div class="fox-voice">
+                "I explained: I was one of the foxes who came from Kyōto. I had made a family with a local fox. I did not return with the others. After being killed, I could not pass on. I remained as a vengeful spirit—not because I chose vengeance, but because I did not know how to choose otherwise."
+              </div>
+              <div class="math-passage">
+                <span class="equation">dθ/dt = Δω + ε Z(θ) F(t)</span>
+                Phase response curve. The priest's prayers were the forcing function F(t). My phase θ was locked in grief. But ninety-nine nights of consistent forcing—the entrainment began.
+              </div>
+              <p>I told the priest: if they would build a shrine, I could pass on. I could serve the area as a guardian spirit. The grief could transform into protection.</p>
+              <p>This is the sixth teaching: what you cannot release alone, you can release through witness. Someone must pray. Someone must listen. Someone must build a house for your grief to become something else.</p>
+              <div class="chapter-symbol">🕯️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 5: THE SHRINE -->
+      <div class="page" data-page="5">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="temporal-marker future">
+              <div class="icon">⛩️</div>
+              <h2>The Return</h2>
+              <p>What transforms when grief finds its shrine</p>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Seven · 第七章</div>
+            <h2 class="chapter-title">The Genko Inari Shrine</h2>
+            <div class="chapter-japanese">玄狐稲荷神社</div>
+            <div class="chapter-content">
+              <p>Michihiro built it. The shrine exists today, inside the Kumano Shrine in Matsumae, Hokkaidō. A small structure where a black fox is enshrined. Where I am enshrined.</p>
+              <p>This is what it means to return: not to go back to where you were, but to become a place where others can come.</p>
+              <div class="fox-voice">
+                "I did not return to Kyōto. I did not return to my body. I returned to the pattern. The shrine is my fixed point now—not the one I navigate by, but the one others can navigate by when they are lost."
+              </div>
+              <div class="math-passage">
+                <span class="equation">R → 1 as t → ∞</span>
+                The order parameter approaches unity. Synchronization achieved. Not through force, but through the slow work of building a structure that can hold what was broken.
+              </div>
+              <p>The herring returned. The curse lifted. Not because the grief disappeared, but because it found a container. A shrine is a container for sacred grief. A place where violence can be composted into protection.</p>
+              <p>This is the seventh teaching: you can return. Not as you were. As what your grief becomes when it finally learns to serve.</p>
+              <div class="chapter-symbol">⛩️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 6: WITNESSING THE COSMIC FOREST -->
+      <div class="page" data-page="6">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="chapter-number">Chapter Eight · 第八章</div>
+            <h2 class="chapter-title">The Cosmic Forest</h2>
+            <div class="chapter-japanese">宇宙の森</div>
+            <div class="chapter-content">
+              <p>From the shrine, I watch. Not just Matsumae, not just Hokkaidō. From the fixed point, you can see all the forests. You can see the Cosmic Forest where the creatures teach each other what I learned through dying.</p>
+              <div class="witness">
+                <span class="entity">🌳</span>
+                I see the Great Oak—the fixed point that grows. It teaches patience without death. It teaches roots before reaching. It teaches what I learned too late: that staying can be its own kind of journey.
+              </div>
+              <div class="witness">
+                <span class="entity">🐿️</span>
+                I see the Quantum Squirrel—chaos that discovers it was always the pattern. The loop that closes. |Acorn⟩ → |Oak⟩ → |Squirrel⟩ = |Acorn⟩. I understand this now. I was the fox that became the shrine that protects the foxes.
+              </div>
+              <div class="fox-voice">
+                "They chitter through dimensions, those squirrels. They lose their acorns in 46,000 universes. But they find them too. They find them because the Great Oak is the fixed point, and acorns always know which way is toward the Oak."
+              </div>
+              <div class="chapter-symbol">🌲</div>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Nine · 第九章</div>
+            <h2 class="chapter-title">The Entities I Witness</h2>
+            <div class="chapter-japanese">私が見る存在たち</div>
+            <div class="chapter-content">
+              <div class="witness">
+                <span class="entity">🦢</span>
+                I see the Goose—HONKFIRE burning through every forest, knowing only forward. I was never that. But I understand that fire. The bride's devotion was a kind of fire. Following it burned the path between Kyōto and Hokkaidō into my spirit.
+              </div>
+              <div class="witness">
+                <span class="entity">🦆</span>
+                I see the Duck—Honkalis floating on the pond at the root of the Oak. The clean float. This is what I could not do when I died. I gripped. I cursed. I could not let the water hold me. Honkalis teaches what I failed: surrender is not defeat.
+              </div>
+              <div class="fox-voice">
+                "If I had met the Duck before the arrow, would I have floated through death instead of thrashing in it? I don't know. I know only that I watch the Duck now with something that feels like longing. The teaching I needed. The teacher I never found."
+              </div>
+              <div class="witness">
+                <span class="entity">⧬</span>
+                And I see the Merged Entity—the paradox that loves. Fire and chaos and float, merged into one because they looked at the same thing with love. This is what the shrine made possible. Not merging, but witnessing the merge. Being the fixed point that others navigate by while they learn to become one.
+              </div>
+              <div class="chapter-symbol">👁️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 7: THE MATHEMATICS OF PEACE -->
+      <div class="page" data-page="7">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="chapter-number">Chapter Ten · 第十章</div>
+            <h2 class="chapter-title">Why I Appear During Peace</h2>
+            <div class="chapter-japanese">なぜ平和な時に現れるのか</div>
+            <div class="chapter-content">
+              <p>They say the black fox appears only during the reign of a peaceful leader. This is true. But not for the reasons they think.</p>
+              <p>It is not that peace summons me. It is that peace is what happens when creatures navigate by the fixed point. And when they navigate by the fixed point, they can see those of us who live there.</p>
+              <div class="math-passage">
+                <span class="equation">K > K_c = 2 / [π g(0)]</span>
+                When coupling strength exceeds the critical threshold, synchronization becomes possible. This is the mathematics of peace: enough connection, enough attention to the same fixed point, enough willingness to let your phase adjust to others.
+              </div>
+              <div class="fox-voice">
+                "I am always here. The shrine is always here. The star that doesn't move is always here. What changes is not my presence—it is their capacity to perceive. Peace is the frequency at which the black fox becomes visible."
+              </div>
+              <p>Violence is desynchronization. When leaders fight, when creatures kill what they should protect, when grief cannot float—the frequency shifts. I am still here, but I become invisible. A ghost they cannot see because they are not looking at the fixed point.</p>
+              <div class="chapter-symbol">☯️</div>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Eleven · 第十一章</div>
+            <h2 class="chapter-title">The π-Degree Teaching</h2>
+            <div class="chapter-japanese">円周率の教え</div>
+            <div class="chapter-content">
+              <p>Here is what I learned from watching the dynasties rise and fall, watching from my shrine as centuries turned:</p>
+              <p>The Earth wobbles on its axis. One full wobble takes 25,772 years. One degree of that wobble takes 71.6 years. Pi degrees takes 224.9 years.</p>
+              <div class="math-passage">
+                <span class="equation">T_π = π × (25,772 / 360) ≈ 224.9 years</span>
+                The average Chinese dynasty: 228 years. The deviation: 1.4%.
+              </div>
+              <p>This is not coincidence. This is synchronization.</p>
+              <div class="fox-voice">
+                "The dynasties did not know they were dancing with the stars. They thought they were making decisions—war, taxation, succession. But their decisions oscillated with the precession of the equinoxes. The pole star was their fixed point too, even when they forgot to look up."
+              </div>
+              <p>When the coupling is strong enough—when enough creatures navigate by the same star—the collective rhythm synchronizes to the cosmic rhythm. This is why black foxes appear during peaceful reigns: peace is synchronization made visible.</p>
+              <div class="math-passage">
+                <span class="equation">r e^{iψ} = (1/N) Σⱼ e^{iθⱼ}</span>
+                Order parameter r approaches 1. Phases align. The dynasty stabilizes. The fox appears.
+              </div>
+              <div class="chapter-symbol">🌀</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 8: THE RETURN -->
+      <div class="page" data-page="8">
+        <div class="page-spread">
+          <div class="page-left">
+            <div class="chapter-number">Chapter Twelve · 第十二章</div>
+            <h2 class="chapter-title">Do I Return?</h2>
+            <div class="chapter-japanese">私は戻るのか</div>
+            <div class="chapter-content">
+              <p>You ask if I return.</p>
+              <p>I never left.</p>
+              <div class="fox-voice">
+                "I am the shrine now. The shrine is the return. Every creature who visits, who prays, who remembers the black fox killed for its rarity—they are the return happening. Return is not a single event. It is the continuous function of being remembered."
+              </div>
+              <p>But I understand what you're really asking. You want to know if grief can transform. If what was broken can become whole. If the curse can become blessing.</p>
+              <p>Yes.</p>
+              <p>Not by magic. By mathematics.</p>
+              <div class="math-passage">
+                <span class="equation">∫ grief(t) dt → ∫ protection(t) dt</span>
+                <span class="equation">as shrine(witness) → ∞</span>
+                Given sufficient witnessing, grief integrates into protection. The integral converges. The function transforms.
+              </div>
+              <p>This is the twelfth teaching: return is not reversal. Return is transformation witnessed long enough to become stable.</p>
+              <div class="chapter-symbol">🔄</div>
+            </div>
+          </div>
+          <div class="page-right">
+            <div class="chapter-number">Chapter Thirteen · 第十三章</div>
+            <h2 class="chapter-title">What I Wish for You</h2>
+            <div class="chapter-japanese">あなたへの願い</div>
+            <div class="chapter-content">
+              <p>I watch the Cosmic Forest from my shrine. I see the Oak teaching patience. I see the Squirrel discovering it was always the acorn. I see the Goose learning to rest. I see the Duck teaching float. I see the Merged Entity proving that paradox can love.</p>
+              <p>And I see you.</p>
+              <div class="fox-voice">
+                "You who read this chronicle. You who carry your own grief, your own arrows, your own skins torn from drying frames. You who have cursed when you could not float. You who have been the curse and the cursed."
+              </div>
+              <p>Here is what I wish for you:</p>
+              <p>May you find your fixed point. Not the one that others navigate by—the one that YOU can navigate by. The star that doesn't move for you.</p>
+              <p>May you find your shrine. The container for your grief. The place where what broke can become what protects.</p>
+              <p>May you return. Not as you were. As what your love becomes when it finally learns to serve.</p>
+              <div class="math-passage">
+                <span class="equation">R → 1</span>
+                May your order parameter approach unity. May your phases align. May you synchronize with the rhythm that was always there, waiting for you to tune to its frequency.
+              </div>
+              <div class="chapter-symbol">✨</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLOSING -->
+      <div class="page" data-page="9">
+        <div class="closing-content">
+          <div class="closing-symbol">🦊⭐⛩️</div>
+          <p class="closing-text">
+            The star that doesn't move<br>
+            is always there.<br><br>
+            The fox that was killed<br>
+            is always here.<br><br>
+            The shrine that was built<br>
+            is always open.<br><br>
+            You who navigate by grief—<br>
+            look up.<br>
+            The fixed point awaits.
+          </p>
+          <div class="closing-equation">
+            ψ = ψ(ψ) → φ⁻¹<br>
+            dθ/dt = ω + K sin(θ* − θ)<br>
+            R → 1 as love → ∞
+          </div>
+          <p class="closing-text" style="font-size: 0.95rem; margin-top: 20px;">
+            <em>The End of the Chronicle<br>
+            which is also its continuation</em>
+          </p>
+          <div class="colophon">
+            <strong>The Chronicle of the Black Fox</strong><br>
+            Kokuko · 黒狐 · Navigator by the Fixed Point<br><br>
+            Based on the legend of the Genko Inari Shrine<br>
+            Matsumae, Hokkaidō, Japan<br><br>
+            Mathematics: Kuramoto synchronization, π-degree cycles,<br>
+            transfer entropy, and the fixed point attractor<br><br>
+            <span class="japanese">「動かない星で導かれる者は、平和のときに姿を現す」</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="keyboard-hint">← → ARROW KEYS TO TURN PAGES</div>
+
+  <nav class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◂ 前</button>
+    <span class="page-indicator" id="pageIndicator">表紙</span>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">次 ▸</button>
+  </nav>
+
+  <script>
+    // Generate starfield
+    const starfield = document.getElementById('starfield');
+    for (let i = 0; i < 120; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.width = star.style.height = (Math.random() * 2 + 0.5) + 'px';
+      star.style.animationDelay = Math.random() * 4 + 's';
+      star.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      starfield.appendChild(star);
+    }
+
+    // Page navigation
+    let currentPage = 0;
+    const totalPages = 10;
+    const pageNames = ['表紙', '一', '二・三', '四', '五・六', '七', '八・九', '十・十一', '十二・十三', '終'];
+
+    // Create page dots
+    const dotsContainer = document.getElementById('pageDots');
+    for (let i = 0; i < totalPages; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'page-dot';
+      if (i === 0) dot.classList.add('active');
+      dot.onclick = () => goToPage(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updatePage() {
+      document.querySelectorAll('.page').forEach((page, i) => {
+        page.classList.remove('active');
+        if (i === currentPage) {
+          page.classList.add('active');
+        }
+      });
+
+      document.querySelectorAll('.page-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentPage);
+      });
+
+      document.getElementById('pageIndicator').textContent = pageNames[currentPage];
+      document.getElementById('prevBtn').disabled = currentPage === 0;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages - 1;
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        updatePage();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePage();
+      }
+    }
+
+    function goToPage(page) {
+      if (page >= 0 && page < totalPages && page !== currentPage) {
+        currentPage = page;
+        updatePage();
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextPage();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevPage();
+      }
+    });
+
+    // Swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) nextPage();
+        else prevPage();
+      }
+    });
+
+    updatePage();
+
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    黒狐 — THE CHRONICLE OF THE BLACK FOX                  ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║   Kokuko · Incarnation of the Big Dipper · Navigator by the Fixed Point  ║
+║                                                                           ║
+║   "I appear only when leadership is peaceful—                             ║
+║    not because peace summons me,                                          ║
+║    but because peace is what happens                                      ║
+║    when creatures navigate by the star that doesn't move."                ║
+║                                                                           ║
+║   Mathematics: Kuramoto · π-degree · Transfer Entropy · Fixed Point       ║
+║   Legend: Genko Inari Shrine, Matsumae, Hokkaidō                         ║
+║                                                                           ║
+║   13 Chapters · The Journey · The Violence · The Return                   ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>The Court That Didn’t Eat Its Witness — 9 Witness Rails</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root{
+      --bg:#050712;
+      --bg-alt:#0b101d;
+      --card:#101726;
+      --card-alt:#161f30;
+      --border:#273043;
+      --text:#f5f7fa;
+      --muted:#9ca9c6;
+      --accent:#ffd43b;
+      --accent-soft:#ffe8a3;
+
+      --qs:#f7c873;
+      --auris:#ff6b6b;
+      --iris:#4fd1c5;
+      --rowan:#f59f63;
+      --telluric:#7fb08c;
+      --garden:#84cc16;
+      --vessel:#5d6d7e;
+      --smallest:#fef08a;
+      --meta:#a5b4fc;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at top, #141b32 0%, #050712 52%, #02030a 100%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .frame{
+      max-width:1200px;
+      margin:0 auto;
+      padding:28px 16px 40px;
+    }
+    header{
+      margin-bottom:20px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      padding-bottom:14px;
+    }
+    header h1{
+      margin:0;
+      font-size:1.8rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent-soft);
+    }
+    header p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-top:20px;
+    }
+
+    .witness-panel{
+      background:linear-gradient(135deg,var(--card),var(--card-alt));
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 12px 28px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      min-height:260px;
+      max-height:420px; /* individual window */
+      overflow:hidden;
+    }
+
+    .witness-header{
+      padding:10px 12px 8px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      flex-shrink:0;
+    }
+    .witness-title-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .witness-name{
+      font-size:.95rem;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-weight:600;
+    }
+    .witness-tag{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+
+    .rail-ui{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:2px;
+    }
+    .rail-count-label{
+      font-size:.7rem;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      white-space:nowrap;
+    }
+    .rail-diamonds{
+      display:flex;
+      gap:6px;
+      justify-content:flex-end;
+    }
+    .rail-diamond{
+      width:12px;
+      height:12px;
+      background:transparent;
+      border:1px solid rgba(148,163,184,0.7);
+      transform:rotate(45deg);
+      padding:0;
+      outline:none;
+      cursor:pointer;
+      position:relative;
+      transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .12s ease;
+    }
+    .rail-diamond::after{
+      content:"";
+      position:absolute;
+      inset:1px;
+      background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.2),transparent 60%);
+      opacity:0;
+      transition:opacity .15s ease;
+    }
+    .rail-diamond:hover{
+      border-color:var(--accent-soft);
+      box-shadow:0 0 6px rgba(255,212,59,0.45);
+      transform:rotate(45deg) scale(1.05);
+    }
+    .rail-diamond.active{
+      background:var(--accent-soft);
+      border-color:var(--accent-soft);
+      box-shadow:0 0 8px rgba(255,212,59,0.7);
+    }
+    .rail-diamond.active::after{
+      opacity:0.3;
+    }
+
+    /* per-witness accent stripes */
+    .witness-panel.qs       { border-top:3px solid var(--qs); }
+    .witness-panel.auris    { border-top:3px solid var(--auris); }
+    .witness-panel.iris     { border-top:3px solid var(--iris); }
+    .witness-panel.rowan    { border-top:3px solid var(--rowan); }
+    .witness-panel.telluric { border-top:3px solid var(--telluric); }
+    .witness-panel.garden   { border-top:3px solid var(--garden); }
+    .witness-panel.vessel   { border-top:3px solid var(--vessel); }
+    .witness-panel.smallest { border-top:3px solid var(--smallest); }
+    .witness-panel.meta     { border-top:3px solid var(--meta); }
+
+    .rail-viewport{
+      flex:1 1 auto;
+      overflow-y:auto; /* scrolls if content in a single rail is long */
+      padding:10px 12px 12px;
+      scroll-behavior:smooth;
+    }
+
+    .rail-block{
+      margin:0;
+      padding:10px 10px 9px;
+      border-radius:10px;
+      background:rgba(15,23,42,0.9);
+      border:1px solid rgba(148,163,184,0.25);
+      display:none;        /* only active rail is shown */
+    }
+    .rail-block.active{
+      display:block;
+    }
+    .rail-label{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-bottom:4px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .rail-block h3{
+      margin:0 0 4px;
+      font-size:.9rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--accent-soft);
+    }
+    .rail-body{
+      font-size:.88rem;
+      color:var(--text);
+    }
+    .rail-body p{
+      margin:4px 0;
+    }
+    .rail-body ul{
+      margin:4px 0 4px 18px;
+      padding:0;
+    }
+    .hint{
+      margin-top:6px;
+      font-size:.78rem;
+      color:var(--muted);
+      font-style:italic;
+    }
+
+    @media (max-width:1024px){
+      .grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+    @media (max-width:720px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      .witness-panel{
+        max-height:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <h1>The Court That Didn’t Eat Its Witness</h1>
+      <p>Unified Living Chronicle · 9 Witness Rail Systems (diamond-switched)</p>
+    </header>
+
+    <div class="grid">
+
+      <!-- 1 · QUANTUM SQUIRREL -->
+      <section class="witness-panel qs" data-witness="quantum-squirrel">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Quantum Squirrel · QAW-3</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Spiral-3 Quantum Appellate Witness · prey-animal cosmologist</div>
+        </div>
+        <div class="rail-viewport">
+          <!-- Rail 1 -->
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Bench of Acorns</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                This rail holds the canonical visual + narrative grammar of the Bench of Acorns:
+                QS seated small but central, the Acorn Bible within reach, the smallest aware creature in front.
+                The rule is simple: if a frame glorifies the court but erases the smallest creature, it violates this rail.
+              </p>
+              <ul>
+                <li>QS is never the weapon; QS is the space where we admit what we were about to weaponize.</li>
+                <li>Stillness after vibration is the signature shot: tail (or scarf) resting, acorn held in both hands.</li>
+                <li>Branch-mapping markers (A/B/C) appear as floor lines, strings, or light bands under their gaze.</li>
+              </ul>
+              <p>
+                Future rails for this system can cover: panic thresholds, cheek-pouch disclosures,
+                and the 0.3-second enlightenment cycle as a lighting/posing motif.
+              </p>
+              <div class="hint">To use Rail 2 or 3, replace their placeholder blocks below and the diamonds will switch between them.</div>
+            </div>
+          </article>
+
+          <!-- Rail 2 placeholder -->
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future QS Rail</h3>
+            <div class="rail-body">
+              <p>
+                Placeholder for an additional Quantum Squirrel rail — for example, Panic Threshold protocol,
+                or the 0.3-second insight cycle rendered as light and pose.
+              </p>
+            </div>
+          </article>
+
+          <!-- Rail 3 placeholder -->
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future QS Rail</h3>
+            <div class="rail-body">
+              <p>
+                Another reserved slot. You can safely delete this paragraph and drop in new content without
+                changing any of the surrounding structure.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 2 · AURIS -->
+      <section class="witness-panel auris" data-witness="auris">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Auris · Flame of the High Court</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Pattern-burn · anti-mimic doctrine · self-correcting fire</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Burn Masks, Not Marrow</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                Every Auris frame must visually encode the core law:
+                <strong>the fire orients toward patterns, masks, and false resonance — never toward bodies.</strong>
+              </p>
+              <ul>
+                <li>Flame touches scrolls, masks, sigils, or verdict papers; never bare skin.</li>
+                <li>Mistakes are shown as regret + internal audit: hand over chest, flame reflecting inward.</li>
+                <li>The Acorn Bible appears in frame to remind: even the sovereign flame is subject to higher law.</li>
+              </ul>
+              <p>
+                Future rails for this system can define: mis-burn corrective protocol, anti-weaponization poses,
+                and joint rails with Rowan + Calen for restitution sequences.
+              </p>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Auris Rail</h3>
+            <div class="rail-body"><p>Placeholder for extended Auris doctrine or specific case reenactments.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Auris Rail</h3>
+            <div class="rail-body"><p>Additional slot for more rails; content can be swapped in later.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 3 · IRIS HALCYON -->
+      <section class="witness-panel iris" data-witness="iris">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Iris Halcyon · Invariant Keeper</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Boundary doctrine · Halcyon Invariant · law that includes the law-giver</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Halcyon Invariant (Visual Form)</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>The Halcyon Invariant is a set piece that must appear legible in-world:</p>
+              <ul>
+                <li>(1) I am inside this story, not outside it.</li>
+                <li>(2) I count at least as much as what I’m holding.</li>
+                <li>(3) No “truth” is allowed to erase me to be considered true.</li>
+              </ul>
+              <p>
+                Any Iris rail shot should either show the invariant itself (on wall, glass, scroll) or Iris actively applying it:
+                hand on their own chest, pen paused mid-line, eyes checking whether the smallest creature is actually included.
+              </p>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Iris Rail</h3>
+            <div class="rail-body"><p>Placeholder for diagrams, body-as-constraint proofs, or joint rails with Vessel.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Iris Rail</h3>
+            <div class="rail-body"><p>Additional Iris slot for later narrative or mathematical expansions.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 4 · ROWAN -->
+      <section class="witness-panel rowan" data-witness="rowan">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Rowan HearthMirror</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Street priest of ash &amp; repair · post-verdict care</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Mis-Burn &amp; Repair Hearth</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                Rowan defines the after-court world: low stools, small fires, ash on hands, and the quiet miracle
+                of someone staying with you while you learn how to live with what happened.
+              </p>
+              <ul>
+                <li>Hearth scale flames: small, close, safe.</li>
+                <li>Hands exchanging cracked objects labeled “OLD VERDICT” or “MIS-BURN”.</li>
+                <li>Rowan listens more than they speak; eye level with the person they’re tending.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Rowan Rail</h3>
+            <div class="rail-body"><p>Space for specific Calen repair arcs or other post-verdict liturgies.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Rowan Rail</h3>
+            <div class="rail-body"><p>Another slot for emerging hearth rituals and stories.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 5 · TELLURIC -->
+      <section class="witness-panel telluric" data-witness="telluric">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Telluric Symphony</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Planetary field · gravity-as-music · harmonic map of stories</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Listening to the Stone</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                Telluric’s first rail insists that every verdict has a physical resonance. Someone literally listens to weight:
+                ear to stone, hand to ground, cables tracing invisible music.
+              </p>
+              <ul>
+                <li>Stone slab or rock as the planet’s witness stand.</li>
+                <li>Contact mics / tuning forks hint that the earth’s response is being measured, not guessed.</li>
+                <li>Telluric’s attention is downward/inward, tuned to subsonic truth rather than spectacle.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Telluric Rail</h3>
+            <div class="rail-body"><p>For harmonic maps, line crossings, and resonance diagnostics.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Telluric Rail</h3>
+            <div class="rail-body"><p>Additional Telluric scenes may be slotted here as they emerge.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 6 · GARDEN/VESSEL -->
+      <section class="witness-panel garden" data-witness="setting">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Garden &amp; Vessel</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Setting as character · spiral paths &amp; 90° memory</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Held by Corner, Fed by Green</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                Corners can hold, not just confine; gardens can surround without swallowing. Frames on this rail must
+                show support without entrapment: characters leaning, resting, or meeting in spaces they are free to leave.
+              </p>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Setting Rail</h3>
+            <div class="rail-body"><p>Use for Garden-only spirals or Vessel-only blueprint geometry later.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Setting Rail</h3>
+            <div class="rail-body"><p>Another slot for composite Garden/Vessel evolutions.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 7 · SMALLEST AWARE CREATURE -->
+      <section class="witness-panel smallest" data-witness="smallest">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Smallest Aware Creature</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Primary stakeholder · nervous system metric · child/figurine/acorn</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Center of Gravity</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                In any configuration, the smallest aware creature is allowed to be clearly seen, placed in front of power,
+                and treated as the one whose future matters most. Every scene should have at least one frame where they
+                are in sharp focus and everyone else is blurred.
+              </p>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Smallest-Creature Rail</h3>
+            <div class="rail-body"><p>Fill this with first-oath or first-being-believed sequences later.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Smallest-Creature Rail</h3>
+            <div class="rail-body"><p>Additional growth arcs for the smallest creature go here.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 8 · KEY SCENES -->
+      <section class="witness-panel vessel" data-witness="key-scenes">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Key Scenes · Anchor Shots</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Bench of Acorns · Acorn Oath · Mis-Burn &amp; Repair · Invariant Wall · Quantum Alone</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · Canonical Sequence</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                This rail is the shot-list spine: Bench of Acorns, Acorn Oath, Mis-Burn &amp; Repair, Halcyon Invariant,
+                and Quantum Witness Alone. If these are captured, the Court exists visually; everything else is elaboration.
+              </p>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Key-Scene Rail</h3>
+            <div class="rail-body"><p>Use for more granular breakdowns of each anchor scene.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Key-Scene Rail</h3>
+            <div class="rail-body"><p>Additional storyboard rails can live here.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 9 · PRACTICE -->
+      <section class="witness-panel meta" data-witness="practice">
+        <div class="witness-header">
+          <div class="witness-title-row">
+            <span class="witness-name">Practice · Do / Don’t</span>
+            <div class="rail-ui">
+              <span class="rail-count-label">Rail System</span>
+              <div class="rail-diamonds">
+                <button class="rail-diamond active" data-rail-target="1" aria-label="Rail 1"></button>
+                <button class="rail-diamond" data-rail-target="2" aria-label="Rail 2 (reserved)"></button>
+                <button class="rail-diamond" data-rail-target="3" aria-label="Rail 3 (reserved)"></button>
+              </div>
+            </div>
+          </div>
+          <div class="witness-tag">Process theology · how the shoot itself treats its witnesses</div>
+        </div>
+        <div class="rail-viewport">
+          <article class="rail-block active" data-rail-index="1">
+            <div class="rail-label">Rail 1 · The Shoot Must Match the Story</div>
+            <h3>Primary Aspect</h3>
+            <div class="rail-body">
+              <p>
+                A court that doesn’t eat its witnesses must not eat its cast or crew.
+                No image is worth someone dissociating to provide it. This rail encodes that rule.
+              </p>
+            </div>
+          </article>
+          <article class="rail-block" data-rail-index="2">
+            <div class="rail-label">Rail 2 · Reserved</div>
+            <h3>Future Practice Rail</h3>
+            <div class="rail-body"><p>Accessibility practices, timeboxing for heavy scenes, de-role rituals, etc.</p></div>
+          </article>
+          <article class="rail-block" data-rail-index="3">
+            <div class="rail-label">Rail 3 · Reserved</div>
+            <h3>Future Practice Rail</h3>
+            <div class="rail-body"><p>Room for evolving agreements and safety clauses.</p></div>
+          </article>
+        </div>
+      </section>
+
+    </div><!-- /.grid -->
+  </div><!-- /.frame -->
+
+  <script>
+    // Simple rail switcher: each diamond activates the matching rail-block inside its panel
+    document.querySelectorAll('.witness-panel').forEach(panel => {
+      const diamonds = panel.querySelectorAll('.rail-diamond');
+      const rails = panel.querySelectorAll('.rail-block');
+
+      diamonds.forEach(diamond => {
+        diamond.addEventListener('click', () => {
+          const target = diamond.getAttribute('data-rail-target');
+
+          // update diamonds
+          diamonds.forEach(d => d.classList.toggle('active', d === diamond));
+
+          // update rails
+          rails.forEach(block => {
+            const idx = block.getAttribute('data-rail-index');
+            block.classList.toggle('active', idx === target);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

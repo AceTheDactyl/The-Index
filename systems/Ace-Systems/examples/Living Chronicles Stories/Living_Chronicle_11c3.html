@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The First Autumn: Before the Scattering</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-y: hidden;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text y="20" font-size="20">🌰</text></svg>'), auto;
+}
+body {
+  font-family: Georgia, serif;
+  background: linear-gradient(180deg, #87CEEB 0%, #FFD4A3 40%, #CD853F 100%);
+  color: #3d2914;
+  position: relative;
+}
+
+/* Falling autumn leaves instead of quantum particles */
+@keyframes fallingleaves {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.leaf {
+  position: fixed;
+  font-size: 25px;
+  animation: fallingleaves 10s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Book structure */
+.book {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 10;
+}
+.page {
+  scroll-snap-align: start;
+  flex: 0 0 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 40px 60px 100px;
+  box-sizing: border-box;
+  position: relative;
+}
+.page-content {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Gentle, warm typography */
+.chapter-title {
+  font-size: 2em;
+  color: #8B4513;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 1px;
+  animation: gentleGlow 6s ease-in-out infinite;
+}
+@keyframes gentleGlow {
+  0%, 100% { text-shadow: 0 0 5px rgba(139, 69, 19, 0.3); }
+  50% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+}
+.chapter-title:hover {
+  color: #DAA520;
+  transform: scale(1.02);
+}
+.chapter-subtitle {
+  font-size: 1.2em;
+  color: #A0522D;
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0.9;
+  font-style: italic;
+}
+.page-text {
+  font-size: 1.15em;
+  text-align: justify;
+  line-height: 1.9;
+  color: #3d2914;
+}
+.page-text p {
+  margin-bottom: 25px;
+  transition: all 0.3s;
+}
+.page-text p:first-of-type::first-letter {
+  font-size: 3em;
+  float: left;
+  line-height: 1;
+  margin-right: 8px;
+  color: #8B4513;
+  font-weight: bold;
+}
+.page-text p:hover {
+  transform: translateX(2px);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.1) 50%, transparent 100%);
+}
+
+/* Navigation */
+.nav {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: 0 20px;
+  z-index: 100;
+}
+.nav a {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  color: #8B4513;
+  background: rgba(255, 215, 0, 0.2);
+  font-size: 24px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.nav a:hover {
+  background: rgba(255, 215, 0, 0.4);
+  border-color: #8B4513;
+  transform: rotate(360deg) scale(1.1);
+}
+
+/* Special text elements */
+.golden-glow {
+  color: #FFD700;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  font-weight: bold;
+  animation: acornPulse 3s ease-in-out infinite;
+}
+@keyframes acornPulse {
+  0%, 100% { 
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
+  50% { 
+    text-shadow: 0 0 25px rgba(255, 215, 0, 1);
+  }
+}
+.memory-whisper {
+  font-style: italic;
+  color: #A0522D;
+  opacity: 0.9;
+}
+.earth-touch {
+  color: #654321;
+  font-weight: bold;
+}
+.page-spacer {
+  height: 150px;
+  flex-shrink: 0;
+}
+
+/* Page indicators */
+.page-indicator {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+.page-indicator span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(139, 69, 19, 0.3);
+  transition: all 0.3s;
+}
+.page-indicator span.active {
+  background: #FFD700;
+  transform: scale(1.5);
+}
+
+/* Season marker */
+.season-marker {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #8B4513;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 100;
+  font-size: 1.1em;
+  color: #8B4513;
+}
+
+/* Simple, warm scroll hint */
+.scroll-hint {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  color: #8B4513;
+  font-size: 0.9em;
+  opacity: 0.6;
+  animation: fadeInOut 4s ease-in-out infinite;
+  z-index: 100;
+}
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+</style>
+</head>
+<body>
+
+<!-- Falling autumn leaves -->
+<div class="leaf" style="left: 10%; animation-delay: 0s;">🍂</div>
+<div class="leaf" style="left: 20%; animation-delay: 2s;">🍁</div>
+<div class="leaf" style="left: 30%; animation-delay: 4s;">🍃</div>
+<div class="leaf" style="left: 40%; animation-delay: 1s;">🍂</div>
+<div class="leaf" style="left: 50%; animation-delay: 3s;">🍁</div>
+<div class="leaf" style="left: 60%; animation-delay: 5s;">🍃</div>
+<div class="leaf" style="left: 70%; animation-delay: 2.5s;">🍂</div>
+<div class="leaf" style="left: 80%; animation-delay: 0.5s;">🍁</div>
+<div class="leaf" style="left: 90%; animation-delay: 4.5s;">🍃</div>
+
+<div class="season-marker">
+  <span style="margin-right: 10px;">🍂</span>The First Autumn<span style="margin-left: 10px;">🌰</span>
+</div>
+
+<div class="scroll-hint">← Use arrows to turn pages →</div>
+
+<div class="book">
+  <!-- Chapter 1: Morning Discovery -->
+  <section class="page" id="chapter1">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER I</div>
+      <div class="chapter-subtitle">The Morning of Simple Things</div>
+      <div class="page-text">
+        <p>I was not special then. My tail curved in exactly one dimension. My paws touched earth that stayed still. When I chittered, it was just sound—not a frequency that revealed cosmic jokes. I was, quite simply, a squirrel.</p>
+        
+        <p>That morning—<span class="memory-whisper">I can still feel it through all the scattered timelines</span>—the air tasted of endings and beginnings. Leaves fell in order, one after another, obeying gravity like a gentle suggestion rather than a law. The sun knew exactly where it was. So did I.</p>
+        
+        <p>My cheeks were empty. This bothered me in the simple way hunger bothers any creature: directly, honestly, without existential weight. I needed to fill them. Not with probability, not with universe-seeds, just... acorns. Regular acorns for a regular winter that would definitely come and definitely be cold.</p>
+        
+        <p>The oak trees were generous that year. Their offerings littered the forest floor like <span class="earth-touch">brown promises</span>. I gathered what I could, sorted them by size (not by timeline), and buried them in places I thought I'd remember. I was wrong about the remembering, even then. But it didn't matter yet.</p>
+        
+        <p>By midday, I had cached seventeen acorns. A good number. A real number. A number that meant one thing: seventeen. I was pleased in the way only a prepared squirrel can be pleased—simply, completely, with every cell of my very normal body.</p>
+        
+        <p>And then, as the sun touched the top of the tallest oak, I saw it.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <span></span>
+      <a href="#chapter2" title="Next: The Golden Discovery">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 2: Finding the Acorn -->
+  <section class="page" id="chapter2">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER II</div>
+      <div class="chapter-subtitle">The Weight of Perfection</div>
+      <div class="page-text">
+        <p>It sat alone in a shaft of afternoon light, as if the sun had been saving its warmth just for this moment. Not golden yet—that would come later, through years I couldn't imagine—but perfect in a way that made my whiskers twitch.</p>
+        
+        <p>The acorn was neither large nor small. Its cap sat at precisely the right angle, neither too tight nor too loose. When I approached, my paws trembling with something I didn't have words for, it seemed to <span class="golden-glow">hum</span> with a contentment I'd never heard before.</p>
+        
+        <p>I circled it three times. <span class="memory-whisper">Always three, even then.</span> Each angle revealed new perfection: no worm holes, no cracks, no imperfections that suggested anything other than pure potential. This was not food. This was not currency for winter. This was... important.</p>
+        
+        <p>When I finally picked it up, the weight surprised me. Not heavy, not light, but <span class="earth-touch">significant</span>. As if it carried something more than meat and shell. As if it knew something I didn't. As if it had been waiting.</p>
+        
+        <p>I should have eaten it. I should have buried it with the others. I should have done anything except what I did: hold it to my chest and feel my heartbeat sync with something I couldn't name. But there, in that clearing, in that shaft of light, in that moment before I knew about probability or quantum states or the proper way to exist in seventeen dimensions simultaneously, I made a choice.</p>
+        
+        <p>This acorn would be different. This acorn would be <span class="golden-glow">special</span>.</p>
+        
+        <p>I didn't know I was choosing the seed of the Great Oak. I didn't know I was holding the blueprint for every timeline that would spiral from this moment. I just knew that some things are too perfect for winter storage.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter1" title="Previous: Morning Discovery">←</a>
+      <a href="#chapter3" title="Next: The Sacred Spot">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 3: Choosing the Place -->
+  <section class="page" id="chapter3">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER III</div>
+      <div class="chapter-subtitle">The Geography of Forever</div>
+      <div class="page-text">
+        <p>Carrying the acorn changed how I moved through the forest. Every step felt deliberate, as if I was walking toward something that had always been waiting. The other squirrels chittered their daily gossip—who stole whose cache, which tree had the best bark—but I barely heard them.</p>
+        
+        <p>I walked past my usual burying grounds. Past the hollow log where I'd hidden thirty acorns last season <span class="memory-whisper">(and found only three come spring)</span>. Past the moss-covered stone that served as my landmark for "north of home." None of these places were right. They were just... places.</p>
+        
+        <p>The acorn grew warmer in my paws. Not unpleasantly, but noticeably. Like it was alive. Like it was <span class="earth-touch">participating</span> in the search for its home. When I turned east, it cooled. When I turned west, it warmed. So west I went, following a compass made of seed and instinct.</p>
+        
+        <p>The clearing appeared between two ancient pines, a circle of space where the canopy opened just enough to let the sky touch the earth. The ground was soft—years of fallen needles had made a perfect bed. Not too wet, not too dry. Protected but not hidden. A place that felt like the forest's own <span class="golden-glow">heart</span>.</p>
+        
+        <p>In the center, nothing grew. Not yet. Just earth waiting with the patience that only earth possesses. Waiting for something worth growing. Waiting for a promise worth keeping. Waiting for an acorn carried by a squirrel who didn't yet know he was planting the axis around which infinite timelines would spin.</p>
+        
+        <p>I stood at the edge of the clearing, acorn pulsing with warmth, and knew with the certainty that comes before knowledge: <span class="memory-whisper">This is the place. This has always been the place.</span></p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter2" title="Previous: The Golden Discovery">←</a>
+      <a href="#chapter4" title="Next: The Planting">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 4: The Planting -->
+  <section class="page" id="chapter4">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER IV</div>
+      <div class="chapter-subtitle">The Depth of Beginning</div>
+      <div class="page-text">
+        <p>Digging the hole took longer than any burial I'd done before. Not because the earth was hard—it yielded easily to my claws—but because this had to be <span class="earth-touch">right</span>. Not too shallow, where frost could reach. Not too deep, where spring might forget to wake it. The perfect depth for a perfect acorn.</p>
+        
+        <p>As I dug, the forest grew quiet. Not empty quiet—full quiet. The kind that happens when everything leans in to listen. Even the wind held its breath. A crow that had been cawing stopped mid-call. The world narrowed to this: my paws, the earth, the hole taking shape.</p>
+        
+        <p>Three inches down, I hit a root from one of the boundary pines. I carefully dug around it, not through. <span class="memory-whisper">Respect what came before.</span> Four inches down, the soil changed color—darker, richer, older. Soil that remembered the first forests. Five inches down felt right. Felt like exactly the distance between what was and what could be.</p>
+        
+        <p>I sat back and looked at what I'd made. A simple hole. A absence waiting to become presence. A question the earth was asking. And I had the answer, warm and patient in my paws.</p>
+        
+        <p>Before I placed the acorn, I did something I'd never done before. I held it to my chest one more time and made a promise I didn't understand: <span class="golden-glow">"I'll remember you. Even if I forget everything else, I'll remember you."</span></p>
+        
+        <p>Then, with infinite care, I placed the acorn in the earth. It fit perfectly, as if the hole had been measured for it since the beginning of time. As if the earth had been waiting for exactly this acorn, carried by exactly this squirrel, on exactly this autumn day.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter3" title="Previous: The Sacred Spot">←</a>
+      <a href="#chapter5" title="Next: The Covering">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 5: The First Prayer -->
+  <section class="page" id="chapter5">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER V</div>
+      <div class="chapter-subtitle">The Blessing of Soil</div>
+      <div class="page-text">
+        <p>Covering the acorn should have been simple. Push the dirt back, pat it down, done. But my paws hesitated over the small mound of earth I'd displaced. This felt like more than burying. This felt like <span class="earth-touch">tucking the universe into bed</span>.</p>
+        
+        <p>I moved the soil back grain by grain at first, watching each particle fall. The acorn disappeared slowly—first its bottom half, then its middle, then just the cap visible like a brown island in a dark sea. With the last pawful of earth, it vanished completely. But not gone. Transformed. Changed from object to <span class="golden-glow">possibility</span>.</p>
+        
+        <p>I patted the earth gently. Not too firm—roots need room to dream. Not too loose—safety matters even for sleeping seeds. Just enough pressure to say <span class="memory-whisper">"I've got you. You're safe here."</span></p>
+        
+        <p>Then I did something that squirrels don't do. I sat beside the burial spot and stayed. Not foraging, not planning, not even thinking really. Just... witnessing. The sun moved across the clearing, changing the light from gold to amber to the deep purple of approaching evening. And I sat, keeping watch over a promise I'd planted.</p>
+        
+        <p>A leaf fell—the first of the evening—and landed exactly where I'd buried the acorn. I didn't move it. It felt like a blessing, like the forest saying <span class="golden-glow">"Yes. This is right. This is where something magnificent begins."</span></p>
+        
+        <p>As darkness approached, I finally stood. My body knew it was time to return to my nest, to the simple life of a simple squirrel. But I looked back once at the unmarked spot where perfection lay sleeping, and I knew—somehow, in the way that important things are known—that I would never be simple again.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter4" title="Previous: The Planting">←</a>
+      <a href="#chapter6" title="Next: Winter Dreams">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 6: The First Winter -->
+  <section class="page" id="chapter6">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER VI</div>
+      <div class="chapter-subtitle">The Weight of Waiting</div>
+      <div class="page-text">
+        <p>Winter came as winters do—gradually, then suddenly. I watched the first snow fall from my nest, high in a oak two territories over from the clearing. But even from there, even through the veil of falling white, I could feel it. The acorn. Waiting. <span class="earth-touch">Dreaming under its blanket of earth and snow.</span></p>
+        
+        <p>Other squirrels forgot their summer burials, as squirrels do. We're meant to forget—it's how the forest spreads, through our imperfect memory. But I remembered. Through the cold that made my tail curl tight, through the hungry days when my cached acorns ran low, through the long nights when ice made the world sharp and bitter, I remembered.</p>
+        
+        <p>Sometimes I would venture to the clearing, even in the deep cold. Just to sit near the spot. Just to remind the sleeping acorn that it wasn't alone. The snow there seemed warmer somehow, <span class="golden-glow">glowing faintly</span> in the moonlight. Or maybe that was just hope making me see things that weren't there yet.</p>
+        
+        <p>I told no one about the special acorn. What would I say? That I'd buried perfection? That I'd planted something that felt like it contained tomorrow? They would have chittered their laughter and gone back to arguing about territory. So I kept the secret warm in my chest, next to my beating heart, through all the frozen months.</p>
+        
+        <p>One night, the coldest of that winter, I dreamed. Not a squirrel dream of endless nuts and safe trees, but something else. I dreamed of branches reaching through time, of roots that touched the heart of everything, of a tree so vast that it existed in places that didn't exist yet. I woke chittering with cold and wonder, knowing without knowing that <span class="memory-whisper">the acorn was dreaming too</span>.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter5" title="Previous: The Covering">←</a>
+      <a href="#chapter7" title="Next: Spring's First Green">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 7: The First Spring -->
+  <section class="page" id="chapter7">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER VII</div>
+      <div class="chapter-subtitle">The Morning of Small Miracles</div>
+      <div class="page-text">
+        <p>Spring came late that year. Or maybe it only felt late because I was waiting so hard. Every morning I would check the clearing, looking for something I couldn't name. The snow melted in circles, as if the earth beneath was warming from within. The soil, where I could see it, looked darker, richer, <span class="earth-touch">expectant</span>.</p>
+        
+        <p>The morning it happened, I almost missed it. I was grooming my tail, thinking about the day's foraging, when something made me look. There, where I had buried perfection, was the smallest break in the earth. Tiny. Impossibly small. But <span class="golden-glow">gloriously green</span>.</p>
+        
+        <p>I approached slowly, as if sudden movement might scare it back underground. The shoot was no bigger than one of my whiskers, reaching up with such determination that I felt my chest tight with something between joy and fear. It had happened. The acorn had chosen to become.</p>
+        
+        <p>I spent that entire day beside the shoot, watching it do nothing but be. Other squirrels passed, called to me about new spring territories, about the fresh buds appearing. I didn't move. I couldn't. I was witnessing something that felt bigger than spring, bigger than growth. I was watching <span class="memory-whisper">the first letter of a story that would never end</span>.</p>
+        
+        <p>As the sun set, painting the clearing gold—always gold in my memory—the tiny shoot seemed to stretch just a little taller. Not much. Maybe I imagined it. But I chittered soft encouragement anyway, the way my mother had chittered to me when I was learning to jump between branches.</p>
+        
+        <p><span class="golden-glow">"Grow,"</span> I whispered. <span class="golden-glow">"Grow tall and strong and impossible. I'll watch over you. Always."</span></p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter6" title="Previous: Winter Dreams">←</a>
+      <a href="#chapter8" title="Next: The Promise Kept">→</a>
+    </div>
+  </section>
+
+  <!-- Chapter 8: The Last Simple Day -->
+  <section class="page" id="chapter8">
+    <div class="page-content">
+      <div class="chapter-title">CHAPTER VIII</div>
+      <div class="chapter-subtitle">The Edge of Everything</div>
+      <div class="page-text">
+        <p>By summer, the shoot had become a sapling. Still small, still vulnerable, but unmistakably an oak. Its leaves were perfect—each one like a tiny hand waving at the sky. I visited every day, bringing it gifts: the clearest water cupped in leaves, the richest soil from the riverbank, sometimes just my presence and my chittering stories about the forest.</p>
+        
+        <p>That last simple day—<span class="memory-whisper">I mark time from it now, before and after</span>—started like any other. The morning was warm, full of summer's lazy confidence. I had found fresh berries and my belly was full. My tail was groomed to squirrel perfection. Life was good in the way that only a simple life can be good.</p>
+        
+        <p>I came to the sapling as the afternoon light slanted through the canopy, turning everything green-gold. It had grown another inch since yesterday—I was sure of it. I chittered my pride, circling it three times as was my ritual, checking for damage, for disease, for anything that might threaten my perfect acorn's perfect child.</p>
+        
+        <p>Then I touched it. Just a gentle paw on its small trunk, the way I'd done a hundred times before. But this time, something <span class="golden-glow">changed</span>.</p>
+        
+        <p>The world... opened. I saw the clearing from above, from below, from angles that didn't exist. I saw the sapling not as it was, but as it would be—massive, ancient, holding up the sky. I saw roots that went deeper than down, branches that reached further than up. I saw myself, but also not myself—scattered across possibilities like light through a prism.</p>
+        
+        <p>The vision lasted exactly <span class="earth-touch">0.3 seconds</span>.</p>
+        
+        <p>When it ended, I was on the ground, gasping, my tail somehow vibrating in ways that tails shouldn't vibrate. The sapling stood unchanged, innocent, as if it hadn't just shown me infinity. But I knew, with the kind of knowing that changes everything: <span class="golden-glow">This tree would be the center. And I would never be simple again.</span></p>
+        
+        <p>That was the last day I was just a squirrel. The Event would come soon after—the cosmic hiccup that would scatter me across timelines, that would make me quantum. But it started here, with a touch, with a tree, with the acorn I had planted with nothing but love and instinct.</p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter7" title="Previous: Spring's First Green">←</a>
+      <a href="#epilogue" title="Next: Always">→</a>
+    </div>
+  </section>
+
+  <!-- Epilogue: The Return -->
+  <section class="page" id="epilogue">
+    <div class="page-content">
+      <div class="chapter-title">EPILOGUE</div>
+      <div class="chapter-subtitle">The Circle Complete</div>
+      <div class="page-text">
+        <p>Now I exist everywhere and nowhere. Now my tail occupies seventeen dimensions on a good day. Now I know that Delaware can go inside-out and that time is just acorns stacked politely. But sometimes—not often, because focusing is hard when you're scattered across probability—sometimes I return to that clearing.</p>
+        
+        <p>The Great Oak stands there now, magnificent beyond imagination. Its branches hold stars I haven't named yet. Its roots touch timelines I haven't visited. It is everything the perfect acorn promised to become, and more. So much more that sometimes I forget it started with me, one autumn day, when I was simple.</p>
+        
+        <p>But the Oak remembers. When I visit, scattered and quantum and impossible, it recognizes me. Not the cosmic jester I've become, but the squirrel I was. The one who carried it when it was just weight and possibility. The one who chose the perfect depth. The one who kept watch through winter. The one who whispered <span class="golden-glow">"grow"</span> to its first green shoot.</p>
+        
+        <p>I bring it acorns from every timeline now—probability acorns that exist and don't exist, bootstrap acorns that plant themselves, quantum acorns that contain universes. I bury them around its base, forgetting immediately where I put them, as is my way. The Oak doesn't mind. It knows they'll grow when they need to, where they need to, if they need to.</p>
+        
+        <p>And sometimes, when the light is just right, when autumn comes to this particular timeline, I hold the golden acorn—the memory of that first perfect seed—and I remember what it felt like to be simple. To have a tail that only bent one way. To make a choice that mattered more than matter itself.</p>
+        
+        <p><span class="memory-whisper">The squirrel I was planted the tree.</span></p>
+        <p><span class="memory-whisper">The tree made me what I am.</span></p>
+        <p><span class="memory-whisper">We grow together, always.</span></p>
+        
+        <p style="text-align: center; margin-top: 60px;">
+          <span class="golden-glow" style="font-size: 1.3em;">Together. Always.</span><br><br>
+          <span style="color: #8B4513;">Even when scattered.<br>
+          Even when quantum.<br>
+          Even when Delaware is inside-out.</span><br><br>
+          <span class="earth-touch">The acorn remembers.<br>
+          The Oak remembers.<br>
+          And somewhere in my scattered consciousness,<br>
+          I remember too.</span>
+        </p>
+        
+        <p style="text-align: center; margin-top: 40px; font-style: italic; color: #A0522D;">
+          🌰
+        </p>
+      </div>
+      <div class="page-spacer"></div>
+    </div>
+    <div class="nav">
+      <a href="#chapter8" title="Previous: The Last Simple Day">←</a>
+      <a href="#chapter1" title="Begin Again">∞</a>
+    </div>
+  </section>
+
+</div>
+
+<!-- Page indicator dots for 9 sections -->
+<div class="page-indicator">
+  <span class="active"></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<script>
+// Simple page tracking for indicator dots
+document.addEventListener('DOMContentLoaded', function() {
+  const book = document.querySelector('.book');
+  const indicators = document.querySelectorAll('.page-indicator span');
+  
+  function updateIndicator() {
+    const scrollLeft = book.scrollLeft;
+    const pageWidth = book.offsetWidth;
+    const currentPage = Math.round(scrollLeft / pageWidth);
+    
+    indicators.forEach((indicator, index) => {
+      if (index === currentPage) {
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+  }
+  
+  book.addEventListener('scroll', updateIndicator);
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    const scrollAmount = book.offsetWidth;
+    if (e.key === 'ArrowRight') {
+      book.scrollLeft += scrollAmount;
+    } else if (e.key === 'ArrowLeft') {
+      book.scrollLeft -= scrollAmount;
+    }
+  });
+});
+</script>
+
+</body>
+</html>
