@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosetta MUD - Web Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #00ff88;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #00ff88;
+        }
+        
+        #header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        
+        #status {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        #main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        #game-area {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        #output {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        #input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #command-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            padding: 10px;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        #command-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff88;
+        }
+        
+        #send-button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+        }
+        
+        #send-button:hover {
+            background: #00cc66;
+        }
+        
+        #sidebar {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 2px solid #00ff88;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .info-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+        }
+        
+        .info-section h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-shadow: 0 0 5px #00ff88;
+        }
+        
+        .info-section p {
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+        
+        #coherence-viz {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #coherence-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        #quick-commands {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .quick-cmd {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            border-radius: 3px;
+            padding: 5px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-cmd:hover {
+            background: rgba(0, 255, 136, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .disconnected {
+            color: #ff4444;
+        }
+        
+        .connected {
+            color: #00ff88;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🪞🐻📡 ROSETTA MUD</h1>
+        <div id="status" class="disconnected">⚫ Disconnected</div>
+    </div>
+    
+    <div id="main-container">
+        <div id="game-area">
+            <div id="output"></div>
+            <div id="input-area">
+                <input type="text" id="command-input" placeholder="Type your command..." autocomplete="off">
+                <button id="send-button">Send</button>
+            </div>
+            <div id="quick-commands">
+                <div class="quick-cmd" data-cmd="look">👁️ Look</div>
+                <div class="quick-cmd" data-cmd="inventory">🎒 Inventory</div>
+                <div class="quick-cmd" data-cmd="stats">📊 Stats</div>
+                <div class="quick-cmd" data-cmd="who">👥 Who</div>
+                <div class="quick-cmd" data-cmd="help">❓ Help</div>
+                <div class="quick-cmd" data-cmd="meditate">🧘 Meditate</div>
+            </div>
+        </div>
+        
+        <div id="sidebar">
+            <div class="info-section">
+                <h3>🎮 Connection</h3>
+                <p id="server-info">Server: localhost:8080</p>
+                <p id="char-info">Character: Not created</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>❤️ Coherence</h3>
+                <div id="coherence-viz">
+                    <div id="coherence-bar"></div>
+                </div>
+                <p id="coherence-value">0.000</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>🧠 Brain Status</h3>
+                <p id="memory-confidence">Memory: --</p>
+                <p id="ai-status">AI: Inactive</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>📖 Quick Guide</h3>
+                <p><strong>Movement:</strong> go north/south/east/west/up/down</p>
+                <p><strong>Interact:</strong> get/drop/use item</p>
+                <p><strong>Social:</strong> say message</p>
+                <p><strong>Build:</strong> buildroom/builditem/createnpc</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        class MudClient {
+            constructor() {
+                this.ws = null;
+                this.connected = false;
+                this.reconnectInterval = 5000;
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 10;
+                
+                // UI elements
+                this.output = document.getElementById('output');
+                this.input = document.getElementById('command-input');
+                this.sendButton = document.getElementById('send-button');
+                this.status = document.getElementById('status');
+                this.coherenceBar = document.getElementById('coherence-bar');
+                this.coherenceValue = document.getElementById('coherence-value');
+                
+                this.setupEventListeners();
+                this.connect();
+            }
+            
+            setupEventListeners() {
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendCommand();
+                    }
+                });
+                
+                this.sendButton.addEventListener('click', () => {
+                    this.sendCommand();
+                });
+                
+                // Quick command buttons
+                document.querySelectorAll('.quick-cmd').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const cmd = btn.getAttribute('data-cmd');
+                        this.input.value = cmd;
+                        this.sendCommand();
+                    });
+                });
+            }
+            
+            connect() {
+                this.addOutput('🔌 Connecting to Rosetta MUD server...\n');
+                
+                // Get WebSocket URL from window location or default
+                const wsUrl = window.wsUrl || 'ws://localhost:8080';
+                
+                try {
+                    this.ws = new WebSocket(wsUrl);
+                    
+                    this.ws.onopen = () => {
+                        this.connected = true;
+                        this.reconnectAttempts = 0;
+                        this.updateStatus(true);
+                        this.addOutput('✅ Connected to server\n\n');
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            
+                            if (data.type === 'data') {
+                                this.addOutput(data.content);
+                                this.parseAIData(data.content);
+                            } else if (data.type === 'connected') {
+                                this.addOutput(`✅ ${data.message}\n\n`);
+                            } else if (data.type === 'error') {
+                                this.addOutput(`❌ Error: ${data.message || data.error}\n`);
+                            } else if (data.type === 'disconnect') {
+                                this.addOutput(`\n⚠️  ${data.message}\n`);
+                                this.handleDisconnect();
+                            }
+                        } catch (e) {
+                            // Plain text fallback (shouldn't happen with bridge)
+                            this.addOutput(event.data);
+                        }
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        console.error('WebSocket error:', error);
+                        if (!this.connected) {
+                            this.addOutput(`❌ Connection failed\n`);
+                        }
+                    };
+                    
+                    this.ws.onclose = () => {
+                        this.handleDisconnect();
+                    };
+                    
+                } catch (error) {
+                    this.addOutput(`❌ Failed to connect: ${error.message}\n`);
+                    this.scheduleReconnect();
+                }
+            }
+            
+            sendCommand() {
+                const command = this.input.value.trim();
+                if (!command || !this.connected) return;
+                
+                this.addOutput(`> ${command}\n`);
+                this.ws.send(command);
+                
+                this.input.value = '';
+                this.input.focus();
+            }
+            
+            handleDisconnect() {
+                if (this.connected) {
+                    this.connected = false;
+                    this.updateStatus(false);
+                    this.addOutput('\n⚠️  Disconnected from server\n');
+                }
+                
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.scheduleReconnect();
+                } else {
+                    this.addOutput('\n❌ Maximum reconnection attempts reached\n');
+                    this.addOutput('Please refresh the page to try again\n');
+                }
+            }
+            
+            scheduleReconnect() {
+                this.reconnectAttempts++;
+                const delay = Math.min(
+                    this.reconnectInterval * this.reconnectAttempts, 
+                    30000
+                );
+                
+                this.addOutput(`🔄 Reconnecting in ${delay / 1000} seconds (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})...\n`);
+                setTimeout(() => this.connect(), delay);
+            }
+            
+            addOutput(text) {
+                const pre = document.createElement('pre');
+                pre.textContent = text;
+                pre.style.margin = '0';
+                pre.style.whiteSpace = 'pre-wrap';
+                this.output.appendChild(pre);
+                this.output.scrollTop = this.output.scrollHeight;
+            }
+            
+            updateStatus(connected) {
+                this.connected = connected;
+                if (connected) {
+                    this.status.textContent = '🟢 Connected';
+                    this.status.className = 'connected';
+                } else {
+                    this.status.textContent = '⚫ Disconnected';
+                    this.status.className = 'disconnected';
+                }
+            }
+            
+            parseAIData(text) {
+                // Extract coherence values from AI status messages
+                const coherenceMatch = text.match(/Coherence:\s*([0-9.]+)/i);
+                if (coherenceMatch) {
+                    const value = parseFloat(coherenceMatch[1]);
+                    this.updateCoherence(value);
+                }
+                
+                const memoryMatch = text.match(/Memory Confidence:\s*([0-9.]+)/i);
+                if (memoryMatch) {
+                    const value = parseFloat(memoryMatch[1]);
+                    document.getElementById('memory-confidence').textContent = 
+                        `Memory: ${value.toFixed(1)}`;
+                    document.getElementById('ai-status').textContent = 'AI: Active';
+                }
+                
+                // Extract character name from creation
+                const createMatch = text.match(/(\w+)\s*-\s*Level\s*(\d+)/);
+                if (createMatch) {
+                    const name = createMatch[1];
+                    const level = createMatch[2];
+                    document.getElementById('char-info').textContent = 
+                        `Character: ${name} (Lv ${level})`;
+                }
+            }
+            
+            updateCoherence(value) {
+                this.coherenceBar.style.width = (value * 100) + '%';
+                this.coherenceValue.textContent = value.toFixed(3);
+                
+                // Update memory confidence estimate
+                const memConf = 100 + (value * 100);
+                document.getElementById('memory-confidence').textContent = 
+                    `Memory: ${memConf.toFixed(1)}`;
+            }
+        }
+        
+        // Initialize client when page loads
+        window.addEventListener('load', () => {
+            const client = new MudClient();
+        });
+    </script>
+</body>
+</html>
