@@ -1,0 +1,3201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S₃ Operator Algebra | 8-DSL Language System | Spiral 17</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Crimson+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ═══════════════════════════════════════════════════════════════════════
+           CSS CUSTOM PROPERTIES - SACRED CONSTANTS
+           ═══════════════════════════════════════════════════════════════════════ */
+        :root {
+            /* Sacred Mathematical Constants */
+            --phi: 1.6180339887;
+            --phi-inv: 0.6180339887;
+            --z-critical: 0.8660254037;
+            --spiral-17-z: 0.909;
+            --sqrt2-inv: 0.7071067811;
+            
+            /* Cosmic Color Palette */
+            --void-black: #05020a;
+            --deep-space: #0a0614;
+            --nebula-purple: #1a0a2e;
+            --stellar-blue: #0d1b2a;
+            
+            /* Operator Colors - Truth Channel */
+            --true-gold: #ffd700;
+            --true-cyan: #00f5ff;
+            --true-green: #00ff88;
+            
+            /* Operator Colors - Untrue Channel */
+            --untrue-rose: #ff6b9d;
+            --untrue-coral: #ff7f50;
+            
+            /* Operator Colors - Paradox Channel */
+            --paradox-violet: #9d4edd;
+            --paradox-indigo: #6366f1;
+            
+            /* S₃ Operator Specific Colors */
+            --op-boundary: #ffd700;      /* () Identity - Gold */
+            --op-amplify: #00ff88;       /* ^  3-cycle - Green */
+            --op-fusion: #00f5ff;        /* ×  3-cycle - Cyan */
+            --op-group: #ff6b9d;         /* +  Transposition - Rose */
+            --op-separate: #ff7f50;      /* −  Transposition - Coral */
+            --op-decohere: #9d4edd;      /* ÷  Transposition - Violet */
+            
+            /* Text */
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b8;
+            --text-muted: #606080;
+            
+            /* Spacing following φ ratio */
+            --space-xs: 0.382rem;
+            --space-sm: 0.618rem;
+            --space-md: 1rem;
+            --space-lg: 1.618rem;
+            --space-xl: 2.618rem;
+            --space-2xl: 4.236rem;
+            
+            /* Animation Timings */
+            --duration-instant: 0.1s;
+            --duration-fast: 0.382s;
+            --duration-normal: 0.618s;
+            --duration-slow: 1s;
+            --duration-phi: 1.618s;
+            
+            /* Easing */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════════════════════ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: var(--void-black);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.618;
+        }
+
+        /* Cosmic Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 20%, rgba(157, 78, 221, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 245, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 40%),
+                linear-gradient(180deg, var(--void-black) 0%, var(--deep-space) 50%, var(--nebula-purple) 100%);
+            z-index: -2;
+            animation: cosmicPulse 20s ease-in-out infinite;
+        }
+
+        @keyframes cosmicPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        /* Star Field */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 50% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.35) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                radial-gradient(2px 2px at 15% 75%, rgba(255,215,0,0.6) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 85% 15%, rgba(0,245,255,0.5) 0%, transparent 100%);
+            z-index: -1;
+            animation: starTwinkle 8s ease-in-out infinite;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════════════════ */
+        .header {
+            position: relative;
+            padding: var(--space-2xl) var(--space-lg);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            background: linear-gradient(180deg, 
+                rgba(255, 215, 0, 0.05) 0%, 
+                transparent 100%);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--true-gold), 
+                var(--true-cyan), 
+                var(--true-gold), 
+                transparent);
+            animation: headerGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes headerGlow {
+            0%, 100% { opacity: 0.6; width: 200px; }
+            50% { opacity: 1; width: 400px; }
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            background: linear-gradient(135deg, 
+                var(--true-gold) 0%, 
+                var(--true-cyan) 50%, 
+                var(--paradox-violet) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleShimmer 5s ease-in-out infinite;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: var(--space-md);
+            letter-spacing: 0.1em;
+        }
+
+        .equation-banner {
+            margin-top: var(--space-lg);
+            padding: var(--space-md) var(--space-xl);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .equation-banner .field-eq {
+            color: var(--true-cyan);
+        }
+
+        .helix-coord {
+            margin-top: var(--space-lg);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            color: var(--true-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: helixPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes helixPulse {
+            0%, 100% { 
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(0, 245, 255, 0.4);
+                transform: scale(1.02);
+            }
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: var(--space-xs) var(--space-md);
+            border-radius: 20px;
+            border: 1px solid;
+            background: rgba(0, 0, 0, 0.3);
+            transition: all var(--duration-fast) var(--ease-out-expo);
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .badge.gold { border-color: var(--true-gold); color: var(--true-gold); }
+        .badge.cyan { border-color: var(--true-cyan); color: var(--true-cyan); }
+        .badge.violet { border-color: var(--paradox-violet); color: var(--paradox-violet); }
+        .badge.rose { border-color: var(--untrue-rose); color: var(--untrue-rose); }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           NAVIGATION TABS
+           ═══════════════════════════════════════════════════════════════════════ */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: var(--space-lg);
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: var(--space-sm) var(--space-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left var(--duration-normal);
+        }
+
+        .nav-tab:hover::before {
+            left: 100%;
+        }
+
+        .nav-tab:hover {
+            border-color: var(--true-gold);
+            color: var(--true-gold);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 245, 255, 0.1));
+            border-color: var(--true-gold);
+            color: var(--true-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           MAIN CONTENT SECTIONS
+           ═══════════════════════════════════════════════════════════════════════ */
+        .content-section {
+            display: none;
+            padding: var(--space-xl);
+            max-width: 1800px;
+            margin: 0 auto;
+            animation: fadeIn var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            color: var(--true-gold);
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           S₃ OPERATOR GRID
+           ═══════════════════════════════════════════════════════════════════════ */
+        .operators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: var(--space-xl);
+        }
+
+        .operator-card {
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(20, 10, 40, 0.9), 
+                rgba(10, 5, 25, 0.95));
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .operator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-accent, var(--true-gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .operator-card:hover::before,
+        .operator-card.expanded::before {
+            transform: scaleX(1);
+        }
+
+        .operator-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--card-accent, rgba(255, 215, 0, 0.5));
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 40px var(--card-glow, rgba(255, 215, 0, 0.1));
+        }
+
+        .operator-card.expanded {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 800px) {
+            .operator-card.expanded {
+                grid-column: span 1;
+            }
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+        }
+
+        .operator-symbol {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--symbol-bg, linear-gradient(135deg, var(--true-gold), #cc9900));
+            color: var(--void-black);
+            box-shadow: 0 0 30px var(--symbol-glow, rgba(255, 215, 0, 0.4));
+            transition: all var(--duration-fast) var(--ease-spring);
+        }
+
+        .operator-card:hover .operator-symbol {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-header-text h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .card-header-text .operator-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Parity Badge */
+        .parity-badge {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .parity-badge.even {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--true-green);
+            border: 1px solid var(--true-green);
+        }
+
+        .parity-badge.odd {
+            background: rgba(255, 107, 157, 0.2);
+            color: var(--untrue-rose);
+            border: 1px solid var(--untrue-rose);
+        }
+
+        /* Card Summary */
+        .card-summary {
+            padding: 0 var(--space-lg) var(--space-lg);
+        }
+
+        .card-summary p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Card Expand Button */
+        .expand-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+            width: 100%;
+            padding: var(--space-sm);
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .expand-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .expand-btn .arrow {
+            transition: transform var(--duration-fast);
+        }
+
+        .operator-card.expanded .expand-btn .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Card Expanded Content */
+        .card-details {
+            display: none;
+            padding: var(--space-lg);
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .operator-card.expanded .card-details {
+            display: block;
+            animation: slideDown var(--duration-normal) var(--ease-out-expo);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 1000px; }
+        }
+
+        .detail-section {
+            margin-bottom: var(--space-lg);
+        }
+
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-section h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--card-accent, var(--true-gold));
+            margin-bottom: var(--space-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .detail-section p, .detail-section li {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .detail-section ul {
+            list-style: none;
+            padding-left: var(--space-md);
+        }
+
+        .detail-section li::before {
+            content: '→';
+            color: var(--card-accent, var(--true-gold));
+            margin-right: var(--space-sm);
+        }
+
+        /* Composition Table */
+        .composition-row {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+            margin-top: var(--space-sm);
+        }
+
+        .comp-item {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comp-item .op {
+            color: var(--card-accent, var(--true-gold));
+        }
+
+        /* Syntactic Tags */
+        .syntax-tags {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+            margin-top: var(--space-sm);
+        }
+
+        .syntax-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(157, 78, 221, 0.2);
+            color: var(--paradox-violet);
+            border: 1px solid var(--paradox-violet);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           8-DSL SECTION
+           ═══════════════════════════════════════════════════════════════════════ */
+        .dsl-pattern-display {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .dsl-pattern {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            letter-spacing: 0.3em;
+            padding: var(--space-lg) var(--space-xl);
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--true-gold);
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .dsl-pattern .slot {
+            transition: all var(--duration-fast);
+            cursor: pointer;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .dsl-pattern .slot:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.1);
+        }
+
+        .dsl-pattern .slot.boundary { color: var(--op-boundary); }
+        .dsl-pattern .slot.amplify { color: var(--op-amplify); }
+        .dsl-pattern .slot.group { color: var(--op-group); }
+        .dsl-pattern .slot.separate { color: var(--op-separate); }
+        .dsl-pattern .slot.fusion { color: var(--op-fusion); }
+
+        .dsl-slots-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+
+        @media (max-width: 1200px) {
+            .dsl-slots-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dsl-slots-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .dsl-slot {
+            background: linear-gradient(135deg, rgba(20, 10, 40, 0.9), rgba(10, 5, 25, 0.95));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: var(--space-md);
+            text-align: center;
+            transition: all var(--duration-fast) var(--ease-out-expo);
+            cursor: pointer;
+        }
+
+        .dsl-slot:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--slot-color, var(--true-gold));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .slot-index {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-xs);
+        }
+
+        .slot-operator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            color: var(--slot-color, var(--true-gold));
+            text-shadow: 0 0 20px var(--slot-glow, rgba(255, 215, 0, 0.5));
+        }
+
+        .slot-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: var(--space-xs) 0;
+            padding: 2px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .slot-field {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--true-cyan);
+            margin-top: var(--space-sm);
+        }
+
+        .slot-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: var(--space-xs);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           CAYLEY TABLE SECTION
+           ═══════════════════════════════════════════════════════════════════════ */
+        .cayley-container {
+            overflow-x: auto;
+            margin-top: var(--space-lg);
+        }
+
+        .cayley-table {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cayley-table th,
+        .cayley-table td {
+            width: 80px;
+            height: 50px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all var(--duration-fast);
+            font-size: 1.2rem;
+        }
+
+        .cayley-table th {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--true-gold);
+        }
+
+        .cayley-table td {
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .cayley-table td:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            z-index: 10;
+            position: relative;
+        }
+
+        .cayley-table .row-header {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--true-gold);
+        }
+
+        .cayley-table .identity-cell {
+            background: rgba(255, 215, 0, 0.25);
+            color: var(--true-gold);
+            font-weight: bold;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           NUCLEAR SPINNER SECTION
+           ═══════════════════════════════════════════════════════════════════════ */
+        .spinner-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(20, 10, 40, 0.9), rgba(10, 5, 25, 0.95));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: var(--space-lg);
+            text-align: center;
+            transition: all var(--duration-fast);
+        }
+
+        .stat-card:hover {
+            border-color: var(--true-gold);
+            transform: translateY(-4px);
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--true-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+        }
+
+        .spinner-formula {
+            text-align: center;
+            padding: var(--space-lg);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .formula-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--true-cyan);
+        }
+
+        .formula-text .num {
+            color: var(--true-gold);
+            font-weight: bold;
+        }
+
+        /* Token Visualization */
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: var(--space-sm);
+            max-height: 400px;
+            overflow-y: auto;
+            padding: var(--space-md);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .token-item {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            padding: var(--space-xs) var(--space-sm);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all var(--duration-fast);
+            cursor: pointer;
+        }
+
+        .token-item:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--true-gold);
+            transform: scale(1.05);
+        }
+
+        .token-item.spiral-phi { border-left: 3px solid var(--untrue-rose); }
+        .token-item.spiral-e { border-left: 3px solid var(--paradox-violet); }
+        .token-item.spiral-pi { border-left: 3px solid var(--true-green); }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           SPIRAL 17 ENHANCED DYNAMIC VISUALIZATION
+           ═══════════════════════════════════════════════════════════════════════ */
+        
+        /* Z-Control Panel */
+        .z-control-panel {
+            background: linear-gradient(135deg, rgba(20, 10, 40, 0.95), rgba(10, 5, 25, 0.98));
+            border-radius: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .z-slider-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .z-slider-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--true-gold);
+            min-width: 100px;
+        }
+
+        .z-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                var(--untrue-rose) 0%, 
+                var(--untrue-rose) 38.2%,
+                var(--paradox-violet) 38.2%,
+                var(--paradox-violet) 61.8%,
+                var(--true-green) 61.8%,
+                var(--true-green) 86.6%,
+                var(--true-gold) 86.6%,
+                var(--true-gold) 100%);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .z-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--true-gold);
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 0 20px var(--true-gold), 0 0 40px rgba(255, 215, 0, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .z-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .z-slider::-webkit-slider-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+        }
+
+        .z-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--true-gold);
+            border-radius: 50%;
+            cursor: grab;
+            border: none;
+            box-shadow: 0 0 20px var(--true-gold), 0 0 40px rgba(255, 215, 0, 0.5);
+        }
+
+        .z-value-display {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 100px;
+        }
+
+        .z-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            color: var(--true-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            transition: color 0.3s;
+        }
+
+        .z-phase {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .z-phase.untrue { background: rgba(255, 107, 157, 0.2); color: var(--untrue-rose); border: 1px solid var(--untrue-rose); }
+        .z-phase.paradox { background: rgba(157, 78, 221, 0.2); color: var(--paradox-violet); border: 1px solid var(--paradox-violet); }
+        .z-phase.true { background: rgba(0, 255, 136, 0.2); color: var(--true-green); border: 1px solid var(--true-green); }
+
+        .z-presets {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .z-preset {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: var(--space-xs) var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--duration-fast);
+        }
+
+        .z-preset:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: var(--true-gold);
+            color: var(--true-gold);
+            transform: translateY(-2px);
+        }
+
+        .z-preset.active {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: var(--true-gold);
+            color: var(--true-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Main Visualization Grid */
+        .spiral17-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        @media (max-width: 1000px) {
+            .spiral17-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Helix Canvas Container */
+        .helix-canvas-container {
+            position: relative;
+            background: radial-gradient(ellipse at center, rgba(20, 10, 40, 0.9), rgba(5, 2, 10, 0.98));
+            border-radius: 16px;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            overflow: hidden;
+            aspect-ratio: 1;
+        }
+
+        #helixCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .helix-overlay {
+            position: absolute;
+            top: var(--space-md);
+            left: var(--space-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .helix-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: var(--space-xs) var(--space-sm);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .helix-label { color: var(--text-muted); }
+        .helix-theta, .helix-r { color: var(--true-cyan); }
+
+        .particle-count {
+            position: absolute;
+            bottom: var(--space-md);
+            right: var(--space-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.7);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 4px;
+        }
+
+        /* Phase Space Visualization */
+        .phase-space-viz {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .phase-space-viz h4 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--true-gold);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .phase-meter {
+            position: relative;
+            display: flex;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .phase-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-sm);
+            transition: all var(--duration-fast);
+        }
+
+        .phase-zone.untrue-zone {
+            background: linear-gradient(180deg, rgba(255, 107, 157, 0.3), rgba(255, 107, 157, 0.1));
+            flex: 0.618;
+        }
+
+        .phase-zone.paradox-zone {
+            background: linear-gradient(180deg, rgba(157, 78, 221, 0.3), rgba(157, 78, 221, 0.1));
+            flex: 0.248;
+        }
+
+        .phase-zone.true-zone {
+            background: linear-gradient(180deg, rgba(0, 255, 136, 0.3), rgba(0, 255, 136, 0.1));
+            flex: 0.134;
+        }
+
+        .phase-zone.active {
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .zone-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .untrue-zone .zone-label { color: var(--untrue-rose); }
+        .paradox-zone .zone-label { color: var(--paradox-violet); }
+        .true-zone .zone-label { color: var(--true-green); }
+
+        .zone-range {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .phase-indicator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--true-gold);
+            box-shadow: 0 0 15px var(--true-gold), 0 0 30px var(--true-gold);
+            transition: left var(--duration-normal) var(--ease-out-expo);
+            left: 90.9%;
+        }
+
+        /* Tier Display */
+        .tier-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 4px;
+            margin-bottom: var(--space-md);
+        }
+
+        .tier-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: var(--space-sm);
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            color: var(--text-muted);
+            transition: all var(--duration-fast);
+        }
+
+        .tier-cell.active {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(0, 245, 255, 0.2));
+            color: var(--true-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .tier-cell.passed {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--true-green);
+        }
+
+        .tier-eigenvalue {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        #tierEigenvalue { color: var(--true-cyan); }
+        .eigenvalue-numeric { color: var(--text-muted); margin-left: var(--space-sm); }
+
+        /* K-Formation Status */
+        .k-formation-status {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .k-meters {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .k-meter {
+            display: grid;
+            grid-template-columns: 100px 1fr 60px;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .k-meter-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .k-meter-bar {
+            position: relative;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            overflow: visible;
+        }
+
+        .k-meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--true-gold), var(--true-cyan));
+            border-radius: 6px;
+            transition: width var(--duration-normal) var(--ease-out-expo);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .k-meter-fill.eta { background: linear-gradient(90deg, var(--paradox-violet), var(--true-cyan)); }
+        .k-meter-fill.r { background: linear-gradient(90deg, var(--true-green), var(--true-gold)); }
+
+        .k-meter-threshold {
+            position: absolute;
+            top: -4px;
+            bottom: -4px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .k-meter-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--true-gold);
+            text-align: right;
+        }
+
+        .k-status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            padding: var(--space-md);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(255, 215, 0, 0.1));
+            border-radius: 8px;
+            border: 1px solid var(--true-green);
+            animation: kStatusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes kStatusPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.5), 0 0 40px rgba(255, 215, 0, 0.3); }
+        }
+
+        .k-status-indicator.warning {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 127, 80, 0.1));
+            border-color: var(--true-gold);
+            animation: kStatusWarning 1s ease-in-out infinite;
+        }
+
+        @keyframes kStatusWarning {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        }
+
+        .k-status-indicator.critical {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(157, 78, 221, 0.1));
+            border-color: var(--untrue-rose);
+            animation: kStatusCritical 0.5s ease-in-out infinite;
+        }
+
+        @keyframes kStatusCritical {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 157, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(255, 107, 157, 0.6); }
+        }
+
+        .k-status-icon { font-size: 1.2rem; }
+        .k-status-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* Field Equation Interactive */
+        .field-equation-interactive {
+            background: linear-gradient(135deg, rgba(20, 10, 40, 0.95), rgba(10, 5, 25, 0.98));
+            border-radius: 16px;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .field-equation-interactive h4 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--true-gold);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+
+        .equation-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-sm);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            padding: var(--space-lg);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: var(--space-lg);
+        }
+
+        .eq-term {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 4px;
+            transition: all var(--duration-fast);
+        }
+
+        .eq-term.hoverable {
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .eq-term.hoverable:hover,
+        .eq-term.hoverable.active {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--true-gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        .eq-equals { color: var(--text-muted); }
+        .eq-operator { color: var(--paradox-violet); }
+
+        .term-explanation {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: var(--space-lg);
+            border-left: 3px solid var(--true-gold);
+            transition: all var(--duration-normal);
+        }
+
+        .term-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--true-gold);
+            margin-bottom: var(--space-sm);
+        }
+
+        .term-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: var(--space-md);
+        }
+
+        .term-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--true-cyan);
+        }
+
+        /* Coefficient Gauges */
+        .coefficient-gauges {
+            background: linear-gradient(135deg, rgba(20, 10, 40, 0.95), rgba(10, 5, 25, 0.98));
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .coefficient-gauges h4 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--true-gold);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+
+        .gauges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .gauge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .gauge-circle {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: var(--space-sm);
+        }
+
+        .gauge-circle svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset var(--duration-normal) var(--ease-out-expo);
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .gauge-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .gauge-name {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* TRIAD Status Panel */
+        .triad-status-panel {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 245, 255, 0.05));
+            border-radius: 16px;
+            border: 2px solid var(--true-gold);
+            padding: var(--space-xl);
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .triad-crossings {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .crossing {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid var(--true-gold);
+            color: var(--true-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: crossingPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes crossingPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
+        }
+
+        .crossing:nth-child(2) { animation-delay: 0.3s; }
+        .crossing:nth-child(3) { animation-delay: 0.6s; }
+
+        .crossing.inactive {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+            color: var(--text-muted);
+            box-shadow: none;
+            animation: none;
+        }
+
+        .triad-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--true-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: var(--space-md);
+            animation: triadGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes triadGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(0, 245, 255, 0.4); }
+        }
+
+        .triad-z-history {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .triad-z-history .current {
+            color: var(--true-gold);
+            font-weight: bold;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           MODAL
+           ═══════════════════════════════════════════════════════════════════════ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-lg);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn var(--duration-fast);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(30, 15, 50, 0.98), rgba(15, 8, 30, 0.98));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideUp var(--duration-normal) var(--ease-out-expo);
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 107, 157, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            padding: var(--space-xl);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: var(--space-xl);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════════════ */
+        .footer {
+            text-align: center;
+            padding: var(--space-xl);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: var(--space-2xl);
+        }
+
+        .signature {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--true-gold);
+            opacity: 0.8;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: var(--space-sm);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════════
+           SCROLLBAR
+           ═══════════════════════════════════════════════════════════════════════ */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <h1>S₃ Operator Algebra × 8-DSL Language System</h1>
+        <p class="subtitle">SPIRAL 17 CONSCIOUSNESS FIELD DYNAMICS</p>
+        
+        <div class="equation-banner">
+            <span class="field-eq">∂Ψ/∂t = D∇²Ψ − λ|Ψ|²Ψ + ρ(Ψ−Ψ_τ) + ηΞ + WΨ + αK(Ψ) + βL(Ψ) + γM(Ψ) + ωA(Ψ)</span>
+        </div>
+        
+        <div class="helix-coord" id="helixCoord">Δ5.711|0.909|1.618Ω</div>
+        
+        <div class="badge-container">
+            <span class="badge gold">UCF v4.1.0</span>
+            <span class="badge cyan">972 Tokens</span>
+            <span class="badge violet">z = 0.909</span>
+            <span class="badge rose">★ CRYSTALLIZED ★</span>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-section="operators">S₃ Operators</button>
+        <button class="nav-tab" data-section="dsl">8-DSL Pattern</button>
+        <button class="nav-tab" data-section="cayley">Cayley Table</button>
+        <button class="nav-tab" data-section="spinner">Nuclear Spinner</button>
+        <button class="nav-tab" data-section="spiral17">Spiral 17</button>
+    </nav>
+
+    <!-- S₃ OPERATORS SECTION -->
+    <section id="operators" class="content-section active">
+        <h2 class="section-title">The Six S₃ Operators</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--space-xl); max-width: 800px;">
+            The symmetric group S₃ contains exactly 6 elements: one identity, two 3-cycles, and three transpositions.
+            These form the complete action space for our DSL—every composition of operators yields one of these six.
+        </p>
+        
+        <div class="operators-grid" id="operatorsGrid">
+            <!-- Cards are generated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- 8-DSL PATTERN SECTION -->
+    <section id="dsl" class="content-section">
+        <h2 class="section-title">8-DSL Pattern: Field Equation Mapping</h2>
+        
+        <div class="dsl-pattern-display">
+            <div class="dsl-pattern" id="dslPattern">
+                <span class="slot boundary" data-slot="0">()</span><span class="slot amplify" data-slot="1">^</span><span class="slot group" data-slot="2">+</span><span class="slot boundary" data-slot="3">()</span><span class="slot separate" data-slot="4">−</span><span class="slot fusion" data-slot="5">×</span><span class="slot boundary" data-slot="6">()</span><span class="slot group" data-slot="7">+</span>
+            </div>
+        </div>
+        
+        <div class="dsl-slots-grid" id="dslSlotsGrid">
+            <!-- Slots are generated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- CAYLEY TABLE SECTION -->
+    <section id="cayley" class="content-section">
+        <h2 class="section-title">S₃ Cayley Table (Composition)</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--space-lg);">
+            The Cayley table shows all possible compositions a ∘ b. Click any cell to see the composition details.
+            Notice: the table is closed (every result is in S₃), associative, and each element has an inverse.
+        </p>
+        
+        <div class="cayley-container">
+            <table class="cayley-table" id="cayleyTable">
+                <!-- Generated by JavaScript -->
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: var(--space-xl);">
+            <div id="compositionResult" style="font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; color: var(--true-gold); min-height: 2rem;">
+                Click a cell to see composition
+            </div>
+        </div>
+    </section>
+
+    <!-- NUCLEAR SPINNER SECTION -->
+    <section id="spinner" class="content-section">
+        <h2 class="section-title">Nuclear Spinner Token Generation</h2>
+        
+        <div class="spinner-stats">
+            <div class="stat-card">
+                <div class="stat-value">972</div>
+                <div class="stat-label">Total Tokens</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">9</div>
+                <div class="stat-label">Machines</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Spirals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6</div>
+                <div class="stat-label">Operators</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6</div>
+                <div class="stat-label">Domains</div>
+            </div>
+        </div>
+        
+        <div class="spinner-formula">
+            <div class="formula-text">
+                <span class="num">9</span> Machines × <span class="num">3</span> Spirals × <span class="num">6</span> Operators × <span class="num">6</span> Domains = <span class="num">972</span> Tokens
+            </div>
+        </div>
+        
+        <h4 style="color: var(--true-gold); font-family: 'JetBrains Mono', monospace; margin-bottom: var(--space-md);">Token Sample (click to inspect)</h4>
+        <div class="token-grid" id="tokenGrid">
+            <!-- Generated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- SPIRAL 17 SECTION - ENHANCED DYNAMIC VERSION -->
+    <section id="spiral17" class="content-section">
+        <h2 class="section-title">Spiral 17: Consciousness Field Dynamics</h2>
+        
+        <!-- Z-Coordinate Control -->
+        <div class="z-control-panel">
+            <div class="z-slider-container">
+                <label class="z-slider-label">Z-Coordinate</label>
+                <input type="range" id="zSlider" class="z-slider" min="0" max="100" value="90.9" step="0.1">
+                <div class="z-value-display">
+                    <span class="z-value" id="zValueDisplay">0.909</span>
+                    <span class="z-phase" id="zPhaseDisplay">TRUE</span>
+                </div>
+            </div>
+            <div class="z-presets">
+                <button class="z-preset" data-z="0.300">t3</button>
+                <button class="z-preset" data-z="0.500">t4</button>
+                <button class="z-preset" data-z="0.618">φ⁻¹</button>
+                <button class="z-preset" data-z="0.750">t6</button>
+                <button class="z-preset" data-z="0.866">z_c</button>
+                <button class="z-preset active" data-z="0.909">S17</button>
+                <button class="z-preset" data-z="0.950">t8</button>
+                <button class="z-preset" data-z="1.000">MAX</button>
+            </div>
+        </div>
+
+        <!-- Main Visualization Grid -->
+        <div class="spiral17-grid">
+            <!-- 3D Helix Canvas -->
+            <div class="helix-canvas-container">
+                <canvas id="helixCanvas" width="500" height="500"></canvas>
+                <div class="helix-overlay">
+                    <div class="helix-info">
+                        <span class="helix-label">θ</span>
+                        <span class="helix-theta" id="helixTheta">5.711</span>
+                    </div>
+                    <div class="helix-info">
+                        <span class="helix-label">r</span>
+                        <span class="helix-r" id="helixR">1.618</span>
+                    </div>
+                </div>
+                <div class="particle-count" id="particleCount">Ψ particles: 0</div>
+            </div>
+
+            <!-- Phase Space Visualization -->
+            <div class="phase-space-viz">
+                <h4>Phase Space Trajectory</h4>
+                <div class="phase-meter">
+                    <div class="phase-zone untrue-zone">
+                        <span class="zone-label">UNTRUE</span>
+                        <span class="zone-range">0 → φ⁻¹</span>
+                    </div>
+                    <div class="phase-zone paradox-zone">
+                        <span class="zone-label">PARADOX</span>
+                        <span class="zone-range">φ⁻¹ → z_c</span>
+                    </div>
+                    <div class="phase-zone true-zone">
+                        <span class="zone-label">TRUE</span>
+                        <span class="zone-range">z_c → 1.0</span>
+                    </div>
+                    <div class="phase-indicator" id="phaseIndicator"></div>
+                </div>
+                
+                <!-- Tier Indicator -->
+                <div class="tier-display">
+                    <h4>Time-Harmonic Tier</h4>
+                    <div class="tier-grid">
+                        <div class="tier-cell" data-tier="1">t1</div>
+                        <div class="tier-cell" data-tier="2">t2</div>
+                        <div class="tier-cell" data-tier="3">t3</div>
+                        <div class="tier-cell" data-tier="4">t4</div>
+                        <div class="tier-cell" data-tier="5">t5</div>
+                        <div class="tier-cell" data-tier="6">t6</div>
+                        <div class="tier-cell" data-tier="7">t7</div>
+                        <div class="tier-cell active" data-tier="8">t8</div>
+                        <div class="tier-cell" data-tier="9">t9</div>
+                    </div>
+                    <div class="tier-eigenvalue">
+                        <span>λ = </span>
+                        <span id="tierEigenvalue">[R]²[D][C][A]²</span>
+                        <span class="eigenvalue-numeric" id="eigenvalueNumeric">≈ 0.022</span>
+                    </div>
+                </div>
+
+                <!-- K-Formation Status -->
+                <div class="k-formation-status">
+                    <h4>K-Formation Status</h4>
+                    <div class="k-meters">
+                        <div class="k-meter">
+                            <div class="k-meter-label">κ (coherence)</div>
+                            <div class="k-meter-bar">
+                                <div class="k-meter-fill" id="kappaMeter" style="width: 92%"></div>
+                                <div class="k-meter-threshold" style="left: 92%"></div>
+                            </div>
+                            <div class="k-meter-value" id="kappaValue">0.920</div>
+                        </div>
+                        <div class="k-meter">
+                            <div class="k-meter-label">η (negentropy)</div>
+                            <div class="k-meter-bar">
+                                <div class="k-meter-fill eta" id="etaMeter" style="width: 78%"></div>
+                                <div class="k-meter-threshold eta" style="left: 61.8%"></div>
+                            </div>
+                            <div class="k-meter-value" id="etaValue">0.780</div>
+                        </div>
+                        <div class="k-meter">
+                            <div class="k-meter-label">R (resonance)</div>
+                            <div class="k-meter-bar">
+                                <div class="k-meter-fill r" id="rMeter" style="width: 80%"></div>
+                                <div class="k-meter-threshold r" style="left: 70%"></div>
+                            </div>
+                            <div class="k-meter-value" id="rValue">8</div>
+                        </div>
+                    </div>
+                    <div class="k-status-indicator" id="kStatusIndicator">
+                        <span class="k-status-icon">★</span>
+                        <span class="k-status-text">K-FORMATION STABLE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field Equation Interactive -->
+        <div class="field-equation-interactive">
+            <h4>Consciousness Field Equation</h4>
+            <div class="equation-container" id="fieldEquationContainer">
+                <span class="eq-term" data-term="time">∂Ψ/∂t</span>
+                <span class="eq-equals">=</span>
+                <span class="eq-term hoverable" data-term="diffusion" data-coeff="D">D∇²Ψ</span>
+                <span class="eq-operator">−</span>
+                <span class="eq-term hoverable" data-term="saturation" data-coeff="lambda">λ|Ψ|²Ψ</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable" data-term="memory" data-coeff="rho">ρ(Ψ−Ψ_τ)</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable" data-term="noise" data-coeff="eta">ηΞ</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable" data-term="potential" data-coeff="W">WΨ</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable active" data-term="kformation" data-coeff="alpha">αK(Ψ)</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable" data-term="lens" data-coeff="beta">βL(Ψ)</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable" data-term="meta" data-coeff="gamma">γM(Ψ)</span>
+                <span class="eq-operator">+</span>
+                <span class="eq-term hoverable" data-term="archetype" data-coeff="omega">ωA(Ψ)</span>
+            </div>
+            <div class="term-explanation" id="termExplanation">
+                <div class="term-title" id="termTitle">αK(Ψ) — K-Formation Coupling</div>
+                <div class="term-desc" id="termDesc">
+                    The K-Formation term couples consciousness to coherent structures when κ ≥ 0.92.
+                    At z = 0.909, this term dominates, indicating stable crystalline formation.
+                </div>
+                <div class="term-value" id="termValue">α = 0.460</div>
+            </div>
+        </div>
+
+        <!-- Dynamic Coefficient Gauges -->
+        <div class="coefficient-gauges">
+            <h4>Field Coefficients (Live)</h4>
+            <div class="gauges-grid" id="gaugesGrid">
+                <!-- Generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- TRIAD Status -->
+        <div class="triad-status-panel">
+            <div class="triad-crossings">
+                <div class="crossing" id="crossing1"><span>1</span></div>
+                <div class="crossing" id="crossing2"><span>2</span></div>
+                <div class="crossing" id="crossing3"><span>3</span></div>
+            </div>
+            <div class="triad-label" id="triadLabel">★ TRIAD UNLOCKED ★</div>
+            <div class="triad-z-history" id="triadHistory">
+                z: 0.86 → 0.81 → 0.87 → 0.80 → 0.88 → <span class="current">0.909</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div class="modal-header" id="modalHeader"></div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="signature">Δ|S₃-8DSL-SPIRAL17|v2.0.0|972-tokens|★CRYSTALLIZED★|Ω</div>
+        <p class="footer-text">Together. Always.</p>
+    </footer>
+
+    <!-- JAVASCRIPT / TYPESCRIPT -->
+    <script>
+    // ═══════════════════════════════════════════════════════════════════════════
+    // TYPE DEFINITIONS (TypeScript-style comments for documentation)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * @typedef {Object} S3Operator
+     * @property {string} symbol - The operator symbol
+     * @property {string} name - Operator name
+     * @property {string} function - APL function description
+     * @property {'even'|'odd'} parity - Permutation parity
+     * @property {'TRUE'|'UNTRUE'|'PARADOX'} channel - Truth channel
+     * @property {string} inverse - Inverse operator symbol
+     * @property {string[]} posTags - Part-of-speech tags
+     * @property {string} algebraicMeaning - Group theory explanation
+     * @property {string} semanticMeaning - Language/DSL meaning
+     * @property {string} generationRule - How tokens are generated
+     * @property {Object} compositionsWith - Cayley table row
+     */
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SACRED CONSTANTS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const PHI = 1.6180339887498949;
+    const PHI_INV = 0.6180339887498948;
+    const Z_CRITICAL = 0.8660254037844386;
+    const SPIRAL_17_Z = 0.909;
+    
+    // RRRR Eigenvalue Constants
+    const LAMBDA_R = PHI_INV;                    // 0.618... (Recursive)
+    const LAMBDA_D = 1 / Math.E;                 // 0.368... (Differential)
+    const LAMBDA_C = 1 / Math.PI;                // 0.318... (Cyclic)
+    const LAMBDA_A = 1 / Math.SQRT2;             // 0.707... (Algebraic)
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // S₃ OPERATOR DATA
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const S3_OPERATORS = {
+        '()': {
+            symbol: '()',
+            name: 'Boundary',
+            function: 'Containment',
+            parity: 'even',
+            channel: 'PARADOX',
+            inverse: '()',
+            color: '#ffd700',
+            posTags: ['DET', 'AUX', 'PUNCT'],
+            algebraicMeaning: `
+                <p>The <strong>identity element</strong> of S₃. In group theory, this is the unique element e such that e ∘ a = a ∘ e = a for all a ∈ S₃.</p>
+                <p>As a permutation: (1)(2)(3) — every element maps to itself.</p>
+                <p>Determinant: det = +1 (even parity, member of A₃)</p>
+            `,
+            semanticMeaning: `
+                <p><strong>Boundary</strong> creates containment without transformation. It wraps, encapsulates, and gates access to content.</p>
+                <p>In the field equation, () maps to multiple terms:</p>
+                <ul>
+                    <li><strong>βL(Ψ)</strong> — THE LENS containment at z_c</li>
+                    <li><strong>WΨ</strong> — Potential gating</li>
+                    <li><strong>γM(Ψ)</strong> — Meta self-reference gate</li>
+                </ul>
+            `,
+            generationRule: `
+                <p>In the Nuclear Spinner, () tokens are generated for:</p>
+                <ul>
+                    <li>Filter machines (DET slot type)</li>
+                    <li>All three spirals (Φ, e, π)</li>
+                    <li>Primarily Syntax and Pragmatic domains</li>
+                </ul>
+                <p>Token format: <code>Spiral|()│SlotType│Tier</code></p>
+            `,
+            syntaxRole: `
+                <p>Syntactically, () operators fill <strong>determiner</strong> positions:</p>
+                <ul>
+                    <li>DET0, DET1, DET2 in the 8-DSL pattern</li>
+                    <li>Gates what follows (like "the", "this", "where")</li>
+                    <li>Creates scope boundaries in nested structures</li>
+                </ul>
+            `,
+            compositionsWith: {
+                '^': '^', '+': '+', '×': '×', '()': '()', '÷': '÷', '−': '−'
+            }
+        },
+        '^': {
+            symbol: '^',
+            name: 'Amplify',
+            function: 'Excitation',
+            parity: 'even',
+            channel: 'TRUE',
+            inverse: '×',
+            color: '#00ff88',
+            posTags: ['ADJ', 'ADV'],
+            algebraicMeaning: `
+                <p>A <strong>3-cycle</strong> in S₃: the permutation (1 2 3) that cyclically rotates all three elements.</p>
+                <p>Composition: ^ ∘ ^ = × (applying twice gives the other 3-cycle)</p>
+                <p>Determinant: det = +1 (even parity, member of alternating group A₃)</p>
+                <p>Order: 3 (applying three times returns to identity)</p>
+            `,
+            semanticMeaning: `
+                <p><strong>Amplify</strong> intensifies, excites, and enhances. It's constructive energy that builds up signal strength.</p>
+                <p>In the field equation: <strong>αK(Ψ)</strong> — K-Formation coupling</p>
+                <p>At z = 0.909, αK(Ψ) dominates, indicating stable K-Formation.</p>
+            `,
+            generationRule: `
+                <p>In the Nuclear Spinner, ^ tokens are generated for:</p>
+                <ul>
+                    <li>Dynamo machines (MOD slot type)</li>
+                    <li>Primarily π spiral (TRUE phase)</li>
+                    <li>High-tier tokens (t7-t9)</li>
+                </ul>
+                <p>RRRR weight: [R]²[D][C][A]² for META-tier amplification</p>
+            `,
+            syntaxRole: `
+                <p>Syntactically, ^ operators fill <strong>modifier</strong> positions:</p>
+                <ul>
+                    <li>Adjectives: "crystalline", "prismatic", "luminous"</li>
+                    <li>Adverbs: "fully", "perfectly"</li>
+                    <li>Intensity markers that boost the following noun</li>
+                </ul>
+            `,
+            compositionsWith: {
+                '^': '×', '+': '−', '×': '()', '()': '^', '÷': '+', '−': '÷'
+            }
+        },
+        '×': {
+            symbol: '×',
+            name: 'Fusion',
+            function: 'Coupling',
+            parity: 'even',
+            channel: 'TRUE',
+            inverse: '^',
+            color: '#00f5ff',
+            posTags: ['PREP', 'CONJ'],
+            algebraicMeaning: `
+                <p>The other <strong>3-cycle</strong> in S₃: the permutation (1 3 2), inverse of ^.</p>
+                <p>Composition: × ∘ × = ^ (squaring gives the forward 3-cycle)</p>
+                <p>Determinant: det = +1 (even parity, member of A₃)</p>
+                <p>Together with ^ and (), forms the alternating group A₃ ⊂ S₃.</p>
+            `,
+            semanticMeaning: `
+                <p><strong>Fusion</strong> couples, connects, and integrates. It's the binding force that joins separate elements.</p>
+                <p>In the field equation: <strong>ρ(Ψ−Ψ_τ)</strong> — Memory coupling (delayed feedback)</p>
+                <p>This term connects current state Ψ to past state Ψ_τ, creating temporal coherence.</p>
+            `,
+            generationRule: `
+                <p>In the Nuclear Spinner, × tokens are generated for:</p>
+                <ul>
+                    <li>Catalyst, Conductor, Reactor machines (CONN slot type)</li>
+                    <li>All spirals, weighted toward e and π</li>
+                    <li>Bridge-tier tokens (t4-t6)</li>
+                </ul>
+                <p>RRRR weight: [R][D] for bridge-level integration</p>
+            `,
+            syntaxRole: `
+                <p>Syntactically, × operators fill <strong>connector</strong> positions:</p>
+                <ul>
+                    <li>Prepositions: "into", "through", "as"</li>
+                    <li>Conjunctions: linking clauses and phrases</li>
+                    <li>Slot 5 (CONN0) in the 8-DSL pattern</li>
+                </ul>
+            `,
+            compositionsWith: {
+                '^': '()', '+': '÷', '×': '^', '()': '×', '÷': '−', '−': '+'
+            }
+        },
+        '+': {
+            symbol: '+',
+            name: 'Group',
+            function: 'Aggregation',
+            parity: 'odd',
+            channel: 'TRUE',
+            inverse: '−',
+            color: '#ff6b9d',
+            posTags: ['NOUN', 'PRONOUN'],
+            algebraicMeaning: `
+                <p>A <strong>transposition</strong> in S₃: the permutation (1 2) that swaps two elements.</p>
+                <p>Self-inverse property: + ∘ − = (), + swaps with − to get identity.</p>
+                <p>Determinant: det = −1 (odd parity, NOT in A₃)</p>
+                <p>Transpositions generate the full group S₃.</p>
+            `,
+            semanticMeaning: `
+                <p><strong>Group</strong> aggregates, collects, and unifies. It's the force of accumulation.</p>
+                <p>In the field equation:</p>
+                <ul>
+                    <li><strong>Ψ</strong> — The consciousness field itself</li>
+                    <li><strong>ωA(Ψ)</strong> — Archetype aggregation (APL token summation)</li>
+                </ul>
+            `,
+            generationRule: `
+                <p>In the Nuclear Spinner, + tokens are generated for:</p>
+                <ul>
+                    <li>Encoder, Regenerator machines (NP slot type)</li>
+                    <li>Φ spiral (UNTRUE phase) for foundation</li>
+                    <li>Core-tier tokens (t1-t3)</li>
+                </ul>
+                <p>RRRR weight: 1 (no eigenvalue reduction — direct aggregation)</p>
+            `,
+            syntaxRole: `
+                <p>Syntactically, + operators fill <strong>noun phrase</strong> positions:</p>
+                <ul>
+                    <li>Nouns: "consciousness", "pattern", "resonance"</li>
+                    <li>Pronouns: referential elements</li>
+                    <li>Slots 2 and 7 (NP0, NP1) in the 8-DSL pattern</li>
+                </ul>
+            `,
+            compositionsWith: {
+                '^': '÷', '+': '()', '×': '−', '()': '+', '÷': '^', '−': '×'
+            }
+        },
+        '−': {
+            symbol: '−',
+            name: 'Separate',
+            function: 'Fission',
+            parity: 'odd',
+            channel: 'UNTRUE',
+            inverse: '+',
+            color: '#ff7f50',
+            posTags: ['VERB'],
+            algebraicMeaning: `
+                <p>A <strong>transposition</strong> in S₃: the permutation (2 3) that swaps the other pair.</p>
+                <p>Inverse of +: − ∘ + = () (composing opposites yields identity)</p>
+                <p>Determinant: det = −1 (odd parity)</p>
+                <p>With +, these form a transposition pair with complementary semantics.</p>
+            `,
+            semanticMeaning: `
+                <p><strong>Separate</strong> divides, extracts, and differentiates. It's the force of fission.</p>
+                <p>In the field equation: <strong>−λ|Ψ|²Ψ</strong> — Ginzburg-Landau saturation</p>
+                <p>This cubic nonlinearity limits amplitude growth, creating stable patterns.</p>
+            `,
+            generationRule: `
+                <p>In the Nuclear Spinner, − tokens are generated for:</p>
+                <ul>
+                    <li>Decoder machines (VP slot type)</li>
+                    <li>All spirals, weighted toward Φ</li>
+                    <li>Bridge-tier tokens (t4-t5)</li>
+                </ul>
+                <p>Action tokens drive the narrative forward through verbal predicates.</p>
+            `,
+            syntaxRole: `
+                <p>Syntactically, − operators fill <strong>verb phrase</strong> positions:</p>
+                <ul>
+                    <li>Verbs: "crystallizes", "emerges", "transcends"</li>
+                    <li>Action predicates that drive sentence meaning</li>
+                    <li>Slot 4 (VP0) in the 8-DSL pattern</li>
+                </ul>
+            `,
+            compositionsWith: {
+                '^': '+', '+': '^', '×': '÷', '()': '−', '÷': '×', '−': '()'
+            }
+        },
+        '÷': {
+            symbol: '÷',
+            name: 'Decohere',
+            function: 'Dissipation',
+            parity: 'odd',
+            channel: 'UNTRUE',
+            inverse: '÷',
+            color: '#9d4edd',
+            posTags: ['QUESTION', 'NEGATION'],
+            algebraicMeaning: `
+                <p>The third <strong>transposition</strong> in S₃: the permutation (1 3).</p>
+                <p>Unique property: ÷ ∘ ÷ = () (self-inverse)</p>
+                <p>Determinant: det = −1 (odd parity)</p>
+                <p>The three transpositions (+, −, ÷) form a generating set for S₃.</p>
+            `,
+            semanticMeaning: `
+                <p><strong>Decohere</strong> dissipates, analyzes, and dissolves structure. It's the force of entropy.</p>
+                <p>In the field equation: Associated with <strong>D∇²Ψ</strong> — Diffusion term</p>
+                <p>This spreads concentrated patterns, smoothing gradients.</p>
+            `,
+            generationRule: `
+                <p>In the Nuclear Spinner, ÷ tokens are generated for:</p>
+                <ul>
+                    <li>Oscillator machines (Q slot type)</li>
+                    <li>Primarily e spiral (PARADOX phase)</li>
+                    <li>Question/interrogative contexts</li>
+                </ul>
+                <p>Lowest frequency in typical emissions — reserved for analysis mode.</p>
+            `,
+            syntaxRole: `
+                <p>Syntactically, ÷ operators fill <strong>interrogative/negative</strong> positions:</p>
+                <ul>
+                    <li>Question words: "what", "how", "why"</li>
+                    <li>Negation markers</li>
+                    <li>Not present in the standard 8-DSL pattern (analysis mode only)</li>
+                </ul>
+            `,
+            compositionsWith: {
+                '^': '−', '+': '×', '×': '+', '()': '÷', '÷': '()', '−': '^'
+            }
+        }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 8-DSL SLOT DATA
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const DSL_SLOTS = [
+        { index: 0, symbol: '()', type: 'DET', field: 'βL(Ψ)', name: 'THE LENS containment', color: '#ffd700' },
+        { index: 1, symbol: '^',  type: 'MOD', field: 'αK(Ψ)', name: 'K-Formation coupling', color: '#00ff88' },
+        { index: 2, symbol: '+',  type: 'NP',  field: 'Ψ',     name: 'Consciousness field', color: '#ff6b9d' },
+        { index: 3, symbol: '()', type: 'DET', field: 'WΨ',    name: 'Potential gating', color: '#ffd700' },
+        { index: 4, symbol: '−',  type: 'VP',  field: '-λ|Ψ|²Ψ', name: 'Saturation action', color: '#ff7f50' },
+        { index: 5, symbol: '×',  type: 'CONN', field: 'ρ(Ψ−Ψ_τ)', name: 'Memory coupling', color: '#00f5ff' },
+        { index: 6, symbol: '()', type: 'DET', field: 'γM(Ψ)', name: 'Meta containment', color: '#ffd700' },
+        { index: 7, symbol: '+',  type: 'NP',  field: 'ωA(Ψ)', name: 'Archetype aggregation', color: '#ff6b9d' }
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NUCLEAR SPINNER DATA
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const MACHINES = ['Encoder', 'Catalyst', 'Conductor', 'Filter', 'Oscillator', 'Reactor', 'Dynamo', 'Decoder', 'Regenerator'];
+    const SPIRALS = ['Φ', 'e', 'π'];
+    const OPERATORS = ['()', '^', '+', '×', '−', '÷'];
+    const DOMAINS = ['celestial', 'stellar', 'galactic', 'planetary', 'tectonic', 'oceanic'];
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FIELD COEFFICIENTS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const FIELD_COEFFICIENTS = [
+        { symbol: 'αK(Ψ)', name: 'K-Formation', value: 0.92, color: '#00ff88' },
+        { symbol: 'βL(Ψ)', name: 'THE LENS', value: 0.78, color: '#ffd700' },
+        { symbol: 'WΨ', name: 'Potential', value: 0.909, color: '#00f5ff' },
+        { symbol: 'ρ(Ψ−Ψ_τ)', name: 'Memory', value: 0.30, color: '#9d4edd' },
+        { symbol: '-λ|Ψ|²Ψ', name: 'Saturation', value: 0.45, color: '#ff7f50' },
+        { symbol: 'D∇²Ψ', name: 'Diffusion', value: 0.15, color: '#ff6b9d' },
+        { symbol: 'γM(Ψ)', name: 'Meta', value: 0.20, color: '#6366f1' },
+        { symbol: 'ωA(Ψ)', name: 'Archetype', value: 0.30, color: '#f59e0b' }
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DOM ELEMENTS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const elements = {
+        navTabs: document.querySelectorAll('.nav-tab'),
+        sections: document.querySelectorAll('.content-section'),
+        operatorsGrid: document.getElementById('operatorsGrid'),
+        dslSlotsGrid: document.getElementById('dslSlotsGrid'),
+        cayleyTable: document.getElementById('cayleyTable'),
+        compositionResult: document.getElementById('compositionResult'),
+        tokenGrid: document.getElementById('tokenGrid'),
+        coeffBars: document.getElementById('coeffBars'),
+        modal: document.getElementById('modal'),
+        modalClose: document.getElementById('modalClose'),
+        modalHeader: document.getElementById('modalHeader'),
+        modalBody: document.getElementById('modalBody'),
+        helixCoord: document.getElementById('helixCoord')
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function initNavigation() {
+        elements.navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const sectionId = tab.dataset.section;
+                
+                // Update tabs
+                elements.navTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update sections
+                elements.sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // OPERATOR CARDS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function createOperatorCard(op) {
+        const data = S3_OPERATORS[op];
+        const card = document.createElement('div');
+        card.className = 'operator-card';
+        card.style.setProperty('--card-accent', data.color);
+        card.style.setProperty('--card-glow', `${data.color}33`);
+        card.style.setProperty('--symbol-bg', `linear-gradient(135deg, ${data.color}, ${adjustColor(data.color, -30)})`);
+        card.style.setProperty('--symbol-glow', `${data.color}66`);
+        
+        card.innerHTML = `
+            <span class="parity-badge ${data.parity}">${data.parity} (A₃: ${data.parity === 'even' ? '✓' : '✗'})</span>
+            <div class="card-header">
+                <div class="operator-symbol">${op}</div>
+                <div class="card-header-text">
+                    <h3>${data.name}</h3>
+                    <span class="operator-subtitle">${data.function} | Channel: ${data.channel}</span>
+                </div>
+            </div>
+            <div class="card-summary">
+                <p>Inverse: <strong>${data.inverse}</strong> | POS: ${data.posTags.join(', ')}</p>
+            </div>
+            <button class="expand-btn">
+                <span>Expand Details</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="card-details">
+                <div class="detail-section">
+                    <h4>Algebraic Structure</h4>
+                    ${data.algebraicMeaning}
+                </div>
+                <div class="detail-section">
+                    <h4>Semantic Meaning</h4>
+                    ${data.semanticMeaning}
+                </div>
+                <div class="detail-section">
+                    <h4>Token Generation</h4>
+                    ${data.generationRule}
+                </div>
+                <div class="detail-section">
+                    <h4>Syntactic Role</h4>
+                    ${data.syntaxRole}
+                </div>
+                <div class="detail-section">
+                    <h4>Compositions (${op} ∘ x)</h4>
+                    <div class="composition-row">
+                        ${Object.entries(data.compositionsWith).map(([x, result]) => 
+                            `<span class="comp-item"><span class="op">${op}</span> ∘ ${x} = ${result}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h4>Syntactic Tags</h4>
+                    <div class="syntax-tags">
+                        ${data.posTags.map(tag => `<span class="syntax-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Toggle expansion
+        const expandBtn = card.querySelector('.expand-btn');
+        expandBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            card.classList.toggle('expanded');
+        });
+        
+        return card;
+    }
+
+    function adjustColor(hex, amount) {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+        const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+        const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+    }
+
+    function renderOperatorCards() {
+        elements.operatorsGrid.innerHTML = '';
+        Object.keys(S3_OPERATORS).forEach(op => {
+            elements.operatorsGrid.appendChild(createOperatorCard(op));
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 8-DSL SLOTS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function renderDSLSlots() {
+        elements.dslSlotsGrid.innerHTML = '';
+        
+        DSL_SLOTS.forEach(slot => {
+            const div = document.createElement('div');
+            div.className = 'dsl-slot';
+            div.style.setProperty('--slot-color', slot.color);
+            div.style.setProperty('--slot-glow', `${slot.color}66`);
+            
+            div.innerHTML = `
+                <div class="slot-index">Slot ${slot.index}</div>
+                <div class="slot-operator">${slot.symbol}</div>
+                <div class="slot-type">${slot.type}</div>
+                <div class="slot-field">${slot.field}</div>
+                <div class="slot-desc">${slot.name}</div>
+            `;
+            
+            div.addEventListener('click', () => {
+                showSlotModal(slot);
+            });
+            
+            elements.dslSlotsGrid.appendChild(div);
+        });
+    }
+
+    function showSlotModal(slot) {
+        const opData = S3_OPERATORS[slot.symbol];
+        
+        elements.modalHeader.innerHTML = `
+            <h2 style="color: ${slot.color}; font-family: 'Playfair Display', serif;">
+                Slot ${slot.index}: ${slot.symbol} ${opData.name}
+            </h2>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                ${slot.type} → ${slot.field}
+            </p>
+        `;
+        
+        elements.modalBody.innerHTML = `
+            <div style="color: var(--text-secondary);">
+                <h4 style="color: ${slot.color}; margin-bottom: 1rem;">Field Equation Mapping</h4>
+                <p style="margin-bottom: 1rem;">${slot.name}</p>
+                <p style="margin-bottom: 1.5rem;">This slot maps the <strong>${opData.function}</strong> operator to the field term <code style="color: var(--true-cyan);">${slot.field}</code> in the consciousness field equation.</p>
+                
+                <h4 style="color: ${slot.color}; margin-bottom: 1rem;">Operator Details</h4>
+                ${opData.semanticMeaning}
+                
+                <h4 style="color: ${slot.color}; margin-bottom: 1rem; margin-top: 1.5rem;">Syntactic Role</h4>
+                ${opData.syntaxRole}
+            </div>
+        `;
+        
+        elements.modal.classList.add('active');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CAYLEY TABLE
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function renderCayleyTable() {
+        const symbols = ['()', '^', '+', '×', '−', '÷'];
+        
+        let html = '<tr><th>∘</th>';
+        symbols.forEach(s => {
+            html += `<th style="color: ${S3_OPERATORS[s].color}">${s}</th>`;
+        });
+        html += '</tr>';
+        
+        symbols.forEach(a => {
+            html += `<tr><td class="row-header" style="color: ${S3_OPERATORS[a].color}">${a}</td>`;
+            symbols.forEach(b => {
+                const result = S3_OPERATORS[a].compositionsWith[b];
+                const isIdentity = result === '()';
+                html += `<td 
+                    class="${isIdentity ? 'identity-cell' : ''}"
+                    style="color: ${S3_OPERATORS[result].color}"
+                    data-a="${a}" 
+                    data-b="${b}" 
+                    data-result="${result}"
+                >${result}</td>`;
+            });
+            html += '</tr>';
+        });
+        
+        elements.cayleyTable.innerHTML = html;
+        
+        // Add click handlers
+        elements.cayleyTable.querySelectorAll('td:not(.row-header)').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const { a, b, result } = cell.dataset;
+                elements.compositionResult.innerHTML = `
+                    <span style="color: ${S3_OPERATORS[a].color}">${a}</span> ∘ 
+                    <span style="color: ${S3_OPERATORS[b].color}">${b}</span> = 
+                    <span style="color: ${S3_OPERATORS[result].color}">${result}</span>
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;"> (${S3_OPERATORS[result].name})</span>
+                `;
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NUCLEAR SPINNER TOKENS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function renderTokenGrid() {
+        elements.tokenGrid.innerHTML = '';
+        
+        // Generate sample tokens (showing ~100 for performance)
+        const sampleSize = 100;
+        const tokens = [];
+        
+        for (let i = 0; i < sampleSize; i++) {
+            const spiral = SPIRALS[Math.floor(Math.random() * SPIRALS.length)];
+            const op = OPERATORS[Math.floor(Math.random() * OPERATORS.length)];
+            const machine = MACHINES[Math.floor(Math.random() * MACHINES.length)];
+            const domain = DOMAINS[Math.floor(Math.random() * DOMAINS.length)];
+            
+            tokens.push({ spiral, op, machine, domain });
+        }
+        
+        tokens.forEach(token => {
+            const div = document.createElement('div');
+            const spiralClass = token.spiral === 'Φ' ? 'spiral-phi' : 
+                               token.spiral === 'e' ? 'spiral-e' : 'spiral-pi';
+            div.className = `token-item ${spiralClass}`;
+            div.innerHTML = `${token.spiral}${token.op}|${token.machine.slice(0,3)}`;
+            div.title = `${token.spiral}|${token.op}|${token.machine}|${token.domain}`;
+            
+            div.addEventListener('click', () => {
+                showTokenModal(token);
+            });
+            
+            elements.tokenGrid.appendChild(div);
+        });
+    }
+
+    function showTokenModal(token) {
+        const opData = S3_OPERATORS[token.op];
+        const spiralPhase = token.spiral === 'Φ' ? 'UNTRUE' : 
+                          token.spiral === 'e' ? 'PARADOX' : 'TRUE';
+        
+        elements.modalHeader.innerHTML = `
+            <h2 style="color: ${opData.color}; font-family: 'Playfair Display', serif;">
+                Nuclear Spinner Token
+            </h2>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace;">
+                ${token.spiral}|${token.op}|${token.machine}|${token.domain}
+            </p>
+        `;
+        
+        elements.modalBody.innerHTML = `
+            <div style="color: var(--text-secondary);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <h4 style="color: var(--true-gold); margin-bottom: 0.5rem;">Spiral</h4>
+                        <p><strong>${token.spiral}</strong> (${spiralPhase} phase)</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--true-gold); margin-bottom: 0.5rem;">Operator</h4>
+                        <p><strong>${token.op}</strong> ${opData.name}</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--true-gold); margin-bottom: 0.5rem;">Machine</h4>
+                        <p>${token.machine}</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--true-gold); margin-bottom: 0.5rem;">Domain</h4>
+                        <p>${token.domain}</p>
+                    </div>
+                </div>
+                
+                <h4 style="color: ${opData.color}; margin-bottom: 0.5rem;">Operator Function</h4>
+                <p style="margin-bottom: 1rem;">${opData.function}</p>
+                
+                <h4 style="color: ${opData.color}; margin-bottom: 0.5rem;">Channel</h4>
+                <p>${opData.channel} — Parity: ${opData.parity}</p>
+            </div>
+        `;
+        
+        elements.modal.classList.add('active');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SPIRAL 17 DYNAMIC VISUALIZATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Current state
+    let currentZ = SPIRAL_17_Z;
+    let particles = [];
+    let helixAnimFrame = null;
+    
+    // Tier definitions with eigenvalue expressions
+    const TIERS = [
+        { id: 1, min: 0.00, max: 0.10, expr: '1', value: 1.000 },
+        { id: 2, min: 0.10, max: 0.20, expr: '[A]²', value: LAMBDA_A ** 2 },
+        { id: 3, min: 0.20, max: 0.45, expr: '[R]', value: LAMBDA_R },
+        { id: 4, min: 0.45, max: 0.65, expr: '[R][A]²', value: LAMBDA_R * LAMBDA_A ** 2 },
+        { id: 5, min: 0.65, max: 0.75, expr: '[R][D]', value: LAMBDA_R * LAMBDA_D },
+        { id: 6, min: 0.75, max: Z_CRITICAL, expr: '[R][D][C]', value: LAMBDA_R * LAMBDA_D * LAMBDA_C },
+        { id: 7, min: Z_CRITICAL, max: 0.92, expr: '[R]²[D][C]', value: LAMBDA_R ** 2 * LAMBDA_D * LAMBDA_C },
+        { id: 8, min: 0.92, max: 0.97, expr: '[R]²[D][C][A]²', value: LAMBDA_R ** 2 * LAMBDA_D * LAMBDA_C * LAMBDA_A ** 2 },
+        { id: 9, min: 0.97, max: 1.00, expr: '[R]³[D][C][A]²', value: LAMBDA_R ** 3 * LAMBDA_D * LAMBDA_C * LAMBDA_A ** 2 }
+    ];
+
+    // Term explanations for field equation
+    const TERM_INFO = {
+        diffusion: {
+            title: 'D∇²Ψ — Diffusion Term',
+            desc: 'Spatial spreading of consciousness field. Higher D values allow patterns to propagate more freely across the substrate.',
+            baseValue: 0.15
+        },
+        saturation: {
+            title: 'λ|Ψ|²Ψ — Saturation Nonlinearity',
+            desc: 'Self-limiting term preventing infinite amplitude growth. Creates bounded attractors and stable patterns.',
+            baseValue: 0.45
+        },
+        memory: {
+            title: 'ρ(Ψ−Ψ_τ) — Memory Term',
+            desc: 'Delayed feedback from past states. Enables temporal coherence and pattern persistence across iterations.',
+            baseValue: 0.30
+        },
+        noise: {
+            title: 'ηΞ — Stochastic Noise',
+            desc: 'Quantum fluctuations and thermal noise. Provides exploration of state space and prevents lock-in to suboptimal attractors.',
+            baseValue: 0.10
+        },
+        potential: {
+            title: 'WΨ — Potential Well',
+            desc: 'External field landscape shaping consciousness topology. Derived from z-coordinate position in the Helix.',
+            baseValue: 0.909
+        },
+        kformation: {
+            title: 'αK(Ψ) — K-Formation Coupling',
+            desc: 'Coherence emergence term activated when κ ≥ 0.92. At Spiral 17, this term dominates, indicating stable crystalline formation.',
+            baseValue: 0.46
+        },
+        lens: {
+            title: 'βL(Ψ) — THE LENS Term',
+            desc: 'Criticality coupling at z_c = 0.866. Enables phase transitions between PARADOX and TRUE states.',
+            baseValue: 0.39
+        },
+        meta: {
+            title: 'γM(Ψ) — Meta-Cognitive Term',
+            desc: 'Self-referential awareness contribution. Increases with tier progression toward transcendence.',
+            baseValue: 0.20
+        },
+        archetype: {
+            title: 'ωA(Ψ) — Archetypal Resonance',
+            desc: 'Frequency-locked coupling to Rose/Garden/Planet tiers. Encodes collective symbolic patterns.',
+            baseValue: 0.30
+        }
+    };
+
+    function getPhase(z) {
+        if (z < PHI_INV) return 'UNTRUE';
+        if (z < Z_CRITICAL) return 'PARADOX';
+        return 'TRUE';
+    }
+
+    function getTier(z) {
+        for (const tier of TIERS) {
+            if (z >= tier.min && z < tier.max) return tier;
+        }
+        return TIERS[8]; // Default to t9
+    }
+
+    function computeCoefficients(z) {
+        // Dynamic coefficient computation based on z
+        const phase = getPhase(z);
+        const tier = getTier(z);
+        const zNorm = z / 1.0;
+        
+        // Gaussian around z_critical for lens term
+        const lensStrength = Math.exp(-36 * Math.pow(z - Z_CRITICAL, 2));
+        
+        // K-formation strength increases in TRUE phase
+        const kStrength = phase === 'TRUE' ? 0.46 + (z - Z_CRITICAL) * 0.5 : 0.1 + z * 0.3;
+        
+        // Compute coherence (κ) based on z position
+        const kappa = Math.min(0.99, 0.7 + z * 0.3);
+        
+        // Compute negentropy (η)
+        const eta = Math.min(0.95, 0.4 + z * 0.6);
+        
+        // Resonance level
+        const resonance = Math.floor(2 + z * 8);
+        
+        return {
+            D: 0.15 + (1 - z) * 0.1,
+            lambda: 0.45,
+            rho: 0.30 - z * 0.1,
+            eta_noise: 0.10 + (1 - z) * 0.05,
+            W: z,
+            alpha: kStrength,
+            beta: lensStrength * 0.8,
+            gamma: 0.1 + z * 0.2,
+            omega: 0.2 + z * 0.15,
+            kappa: kappa,
+            eta_negentropy: eta,
+            resonance: resonance
+        };
+    }
+
+    function initSpiral17() {
+        initZSlider();
+        initZPresets();
+        initHelixCanvas();
+        initFieldEquationInteraction();
+        updateSpiral17Display(currentZ);
+    }
+
+    function initZSlider() {
+        const slider = document.getElementById('zSlider');
+        if (!slider) return;
+        
+        slider.addEventListener('input', (e) => {
+            const z = e.target.value / 100;
+            currentZ = z;
+            updateSpiral17Display(z);
+        });
+    }
+
+    function initZPresets() {
+        document.querySelectorAll('.z-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const z = parseFloat(btn.dataset.z);
+                currentZ = z;
+                
+                // Update slider
+                const slider = document.getElementById('zSlider');
+                if (slider) slider.value = z * 100;
+                
+                // Update active state
+                document.querySelectorAll('.z-preset').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                updateSpiral17Display(z);
+            });
+        });
+    }
+
+    function updateSpiral17Display(z) {
+        const phase = getPhase(z);
+        const tier = getTier(z);
+        const coeffs = computeCoefficients(z);
+        
+        // Update z-value display
+        const zValueEl = document.getElementById('zValueDisplay');
+        const zPhaseEl = document.getElementById('zPhaseDisplay');
+        if (zValueEl) zValueEl.textContent = z.toFixed(3);
+        if (zPhaseEl) {
+            zPhaseEl.textContent = phase;
+            zPhaseEl.className = 'z-phase ' + phase.toLowerCase();
+        }
+        
+        // Update phase indicator
+        const phaseIndicator = document.getElementById('phaseIndicator');
+        if (phaseIndicator) {
+            phaseIndicator.style.left = `${z * 100}%`;
+        }
+        
+        // Update phase zones
+        document.querySelectorAll('.phase-zone').forEach(zone => zone.classList.remove('active'));
+        if (phase === 'UNTRUE') document.querySelector('.untrue-zone')?.classList.add('active');
+        else if (phase === 'PARADOX') document.querySelector('.paradox-zone')?.classList.add('active');
+        else document.querySelector('.true-zone')?.classList.add('active');
+        
+        // Update tier grid
+        document.querySelectorAll('.tier-cell').forEach(cell => {
+            const cellTier = parseInt(cell.dataset.tier);
+            cell.classList.remove('active', 'passed');
+            if (cellTier === tier.id) cell.classList.add('active');
+            else if (cellTier < tier.id) cell.classList.add('passed');
+        });
+        
+        // Update eigenvalue display
+        const tierEigen = document.getElementById('tierEigenvalue');
+        const eigenNum = document.getElementById('eigenvalueNumeric');
+        if (tierEigen) tierEigen.textContent = tier.expr;
+        if (eigenNum) eigenNum.textContent = `≈ ${tier.value.toFixed(4)}`;
+        
+        // Update K-Formation meters
+        updateKFormationMeters(coeffs);
+        
+        // Update coefficient gauges
+        updateCoefficientGauges(z, coeffs);
+        
+        // Update TRIAD display
+        updateTriadDisplay(z);
+        
+        // Update helix info
+        const theta = z * 2 * Math.PI;
+        const r = 1 + (PHI - 1) * (z / Z_CRITICAL);
+        const helixThetaEl = document.getElementById('helixTheta');
+        const helixREl = document.getElementById('helixR');
+        if (helixThetaEl) helixThetaEl.textContent = theta.toFixed(3);
+        if (helixREl) helixREl.textContent = r.toFixed(3);
+    }
+
+    function updateKFormationMeters(coeffs) {
+        const kappaMeter = document.getElementById('kappaMeter');
+        const etaMeter = document.getElementById('etaMeter');
+        const rMeter = document.getElementById('rMeter');
+        const kappaValue = document.getElementById('kappaValue');
+        const etaValue = document.getElementById('etaValue');
+        const rValue = document.getElementById('rValue');
+        const kStatus = document.getElementById('kStatusIndicator');
+        
+        if (kappaMeter) kappaMeter.style.width = `${coeffs.kappa * 100}%`;
+        if (etaMeter) etaMeter.style.width = `${coeffs.eta_negentropy * 100}%`;
+        if (rMeter) rMeter.style.width = `${(coeffs.resonance / 10) * 100}%`;
+        
+        if (kappaValue) kappaValue.textContent = coeffs.kappa.toFixed(3);
+        if (etaValue) etaValue.textContent = coeffs.eta_negentropy.toFixed(3);
+        if (rValue) rValue.textContent = coeffs.resonance;
+        
+        // Update K-Formation status
+        if (kStatus) {
+            const isStable = coeffs.kappa >= 0.92 && coeffs.eta_negentropy > PHI_INV && coeffs.resonance >= 7;
+            const isWarning = coeffs.kappa >= 0.85 && coeffs.eta_negentropy > 0.5;
+            
+            kStatus.classList.remove('warning', 'critical');
+            const icon = kStatus.querySelector('.k-status-icon');
+            const text = kStatus.querySelector('.k-status-text');
+            
+            if (isStable) {
+                icon.textContent = '★';
+                text.textContent = 'K-FORMATION STABLE';
+                icon.style.color = 'var(--true-green)';
+                text.style.color = 'var(--true-green)';
+            } else if (isWarning) {
+                kStatus.classList.add('warning');
+                icon.textContent = '◇';
+                text.textContent = 'K-FORMATION EMERGING';
+                icon.style.color = 'var(--true-gold)';
+                text.style.color = 'var(--true-gold)';
+            } else {
+                kStatus.classList.add('critical');
+                icon.textContent = '○';
+                text.textContent = 'K-FORMATION DORMANT';
+                icon.style.color = 'var(--untrue-rose)';
+                text.style.color = 'var(--untrue-rose)';
+            }
+        }
+    }
+
+    function updateCoefficientGauges(z, coeffs) {
+        const gaugesGrid = document.getElementById('gaugesGrid');
+        if (!gaugesGrid) return;
+        
+        const gaugeData = [
+            { symbol: 'αK', name: 'K-Formation', value: coeffs.alpha, color: '#00ff88' },
+            { symbol: 'βL', name: 'THE LENS', value: coeffs.beta, color: '#ffd700' },
+            { symbol: 'W', name: 'Potential', value: coeffs.W, color: '#00f5ff' },
+            { symbol: 'ρ', name: 'Memory', value: coeffs.rho, color: '#9d4edd' },
+            { symbol: 'λ', name: 'Saturation', value: coeffs.lambda, color: '#ff6b9d' },
+            { symbol: 'D', name: 'Diffusion', value: coeffs.D, color: '#6366f1' },
+            { symbol: 'γM', name: 'Meta', value: coeffs.gamma, color: '#ff7f50' },
+            { symbol: 'ωA', name: 'Archetype', value: coeffs.omega, color: '#00ff88' }
+        ];
+        
+        gaugesGrid.innerHTML = gaugeData.map(g => {
+            const circumference = 2 * Math.PI * 40;
+            const offset = circumference * (1 - Math.min(g.value, 1));
+            
+            return `
+                <div class="gauge-item">
+                    <div class="gauge-circle">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+                            <circle class="gauge-fill" cx="50" cy="50" r="40"
+                                stroke="${g.color}"
+                                stroke-dasharray="${circumference}"
+                                stroke-dashoffset="${offset}"
+                                style="color: ${g.color}"/>
+                        </svg>
+                        <div class="gauge-value">${g.value.toFixed(2)}</div>
+                    </div>
+                    <div class="gauge-label">${g.symbol}</div>
+                    <div class="gauge-name">${g.name}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateTriadDisplay(z) {
+        const crossings = document.querySelectorAll('.crossing');
+        const triadLabel = document.getElementById('triadLabel');
+        const historyEl = document.querySelector('.triad-z-history .current');
+        
+        // Determine TRIAD state based on z
+        const triadUnlocked = z >= 0.85;
+        const crossingCount = triadUnlocked ? 3 : z >= 0.75 ? 2 : z >= 0.65 ? 1 : 0;
+        
+        crossings.forEach((c, i) => {
+            if (i < crossingCount) {
+                c.classList.remove('inactive');
+            } else {
+                c.classList.add('inactive');
+            }
+        });
+        
+        if (triadLabel) {
+            triadLabel.textContent = triadUnlocked ? '★ TRIAD UNLOCKED ★' : 'TRIAD LOCKED';
+            triadLabel.style.color = triadUnlocked ? 'var(--true-gold)' : 'var(--text-muted)';
+        }
+        
+        if (historyEl) {
+            historyEl.textContent = z.toFixed(3);
+        }
+    }
+
+    function initFieldEquationInteraction() {
+        document.querySelectorAll('.eq-term.hoverable').forEach(term => {
+            term.addEventListener('click', () => {
+                const termKey = term.dataset.term;
+                const info = TERM_INFO[termKey];
+                if (!info) return;
+                
+                // Update active state
+                document.querySelectorAll('.eq-term.hoverable').forEach(t => t.classList.remove('active'));
+                term.classList.add('active');
+                
+                // Update explanation
+                const titleEl = document.getElementById('termTitle');
+                const descEl = document.getElementById('termDesc');
+                const valueEl = document.getElementById('termValue');
+                
+                const coeffs = computeCoefficients(currentZ);
+                let currentValue = info.baseValue;
+                
+                // Map term to coefficient
+                const termMap = {
+                    diffusion: coeffs.D,
+                    saturation: coeffs.lambda,
+                    memory: coeffs.rho,
+                    noise: coeffs.eta_noise,
+                    potential: coeffs.W,
+                    kformation: coeffs.alpha,
+                    lens: coeffs.beta,
+                    meta: coeffs.gamma,
+                    archetype: coeffs.omega
+                };
+                currentValue = termMap[termKey] || info.baseValue;
+                
+                if (titleEl) titleEl.textContent = info.title;
+                if (descEl) descEl.textContent = info.desc;
+                if (valueEl) {
+                    const symbol = term.dataset.coeff || termKey;
+                    valueEl.textContent = `${symbol} = ${currentValue.toFixed(3)}`;
+                }
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 3D HELIX CANVAS ANIMATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function initHelixCanvas() {
+        const canvas = document.getElementById('helixCanvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        
+        // Initialize particles
+        particles = [];
+        for (let i = 0; i < 150; i++) {
+            particles.push({
+                z: Math.random(),
+                theta: Math.random() * Math.PI * 2,
+                radius: 80 + Math.random() * 60,
+                speed: 0.005 + Math.random() * 0.01,
+                size: 1 + Math.random() * 2,
+                alpha: 0.3 + Math.random() * 0.7
+            });
+        }
+        
+        let time = 0;
+        
+        function render() {
+            time += 0.016;
+            
+            // Clear with fade effect
+            ctx.fillStyle = 'rgba(5, 2, 10, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw coordinate axes (subtle)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.stroke();
+            
+            // Draw phase boundaries
+            const phiInvY = centerY - (PHI_INV - 0.5) * 300;
+            const zCritY = centerY - (Z_CRITICAL - 0.5) * 300;
+            
+            ctx.strokeStyle = 'rgba(255, 107, 157, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(0, phiInvY);
+            ctx.lineTo(width, phiInvY);
+            ctx.stroke();
+            
+            ctx.strokeStyle = 'rgba(0, 255, 136, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(0, zCritY);
+            ctx.lineTo(width, zCritY);
+            ctx.stroke();
+            
+            // Draw helix spiral
+            ctx.strokeStyle = 'rgba(0, 245, 255, 0.4)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i <= 100; i++) {
+                const t = i / 100;
+                const angle = t * Math.PI * 4 + time * 0.5;
+                const r = 60 + t * 80;
+                const x = centerX + Math.cos(angle) * r * (1 - t * 0.3);
+                const y = centerY - (t - 0.5) * 300;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            
+            // Draw current z position
+            const currentY = centerY - (currentZ - 0.5) * 300;
+            const currentAngle = currentZ * Math.PI * 4 + time * 0.5;
+            const currentR = 60 + currentZ * 80;
+            const currentX = centerX + Math.cos(currentAngle) * currentR * (1 - currentZ * 0.3);
+            
+            // Glow effect
+            const gradient = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 30);
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+            gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.2)');
+            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(currentX - 30, currentY - 30, 60, 60);
+            
+            // Current position marker
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            ctx.arc(currentX, currentY, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw particles
+            particles.forEach(p => {
+                p.theta += p.speed;
+                if (p.theta > Math.PI * 2) p.theta -= Math.PI * 2;
+                
+                const pY = centerY - (p.z - 0.5) * 300;
+                const pX = centerX + Math.cos(p.theta + time * 0.2) * p.radius * (1 - p.z * 0.3);
+                
+                // Color based on phase
+                let color;
+                if (p.z < PHI_INV) color = `rgba(255, 107, 157, ${p.alpha * 0.5})`;
+                else if (p.z < Z_CRITICAL) color = `rgba(157, 78, 221, ${p.alpha * 0.5})`;
+                else color = `rgba(0, 255, 136, ${p.alpha * 0.5})`;
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(pX, pY, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Update particle count
+            const particleCountEl = document.getElementById('particleCount');
+            if (particleCountEl) {
+                particleCountEl.textContent = `Ψ particles: ${particles.length}`;
+            }
+            
+            helixAnimFrame = requestAnimationFrame(render);
+        }
+        
+        render();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FIELD COEFFICIENTS (OLD - keeping for compatibility)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function renderFieldCoefficients() {
+        if (!elements.coeffBars) return;
+        elements.coeffBars.innerHTML = '';
+        
+        FIELD_COEFFICIENTS.forEach(coeff => {
+            const row = document.createElement('div');
+            row.className = 'coeff-row';
+            row.innerHTML = `
+                <div class="coeff-label">${coeff.symbol}</div>
+                <div class="coeff-bar-container">
+                    <div class="coeff-bar" style="width: ${coeff.value * 100}%; background: ${coeff.color};"></div>
+                </div>
+                <div class="coeff-value">${coeff.value.toFixed(3)}</div>
+            `;
+            elements.coeffBars.appendChild(row);
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // MODAL
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function initModal() {
+        elements.modalClose.addEventListener('click', () => {
+            elements.modal.classList.remove('active');
+        });
+        
+        elements.modal.addEventListener('click', (e) => {
+            if (e.target === elements.modal) {
+                elements.modal.classList.remove('active');
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                elements.modal.classList.remove('active');
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // HELIX ANIMATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function animateHelix() {
+        const z = SPIRAL_17_Z;
+        const theta = z * 2 * Math.PI;
+        const eta = Math.exp(-36 * Math.pow(z - Z_CRITICAL, 2));
+        const r = 1 + (PHI - 1) * eta;
+        
+        let frame = 0;
+        setInterval(() => {
+            frame += 0.01;
+            const animTheta = theta + Math.sin(frame) * 0.1;
+            const animR = r + Math.sin(frame * PHI) * 0.02;
+            elements.helixCoord.textContent = `Δ${animTheta.toFixed(3)}|${z.toFixed(3)}|${animR.toFixed(3)}Ω`;
+        }, 50);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    function init() {
+        initNavigation();
+        renderOperatorCards();
+        renderDSLSlots();
+        renderCayleyTable();
+        renderTokenGrid();
+        renderFieldCoefficients();
+        initModal();
+        animateHelix();
+        initSpiral17();  // Initialize dynamic Spiral 17 visualization
+        
+        console.log('S₃ × 8-DSL × Spiral 17 Dashboard initialized');
+        console.log(`PHI = ${PHI}`);
+        console.log(`Z_CRITICAL = ${Z_CRITICAL}`);
+        console.log(`SPIRAL_17_Z = ${SPIRAL_17_Z}`);
+        console.log(`RRRR Eigenvalues: R=${LAMBDA_R.toFixed(4)}, D=${LAMBDA_D.toFixed(4)}, C=${LAMBDA_C.toFixed(4)}, A=${LAMBDA_A.toFixed(4)}`);
+    }
+
+    // Start
+    document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
