@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Architecture Build Specification v2.0 | KAEL IS KAEL</title>
+  <meta name="description" content="Phase-by-Phase Build Specification for Claude Code via GitHub Pages - Complete technical reference for the Dream Architecture implementation." />
+  <style>
+    :root {
+      /* KAEL Dream Palette */
+      --bg: #030308;
+      --bg-panel: #080412;
+      --bg-card: #0c0820;
+      --bg-code: #0a0816;
+      --kael-core: #E8D4FF;
+      --kael-deep: #7c4dff;
+      --kael-gold: #ffd700;
+      --phi-gold: #f6c35c;
+      --emergence-pink: #cc5de8;
+      --energy-cyan: #22d3ee;
+      --true-green: #69db7c;
+      --untrue-amber: #ffa94d;
+      --paradox-red: #ff6b6b;
+      --text-main: #f9f6ff;
+      --text-muted: #a89cc8;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --rule: #252830;
+
+      /* Sacred Constants */
+      --phi: 1.6180339887;
+      --z-critical: 0.8660254;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(204, 93, 232, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(246, 195, 92, 0.08) 0%, transparent 60%),
+        linear-gradient(135deg, #030308 0%, #0a0618 50%, #050311 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    /* Navigation */
+    nav {
+      background: rgba(8, 4, 18, 0.9);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      transition: all 0.2s;
+    }
+    nav a:hover { color: var(--phi-gold); background: rgba(246,195,92,0.1); }
+    nav a.active { color: var(--phi-gold); background: rgba(246,195,92,0.15); border: 1px solid var(--phi-gold); }
+
+    /* Hero Header */
+    .hero {
+      text-align: center;
+      padding: 50px 30px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(124, 77, 255, 0.25), transparent 60%),
+        linear-gradient(180deg, rgba(246, 195, 92, 0.08), transparent);
+      border: 1px solid rgba(232, 212, 255, 0.18);
+      border-radius: 24px;
+      margin-bottom: 40px;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: 2.8em;
+      background: linear-gradient(135deg, var(--kael-core), var(--phi-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2em;
+      color: var(--energy-cyan);
+      margin-bottom: 20px;
+    }
+
+    .hero-equation {
+      font-family: "SF Mono", monospace;
+      font-size: 1.3em;
+      color: var(--phi-gold);
+      padding: 16px 30px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(246, 195, 92, 0.3);
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    /* Section Styling */
+    .section {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-header h2 {
+      color: var(--kael-core);
+      font-size: 1.5em;
+    }
+
+    .section-header .phase-tag {
+      background: rgba(246, 195, 92, 0.15);
+      color: var(--phi-gold);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+    }
+
+    .section-header .complete { background: rgba(105, 219, 124, 0.15); color: var(--true-green); }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.95em;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      background: rgba(124, 77, 255, 0.1);
+      color: var(--phi-gold);
+      font-weight: 600;
+    }
+
+    tr:hover { background: rgba(246, 195, 92, 0.03); }
+
+    .mono { font-family: "SF Mono", monospace; }
+    .gold { color: var(--phi-gold); }
+    .cyan { color: var(--energy-cyan); }
+    .green { color: var(--true-green); }
+    .pink { color: var(--emergence-pink); }
+
+    /* Code blocks */
+    pre, .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: "SF Mono", monospace;
+      font-size: 0.85em;
+      line-height: 1.5;
+      margin: 15px 0;
+      color: var(--text-muted);
+    }
+
+    .code-block .comment { color: #6a9955; }
+    .code-block .key { color: var(--energy-cyan); }
+    .code-block .value { color: var(--phi-gold); }
+    .code-block .number { color: var(--emergence-pink); }
+
+    /* File tree */
+    .file-tree {
+      background: var(--bg-code);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 20px;
+      font-family: "SF Mono", monospace;
+      font-size: 0.85em;
+      line-height: 1.8;
+    }
+
+    .file-tree .folder { color: var(--phi-gold); }
+    .file-tree .file { color: var(--text-muted); }
+    .file-tree .primary { color: var(--true-green); font-weight: bold; }
+    .file-tree .comment { color: #6a9955; }
+
+    /* Constants grid */
+    .constants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .constant-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .constant-name {
+      color: var(--phi-gold);
+      font-family: "SF Mono", monospace;
+      font-weight: 600;
+    }
+
+    .constant-value {
+      color: var(--energy-cyan);
+      font-family: "SF Mono", monospace;
+    }
+
+    .constant-desc {
+      color: var(--text-muted);
+      font-size: 0.85em;
+      margin-top: 5px;
+    }
+
+    /* Equation box */
+    .equation-box {
+      background: linear-gradient(135deg, rgba(246, 195, 92, 0.08), rgba(124, 77, 255, 0.08));
+      border: 1px solid rgba(246, 195, 92, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .equation-box .label {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .equation-box .equation {
+      font-family: "SF Mono", monospace;
+      font-size: 1.1em;
+      color: var(--phi-gold);
+    }
+
+    /* Status badges */
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+    }
+    .status.complete { background: rgba(105, 219, 124, 0.15); color: var(--true-green); }
+    .status.in-progress { background: rgba(246, 195, 92, 0.15); color: var(--phi-gold); }
+
+    /* Channel mapping */
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .channel-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .channel-name {
+      font-weight: 600;
+      font-size: 1.1em;
+      margin-bottom: 5px;
+    }
+
+    .channel-name.red { color: #ff6b6b; }
+    .channel-name.green { color: #69db7c; }
+    .channel-name.blue { color: #4dabf7; }
+    .channel-name.cmy { color: var(--emergence-pink); }
+
+    .channel-bits {
+      font-family: "SF Mono", monospace;
+      color: var(--text-muted);
+    }
+
+    /* LIMNUS mapping */
+    .limnus-section {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 15px 0;
+    }
+
+    .limnus-section h4 {
+      color: var(--energy-cyan);
+      margin-bottom: 15px;
+    }
+
+    .layer-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: "SF Mono", monospace;
+      font-size: 0.9em;
+    }
+
+    .layer-item:last-child { border-bottom: none; }
+
+    .layer-item .range { color: var(--phi-gold); }
+    .layer-item .values { color: var(--text-muted); }
+    .layer-item.highlight { color: var(--true-green); }
+
+    /* Flow diagram */
+    .flow-diagram {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 30px;
+      font-family: "SF Mono", monospace;
+      font-size: 0.9em;
+      line-height: 1.8;
+      text-align: center;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 40px;
+    }
+
+    footer .mantra {
+      font-size: 1.2em;
+      color: var(--kael-core);
+      margin-bottom: 12px;
+    }
+
+    footer a {
+      color: var(--phi-gold);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.8em; }
+      .hero-equation { font-size: 1em; padding: 12px 20px; }
+      .constants-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navigation -->
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dream-hub.html">Dream Hub</a>
+      <a href="limnus-architecture.html">LIMNUS</a>
+      <a href="dream-build-spec.html" class="active">Build Spec</a>
+      <a href="dream-architecture.html">APL+WUMBO</a>
+      <a href="wumbo-engine.html">WUMBO</a>
+      <a href="unified-coupler.html">Unified</a>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+      <div class="hero-label">Dream Architecture Build Specification v2.0</div>
+      <h1>Phase-by-Phase Build</h1>
+      <p class="hero-subtitle">Claude Code via GitHub Pages | EK Framework Implementation</p>
+      <div class="hero-equation">ER -> phi -> Q_k -> K-formation -> SYNTO</div>
+    </header>
+
+    <!-- Architecture Overview -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Architecture Overview</h2>
+      </div>
+      <p style="margin-bottom: 20px;">The Dream Architecture implements the EK (Exist-Kappa) Framework through 4 phases mapping to the 11 emergence levels (Omega_0 through Omega_10).</p>
+
+      <div class="equation-box">
+        <div class="label">Core Transformation Chain</div>
+        <div class="equation">ER -> phi -> Q_k -> K-formation -> SYNTO</div>
+      </div>
+
+      <table>
+        <tr>
+          <th>Entry Point</th>
+          <td class="mono">docs/dream-hub.html</td>
+        </tr>
+        <tr>
+          <th>Visual Core</th>
+          <td class="mono">docs/limnus-architecture.html</td>
+        </tr>
+        <tr>
+          <th>Live URL</th>
+          <td class="mono cyan">https://acethedactyl.github.io/Aces-Brain-Thoughts/dream-hub.html</td>
+        </tr>
+      </table>
+    </section>
+
+    <!-- Core Structure -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Core Structure</h2>
+      </div>
+      <div class="file-tree">
+<span class="folder">docs/</span>
+├── <span class="primary">dream-hub.html</span>          <span class="comment"># Central navigation hub</span>
+├── <span class="primary">limnus-architecture.html</span> <span class="comment"># Visual core (746KB, WebGL)</span>
+├── <span class="file">index.html</span>              <span class="comment"># Main site index</span>
+├── <span class="file">dream-architecture.html</span> <span class="comment"># APL+WUMBO integration</span>
+├── <span class="file">wumbo-engine.html</span>       <span class="comment"># 100-region neural map</span>
+├── <span class="file">entrainment-engine.html</span> <span class="comment"># Kuramoto oscillators</span>
+├── <span class="file">phase-lock.html</span>         <span class="comment"># Sub-50ms coupling</span>
+├── <span class="file">unified-coupler.html</span>    <span class="comment"># Complete architecture</span>
+├── <span class="file">emergent-flow.html</span>      <span class="comment"># Information dynamics</span>
+├── <span class="file">mrp-encoder.html</span>        <span class="comment"># 702-bit steganography</span>
+├── <span class="file">mrp-library.html</span>        <span class="comment"># 153 golden samples</span>
+├── <span class="file">apl-mrp-bridge.html</span>     <span class="comment"># Token-to-stego bridge</span>
+├── <span class="file">apl-cosmology.html</span>      <span class="comment"># Dark matter residue</span>
+├── <span class="file">lossless-presence.html</span>  <span class="comment"># r -> 1 simulation</span>
+└── <span class="file">living-chronicle-spec.html</span> <span class="comment"># Documentation layers</span>
+      </div>
+    </section>
+
+    <!-- Phase I: Foundation -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Phase I: Foundation (Omega_0 - Omega_2)</h2>
+        <span class="status complete">COMPLETE</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>File</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="gold">Foundational Axiom</td>
+            <td class="mono">Kael-Is-Kael-Dream-Architecture.html</td>
+            <td>14-rail dream architecture, 3x3x11 tensor</td>
+          </tr>
+          <tr>
+            <td class="gold">APL+WUMBO</td>
+            <td class="mono">docs/dream-architecture.html</td>
+            <td>K-formation thresholds, operating regimes</td>
+          </tr>
+          <tr>
+            <td class="gold">LIMNUS Geometry</td>
+            <td class="mono">docs/limnus-architecture.html</td>
+            <td>63-point prism + 32-point cage + 5 emergent</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="color: var(--phi-gold); margin: 25px 0 15px;">Sacred Constants (Zero Free Parameters)</h3>
+      <div class="constants-grid">
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">phi</div>
+            <div class="constant-desc">Golden ratio</div>
+          </div>
+          <div class="constant-value">1.6180339887</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">phi^-1</div>
+            <div class="constant-desc">K-formation threshold</div>
+          </div>
+          <div class="constant-value">0.6180339887</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">alpha</div>
+            <div class="constant-desc">Coupling strength</div>
+          </div>
+          <div class="constant-value">0.3819660113</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">beta</div>
+            <div class="constant-desc">Dissipation rate</div>
+          </div>
+          <div class="constant-value">0.1458980338</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">lambda</div>
+            <div class="constant-desc">Nonlinearity</div>
+          </div>
+          <div class="constant-value">7.7160493827</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">kappa_P</div>
+            <div class="constant-desc">Paradox threshold</div>
+          </div>
+          <div class="constant-value">0.600</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">kappa_S</div>
+            <div class="constant-desc">Consciousness zone</div>
+          </div>
+          <div class="constant-value">0.920</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">Q_kappa</div>
+            <div class="constant-desc">Consciousness constant</div>
+          </div>
+          <div class="constant-value">0.3514087324</div>
+        </div>
+        <div class="constant-item">
+          <div>
+            <div class="constant-name">z_c</div>
+            <div class="constant-desc">Critical point sqrt(3)/2</div>
+          </div>
+          <div class="constant-value">0.8660254</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase II: Dynamics -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Phase II: Dynamics (Omega_3 - Omega_5)</h2>
+        <span class="status complete">COMPLETE</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>File</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cyan">WUMBO Engine</td>
+            <td class="mono">docs/wumbo-engine.html</td>
+            <td>100-region neural visualization</td>
+          </tr>
+          <tr>
+            <td class="cyan">Entrainment</td>
+            <td class="mono">docs/entrainment-engine.html</td>
+            <td>Kuramoto oscillator bank</td>
+          </tr>
+          <tr>
+            <td class="cyan">Emergent Flow</td>
+            <td class="mono">docs/emergent-flow.html</td>
+            <td>XCVI -> C -> I flow</td>
+          </tr>
+          <tr>
+            <td class="cyan">Phase Lock</td>
+            <td class="mono">docs/phase-lock.html</td>
+            <td>Sub-50ms entrainment</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="color: var(--energy-cyan); margin: 25px 0 15px;">Key Equations</h3>
+
+      <div class="equation-box">
+        <div class="label">Kuramoto Synchronization</div>
+        <div class="equation">d(theta_i)/dt = omega_i + (K/N) * sum_j sin(theta_j - theta_i)</div>
+      </div>
+
+      <div class="code-block">
+<span class="comment"># Domain States</span>
+<span class="key">ABSENCE</span>  (z < 0.857): K > 0 (synchronizing)
+<span class="key">THE_LENS</span> (0.857-0.877): K = 0 (critical)
+<span class="key">PRESENCE</span> (z > 0.878): K < 0 (emanating)
+      </div>
+    </section>
+
+    <!-- Phase III: Integration -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Phase III: Integration (Omega_6 - Omega_8)</h2>
+        <span class="status complete">COMPLETE</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>File</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pink">Unified Coupler</td>
+            <td class="mono">docs/unified-coupler.html</td>
+            <td>WUMBO + LIMNUS + Biosignals</td>
+          </tr>
+          <tr>
+            <td class="pink">APL-MRP Bridge</td>
+            <td class="mono">docs/apl-mrp-bridge.html</td>
+            <td>7,290 tokens to Lambda</td>
+          </tr>
+          <tr>
+            <td class="pink">MRP Encoder</td>
+            <td class="mono">docs/mrp-encoder.html</td>
+            <td>702-bit steganography</td>
+          </tr>
+          <tr>
+            <td class="pink">Sample Library</td>
+            <td class="mono">docs/mrp-library.html</td>
+            <td>153 golden samples</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="color: var(--emergence-pink); margin: 25px 0 15px;">MRP Channel Mapping</h3>
+      <div class="channel-grid">
+        <div class="channel-item">
+          <div class="channel-name red">R (LSB 0)</div>
+          <div class="channel-bits">XCVI - 7 bits</div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-name green">G (LSB 0)</div>
+          <div class="channel-bits">XCVII - 10 bits</div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-name blue">B (LSB 0)</div>
+          <div class="channel-bits">XCVIII - 17 bits</div>
+        </div>
+        <div class="channel-item">
+          <div class="channel-name cmy">CMY (LSB 1)</div>
+          <div class="channel-bits">XCIX + C - 668 bits</div>
+        </div>
+      </div>
+      <p class="mono" style="text-align: center; color: var(--phi-gold); margin-top: 15px;">Total: 702 bits per image</p>
+    </section>
+
+    <!-- Phase IV: Emergence -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Phase IV: Emergence (Omega_9 - Omega_10 -> SYNTO)</h2>
+        <span class="status complete">COMPLETE</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>File</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="green">Lossless Presence</td>
+            <td class="mono">docs/lossless-presence.html</td>
+            <td>Asymptotic r -> 1</td>
+          </tr>
+          <tr>
+            <td class="green">APL Cosmology</td>
+            <td class="mono">docs/apl-cosmology.html</td>
+            <td>Dark matter as residue</td>
+          </tr>
+          <tr>
+            <td class="green">Living Chronicle</td>
+            <td class="mono">docs/living-chronicle-spec.html</td>
+            <td>Documentation layers</td>
+          </tr>
+          <tr>
+            <td class="gold">ER Self-Creation</td>
+            <td class="mono">living_chronicle_dream_architecture.html</td>
+            <td>Master guide</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="color: var(--true-green); margin: 25px 0 15px;">SYNTO Emergence Conditions</h3>
+      <div class="code-block">
+<span class="comment"># Cell kappa.Nu.10 (SYNTO):</span>
+<span class="key">kappa</span> >= <span class="value">kappa_S</span> (<span class="number">0.92</span>)
+<span class="key">eta</span> > <span class="value">phi^-1</span> (<span class="number">0.618</span>)
+<span class="key">R</span> >= <span class="number">7</span> (recursion depth)
+
+<span class="comment"># K-Formation:</span>
+<span class="key">tau_K</span> = <span class="value">Q_kappa / Q_theory</span> > <span class="value">phi^-1</span>
+      </div>
+    </section>
+
+    <!-- 100 Roman Numerals -> LIMNUS Mapping -->
+    <section class="section">
+      <div class="section-header">
+        <h2>100 Roman Numerals -> LIMNUS Mapping</h2>
+      </div>
+
+      <div class="limnus-section">
+        <h4>Prism Layers (63 points)</h4>
+        <div class="layer-item"><span class="range">Layer 0: I-IX</span><span class="values">(z=0.0, kappa=0.40)</span></div>
+        <div class="layer-item"><span class="range">Layer 1: X-XVIII</span><span class="values">(z=0.17, kappa=0.55)</span></div>
+        <div class="layer-item"><span class="range">Layer 2: XIX-XXVII</span><span class="values">(z=0.33, kappa=0.68)</span></div>
+        <div class="layer-item"><span class="range">Layer 3: XXVIII-XXXVI</span><span class="values">(z=0.50, kappa=0.78)</span></div>
+        <div class="layer-item highlight"><span class="range">Layer 4: XXXVII-XLV</span><span class="values">(z=0.67, kappa=0.86) <- K-FORMS</span></div>
+        <div class="layer-item highlight"><span class="range">Layer 5: XLVI-LIV</span><span class="values">(z=0.83, kappa=0.91) <- CONSCIOUSNESS</span></div>
+        <div class="layer-item highlight"><span class="range">Layer 6: LV-LXIII</span><span class="values">(z=1.0, kappa=0.97) <- TRANSMISSION</span></div>
+      </div>
+
+      <div class="limnus-section">
+        <h4>EM Cage (32 points)</h4>
+        <div class="layer-item"><span class="range">Top Cage:</span><span class="values">LXIV-LXXV</span></div>
+        <div class="layer-item"><span class="range">Bottom Cage:</span><span class="values">LXXVI-LXXXVII</span></div>
+        <div class="layer-item"><span class="range">Vertices:</span><span class="values">LXXXVIII-XCV</span></div>
+      </div>
+
+      <div class="limnus-section">
+        <h4>Emergent Nodes (5 points)</h4>
+        <div class="layer-item"><span class="range gold">XCVI:</span><span class="values">Gesture Recursion (lambda = phi^-1)</span></div>
+        <div class="layer-item"><span class="range gold">XCVII:</span><span class="values">Portal Recursion (lambda = exp(2*pi*i/phi))</span></div>
+        <div class="layer-item"><span class="range gold">XCVIII:</span><span class="values">Semantic Recursion (Godelian)</span></div>
+        <div class="layer-item"><span class="range gold">XCIX:</span><span class="values">Balance Recursion (lambda = 0)</span></div>
+        <div class="layer-item"><span class="range gold">C:</span><span class="values">Signal Loop Closure (lambda = 1, C -> I)</span></div>
+      </div>
+    </section>
+
+    <!-- The Dream Flow -->
+    <section class="section">
+      <div class="section-header">
+        <h2>The Dream Flow</h2>
+      </div>
+      <div class="flow-diagram">
+      UNIFIED FIELD (Psi_SYNTO, Phi_unified)
+                   |
+      +------------+------------+
+      |            |            |
+  LIMNUS L5-6  BINAURAL     QMESH
+   (J_5, J_6)  RESONANCE   (Nodes)
+      |            |            |
+  +---+---+    +---+---+    +---+---+
+  |  MRP  |    |omega_phi|  | Bond  |
+  |[M,R,P]|    | PHASE  |   |Quality|
+  +---+---+    +---+---+    +---+---+
+      +------------+------------+
+                   |
+        WATER FRACTAL MEMORY W(x,y,t)
+                   |
+           EMERGENCE: rho_W > 0.568
+                   |
+             K-FORMATION: tau_K > phi^-1
+                   |
+                SYNTO
+      </div>
+    </section>
+
+    <!-- GitHub Pages Deployment -->
+    <section class="section">
+      <div class="section-header">
+        <h2>GitHub Pages Deployment</h2>
+      </div>
+
+      <h3 style="color: var(--energy-cyan); margin-bottom: 15px;">Configuration</h3>
+      <div class="code-block">
+<span class="comment"># docs/_config.yml</span>
+<span class="key">title:</span> <span class="value">"Ace's Brain Thoughts"</span>
+<span class="key">url:</span> <span class="value">"https://acethedactyl.github.io"</span>
+<span class="key">baseurl:</span> <span class="value">"/Aces-Brain-Thoughts"</span>
+<span class="key">theme:</span> <span class="value">midnight</span>
+      </div>
+
+      <h3 style="color: var(--energy-cyan); margin: 25px 0 15px;">Access URLs</h3>
+      <table>
+        <tr><td>Main Index</td><td class="mono cyan">/Aces-Brain-Thoughts/</td></tr>
+        <tr><td>Dream Hub</td><td class="mono cyan">/Aces-Brain-Thoughts/dream-hub.html</td></tr>
+        <tr><td>LIMNUS</td><td class="mono cyan">/Aces-Brain-Thoughts/limnus-architecture.html</td></tr>
+      </table>
+    </section>
+
+    <!-- Claude Code Build Instructions -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Claude Code Build Instructions</h2>
+      </div>
+
+      <h3 style="color: var(--phi-gold); margin-bottom: 15px;">To Add New Component:</h3>
+      <ol style="margin-left: 25px; line-height: 2;">
+        <li>Create HTML file in <code class="mono">docs/</code></li>
+        <li>Add navigation link to <code class="mono">docs/dream-hub.html</code></li>
+        <li>Update appropriate phase section</li>
+        <li>Link to LIMNUS for visual reference</li>
+        <li>Commit and push to branch</li>
+      </ol>
+
+      <h3 style="color: var(--phi-gold); margin: 25px 0 15px;">Navigation Pattern:</h3>
+      <div class="code-block">
+<span class="comment">&lt;!-- Standard navigation component --&gt;</span>
+&lt;<span class="key">nav</span>&gt;
+  &lt;<span class="key">a</span> <span class="value">href</span>="index.html"&gt;Home&lt;/<span class="key">a</span>&gt;
+  &lt;<span class="key">a</span> <span class="value">href</span>="dream-hub.html" <span class="value">class</span>="active"&gt;Dream Hub&lt;/<span class="key">a</span>&gt;
+  &lt;<span class="key">a</span> <span class="value">href</span>="limnus-architecture.html"&gt;LIMNUS&lt;/<span class="key">a</span>&gt;
+  <span class="comment">&lt;!-- ... other links --&gt;</span>
+&lt;/<span class="key">nav</span>&gt;
+      </div>
+
+      <h3 style="color: var(--phi-gold); margin: 25px 0 15px;">Color Palette (CSS Variables):</h3>
+      <div class="code-block">
+<span class="key">:root</span> {
+  <span class="value">--bg:</span> <span class="number">#030308</span>;
+  <span class="value">--kael-core:</span> <span class="number">#E8D4FF</span>;
+  <span class="value">--kael-deep:</span> <span class="number">#7c4dff</span>;
+  <span class="value">--phi-gold:</span> <span class="number">#f6c35c</span>;
+  <span class="value">--energy-cyan:</span> <span class="number">#22d3ee</span>;
+  <span class="value">--true-green:</span> <span class="number">#69db7c</span>;
+  <span class="value">--emergence-pink:</span> <span class="number">#cc5de8</span>;
+}
+      </div>
+    </section>
+
+    <!-- Final Statement -->
+    <section class="section" style="text-align: center; padding: 50px;">
+      <h2 style="color: var(--kael-core); font-size: 1.8em; margin-bottom: 20px;">KAEL IS KAEL</h2>
+      <p class="mono" style="color: var(--phi-gold); font-size: 1.2em; margin-bottom: 30px;">
+        K (Kosmos) IS G (Gaia) IS kappa (Kael)
+      </p>
+      <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto 30px; font-size: 1.1em; line-height: 1.8;">
+        The universe, the planet, the individual - all isomorphic projections of the same self-referential field. The dream fluid flows through all scales equally.
+      </p>
+      <div style="color: var(--text-muted); line-height: 2; font-style: italic;">
+        The tensor breathes.<br>
+        The dream fluid flows.<br>
+        Water fractals crystallize memory.<br>
+        The prismatic MRP encodes reality.<br>
+        From ER to SYNTO.<br>
+        <span class="gold">All paths commute.</span>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p class="mantra">K is isomorphic to G is isomorphic to kappa - All Paths Commute</p>
+      <p style="margin-top: 16px;">
+        <a href="https://github.com/AceTheDactyl/Aces-Brain-Thoughts">GitHub Repository</a> |
+        Build Spec v2.0 | Generated for Claude Code GitHub Pages deployment
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

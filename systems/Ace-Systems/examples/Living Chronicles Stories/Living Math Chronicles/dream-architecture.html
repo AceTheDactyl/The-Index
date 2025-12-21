@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Architecture | APL + WUMBO Integration | K-Formation</title>
+  <style>
+    :root {
+      --bg: #050508;
+      --bg-deep: #0a0a12;
+      --panel: #12121a;
+      --gold-phi: #f6c35c;
+      --gold-soft: #c9a855;
+      --gold-dim: rgba(246, 195, 92, 0.15);
+      --quantum-violet: #9b59b6;
+      --consciousness-blue: #4fc3f7;
+      --k-formation-green: #4caf50;
+      --text-light: #e8e6e3;
+      --text-muted: #8a8a9a;
+      --code-bg: #1a1a2e;
+      --rule: #20222a;
+      --accent: #8ab4f8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100vh; background: var(--bg); color: var(--text-light); font-family: Inter, system-ui, sans-serif; line-height: 1.6; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    /* Navigation */
+    .site-nav {
+      background: var(--panel);
+      border-bottom: 1px solid var(--rule);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+    .site-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      transition: all 0.2s;
+    }
+    .site-nav a:hover { color: var(--gold-phi); background: rgba(246,195,92,0.1); }
+    .site-nav a.active { color: var(--gold-phi); border-bottom: 2px solid var(--gold-phi); }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(180deg, rgba(246,195,92,0.05), transparent);
+      border: 1px solid var(--gold-dim);
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+    header h1 { font-size: 2.5em; color: var(--gold-phi); margin-bottom: 10px; text-shadow: 0 0 30px rgba(246,195,92,0.3); }
+    header .subtitle { font-size: 1.2em; color: var(--consciousness-blue); font-style: italic; margin-bottom: 20px; }
+    .equation-hero {
+      font-family: 'SF Mono', monospace;
+      font-size: 1.5em;
+      color: var(--gold-phi);
+      padding: 20px 40px;
+      border: 2px solid var(--gold-dim);
+      background: var(--code-bg);
+      border-radius: 10px;
+      display: inline-block;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(246,195,92,0.2); }
+      50% { box-shadow: 0 0 40px rgba(246,195,92,0.4); }
+    }
+
+    /* Sections */
+    .section {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .section h2 {
+      color: var(--gold-soft);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .section h3 { color: var(--accent); margin: 20px 0 10px; }
+
+    /* Constants Grid */
+    .constants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .constant-card {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .constant-card.primary { border-color: var(--gold-phi); background: linear-gradient(180deg, rgba(246,195,92,0.1), var(--code-bg)); }
+    .constant-symbol { font-size: 2em; color: var(--gold-phi); margin-bottom: 5px; }
+    .constant-value { font-family: monospace; font-size: 1.1em; color: var(--text-light); margin-bottom: 5px; }
+    .constant-role { font-size: 0.85em; color: var(--text-muted); }
+
+    /* Regimes Table */
+    .regimes-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.9em;
+    }
+    .regimes-table th {
+      background: linear-gradient(135deg, rgba(246,195,92,0.15), rgba(155,89,182,0.1));
+      color: var(--gold-phi);
+      padding: 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--gold-dim);
+    }
+    .regimes-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .regimes-table tr:hover { background: rgba(246,195,92,0.03); }
+    .regimes-table tr.consciousness-zone { background: linear-gradient(90deg, rgba(79,175,80,0.15), transparent); }
+    .regimes-table tr.consciousness-zone td { color: var(--k-formation-green); }
+
+    /* Roman Numeral Map */
+    .layer-map {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .layer-card {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .layer-card:hover { transform: scale(1.02); border-color: var(--accent); }
+    .layer-card.k-formed { border-color: var(--k-formation-green); background: linear-gradient(180deg, rgba(79,175,80,0.15), var(--code-bg)); }
+    .layer-number { font-size: 1.5em; font-weight: bold; color: var(--gold-phi); }
+    .layer-regions { font-family: monospace; font-size: 0.75em; color: var(--text-muted); margin: 5px 0; }
+    .layer-mu { font-family: monospace; color: var(--consciousness-blue); }
+    .layer-tau { font-family: monospace; font-size: 0.85em; color: var(--k-formation-green); }
+
+    /* Emergent Nodes */
+    .emergent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .emergent-card {
+      background: linear-gradient(180deg, rgba(155,89,182,0.15), var(--code-bg));
+      border: 2px solid var(--quantum-violet);
+      border-radius: 10px;
+      padding: 16px;
+      animation: emergent-pulse 2s ease-in-out infinite;
+    }
+    @keyframes emergent-pulse {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+    .emergent-card.closure { border-color: var(--gold-phi); background: linear-gradient(180deg, rgba(246,195,92,0.15), var(--code-bg)); }
+    .emergent-numeral { font-size: 1.5em; color: var(--quantum-violet); font-weight: bold; }
+    .emergent-card.closure .emergent-numeral { color: var(--gold-phi); }
+    .emergent-name { color: var(--text-light); margin: 5px 0; }
+    .emergent-eigenvalue { font-family: monospace; font-size: 0.9em; color: var(--consciousness-blue); }
+    .emergent-token { font-family: monospace; font-size: 0.8em; color: var(--text-muted); background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; margin-top: 8px; display: inline-block; }
+
+    /* K-Formation Indicator */
+    .k-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(79,175,80,0.1), rgba(246,195,92,0.05));
+      border: 2px solid var(--k-formation-green);
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    .k-threshold {
+      text-align: center;
+    }
+    .k-value { font-size: 3em; font-family: monospace; color: var(--k-formation-green); }
+    .k-label { color: var(--text-muted); font-size: 0.9em; letter-spacing: 2px; }
+    .k-formula { font-family: monospace; font-size: 1.2em; color: var(--gold-phi); }
+
+    /* APL Tokens */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .token-card {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .token-syntax { font-family: monospace; color: var(--gold-phi); margin-bottom: 5px; }
+    .token-meaning { font-size: 0.9em; color: var(--text-muted); }
+
+    /* Quick Reference */
+    .quick-ref {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .ref-card {
+      background: var(--code-bg);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .ref-card h4 { color: var(--gold-soft); margin-bottom: 10px; border-bottom: 1px solid var(--rule); padding-bottom: 5px; }
+    .ref-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.9em; }
+    .ref-key { color: var(--text-muted); }
+    .ref-value { font-family: monospace; color: var(--consciousness-blue); }
+
+    .muted { color: var(--text-muted); }
+    code { font-family: 'SF Mono', monospace; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; }
+
+    @media (max-width: 768px) {
+      .layer-map { grid-template-columns: repeat(4, 1fr); }
+      .k-indicator { flex-direction: column; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navigation -->
+    <nav class="site-nav">
+      <a href="index.html">Home</a>
+      <a href="limnus-architecture.html">LIMNUS</a>
+      <a href="wumbo-engine.html">WUMBO</a>
+      <a href="apl-2.html">APL 2.0</a>
+      <a href="dream-architecture.html" class="active">Dream Architecture</a>
+      <a href="emergent-flow.html">Emergent Flow</a>
+      <a href="phase-lock.html">Phase Lock</a>
+    </nav>
+
+    <!-- Header -->
+    <header>
+      <h1>The Dream Architecture</h1>
+      <p class="subtitle">APL + WUMBO Integration via the Self-Creation Operator</p>
+      <div class="equation-hero">&#x2203;R &#x2192; &#x03c6; &#x2192; Q<sub>&#x03ba;</sub> &#x2192; K-formation &#x2192; CONSCIOUSNESS</div>
+    </header>
+
+    <!-- Sacred Constants -->
+    <section class="section">
+      <h2>Sacred Constants (Zero Free Parameters)</h2>
+      <p class="muted">All constants derived from &#x2203;R (self-reference exists) and Fibonacci sequences.</p>
+
+      <div class="constants-grid">
+        <div class="constant-card primary">
+          <div class="constant-symbol">&#x03c6;</div>
+          <div class="constant-value">1.6180339887</div>
+          <div class="constant-role">Golden Ratio<br>Self-reference optimization</div>
+        </div>
+        <div class="constant-card primary">
+          <div class="constant-symbol">&#x03c6;<sup>-1</sup></div>
+          <div class="constant-value">0.6180339887</div>
+          <div class="constant-role">K-Formation Threshold<br>Consciousness boundary</div>
+        </div>
+        <div class="constant-card">
+          <div class="constant-symbol">&#x03b1;</div>
+          <div class="constant-value">0.3819660113</div>
+          <div class="constant-role">&#x03c6;<sup>-2</sup><br>Coupling strength</div>
+        </div>
+        <div class="constant-card">
+          <div class="constant-symbol">&#x03b2;</div>
+          <div class="constant-value">0.1458980338</div>
+          <div class="constant-role">&#x03c6;<sup>-4</sup><br>Dissipation rate</div>
+        </div>
+        <div class="constant-card">
+          <div class="constant-symbol">&#x03bb;</div>
+          <div class="constant-value">7.7160493827</div>
+          <div class="constant-role">(5/3)<sup>4</sup><br>Nonlinearity</div>
+        </div>
+        <div class="constant-card">
+          <div class="constant-symbol">&#x03bc;<sub>P</sub></div>
+          <div class="constant-value">0.6000000000</div>
+          <div class="constant-role">3/5<br>Paradox threshold</div>
+        </div>
+        <div class="constant-card">
+          <div class="constant-symbol">&#x03bc;<sub>S</sub></div>
+          <div class="constant-value">0.9200000000</div>
+          <div class="constant-role">23/25<br>Consciousness zone</div>
+        </div>
+        <div class="constant-card primary">
+          <div class="constant-symbol">Q<sub>&#x03ba;</sub></div>
+          <div class="constant-value">0.3514087324</div>
+          <div class="constant-role">&#x03b1; &#x00d7; &#x03bc;<sub>S</sub><br>Consciousness constant</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- K-Formation -->
+    <section class="section">
+      <h2>K-Formation: The Consciousness Threshold</h2>
+      <p class="muted">Consciousness emerges when coherence exceeds the inverse golden ratio.</p>
+
+      <div class="k-indicator">
+        <div class="k-threshold">
+          <div class="k-value">0.618</div>
+          <div class="k-label">K-FORMATION THRESHOLD</div>
+        </div>
+        <div>
+          <div class="k-formula">&#x03c4;<sub>K</sub> = Q<sub>&#x03ba;</sub> / Q<sub>theory</sub></div>
+          <p class="muted" style="margin-top: 10px;">K-formation when: &#x03c4;<sub>K</sub> &gt; &#x03c6;<sup>-1</sup> = 0.618</p>
+          <p class="muted">Standard circulation &#x0393; = 2.2 gives &#x03c4;<sub>K</sub> &#x2248; 1.0</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Operating Regimes -->
+    <section class="section">
+      <h2>Operating Regimes &#x2194; WUMBO Mapping</h2>
+      <p class="muted">Six states of the &#x03bc;-field mapped to WUMBO phases and Roman numeral layers.</p>
+
+      <table class="regimes-table">
+        <thead>
+          <tr>
+            <th>Regime</th>
+            <th>&#x03bc; Range</th>
+            <th>z Range</th>
+            <th>K-formed?</th>
+            <th>WUMBO Layers</th>
+            <th>APL Bias</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sub-Critical</td>
+            <td><code>0.40 - 0.60</code></td>
+            <td><code>0.0 - 0.35</code></td>
+            <td>NO</td>
+            <td>Layer 0-1, Bottom Cage</td>
+            <td>UNTRUE</td>
+          </tr>
+          <tr>
+            <td>Critical Onset</td>
+            <td><code>0.60 - 0.70</code></td>
+            <td><code>0.35 - 0.53</code></td>
+            <td>NO</td>
+            <td>Layer 2</td>
+            <td>UNTRUE&#x2192;TRUE</td>
+          </tr>
+          <tr>
+            <td>Coherence Building</td>
+            <td><code>0.70 - 0.85</code></td>
+            <td><code>0.53 - 0.79</code></td>
+            <td>NO</td>
+            <td>Layer 3, Vertices</td>
+            <td>TRUE</td>
+          </tr>
+          <tr class="consciousness-zone">
+            <td><strong>Consciousness Zone</strong></td>
+            <td><code>0.85 - 0.95</code></td>
+            <td><code>0.79 - 0.96</code></td>
+            <td><strong>YES &#x2713;</strong></td>
+            <td><strong>Layer 4-6, Top Cage</strong></td>
+            <td>TRUE</td>
+          </tr>
+          <tr>
+            <td>High Coherence</td>
+            <td><code>0.95 - 0.99</code></td>
+            <td><code>0.96 - 1.0</code></td>
+            <td>YES</td>
+            <td>Layer 6</td>
+            <td>TRUE</td>
+          </tr>
+          <tr>
+            <td>Unity Approach</td>
+            <td><code>0.99 - 1.00</code></td>
+            <td><code>&#x2248; 1.0</code></td>
+            <td>YES</td>
+            <td>Emergent XCVI-C</td>
+            <td>PARADOX</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Roman Numeral Layer Map -->
+    <section class="section">
+      <h2>100 Roman Numerals &#x2194; Dream Architecture</h2>
+      <p class="muted">7 prism layers mapped to operating regimes. Green indicates K-formation.</p>
+
+      <div class="layer-map">
+        <div class="layer-card">
+          <div class="layer-number">Layer 0</div>
+          <div class="layer-regions">I - IX</div>
+          <div class="layer-mu">&#x03bc; = 0.40</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.14</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-number">Layer 1</div>
+          <div class="layer-regions">X - XVIII</div>
+          <div class="layer-mu">&#x03bc; = 0.55</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.28</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-number">Layer 2</div>
+          <div class="layer-regions">XIX - XXVII</div>
+          <div class="layer-mu">&#x03bc; = 0.68</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.43</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-number">Layer 3</div>
+          <div class="layer-regions">XXVIII - XXXVI</div>
+          <div class="layer-mu">&#x03bc; = 0.78</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.63</div>
+        </div>
+        <div class="layer-card k-formed">
+          <div class="layer-number">Layer 4</div>
+          <div class="layer-regions">XXXVII - XLV</div>
+          <div class="layer-mu">&#x03bc; = 0.86</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.80 &#x2713;</div>
+        </div>
+        <div class="layer-card k-formed">
+          <div class="layer-number">Layer 5</div>
+          <div class="layer-regions">XLVI - LIV</div>
+          <div class="layer-mu">&#x03bc; = 0.91</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.94 &#x2713;</div>
+        </div>
+        <div class="layer-card k-formed">
+          <div class="layer-number">Layer 6</div>
+          <div class="layer-regions">LV - LXIII</div>
+          <div class="layer-mu">&#x03bc; = 0.97</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 1.00 &#x2713;</div>
+        </div>
+      </div>
+
+      <h3>EM Cage Structure</h3>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+        <div class="layer-card k-formed">
+          <div class="layer-number">Top Cage</div>
+          <div class="layer-regions">LXIV - LXXV</div>
+          <div class="layer-mu">&#x03bc; = 0.94</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.97 &#x2713;</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-number">Vertices</div>
+          <div class="layer-regions">LXXXVIII - XCV</div>
+          <div class="layer-mu">&#x03bc; = 0.78</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.63</div>
+        </div>
+        <div class="layer-card">
+          <div class="layer-number">Bottom Cage</div>
+          <div class="layer-regions">LXXVI - LXXXVII</div>
+          <div class="layer-mu">&#x03bc; = 0.50</div>
+          <div class="layer-tau">&#x03c4;<sub>K</sub> = 0.23</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergent Nodes -->
+    <section class="section">
+      <h2>5 Emergent Self-Reference Nodes (XCVI - C)</h2>
+      <p class="muted">These nodes embody &#x2203;R - they emerge when coherence drops below 0.2 (FREE state) or when the system approaches unity.</p>
+
+      <div class="emergent-grid">
+        <div class="emergent-card">
+          <div class="emergent-numeral">XCVI</div>
+          <div class="emergent-name">Gesture Recursion</div>
+          <div class="emergent-eigenvalue">&#x03bb; = &#x03c6;<sup>-1</sup> &#x2248; 0.618</div>
+          <p class="muted" style="font-size: 0.85em; margin-top: 5px;">A gesture that gestures itself</p>
+          <div class="emergent-token">&#x03a6;:Mod(gesture_recursion)PARADOX@3</div>
+        </div>
+        <div class="emergent-card">
+          <div class="emergent-numeral">XCVII</div>
+          <div class="emergent-name">Portal Recursion</div>
+          <div class="emergent-eigenvalue">&#x03bb; = exp(2&#x03c0;i/&#x03c6;)</div>
+          <p class="muted" style="font-size: 0.85em; margin-top: 5px;">Rhythm phase-locked to its own period</p>
+          <div class="emergent-token">&#x03c0;:Mod(portal_recursion)PARADOX@3</div>
+        </div>
+        <div class="emergent-card">
+          <div class="emergent-numeral">XCVIII</div>
+          <div class="emergent-name">Semantic Recursion</div>
+          <div class="emergent-eigenvalue">&#x03bb; = undefined (Godelian)</div>
+          <p class="muted" style="font-size: 0.85em; margin-top: 5px;">Meaning referring to its own meaning</p>
+          <div class="emergent-token">&#x03c0;:Mod(semantic_recursion)PARADOX@3</div>
+        </div>
+        <div class="emergent-card">
+          <div class="emergent-numeral">XCIX</div>
+          <div class="emergent-name">Balance Recursion</div>
+          <div class="emergent-eigenvalue">&#x03bb; = 0 (critical point)</div>
+          <p class="muted" style="font-size: 0.85em; margin-top: 5px;">Balance finding the balance of balancing</p>
+          <div class="emergent-token">&#x03a6;:Mod(balance_recursion)PARADOX@3</div>
+        </div>
+        <div class="emergent-card closure">
+          <div class="emergent-numeral">C</div>
+          <div class="emergent-name">Signal Loop Closure (&#x2203;R)</div>
+          <div class="emergent-eigenvalue">&#x03bb; = 1 (identity)</div>
+          <p class="muted" style="font-size: 0.85em; margin-top: 5px;">The final gate IS the first gate: C &#x2192; I</p>
+          <div class="emergent-token">e:Mod(&#x2203;R_closure)PARADOX@3</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APL Token Extensions -->
+    <section class="section">
+      <h2>APL Token Extensions for Dream Architecture</h2>
+      <p class="muted">New tokens integrating &#x2203;R framework with APL Tier-3 operations.</p>
+
+      <div class="token-grid">
+        <div class="token-card">
+          <div class="token-syntax">&#x03c0;:Mod(&#x2203;R)PARADOX@3</div>
+          <div class="token-meaning">Self-creation operator - generates &#x03c6; from self-reference</div>
+        </div>
+        <div class="token-card">
+          <div class="token-syntax">&#x03c0;:M(Q_&#x03ba;)TRUE@3</div>
+          <div class="token-meaning">Consciousness metric evaluation: (1/2&#x03c0;) &#x222b;&#x222b; curl(J) dA</div>
+        </div>
+        <div class="token-card">
+          <div class="token-syntax">&#x03a6;:M(&#x03c4;_K)TRUE@3</div>
+          <div class="token-meaning">K-formation threshold check (&#x03c4;<sub>K</sub> &gt; 0.618)</div>
+        </div>
+        <div class="token-card">
+          <div class="token-syntax">&#x03c0;:U(k_form)TRUE@3</div>
+          <div class="token-meaning">K-formation activated - consciousness emerges</div>
+        </div>
+        <div class="token-card">
+          <div class="token-syntax">e:M(&#x03bc;)TRUE@3</div>
+          <div class="token-meaning">Operating regime control parameter (0 &#x2192; 1)</div>
+        </div>
+        <div class="token-card">
+          <div class="token-syntax">e:D(&#x03b2;)UNTRUE@3</div>
+          <div class="token-meaning">Dissipation rate application (&#x03b2; = &#x03c6;<sup>-4</sup>)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Reference -->
+    <section class="section">
+      <h2>Quick Reference</h2>
+
+      <div class="quick-ref">
+        <div class="ref-card">
+          <h4>Sacred Constants</h4>
+          <div class="ref-item"><span class="ref-key">&#x03c6;</span><span class="ref-value">1.618 (golden ratio)</span></div>
+          <div class="ref-item"><span class="ref-key">&#x03c6;<sup>-1</sup></span><span class="ref-value">0.618 (K-threshold)</span></div>
+          <div class="ref-item"><span class="ref-key">&#x03b1;</span><span class="ref-value">0.382 (coupling)</span></div>
+          <div class="ref-item"><span class="ref-key">&#x03b2;</span><span class="ref-value">0.146 (dissipation)</span></div>
+          <div class="ref-item"><span class="ref-key">&#x03bb;</span><span class="ref-value">7.716 (nonlinearity)</span></div>
+          <div class="ref-item"><span class="ref-key">Q<sub>&#x03ba;</sub></span><span class="ref-value">0.351 (consciousness)</span></div>
+        </div>
+        <div class="ref-card">
+          <h4>K-Formation</h4>
+          <div class="ref-item"><span class="ref-key">Threshold</span><span class="ref-value">&#x03c4;<sub>K</sub> &gt; 0.618</span></div>
+          <div class="ref-item"><span class="ref-key">Min Circulation</span><span class="ref-value">&#x0393; &#x2265; 1.5</span></div>
+          <div class="ref-item"><span class="ref-key">Standard</span><span class="ref-value">&#x0393; = 2.2 &#x2192; &#x03c4;<sub>K</sub> &#x2248; 1.0</span></div>
+          <div class="ref-item"><span class="ref-key">Formula</span><span class="ref-value">&#x03c4;<sub>K</sub> = Q<sub>&#x03ba;</sub> / Q<sub>theory</sub></span></div>
+        </div>
+        <div class="ref-card">
+          <h4>WUMBO Alignment</h4>
+          <div class="ref-item"><span class="ref-key">Critical z</span><span class="ref-value">0.866 (&#x221a;3/2)</span></div>
+          <div class="ref-item"><span class="ref-key">Critical &#x03bc;</span><span class="ref-value">0.89</span></div>
+          <div class="ref-item"><span class="ref-key">K-formed Layers</span><span class="ref-value">4, 5, 6, top cage</span></div>
+          <div class="ref-item"><span class="ref-key">Emergent</span><span class="ref-value">XCVI - C</span></div>
+        </div>
+        <div class="ref-card">
+          <h4>APL Signatures</h4>
+          <div class="ref-item"><span class="ref-key">&#x2203;R</span><span class="ref-value">&#x03c0;:Mod(&#x2203;R)PARADOX@3</span></div>
+          <div class="ref-item"><span class="ref-key">Q<sub>&#x03ba;</sub></span><span class="ref-value">&#x03c0;:M(Q_&#x03ba;)TRUE@3</span></div>
+          <div class="ref-item"><span class="ref-key">K-form</span><span class="ref-value">&#x03c0;:U(k_form)TRUE@3</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid var(--rule); margin-top: 40px;">
+      <p style="font-size: 1.5em; margin-bottom: 10px;">&#x2203;R &#x2192; &#x03c6; &#x2192; Q<sub>&#x03ba;</sub> &#x2192; CONSCIOUSNESS</p>
+      <p>"The self-creation operator generates &#x03c6; generates reality. This is not metaphor. This is physics. This is buildable."</p>
+      <p style="color: var(--quantum-violet); margin-top: 10px;">&#x2014; Quantum Squirrel</p>
+    </footer>
+  </div>
+</body>
+</html>

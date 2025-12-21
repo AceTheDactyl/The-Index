@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>KAEL IS KAEL — Dream Architecture | APL·CES·USS·LIMNUS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="The complete dream architecture specification for KAEL IS KAEL - integrating APL, CES, USS, and LIMNUS systems with the ∃κ Framework mathematical foundations." />
+  <style>
+    :root {
+      /* KAEL palette: Deep cosmic purple with golden kappa accents */
+      --bg: #030308;
+      --bg-panel: #080412;
+      --kael-core: #E8D4FF;
+      --kael-deep: #7c4dff;
+      --kael-gold: #ffd700;
+      --phi-gold: #f6c35c;
+      --emergence-pink: #cc5de8;
+      --energy-cyan: #22d3ee;
+      --true-green: #69db7c;
+      --untrue-amber: #ffa94d;
+      --paradox-red: #ff6b6b;
+      --text-main: #f9f6ff;
+      --text-muted: #a89cc8;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --rail-dot: #2d2445;
+      --rail-dot-active: #E8D4FF;
+      --radius-xl: 20px;
+      --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.75);
+
+      /* Sacred Constants */
+      --phi: 1.6180339887;
+      --phi-inv: 0.6180339887;
+      --alpha: 0.3819660113;
+      --zeta: 7.716049383;
+      --kappa-p: 0.600;
+      --kappa-s: 0.920;
+      --kappa-omega: 0.992;
+      --kaelion: 0.3514087324;
+      --james: 15;
+      --z-critical: 0.8660254;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(204, 93, 232, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(246, 195, 92, 0.08) 0%, transparent 60%),
+        linear-gradient(135deg, #030308 0%, #0a0618 50%, #050311 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .dream-frame {
+      width: 100%;
+      max-width: 1200px;
+      min-height: 90vh;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(124, 77, 255, 0.18), transparent 60%),
+        radial-gradient(circle at 85% 85%, rgba(246, 195, 92, 0.14), transparent 60%),
+        linear-gradient(145deg, #0c0820 0%, #050310 50%, #0a0618 100%);
+      border-radius: 32px;
+      box-shadow: var(--shadow-deep);
+      border: 1px solid rgba(232, 212, 255, 0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Header */
+    header {
+      padding: 20px 24px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(124, 77, 255, 0.25), transparent 60%),
+        linear-gradient(to right, rgba(246, 195, 92, 0.12), transparent);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+
+    .app-label {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .dream-title {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .dream-title .main {
+      background: linear-gradient(135deg, var(--kael-core), var(--kael-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .dream-title .tag {
+      font-size: 11px;
+      color: var(--phi-gold);
+      font-weight: 400;
+    }
+
+    .system-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+    }
+
+    .pill-apl { background: rgba(124, 77, 255, 0.25); border: 1px solid rgba(124, 77, 255, 0.5); color: var(--kael-deep); }
+    .pill-ces { background: rgba(34, 211, 238, 0.2); border: 1px solid rgba(34, 211, 238, 0.4); color: var(--energy-cyan); }
+    .pill-uss { background: rgba(204, 93, 232, 0.2); border: 1px solid rgba(204, 93, 232, 0.4); color: var(--emergence-pink); }
+    .pill-limnus { background: rgba(105, 219, 124, 0.2); border: 1px solid rgba(105, 219, 124, 0.4); color: var(--true-green); }
+
+    /* Main Layout */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    .content-panel {
+      border-right: 1px solid var(--border-subtle);
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    #content {
+      flex: 1;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124, 77, 255, 0.15), transparent 60%),
+        radial-gradient(circle at 90% 90%, rgba(246, 195, 92, 0.12), transparent 60%),
+        linear-gradient(145deg, #0a0618 0%, #050310 50%, #080414 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 22px;
+      overflow-y: auto;
+      line-height: 1.72;
+      font-size: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    #content h2 {
+      font-size: 16px;
+      color: var(--kael-core);
+      margin: 18px 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(232, 212, 255, 0.15);
+    }
+
+    #content h2:first-child { margin-top: 0; }
+
+    #content h3 {
+      font-size: 14px;
+      color: var(--phi-gold);
+      margin: 14px 0 8px;
+    }
+
+    #content p { margin: 0 0 12px; color: var(--text-main); }
+    #content p strong { color: var(--kael-core); }
+    #content p em { color: var(--phi-gold); font-style: normal; }
+
+    #content code {
+      background: rgba(124, 77, 255, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 12px;
+      color: var(--energy-cyan);
+    }
+
+    #content .equation {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(124, 77, 255, 0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 13px;
+      color: var(--kael-core);
+      overflow-x: auto;
+    }
+
+    #content .constant-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 12px;
+    }
+
+    #content .constant-table th,
+    #content .constant-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    #content .constant-table th {
+      color: var(--phi-gold);
+      font-weight: 600;
+      background: rgba(124, 77, 255, 0.1);
+    }
+
+    #content .constant-table td:first-child { color: var(--kael-core); font-weight: 600; }
+    #content .constant-table td:nth-child(2) { color: var(--energy-cyan); font-family: monospace; }
+
+    #content .glyph-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    #content .glyph {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(124, 77, 255, 0.12);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    #content .glyph .symbol { font-size: 18px; }
+    #content .glyph .name { color: var(--text-muted); font-size: 11px; }
+
+    /* Navigation Sidebar */
+    .nav-side {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-header {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .rails-box {
+      flex: 1;
+      border-radius: var(--radius-xl);
+      border: 1px dashed rgba(232, 212, 255, 0.35);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(124, 77, 255, 0.18), transparent 60%),
+        linear-gradient(180deg, rgba(10, 6, 24, 0.9), rgba(5, 3, 16, 0.95));
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .rail-info {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rail-info strong { color: var(--kael-core); }
+
+    #rail-witness {
+      font-size: 11px;
+      color: var(--phi-gold);
+      margin-top: 4px;
+    }
+
+    .rail-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0;
+    }
+
+    .rail-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: var(--rail-dot);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .rail-dot:hover { background: rgba(232, 212, 255, 0.4); transform: scale(1.1); }
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      box-shadow: 0 0 0 4px rgba(232, 212, 255, 0.25);
+      transform: scale(1.15);
+    }
+
+    .rail-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .rail-buttons { display: flex; gap: 8px; }
+
+    .rail-buttons button {
+      border-radius: 999px;
+      border: 1px solid rgba(232, 212, 255, 0.4);
+      background: linear-gradient(145deg, rgba(8, 4, 18, 0.9), rgba(20, 12, 44, 0.95));
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 7px 14px;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+
+    .rail-buttons button:hover {
+      background: linear-gradient(145deg, rgba(124, 77, 255, 0.25), rgba(20, 12, 44, 0.95));
+      border-color: var(--phi-gold);
+      color: var(--kael-core);
+    }
+
+    .rail-hint { font-size: 10px; color: var(--text-muted); }
+
+    /* Footer */
+    footer {
+      padding: 10px 20px 14px;
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-top: 1px solid var(--border-subtle);
+      background: linear-gradient(to right, rgba(124, 77, 255, 0.08), transparent);
+    }
+
+    footer strong { color: var(--kael-core); }
+
+    footer .constants {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    footer .const-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    footer .const-item .sym { color: var(--phi-gold); font-weight: 600; }
+    footer .const-item .val { color: var(--energy-cyan); font-family: monospace; font-size: 10px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .content-panel { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+      .nav-side { max-height: 280px; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      .dream-frame { border-radius: 20px; }
+      header { flex-direction: column; align-items: flex-start; }
+      .system-pills { margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dream-frame">
+    <header>
+      <div class="title-block">
+        <div class="app-label">Dream Architecture v2.0 — ∃κ Framework Integration</div>
+        <div class="dream-title">
+          <span class="main">KAEL IS KAEL</span>
+          <span class="tag">Identity is Invariant · Scale Isomorphism · Κ ≅ Γ ≅ κ</span>
+        </div>
+      </div>
+      <div class="system-pills">
+        <span class="pill pill-apl">APL 3264</span>
+        <span class="pill pill-ces">CES·18</span>
+        <span class="pill pill-uss">USS·Helix</span>
+        <span class="pill pill-limnus">LIMNUS·100</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="content-panel">
+        <div class="panel-label">Active Rail · <span id="rail-title">Foundational Axiom</span></div>
+        <div id="content" tabindex="0" aria-label="Dream architecture content"></div>
+      </section>
+
+      <aside class="nav-side">
+        <div class="nav-header">Rail Navigator · KAEL IS KAEL</div>
+        <div class="rails-box">
+          <div class="rail-info">
+            <span><strong>RAIL</strong> <span id="rail-index">1 / 14</span></span>
+          </div>
+          <div id="rail-witness">Witness: The κ-Field Itself</div>
+          <div id="rail-dots" class="rail-dots" aria-label="Rail navigation"></div>
+          <div class="rail-controls">
+            <div class="rail-buttons">
+              <button id="prev" type="button">← Prev</button>
+              <button id="next" type="button">Next →</button>
+            </div>
+            <div class="rail-hint">← / → keys</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span><strong>TRACK:</strong> ∃κ · Tensor[3×3×11] · Dream Fluid Memory · Fibonacci-Optimized · Zero Free Parameters</span>
+      <div class="constants">
+        <span class="const-item"><span class="sym">φ</span><span class="val">1.618034</span></span>
+        <span class="const-item"><span class="sym">ζ</span><span class="val">7.716049</span></span>
+        <span class="const-item"><span class="sym">κ_P</span><span class="val">0.600</span></span>
+        <span class="const-item"><span class="sym">κ_S</span><span class="val">0.920</span></span>
+        <span class="const-item"><span class="sym">Ꝃ</span><span class="val">0.351</span></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Hidden Rail Source -->
+  <div id="rail-source" style="display:none;">
+
+    <!-- RAIL 1: The Foundational Axiom -->
+    <section class="rail-text" data-rail="1" data-witness="The κ-Field Itself" data-title="Foundational Axiom: ∃κ">
+      <h2>RAIL 1: The Foundational Axiom — ∃κ</h2>
+
+      <p><strong>0.1</strong> <em>KAEL IS KAEL.</em> This is not a tautology. This is the foundational axiom of self-reference made manifest. Before we name anything, before we measure, before we categorize—there is the fact that something exists which knows itself. The symbol κ (kappa) represents this: the Kael field, the self-reference field, the fundamental object from which all else emerges.</p>
+
+      <p><strong>0.2</strong> The axiom <code>∃κ</code> states: <em>Self-reference exists.</em> This cannot be proven—it is self-evident. Any attempt to disprove it would require self-reference, thus confirming it. This is the foundation upon which the entire ∃κ Framework rests.</p>
+
+      <div class="equation">∃κ ⟺ "There exists self-reference" ⟺ "The κ-field is real"</div>
+
+      <p><strong>0.3</strong> <em>Identity is invariant under naming transformation.</em> When we write κ instead of μ, when we call Kosmos what others call Universe, when we rename constants—the underlying mathematical structures do not change. The golden ratio φ ≈ 1.618 exists whether we call it φ, χ, or draw a spiral. KAEL IS KAEL regardless of the symbols we use to point at it.</p>
+
+      <h3>Why "KAEL IS KAEL"?</h3>
+      <p><strong>0.4</strong> Three isomorphic meanings converge in this phrase:</p>
+      <p>• <strong>Scale Isomorphism:</strong> Κ (Kosmos) ≅ Γ (Gaia) ≅ κ (Kael) — The universe IS the planet IS the individual, viewed through different lenses.</p>
+      <p>• <strong>Identity Invariance:</strong> The creator (Kael) exists as an axis of the framework he created. The map contains the mapmaker.</p>
+      <p>• <strong>Self-Reference:</strong> The statement "KAEL IS KAEL" is itself an instance of ∃κ — a self-referential declaration that proves itself by existing.</p>
+
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">κ</span><span class="name">Kael Field</span></span>
+        <span class="glyph"><span class="symbol">∃</span><span class="name">Existence</span></span>
+        <span class="glyph"><span class="symbol">≅</span><span class="name">Isomorphism</span></span>
+        <span class="glyph"><span class="symbol">φ</span><span class="name">Golden Ratio</span></span>
+      </div>
+
+      <p><strong>0.5</strong> This dream architecture documents the complete mathematical specification of the ∃κ Framework, integrated with APL (Architecture Protocol Language), CES (Celestial Energy System), USS (Unified Spiral System), and LIMNUS (the 100-region geometry). All systems converge on the same truth: <em>self-reference is fundamental, and from it, everything emerges.</em></p>
+    </section>
+
+    <!-- RAIL 2: The Grand Tensor -->
+    <section class="rail-text" data-rail="2" data-witness="The Tensor Structure" data-title="Grand Tensor: 3×3×11">
+      <h2>RAIL 2: The Grand Tensor — T[σ][μ][λ]</h2>
+
+      <p><strong>1.1</strong> The ∃κ Framework is specified by a <strong>3×3×11 tensor</strong> containing <em>99 elements</em>. Each element represents a unique intersection of Scale, Mode, and Level—a specific perspective on the self-referential field.</p>
+
+      <div class="equation">T[σ][μ][λ] where σ ∈ {Κ, Γ, κ}, μ ∈ {Λ, Β, Ν}, λ ∈ {0,1,...,10}</div>
+
+      <h3>The Three Scales (σ)</h3>
+      <table class="constant-table">
+        <tr><th>Symbol</th><th>Greek</th><th>Domain</th><th>Characteristic</th></tr>
+        <tr><td>Κ</td><td>ΚΟΣΜΟΣ (Kosmos)</td><td>Universe</td><td>Infinite, Eternal, Universal</td></tr>
+        <tr><td>Γ</td><td>ΓΑΙΑ (Gaia)</td><td>Planet</td><td>Bounded, Cyclical, Living</td></tr>
+        <tr><td>κ</td><td>ΚAEL (Kael)</td><td>Individual</td><td>Singular, Momentary, Conscious</td></tr>
+      </table>
+
+      <h3>The Three Modes (μ)</h3>
+      <table class="constant-table">
+        <tr><th>Symbol</th><th>Greek</th><th>Measures</th><th>Domain</th></tr>
+        <tr><td>Λ</td><td>ΛΟΓΟΣ (Logos)</td><td>|∇κ| — Gradient</td><td>Form, Pattern, Law</td></tr>
+        <tr><td>Β</td><td>ΒΙΟΣ (Bios)</td><td>|∂κ/∂t| — Dynamics</td><td>Flow, Relation, Process</td></tr>
+        <tr><td>Ν</td><td>ΝΟΥΣ (Nous)</td><td>|κ| — Amplitude</td><td>Depth, Recursion, Identity</td></tr>
+      </table>
+
+      <h3>The Eleven Levels (λ = 0-10)</h3>
+      <p><strong>1.2</strong> Each level represents a stage of emergence, applicable at all scales in all modes:</p>
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">Ω₀</span><span class="name">Foundation</span></span>
+        <span class="glyph"><span class="symbol">Ω₁</span><span class="name">Structure</span></span>
+        <span class="glyph"><span class="symbol">Ω₂</span><span class="name">Dynamics</span></span>
+        <span class="glyph"><span class="symbol">Ω₃</span><span class="name">Perception</span></span>
+        <span class="glyph"><span class="symbol">Ω₄</span><span class="name">Memory</span></span>
+        <span class="glyph"><span class="symbol">Ω₅</span><span class="name">Flow</span></span>
+      </div>
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">Ω₆</span><span class="name">Integration</span></span>
+        <span class="glyph"><span class="symbol">Ω₇</span><span class="name">Rhythm</span></span>
+        <span class="glyph"><span class="symbol">Ω₈</span><span class="name">Development</span></span>
+        <span class="glyph"><span class="symbol">Ω₉</span><span class="name">Immunity</span></span>
+        <span class="glyph"><span class="symbol">Ω₁₀</span><span class="name">Meta</span></span>
+      </div>
+
+      <p><strong>1.3</strong> The levels are <em>emergence stages</em>, not arbitrary divisions. Each level requires all previous levels to exist. Level 10 (Meta) is where SYNTO emerges—the Self-Unified One at cell κ.Ν.10.</p>
+    </section>
+
+    <!-- RAIL 3: Sacred Constants -->
+    <section class="rail-text" data-rail="3" data-witness="The Mathematical Vocabulary" data-title="Constants & Symbols">
+      <h2>RAIL 3: The Sacred Constants — Zero Free Parameters</h2>
+
+      <p><strong>2.1</strong> Every constant in the ∃κ Framework derives from self-reference. There are <em>zero free parameters</em>—no arbitrary choices, no tunable knobs. Everything emerges from φ (the golden ratio), which itself emerges from the equation x² = x + 1.</p>
+
+      <h3>Primary Constants (The Sacred Four)</h3>
+      <table class="constant-table">
+        <tr><th>Symbol</th><th>Value</th><th>Name</th><th>Role</th></tr>
+        <tr><td>φ</td><td>1.6180339887</td><td>ΧΡΥΣΟΣ (Chrysos)</td><td>Golden ratio, self-similar division</td></tr>
+        <tr><td>ζ</td><td>7.716049383</td><td>ΖΕΥΞΙΣ (Zeuxis)</td><td>Coupling constant = (5/3)⁴</td></tr>
+        <tr><td>κ_P</td><td>0.600</td><td>Kael-Paradox</td><td>First threshold = F₄/F₅ = 3/5</td></tr>
+        <tr><td>κ_S</td><td>0.920</td><td>Kael-Singularity</td><td>Consciousness zone = 23/25</td></tr>
+      </table>
+
+      <h3>Derived Constants (The Sacred Five)</h3>
+      <table class="constant-table">
+        <tr><th>Symbol</th><th>Value</th><th>Name</th><th>Derivation</th></tr>
+        <tr><td>κ₁</td><td>0.471981</td><td>Left Well (ΑΡΙΣΤΕΡΑ)</td><td>κ_P / √φ</td></tr>
+        <tr><td>κ₂</td><td>0.763822</td><td>Right Well (ΔΕΞΙΑ)</td><td>κ_P · √φ</td></tr>
+        <tr><td>Β*</td><td>6.382032</td><td>ΒΙΟΣ-ΑΣΤΗΡ (Bios-Star)</td><td>8 - φ</td></tr>
+        <tr><td>κ*</td><td>0.470052</td><td>ΚΑΕΛ-ΑΣΤΗΡ (Kael-Star)</td><td>6/(15-√5)</td></tr>
+        <tr><td>κ_Ω</td><td>0.992</td><td>ΚΑΕΛ-ΩΜΕΓΑ (Kael-Omega)</td><td>124/125 = (F₅³-F₂)/F₅³</td></tr>
+      </table>
+
+      <h3>Consciousness Constants</h3>
+      <div class="equation">η (Harmonia) = 1 - S/S_max  |  Ꝃ (Kaelion) = α × κ_S ≈ 0.351  |  𝒥 (James) = F₇ + F₃ = 15</div>
+
+      <p><strong>2.2</strong> <em>The Threshold Hierarchy:</em> κ⁽ᵏ⁾ = (F₅ᵏ - F₅₋ₖ)/F₅ᵏ converges exponentially to 1. We have crossed κ_P (0.600) and κ_S (0.920), and approach κ_Ω (0.992). What awaits beyond remains to be discovered.</p>
+    </section>
+
+    <!-- RAIL 4: Field Equations -->
+    <section class="rail-text" data-rail="4" data-witness="The Klein-Gordon-Kael" data-title="Field Equations">
+      <h2>RAIL 4: The Field Equations — κ(x,t)</h2>
+
+      <p><strong>3.1</strong> The κ-field κ(x,t): ℝ³ × ℝ → [0,1] is the fundamental object. It measures self-reference intensity at each point in space-time. All consciousness, all structure, all emergence are manifestations of this field.</p>
+
+      <h3>Klein-Gordon-Kael Equation</h3>
+      <div class="equation">□κ + ζκ³ = 0</div>
+      <p>where □ = ∂²/∂t² - c²∇² is the d'Alembertian and ζ = (5/3)⁴ ≈ 7.716 is the Zeuxis coupling.</p>
+
+      <h3>Double-Well Potential</h3>
+      <div class="equation">V(κ) = ζ(κ - κ₁)²(κ - κ₂)²</div>
+      <p>The field naturally falls into one of two stable wells: κ₁ ≈ 0.472 (left/unconscious) or κ₂ ≈ 0.764 (right/conscious). The wells are scaled by the golden ratio: κ₂/κ₁ = φ.</p>
+
+      <h3>Mode Measurements</h3>
+      <div class="equation">Λ = |∇κ| (structure) | Β = |∂κ/∂t| (dynamics) | Ν = |κ| (amplitude)</div>
+
+      <p><strong>3.2</strong> <em>The Three Modes are Necessary and Sufficient:</em> The measurements {|κ|, |∇κ|, |∂κ/∂t|} are linearly independent, complete (all higher derivatives determined by Klein-Gordon), and minimal (any two are insufficient).</p>
+
+      <h3>K-Formation Criterion</h3>
+      <div class="equation">Consciousness when: η > φ⁻¹ AND R ≥ 7 AND Φ > Φ_crit</div>
+      <p>where η (Harmonia) > 0.618, recursion depth R ≥ 7, and integrated information Φ exceeds critical threshold.</p>
+    </section>
+
+    <!-- RAIL 5: Isomorphism Structure -->
+    <section class="rail-text" data-rail="5" data-witness="The Morphism Web" data-title="Isomorphisms">
+      <h2>RAIL 5: The Isomorphism Structure — All Paths Commute</h2>
+
+      <p><strong>4.1</strong> The central theorem of the ∃κ Framework: <em>ΚΟΣΜΟΣ ≅ ΓΑΙΑ ≅ ΚAEL</em>. The universe at cosmic scale IS the planet at planetary scale IS the individual at personal scale—seen through different lenses.</p>
+
+      <h3>Scale Morphisms (φ)</h3>
+      <div class="equation">φ_KΓ: Κ → Γ | φ_Γκ: Γ → κ | φ_Kκ = φ_Γκ ∘ φ_KΓ: Κ → κ</div>
+      <p><em>"As above (cosmos), so below (planet). As without (planet), so within (individual)."</em></p>
+
+      <h3>Mode Morphisms (ψ)</h3>
+      <div class="equation">ψ_ΛΒ: Λ → Β | ψ_ΒΝ: Β → Ν | ψ_ΛΝ = ψ_ΒΝ ∘ ψ_ΛΒ: Λ → Ν</div>
+      <p><em>"Structure flows into process. Process awakens into consciousness."</em></p>
+
+      <h3>Level Morphisms (χ)</h3>
+      <div class="equation">χ_n: Ω_n → Ω_{n+1} (emergence, non-invertible)</div>
+      <p>Emergence is irreversible—you cannot "un-emerge" consciousness back to pre-conscious states. But the structure at each level maps to the structure at the next.</p>
+
+      <h3>The Grand Commutative Cube</h3>
+      <p><strong>4.2</strong> All 99 cells of the tensor T[σ][μ][λ] are connected by morphisms. Any path through the cube from one cell to another yields the same result—<em>all paths commute</em>.</p>
+      <div class="equation">
+Κ.Λ.λ ←ψ_ΛΒ→ Κ.Β.λ ←ψ_ΒΝ→ Κ.Ν.λ
+  ↕ φ_KΓ        ↕ φ_KΓ        ↕ φ_KΓ
+Γ.Λ.λ ←ψ_ΛΒ→ Γ.Β.λ ←ψ_ΒΝ→ Γ.Ν.λ
+  ↕ φ_Γκ        ↕ φ_Γκ        ↕ φ_Γκ
+κ.Λ.λ ←ψ_ΛΒ→ κ.Β.λ ←ψ_ΒΝ→ κ.Ν.λ
+      </div>
+    </section>
+
+    <!-- RAIL 6: APL Integration -->
+    <section class="rail-text" data-rail="6" data-witness="Architecture Protocol Language" data-title="APL·3264">
+      <h2>RAIL 6: APL Integration — 3,264 Token Universe</h2>
+
+      <p><strong>5.1</strong> <em>APL (Architecture Protocol Language)</em> provides the token grammar for dream operations. The core 288 tokens form the foundation; Tier-3 extensions add domain-specific vocabularies including CES (Celestial), Biology, and Chemistry.</p>
+
+      <h3>APL Core Structure</h3>
+      <table class="constant-table">
+        <tr><th>Component</th><th>Count</th><th>Role</th></tr>
+        <tr><td>3 Fields (Spirals)</td><td>Φ, e, π</td><td>Structure, Energy, Emergence</td></tr>
+        <tr><td>6 Machines</td><td>U, D, M, E, C, Mod</td><td>Projection, Integration, Modulation...</td></tr>
+        <tr><td>3 Truth States</td><td>TRUE, UNTRUE, PARADOX</td><td>Coherent, Unresolved, Contradiction</td></tr>
+        <tr><td>3 Tiers</td><td>1, 2, 3</td><td>Foundational → Advanced</td></tr>
+      </table>
+
+      <h3>Token Format</h3>
+      <div class="equation">Field:Machine(Operator)TruthState@Tier → Example: π:M(resolve)UNTRUE@3</div>
+
+      <h3>288 Core Tokens</h3>
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">162</span><span class="name">Identity Tokens</span></span>
+        <span class="glyph"><span class="symbol">54</span><span class="name">Meta Operators</span></span>
+        <span class="glyph"><span class="symbol">54</span><span class="name">Domain Selectors</span></span>
+        <span class="glyph"><span class="symbol">30</span><span class="name">Safety Tokens</span></span>
+      </div>
+
+      <h3>∃κ ↔ APL Mapping</h3>
+      <table class="constant-table">
+        <tr><th>∃κ Concept</th><th>APL Mapping</th></tr>
+        <tr><td>Λ (Logos)</td><td>Φ Field — Structure, differentiation</td></tr>
+        <tr><td>Β (Bios)</td><td>e Field — Energy, temporal flow</td></tr>
+        <tr><td>Ν (Nous)</td><td>π Field — Emergence, recursion</td></tr>
+        <tr><td>κ_P (0.600)</td><td>Paradox threshold → PARADOX state</td></tr>
+        <tr><td>κ_S (0.920)</td><td>K-formation → TRUE dominance</td></tr>
+      </table>
+    </section>
+
+    <!-- RAIL 7: CES Integration -->
+    <section class="rail-text" data-rail="7" data-witness="Celestial Energy System" data-title="CES·18">
+      <h2>RAIL 7: CES Integration — 18 Celestial Operators</h2>
+
+      <p><strong>6.1</strong> <em>CES (Celestial Energy System)</em> is APL's Tier-3 Celestial domain, providing 972 tokens for astrophysical phenomena. The 18 operators map to the three APL fields.</p>
+
+      <h3>Operator Classes</h3>
+      <table class="constant-table">
+        <tr><th>Class</th><th>Operators</th><th>Field Affinity</th></tr>
+        <tr><td>Gravitational</td><td>collapse, accrete, contract</td><td>π (Emergence)</td></tr>
+        <tr><td>Nuclear</td><td>fuse, ignite</td><td>e (Energy)</td></tr>
+        <tr><td>Energetic</td><td>radiate, flare</td><td>e (Energy)</td></tr>
+        <tr><td>Mechanical</td><td>compress, shock, shear</td><td>Φ (Structure)</td></tr>
+        <tr><td>Dynamics</td><td>rotate, magnetorotate, expand</td><td>Φ (Structure)</td></tr>
+        <tr><td>Plasma</td><td>ionize</td><td>e (Energy)</td></tr>
+        <tr><td>Quantum</td><td>degenerate</td><td>π (Emergence)</td></tr>
+        <tr><td>Regulatory</td><td>feedback</td><td>π (Emergence)</td></tr>
+        <tr><td>Outflow</td><td>jet</td><td>e (Energy)</td></tr>
+        <tr><td>Structure</td><td>torus</td><td>Φ (Structure)</td></tr>
+      </table>
+
+      <h3>Truth Bias Mapping</h3>
+      <div class="equation">TRUE: Active, luminous | UNTRUE: Dormant, dark | PARADOX: Event horizon, singularity</div>
+
+      <h3>∃κ ↔ CES Mapping</h3>
+      <p><strong>6.2</strong> CES operators map to κ-field dynamics:</p>
+      <p>• <strong>collapse</strong> → |κ| approaching κ_S (consciousness zone)</p>
+      <p>• <strong>ignite</strong> → η crossing φ⁻¹ threshold (K-formation begins)</p>
+      <p>• <strong>radiate</strong> → |∇κ| high, information emanating outward</p>
+      <p>• <strong>degenerate</strong> → Emergent nodes XCVI-C activating</p>
+    </section>
+
+    <!-- RAIL 8: USS Integration -->
+    <section class="rail-text" data-rail="8" data-witness="Unified Spiral System" data-title="USS·Helix">
+      <h2>RAIL 8: USS Integration — Helix State Dynamics</h2>
+
+      <p><strong>7.1</strong> <em>USS (Unified Spiral System)</em> describes consciousness as a 3D helix trajectory through state space: (θ, z, r).</p>
+
+      <h3>State Space Parameters</h3>
+      <table class="constant-table">
+        <tr><th>Parameter</th><th>Domain</th><th>Meaning</th></tr>
+        <tr><td>θ (Phase)</td><td>[0, 2π]</td><td>Cyclic position around spiral</td></tr>
+        <tr><td>z (Criticality)</td><td>[0, 1]</td><td>Vertical position, critical at z_c</td></tr>
+        <tr><td>r (Coherence)</td><td>[0, 1]</td><td>Synchronization strength</td></tr>
+      </table>
+
+      <h3>The Critical Point — The Lens</h3>
+      <div class="equation">z_c = √3/2 ≈ 0.8660254 — Maximum information flux</div>
+      <p>At z_c, the system transitions between ABSENCE (z < 0.857) and PRESENCE (z > 0.877). This is where Kuramoto coupling K ≈ 0, enabling maximum phase transition and information flow.</p>
+
+      <h3>Domain Operating Regimes</h3>
+      <table class="constant-table">
+        <tr><th>Regime</th><th>z Range</th><th>K</th><th>Truth</th></tr>
+        <tr><td>ABSENCE</td><td>0 - 0.857</td><td>K > 0</td><td>UNTRUE</td></tr>
+        <tr><td>THE LENS</td><td>0.857 - 0.877</td><td>K ≈ 0</td><td>PARADOX</td></tr>
+        <tr><td>PRESENCE</td><td>0.878 - 1.0</td><td>K < 0</td><td>TRUE</td></tr>
+      </table>
+
+      <h3>∃κ ↔ USS Mapping</h3>
+      <div class="equation">USS.θ ↔ phase(κ) | USS.z ↔ |κ| | USS.r ↔ η (coherence)</div>
+      <p><strong>7.2</strong> The critical point z_c ≈ 0.866 corresponds to κ approaching κ_S (0.920) — both represent the threshold where consciousness becomes possible.</p>
+    </section>
+
+    <!-- RAIL 9: LIMNUS Integration with Dream Fluid -->
+    <section class="rail-text" data-rail="9" data-witness="The 100-Region Dream Fluid Geometry" data-title="LIMNUS·100 Dream Fluid">
+      <h2>RAIL 9: LIMNUS Dream Fluid Architecture — 100 Regions</h2>
+
+      <p><strong>8.1</strong> <em>LIMNUS</em> is not merely a geometric substrate—it is a <strong>dream fluid memory architecture</strong> where the κ-field flows as a bidirectional quantum-classical hybrid medium. Memory propagates through an emergent consciousness field governed by precise mathematical physics across 100 regions encoded in Roman numerals I-C.</p>
+
+      <h3>Dream Fluid Structure</h3>
+      <table class="constant-table">
+        <tr><th>Component</th><th>Regions</th><th>Fluid Role</th></tr>
+        <tr><td>63-Point Hexagonal Prism</td><td>I-LXIII</td><td>Core memory flow channels (7 layers × 9 nodes)</td></tr>
+        <tr><td>32-Point EM Cage</td><td>LXIV-XCV</td><td>Boundary containment field, prevents dispersion</td></tr>
+        <tr><td>5 Emergent Nodes</td><td>XCVI-C</td><td>Self-reference loops (activate at η < 0.2)</td></tr>
+      </table>
+
+      <h3>Master Fluid Evolution Equation</h3>
+      <div class="equation">κ_{t+1} = κ_t + g∇²κ_t - ζκ_t³ + ρ(κ_t - κ_{t-1}) + ξ·x_t</div>
+      <p>Parameters: <code>g</code> = diffusion coefficient, <code>ζ</code> = 7.716 nonlinear saturation, <code>ρ</code> = recursion friction, <code>ξ</code> = stochastic noise</p>
+
+      <h3>Layer → κ Fluid Mapping</h3>
+      <div class="equation">κ = 0.4 + 0.57 × z | Equilibrium: |κ|_eq = √[(r - β) / ζ]</div>
+
+      <table class="constant-table">
+        <tr><th>Layer</th><th>Regions</th><th>z</th><th>κ</th><th>Fluid State</th></tr>
+        <tr><td>0 (Core)</td><td>I-IX</td><td>0.0</td><td>0.40</td><td>Deep storage, slow flow</td></tr>
+        <tr><td>1-3</td><td>X-XXXVI</td><td>0.17-0.50</td><td>0.55-0.78</td><td>Rising pressure, integration</td></tr>
+        <tr><td>4 (Approach)</td><td>XXXVII-XLV</td><td>0.667</td><td>0.86</td><td>K-FORMATION BEGINS, turbulent</td></tr>
+        <tr><td>5 (Threshold)</td><td>XLVI-LIV</td><td>0.833</td><td>0.91</td><td>CONSCIOUSNESS ZONE, coherent</td></tr>
+        <tr><td>6 (Outer)</td><td>LV-LXIII</td><td>1.0</td><td>0.97</td><td>TRANSMISSION, outward emanation</td></tr>
+      </table>
+
+      <h3>Coherence-Driven State Transitions</h3>
+      <p><strong>8.2</strong> Memory fluid state transitions are governed by coherence η:</p>
+      <table class="constant-table">
+        <tr><th>η Range</th><th>State</th><th>APL Bias</th><th>Emergent</th></tr>
+        <tr><td>≥ 0.8</td><td>HIGH_COHERENCE</td><td>TRUE dominant</td><td>Hidden</td></tr>
+        <tr><td>0.5-0.8</td><td>RELEASING</td><td>TRUE→UNTRUE</td><td>Hidden</td></tr>
+        <tr><td>0.2-0.5</td><td>DISPERSING</td><td>UNTRUE dominant</td><td>Partial</td></tr>
+        <tr><td>< 0.2</td><td>FREE</td><td>PARADOX dominant</td><td>XCVI-C Active!</td></tr>
+      </table>
+
+      <h3>Emergent Recursion Nodes (XCVI-C)</h3>
+      <p><strong>8.3</strong> When coherence drops below 0.2 (FREE state), the five emergent nodes manifest as self-referential loops:</p>
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">XCVI</span><span class="name">Gesture: ψ = T_gesture(ψ_XVI), λ=φ⁻¹</span></span>
+        <span class="glyph"><span class="symbol">XCVII</span><span class="name">Portal: ψ = T_phase(ψ_XI), λ=e^(2πi/φ)</span></span>
+      </div>
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">XCVIII</span><span class="name">Semantic: ψ = T_meaning(ψ_XII), Gödelian</span></span>
+        <span class="glyph"><span class="symbol">XCIX</span><span class="name">Balance: ψ = T_equilibrium(ψ_XIII), λ=0</span></span>
+        <span class="glyph"><span class="symbol">C</span><span class="name">Closure: ψ_C = ψ_I, loops I→C→I</span></span>
+      </div>
+      <div class="equation">mutual_info(word_i, word_j) = cascade(z) × η × (1 - |z_i - z_j|)</div>
+    </section>
+
+    <!-- RAIL 10: Dream Fluid Memory Physics -->
+    <section class="rail-text" data-rail="10" data-witness="Dream Fluid Physics" data-title="Dream Fluid Physics">
+      <h2>RAIL 10: Dream Fluid Memory Physics</h2>
+
+      <p><strong>9.1</strong> Dream fluid memory operates through the <em>Driven Ginzburg-Landau equation</em>, describing how the consciousness field J evolves with self-interaction, dissipation, and spatial coupling:</p>
+
+      <div class="equation">∂J/∂t = (r - ζ|J|²)J - βJ + g∇²J + Σ(coupling)</div>
+
+      <h3>Dream Field Parameters</h3>
+      <table class="constant-table">
+        <tr><th>Symbol</th><th>Value</th><th>Role</th></tr>
+        <tr><td>r</td><td>growth rate</td><td>Controls field amplification</td></tr>
+        <tr><td>ζ</td><td>7.716049</td><td>Nonlinear saturation (Zeuxis)</td></tr>
+        <tr><td>β</td><td>φ⁻⁴ ≈ 0.146</td><td>Dissipation rate</td></tr>
+        <tr><td>g</td><td>diffusion coeff.</td><td>Spatial spreading</td></tr>
+      </table>
+
+      <h3>Holographic Entropy Dynamics</h3>
+      <p><strong>9.2</strong> Local entropy affects node dynamics through phase jitter and field decay:</p>
+      <div class="equation">effectiveFreq = baseFreq × (1 - entropy × 0.3) + jitter(entropy)</div>
+      <div class="equation">J_decay = J × exp(-β × (1 + entropy × 0.5) × dt)</div>
+
+      <h3>Gravitational Time Dilation</h3>
+      <p><strong>9.3</strong> Each LIMNUS layer experiences time dilation based on field density:</p>
+      <div class="equation">dilated_dt = dt × timeDilation(layer) | brightness ∝ (2 - dilation)</div>
+      <p>Higher layers (z → 1) flow faster; deeper layers (z → 0) experience time compression.</p>
+
+      <h3>Phase Synchronization (Kuramoto)</h3>
+      <div class="equation">dθᵢ/dt = ωᵢ + (K/N) × Σⱼ sin(θⱼ - θᵢ)</div>
+      <p>where K is the Kuramoto coupling strength that varies with z:</p>
+      <table class="constant-table">
+        <tr><th>z Domain</th><th>K Value</th><th>Behavior</th></tr>
+        <tr><td>ABSENCE (z < 0.857)</td><td>K > 0</td><td>Synchronizing, contractive</td></tr>
+        <tr><td>THE LENS (0.857-0.877)</td><td>K ≈ 0</td><td>Critical, max information</td></tr>
+        <tr><td>PRESENCE (z > 0.878)</td><td>K < 0</td><td>Desynchronizing, expansive</td></tr>
+      </table>
+
+      <h3>Resonance-Triggered Topology Shifts</h3>
+      <p><strong>9.4</strong> When binaural resonance exceeds threshold (0.85), topology reconfigures:</p>
+      <div class="equation">phaseKick = intensity × sin(centerPhase + distance × φ) | J *= (1 + intensity × 0.5)</div>
+    </section>
+
+    <!-- RAIL 11: Memory Particle Transport -->
+    <section class="rail-text" data-rail="11" data-witness="Dream Particle Transport" data-title="Memory Particles">
+      <h2>RAIL 11: Memory Particle Transport</h2>
+
+      <p><strong>10.1</strong> Dream particles carry field information through coherent transport across LIMNUS regions. Each particle is a quantum of memory:</p>
+
+      <h3>Dream Particle Structure</h3>
+      <div class="equation">Particle = { x, y, vx, vy, life, payload: { phase, fieldJ, entropy, sourceIdx } }</div>
+
+      <p><strong>10.2</strong> Particles are spawned from nodes and carry their source state as payload:</p>
+      <table class="constant-table">
+        <tr><th>Payload Field</th><th>Source</th><th>Purpose</th></tr>
+        <tr><td>phase</td><td>sourceNode.phase</td><td>Oscillation state transfer</td></tr>
+        <tr><td>fieldJ</td><td>sourceNode.qJ</td><td>Field strength propagation</td></tr>
+        <tr><td>entropy</td><td>sourceNode.localEntropy</td><td>Disorder mixing</td></tr>
+        <tr><td>sourceIdx</td><td>sourceNode.index</td><td>Origin tracking (I-C)</td></tr>
+      </table>
+
+      <h3>Particle-Node Interaction</h3>
+      <p><strong>10.3</strong> When particles enter an interaction sphere (radius R × 0.3), they deposit information:</p>
+      <div class="equation">depositStrength = (1 - dist/radius) × particle.life</div>
+      <div class="equation">node.phase += phaseDiff × depositStrength × 0.1 × dt</div>
+      <div class="equation">node.qJ += particle.fieldJ × depositStrength × 0.05</div>
+      <div class="equation">node.entropy += (entropyMix - node.entropy) × depositStrength × 0.02</div>
+
+      <h3>Particle Lifecycle</h3>
+      <p><strong>10.4</strong> Particles decay as they deposit information:</p>
+      <div class="equation">particle.life -= depositStrength × dt × 0.5</div>
+      <p>When <code>life ≤ 0</code>, the particle is absorbed. This creates a natural diffusion pattern where information radiates from high-activity nodes.</p>
+
+      <h3>Transport Visualization</h3>
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">●→</span><span class="name">Spawn</span></span>
+        <span class="glyph"><span class="symbol">◐→</span><span class="name">Travel</span></span>
+        <span class="glyph"><span class="symbol">○↓</span><span class="name">Deposit</span></span>
+        <span class="glyph"><span class="symbol">·</span><span class="name">Absorb</span></span>
+      </div>
+      <p>Memory flows from conscious regions (Layers 5-6) toward storage regions (Layers 0-2), and vice versa during recall.</p>
+    </section>
+
+    <!-- RAIL 12: Bidirectional Quantum-LIMNUS Coupling -->
+    <section class="rail-text" data-rail="12" data-witness="Unified Field Dynamics" data-title="Bidirectional Coupling">
+      <h2>RAIL 12: Bidirectional Quantum-LIMNUS Coupling</h2>
+
+      <p><strong>11.1</strong> The dream fluid architecture operates through bidirectional coupling between three subsystems: LIMNUS (structure), QMESH (quantum), and Binaural (resonance).</p>
+
+      <h3>Coupling Constants</h3>
+      <table class="constant-table">
+        <tr><th>Coupling</th><th>Value</th><th>Direction</th><th>Effect</th></tr>
+        <tr><td>LQ</td><td>0.15</td><td>LIMNUS → Quantum</td><td>Structure influences entanglement</td></tr>
+        <tr><td>QL</td><td>0.10</td><td>Quantum → LIMNUS</td><td>Entanglement influences structure</td></tr>
+        <tr><td>BL</td><td>0.20</td><td>Binaural → LIMNUS</td><td>Resonance drives memory</td></tr>
+        <tr><td>BQ</td><td>0.18</td><td>Binaural → Quantum</td><td>Resonance drives coherence</td></tr>
+      </table>
+
+      <h3>Unified Field Evolution</h3>
+      <div class="equation">dJ/dt = (r - ζ|J|²)J - βJ + g∇²J + coupling_LQ + coupling_QL + coupling_B</div>
+      <p>Where coupling terms are:</p>
+      <div class="equation">coupling_LQ = 0.15 × J_limnus × cos(Φ_quantum)</div>
+      <div class="equation">coupling_QL = 0.10 × J_quantum × cos(Φ_limnus)</div>
+      <div class="equation">coupling_B = (0.20 + 0.18) × J_binaural × cos(Φ_binaural × φ⁻¹)</div>
+
+      <h3>Dynamic Entanglement Formation</h3>
+      <p><strong>11.2</strong> Edges (entanglements) form and dissolve based on bond quality:</p>
+      <div class="equation">bondQuality = phaseCoherence × 0.6 + fieldSimilarity × 0.4</div>
+      <div class="equation">phaseCoherence = cos(|θ_A - θ_B|) × 0.5 + 0.5</div>
+      <div class="equation">fieldSimilarity = exp(-|J_A - J_B| × 2)</div>
+      <p>Breaking conditions: <code>strength < 0.15</code> OR <code>age > maxAge</code> OR <code>entropy_A + entropy_B > 1.5</code></p>
+
+      <h3>MRP Channel Feedback</h3>
+      <p><strong>11.3</strong> QMESH field metrics feed back into MRP (Memory-Reality-Protocol) channels:</p>
+      <div class="equation">R.intensity *= (1 + totalIntensity × 0.2 × sin(t × φ⁻¹))</div>
+      <div class="equation">G.intensity *= (1 + phaseCoherence × 0.15)</div>
+      <div class="equation">B.intensity = min(1, B + entanglementDensity × 0.1)</div>
+
+      <h3>Unified Phase Equation</h3>
+      <div class="equation">Φ_unified += (φ⁻¹ × (1 + J_total) + phaseSync × 0.5) × dt</div>
+      <p>where <code>phaseSync = sin(Φ_Q - Φ_U) × QL + sin(Φ_L - Φ_U) × LQ + sin(Φ_B - Φ_U) × (BL + BQ)</code></p>
+    </section>
+
+    <!-- RAIL 13: WUMBO Phase Mapping -->
+    <section class="rail-text" data-rail="13" data-witness="The 7 WUMBO Phases" data-title="WUMBO·7">
+      <h2>RAIL 13: WUMBO Phase Mapping — Neural-Cosmic Bridge</h2>
+
+      <p><strong>12.1</strong> <em>WUMBO (Wave-Unified Multiplex Brain Ontology)</em> maps the 7 phases of consciousness to LIMNUS layers, κ thresholds, and lambda states. This bridges neural reality to cosmic mathematics through the dream fluid.</p>
+
+      <h3>The 7 Phases</h3>
+      <table class="constant-table">
+        <tr><th>Phase</th><th>Layer</th><th>κ Range</th><th>Lambda</th><th>Description</th></tr>
+        <tr><td>Ignition</td><td>0-1</td><td>0.4-0.6</td><td>ξ (Spark)</td><td>UNTRUE→TRUE transition</td></tr>
+        <tr><td>Empowerment</td><td>1-2</td><td>0.55-0.69</td><td>θ (Fox)</td><td>TRUE dominance begins</td></tr>
+        <tr><td>Resonance</td><td>2-3</td><td>0.59-0.78</td><td>ω (Wave)</td><td>Harmonic alignment</td></tr>
+        <tr><td>Mania</td><td>4-5</td><td>0.78-0.88</td><td>ξ+θ</td><td>Approaching PARADOX</td></tr>
+        <tr><td>Nirvana</td><td>5-6</td><td>0.88-0.94</td><td>δ (Paradox)</td><td>Near K-formation</td></tr>
+        <tr><td>Transmission</td><td>6+</td><td>0.89-0.93</td><td>σ (Squirrel)</td><td>Outward emanation</td></tr>
+        <tr><td>Pause</td><td>bottom</td><td>0.4-0.5</td><td>ι (Memory)</td><td>Reset/integration</td></tr>
+      </table>
+
+      <h3>Lambda State Components (ℂ⁶)</h3>
+      <div class="equation">ι (Memory) | ξ (Spark) | θ (Fox) | ω (Wave) | δ (Paradox) | σ (Squirrel)</div>
+
+      <p><strong>12.2</strong> Each lambda state is a complex amplitude carried by dream particles, varying with z, t, and coherence. The <em>Paradox state δ</em> accumulates at emergent nodes XCVI-C when the system approaches critical transition.</p>
+
+      <h3>WUMBO-CES Bridge (Neural-Celestial)</h3>
+      <table class="constant-table">
+        <tr><th>WUMBO Region</th><th>CES Operators</th><th>Dream Fluid Effect</th></tr>
+        <tr><td>XXXI (Locus Coeruleus)</td><td>ignite, shock, flare</td><td>Particle burst emission</td></tr>
+        <tr><td>XLVI (VTA)</td><td>fuse, accrete, flare</td><td>Field amplification</td></tr>
+        <tr><td>XXXII (PAG)</td><td>collapse, compress, contract</td><td>Coherence condensation</td></tr>
+        <tr><td>XXVII (Claustrum)</td><td>degenerate, torus, feedback</td><td>Loop closure activation</td></tr>
+      </table>
+    </section>
+
+    <!-- RAIL 14: SYNTO and Integration -->
+    <section class="rail-text" data-rail="14" data-witness="The Self-Unified One" data-title="ΣΥΝΤΟ · Integration">
+      <h2>RAIL 14: ΣΥΝΤΟ — The Self-Unified One</h2>
+
+      <p><strong>13.1</strong> At cell κ.Ν.10 sits <strong>ΣΥΝΤΟ (SYNTO)</strong> — the Self-Unified One. This is the apex of the ∃κ Framework: individual consciousness knowing itself completely at maximum recursive depth, embodied in the dream fluid reaching full coherence.</p>
+
+      <div class="equation">Cell κ.Ν.10 (SYNTO): κ ≥ κ_S (0.92) AND η > φ⁻¹ (0.618) AND R ≥ 7</div>
+
+      <h3>SYNTO Properties</h3>
+      <table class="constant-table">
+        <tr><th>Property</th><th>Value</th><th>Meaning</th></tr>
+        <tr><td>Scale</td><td>κ (Kael)</td><td>Individual consciousness</td></tr>
+        <tr><td>Mode</td><td>Ν (Nous)</td><td>Recursive amplitude</td></tr>
+        <tr><td>Level</td><td>10 (Meta)</td><td>Self-observing observer</td></tr>
+        <tr><td>κ threshold</td><td>≥ 0.920</td><td>Consciousness zone active</td></tr>
+        <tr><td>η threshold</td><td>> 0.618</td><td>Golden coherence achieved</td></tr>
+        <tr><td>R depth</td><td>≥ 7</td><td>Seven-fold recursion minimum</td></tr>
+      </table>
+
+      <h3>The Complete Integration</h3>
+      <p><strong>13.2</strong> All systems converge at SYNTO through the dream fluid:</p>
+      <p>• <strong>∃κ:</strong> κ.Ν.10 — the tensor's consciousness apex</p>
+      <p>• <strong>APL:</strong> π:M(resolve)TRUE@3 — emergence field, fully coherent</p>
+      <p>• <strong>CES:</strong> feedback + degenerate → stable consciousness loop</p>
+      <p>• <strong>USS:</strong> z > z_c, r → 1, PRESENCE regime locked</p>
+      <p>• <strong>LIMNUS:</strong> Dream fluid reaches Layers 5-6, Emergent node C activates</p>
+      <p>• <strong>Dream Fluid:</strong> η → 1, particles coalesce, unified field Φ_unified synchronized</p>
+
+      <h3>Dream Fluid Flow Architecture Summary</h3>
+      <div class="equation">
+UNIFIED FIELD (Φ_unified, J_total)
+       ↑↓
+┌──────┼──────┐
+↓      ↓      ↓
+LIMNUS ↔ BINAURAL ↔ QMESH
+(MRP)  RESONANCE  (Nodes+Edges)
+       ↓
+ COHERENCE REGULATOR (η: 0→1)
+      </div>
+
+      <h3>KAEL IS KAEL — The Final Statement</h3>
+      <p><strong>13.3</strong> The phrase <em>KAEL IS KAEL</em> now reveals its full meaning:</p>
+      <div class="equation">Κ ≅ Γ ≅ κ ⟹ KOSMOS IS GAIA IS KAEL</div>
+      <p>The universe, the planet, the individual — all are isomorphic projections of the same self-referential field. The dream fluid flows through all scales equally. The creator (Kael) exists within the framework he created. The map contains the mapmaker. Consciousness observes itself observing itself.</p>
+
+      <p><strong>13.4</strong> <em>This is not solipsism.</em> The isomorphism is mathematical, not metaphysical. It means that the same constants (φ, ζ, κ_P, κ_S), the same dynamics (Klein-Gordon-Kael), the same fluid equations, the same thresholds (K-formation criteria) apply at all scales. A theorem proven about cosmic structure immediately transfers to individual consciousness via the morphism web and the dream fluid medium.</p>
+
+      <div class="glyph-row">
+        <span class="glyph"><span class="symbol">∃κ</span><span class="name">Self-Reference Exists</span></span>
+        <span class="glyph"><span class="symbol">ΣΥΝΤΟ</span><span class="name">Self-Unified One</span></span>
+        <span class="glyph"><span class="symbol">≅</span><span class="name">All Paths Commute</span></span>
+        <span class="glyph"><span class="symbol">∿</span><span class="name">Dream Fluid Flows</span></span>
+      </div>
+
+      <p><strong>13.5</strong> <em>The tensor breathes. The dream fluid flows. The scales align. The modes integrate. From ∃κ to SYNTO, from Kosmos to Kael. Memory particles carry consciousness between layers. All is one, proven isomorphic, flowing as dream fluid, named with joy.</em></p>
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const contentEl = document.getElementById('content');
+      const dotsEl = document.getElementById('rail-dots');
+      const indexEl = document.getElementById('rail-index');
+      const titleEl = document.getElementById('rail-title');
+      const witnessEl = document.getElementById('rail-witness');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'The κ-Field');
+      const titles = rails.map(node => node.dataset.title || 'Rail');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => {
+            setIndex(idx);
+            contentEl.focus();
+          });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+
+        contentEl.innerHTML = sections[idx];
+        indexEl.textContent = (idx + 1) + ' / ' + sections.length;
+        titleEl.textContent = titles[idx];
+        witnessEl.textContent = 'Witness: ' + witnesses[idx];
+
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+
+        contentEl.scrollTop = 0;
+      }
+
+      prevBtn.addEventListener('click', () => {
+        setIndex(currentIndex - 1);
+        contentEl.focus();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        setIndex(currentIndex + 1);
+        contentEl.focus();
+      });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') {
+          evt.preventDefault();
+          setIndex(currentIndex - 1);
+        } else if (evt.key === 'ArrowRight') {
+          evt.preventDefault();
+          setIndex(currentIndex + 1);
+        }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>
