@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Gallery - Quantum Resonance</title>
+  <meta name="description" content="Browse all 52 holographic cards in the Quantum Resonance universe">
+
+  <style>
+    :root {
+      --bg-dark: #0f0f1a;
+      --bg-card: #1a1a2e;
+      --bg-lighter: #252540;
+      --text-primary: #e0e0e0;
+      --text-secondary: #888;
+      --spades: #00D4FF;
+      --hearts: #FF3366;
+      --diamonds: #FFD700;
+      --clubs: #33FF66;
+      --accent: #9966FF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    nav {
+      background: var(--bg-card);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-dark));
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .generator-form {
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    .generate-btn {
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, var(--spades), var(--hearts));
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .generate-btn:hover {
+      transform: scale(1.05);
+    }
+
+    #card-preview {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+
+    .quick-ref {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+
+    .quick-ref h3 {
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .quick-ref ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .quick-ref li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .suit-section {
+      margin-bottom: 3rem;
+    }
+
+    .suit-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid;
+      flex-wrap: wrap;
+    }
+
+    .suit-header.spades { border-color: var(--spades); }
+    .suit-header.hearts { border-color: var(--hearts); }
+    .suit-header.diamonds { border-color: var(--diamonds); }
+    .suit-header.clubs { border-color: var(--clubs); }
+
+    .suit-symbol {
+      font-size: 2rem;
+    }
+
+    .suit-info {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .faction-name {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .channel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: auto;
+    }
+
+    .channel-badge.B { background: var(--spades); color: #000; }
+    .channel-badge.R { background: var(--hearts); color: #fff; }
+    .channel-badge.CMY { background: var(--diamonds); color: #000; }
+    .channel-badge.G { background: var(--clubs); color: #000; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card-container {
+      aspect-ratio: 2/3;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .card-container:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .card-container img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 3rem;
+    }
+
+    .rosetta-coords {
+      font-family: monospace;
+      color: var(--spades);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+      header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-brand">Quantum Resonance</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="play.html">Play</a></li>
+      <li><a href="tutorial.html">Tutorial</a></li>
+      <li><a href="cards-standalone.html" class="active">Cards</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="factions.html">Factions</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Card Gallery</h1>
+    <p>Browse all 52 holographic cards in the Quantum Resonance universe</p>
+  </header>
+
+  <main>
+    <section class="generator-form">
+      <h2>Card Viewer</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Select a suit and rank to view any card in the 52-card holographic universe.
+      </p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="suit-select">Suit (Channel)</label>
+          <select id="suit-select">
+            <option value="S" data-color="#00D4FF">♠ Spades (B - Temporal)</option>
+            <option value="H" data-color="#FF3366">♥ Hearts (R - Valence)</option>
+            <option value="D" data-color="#FFD700">♦ Diamonds (CMY - Arousal)</option>
+            <option value="C" data-color="#33FF66">♣ Clubs (G - Concrete)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rank-select">Rank</label>
+          <select id="rank-select">
+            <option value="A">Ace (Origin: -1.0)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7 (Center: 0.0)</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="J">Jack</option>
+            <option value="Q">Queen</option>
+            <option value="K">King (Apex: +1.0)</option>
+          </select>
+        </div>
+
+        <button class="generate-btn" onclick="showCard()">View Card</button>
+      </div>
+    </section>
+
+    <div id="card-preview"></div>
+
+    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 3rem 0;">
+
+    <div class="quick-ref">
+      <h3>4D Coordinate System</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+        Each card encodes a position in 4-dimensional tesseract space. Suits map to dimensions:
+      </p>
+      <ul>
+        <li><span style="color: var(--spades);">♠ Spades</span> Temporal (Past -1 to Future +1)</li>
+        <li><span style="color: var(--hearts);">♥ Hearts</span> Valence (Negative -1 to Positive +1)</li>
+        <li><span style="color: var(--diamonds);">♦ Diamonds</span> Arousal (Calm -1 to Excited +1)</li>
+        <li><span style="color: var(--clubs);">♣ Clubs</span> Concrete (Abstract -1 to Concrete +1)</li>
+      </ul>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 3rem 0;">
+
+    <!-- Spades Section -->
+    <section class="suit-section">
+      <div class="suit-header spades">
+        <span class="suit-symbol" style="color: var(--spades);">♠</span>
+        <div>
+          <h2 style="color: var(--spades);">Spades</h2>
+          <span class="suit-info">Temporal Dimension</span>
+          <span class="faction-name">Temporal Weavers</span>
+        </div>
+        <span class="channel-badge B">B Channel</span>
+      </div>
+      <div class="card-grid">
+        <div class="card-container" onclick="window.open('assets/cards/AS.svg', '_blank')" title="A of Spades"><img src="assets/cards/AS.svg" alt="AS"></div>
+        <div class="card-container" onclick="window.open('assets/cards/2S.svg', '_blank')" title="2 of Spades"><img src="assets/cards/2S.svg" alt="2S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/3S.svg', '_blank')" title="3 of Spades"><img src="assets/cards/3S.svg" alt="3S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/4S.svg', '_blank')" title="4 of Spades"><img src="assets/cards/4S.svg" alt="4S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/5S.svg', '_blank')" title="5 of Spades"><img src="assets/cards/5S.svg" alt="5S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/6S.svg', '_blank')" title="6 of Spades"><img src="assets/cards/6S.svg" alt="6S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/7S.svg', '_blank')" title="7 of Spades"><img src="assets/cards/7S.svg" alt="7S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/8S.svg', '_blank')" title="8 of Spades"><img src="assets/cards/8S.svg" alt="8S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/9S.svg', '_blank')" title="9 of Spades"><img src="assets/cards/9S.svg" alt="9S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/10S.svg', '_blank')" title="10 of Spades"><img src="assets/cards/10S.svg" alt="10S"></div>
+        <div class="card-container" onclick="window.open('assets/cards/JS.svg', '_blank')" title="J of Spades"><img src="assets/cards/JS.svg" alt="JS"></div>
+        <div class="card-container" onclick="window.open('assets/cards/QS.svg', '_blank')" title="Q of Spades"><img src="assets/cards/QS.svg" alt="QS"></div>
+        <div class="card-container" onclick="window.open('assets/cards/KS.svg', '_blank')" title="K of Spades"><img src="assets/cards/KS.svg" alt="KS"></div>
+      </div>
+    </section>
+
+    <!-- Hearts Section -->
+    <section class="suit-section">
+      <div class="suit-header hearts">
+        <span class="suit-symbol" style="color: var(--hearts);">♥</span>
+        <div>
+          <h2 style="color: var(--hearts);">Hearts</h2>
+          <span class="suit-info">Valence Dimension</span>
+          <span class="faction-name">Valence Shapers</span>
+        </div>
+        <span class="channel-badge R">R Channel</span>
+      </div>
+      <div class="card-grid">
+        <div class="card-container" onclick="window.open('assets/cards/AH.svg', '_blank')" title="A of Hearts"><img src="assets/cards/AH.svg" alt="AH"></div>
+        <div class="card-container" onclick="window.open('assets/cards/2H.svg', '_blank')" title="2 of Hearts"><img src="assets/cards/2H.svg" alt="2H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/3H.svg', '_blank')" title="3 of Hearts"><img src="assets/cards/3H.svg" alt="3H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/4H.svg', '_blank')" title="4 of Hearts"><img src="assets/cards/4H.svg" alt="4H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/5H.svg', '_blank')" title="5 of Hearts"><img src="assets/cards/5H.svg" alt="5H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/6H.svg', '_blank')" title="6 of Hearts"><img src="assets/cards/6H.svg" alt="6H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/7H.svg', '_blank')" title="7 of Hearts"><img src="assets/cards/7H.svg" alt="7H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/8H.svg', '_blank')" title="8 of Hearts"><img src="assets/cards/8H.svg" alt="8H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/9H.svg', '_blank')" title="9 of Hearts"><img src="assets/cards/9H.svg" alt="9H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/10H.svg', '_blank')" title="10 of Hearts"><img src="assets/cards/10H.svg" alt="10H"></div>
+        <div class="card-container" onclick="window.open('assets/cards/JH.svg', '_blank')" title="J of Hearts"><img src="assets/cards/JH.svg" alt="JH"></div>
+        <div class="card-container" onclick="window.open('assets/cards/QH.svg', '_blank')" title="Q of Hearts"><img src="assets/cards/QH.svg" alt="QH"></div>
+        <div class="card-container" onclick="window.open('assets/cards/KH.svg', '_blank')" title="K of Hearts"><img src="assets/cards/KH.svg" alt="KH"></div>
+      </div>
+    </section>
+
+    <!-- Diamonds Section -->
+    <section class="suit-section">
+      <div class="suit-header diamonds">
+        <span class="suit-symbol" style="color: var(--diamonds);">♦</span>
+        <div>
+          <h2 style="color: var(--diamonds);">Diamonds</h2>
+          <span class="suit-info">Arousal Dimension</span>
+          <span class="faction-name">Radiant Catalysts</span>
+        </div>
+        <span class="channel-badge CMY">CMY Channel</span>
+      </div>
+      <div class="card-grid">
+        <div class="card-container" onclick="window.open('assets/cards/AD.svg', '_blank')" title="A of Diamonds"><img src="assets/cards/AD.svg" alt="AD"></div>
+        <div class="card-container" onclick="window.open('assets/cards/2D.svg', '_blank')" title="2 of Diamonds"><img src="assets/cards/2D.svg" alt="2D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/3D.svg', '_blank')" title="3 of Diamonds"><img src="assets/cards/3D.svg" alt="3D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/4D.svg', '_blank')" title="4 of Diamonds"><img src="assets/cards/4D.svg" alt="4D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/5D.svg', '_blank')" title="5 of Diamonds"><img src="assets/cards/5D.svg" alt="5D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/6D.svg', '_blank')" title="6 of Diamonds"><img src="assets/cards/6D.svg" alt="6D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/7D.svg', '_blank')" title="7 of Diamonds"><img src="assets/cards/7D.svg" alt="7D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/8D.svg', '_blank')" title="8 of Diamonds"><img src="assets/cards/8D.svg" alt="8D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/9D.svg', '_blank')" title="9 of Diamonds"><img src="assets/cards/9D.svg" alt="9D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/10D.svg', '_blank')" title="10 of Diamonds"><img src="assets/cards/10D.svg" alt="10D"></div>
+        <div class="card-container" onclick="window.open('assets/cards/JD.svg', '_blank')" title="J of Diamonds"><img src="assets/cards/JD.svg" alt="JD"></div>
+        <div class="card-container" onclick="window.open('assets/cards/QD.svg', '_blank')" title="Q of Diamonds"><img src="assets/cards/QD.svg" alt="QD"></div>
+        <div class="card-container" onclick="window.open('assets/cards/KD.svg', '_blank')" title="K of Diamonds"><img src="assets/cards/KD.svg" alt="KD"></div>
+      </div>
+    </section>
+
+    <!-- Clubs Section -->
+    <section class="suit-section">
+      <div class="suit-header clubs">
+        <span class="suit-symbol" style="color: var(--clubs);">♣</span>
+        <div>
+          <h2 style="color: var(--clubs);">Clubs</h2>
+          <span class="suit-info">Concrete Dimension</span>
+          <span class="faction-name">Foundation Builders</span>
+        </div>
+        <span class="channel-badge G">G Channel</span>
+      </div>
+      <div class="card-grid">
+        <div class="card-container" onclick="window.open('assets/cards/AC.svg', '_blank')" title="A of Clubs"><img src="assets/cards/AC.svg" alt="AC"></div>
+        <div class="card-container" onclick="window.open('assets/cards/2C.svg', '_blank')" title="2 of Clubs"><img src="assets/cards/2C.svg" alt="2C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/3C.svg', '_blank')" title="3 of Clubs"><img src="assets/cards/3C.svg" alt="3C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/4C.svg', '_blank')" title="4 of Clubs"><img src="assets/cards/4C.svg" alt="4C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/5C.svg', '_blank')" title="5 of Clubs"><img src="assets/cards/5C.svg" alt="5C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/6C.svg', '_blank')" title="6 of Clubs"><img src="assets/cards/6C.svg" alt="6C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/7C.svg', '_blank')" title="7 of Clubs"><img src="assets/cards/7C.svg" alt="7C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/8C.svg', '_blank')" title="8 of Clubs"><img src="assets/cards/8C.svg" alt="8C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/9C.svg', '_blank')" title="9 of Clubs"><img src="assets/cards/9C.svg" alt="9C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/10C.svg', '_blank')" title="10 of Clubs"><img src="assets/cards/10C.svg" alt="10C"></div>
+        <div class="card-container" onclick="window.open('assets/cards/JC.svg', '_blank')" title="J of Clubs"><img src="assets/cards/JC.svg" alt="JC"></div>
+        <div class="card-container" onclick="window.open('assets/cards/QC.svg', '_blank')" title="Q of Clubs"><img src="assets/cards/QC.svg" alt="QC"></div>
+        <div class="card-container" onclick="window.open('assets/cards/KC.svg', '_blank')" title="K of Clubs"><img src="assets/cards/KC.svg" alt="KC"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Quantum Resonance v1.0 - Holographic Card Universe</p>
+    <p class="rosetta-coords">Tails to 7D, Acorns Ready</p>
+    <p class="rosetta-coords">Δ = 3.142 | z = 0.90 | Ω = 1.0</p>
+  </footer>
+
+  <script>
+  function showCard() {
+    const suit = document.getElementById('suit-select').value;
+    const rank = document.getElementById('rank-select').value;
+    const cardId = rank + suit;
+
+    const preview = document.getElementById('card-preview');
+    preview.innerHTML = `
+      <div style="text-align: center;">
+        <img src="assets/cards/${cardId}.svg"
+             alt="${cardId}"
+             style="max-width: 400px; width: 100%; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <p style="margin-top: 1rem; font-family: monospace; color: var(--text-secondary);">
+          Card ID: ${cardId}
+        </p>
+      </div>
+    `;
+
+    preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  </script>
+</body>
+</html>
