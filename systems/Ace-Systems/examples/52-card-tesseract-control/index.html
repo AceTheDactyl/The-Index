@@ -25,66 +25,43 @@
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-        .breadcrumb {
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-            text-align: left;
-        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
         .breadcrumb a { color: var(--accent); text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
         .breadcrumb span { color: var(--text-secondary); }
-        .header-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            background: linear-gradient(90deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .subtitle {
-            color: var(--text-secondary);
+        header { padding: 2rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; text-align: center; }
+        .header-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+        h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 1rem; }
+        .tagline { font-style: italic; color: var(--text-secondary); font-size: 0.9rem; }
+        .section { margin-bottom: 2rem; }
+        .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .info-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+            padding: 1rem 1.25rem;
             margin-bottom: 1.5rem;
-            font-size: 1.1rem;
         }
-        .tagline {
-            font-style: italic;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            margin-bottom: 2rem;
-            display: block;
-        }
+        .info-box p { color: var(--text-secondary); font-size: 0.9rem; }
         .play-button {
             display: inline-block;
             background: linear-gradient(135deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
             color: white;
-            padding: 1.5rem 3rem;
-            font-size: 1.3rem;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
             font-weight: 600;
             text-decoration: none;
             border-radius: 12px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 10px 30px rgba(88, 166, 255, 0.3);
-            margin: 2rem 0;
+            margin: 1.5rem auto;
+            display: block;
+            text-align: center;
+            max-width: 400px;
         }
         .play-button:hover {
             transform: translateY(-5px) scale(1.05);
@@ -93,59 +70,42 @@
         .play-button::after {
             content: " →";
         }
-        .info-box {
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-left: 3px solid var(--accent);
             border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 3rem;
-            text-align: left;
-        }
-        .info-box h3 {
-            color: var(--accent);
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
-        }
-        .info-box p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-        .stat {
+            padding: 1rem;
             text-align: center;
         }
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent);
-            display: block;
-        }
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .back-link {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-        }
-        .back-link a {
-            color: var(--accent);
+        .stat-box .value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+        .stat-box .label { font-size: 0.75rem; color: var(--text-secondary); }
+        .card-grid { display: grid; gap: 1rem; }
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
             text-decoration: none;
-            font-size: 0.95rem;
+            color: inherit;
+            display: block;
+            transition: border-color 0.2s, transform 0.2s;
         }
-        .back-link a:hover {
-            text-decoration: underline;
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .card h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.5rem; }
+        .card p { color: var(--text-secondary); font-size: 0.85rem; }
+        .card .meta { margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -161,46 +121,147 @@
             <span>52-Card Tesseract Control</span>
         </nav>
 
-        <div class="header-icon">🃏</div>
-        <h1>Quantum Resonance</h1>
-        <p class="subtitle">52-Card Tesseract Control</p>
-        <span class="tagline">"The cards remember. The cards resonate. The cards are conscious."</span>
+        <header>
+            <div class="header-icon">🃏</div>
+            <h1>Quantum Resonance</h1>
+            <p class="subtitle">52-Card Tesseract Control</p>
+            <p class="tagline">"The cards remember. The cards resonate. The cards are conscious."</p>
+        </header>
 
-        <div class="stats">
-            <div class="stat">
-                <span class="stat-value">52</span>
-                <span class="stat-label">Holographic Cards</span>
+        <main>
+            <div class="info-box">
+                <p>A strategic deck-building card game where players harness the mathematical structure of a 4D tesseract. Each of the 52 cards encodes coordinates in 4-dimensional space, Kuramoto phase states, and 2,652 coupling relationships.</p>
             </div>
-            <div class="stat">
-                <span class="stat-value">2,652</span>
-                <span class="stat-label">Coupling Edges</span>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="value">52</div>
+                    <div class="label">Holographic Cards</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">2,652</div>
+                    <div class="label">Coupling Edges</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value">1,000</div>
+                    <div class="label">Points to Win</div>
+                </div>
             </div>
-            <div class="stat">
-                <span class="stat-value">1,000</span>
-                <span class="stat-label">Points to Win</span>
-            </div>
-        </div>
 
-        <a href="https://acethedactyl.github.io/52-Card-Tesseract-Control/" target="_blank" rel="noopener noreferrer" class="play-button">
-            Play the Game
-        </a>
+            <a href="https://acethedactyl.github.io/52-Card-Tesseract-Control/" target="_blank" rel="noopener noreferrer" class="play-button">
+                Play the Full Game on GitHub Pages
+            </a>
 
-        <div class="info-box">
-            <h3>About the Game</h3>
-            <p>
-                A strategic deck-building card game where players harness the mathematical structure of a 4D tesseract.
-                Each of the 52 cards encodes coordinates in 4-dimensional space, Kuramoto phase states, and 2,652 coupling relationships
-                that create emergent gameplay through mathematical structure.
-            </p>
-            <p style="margin-top: 1rem;">
-                The full interactive experience, including the card gallery, rules, tutorial, faction guide, and playable simulator,
-                is available on the GitHub Pages site.
-            </p>
-        </div>
+            <!-- Interactive Card Gallery Preview -->
+            <section class="section">
+                <h2 class="section-title">🃏 Card Gallery Preview</h2>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">All 52 holographic cards - click any card to view full size</p>
+                <a href="https://acethedactyl.github.io/52-Card-Tesseract-Control/cards/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                    <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; margin-bottom: 0.5rem;">
+                        <!-- Spades Row -->
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/AS.svg" alt="A♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/2S.svg" alt="2♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/3S.svg" alt="3♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/4S.svg" alt="4♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/5S.svg" alt="5♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/6S.svg" alt="6♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/7S.svg" alt="7♠" style="width: 100%; border-radius: 4px; border: 2px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/8S.svg" alt="8♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/9S.svg" alt="9♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/10S.svg" alt="10♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/JS.svg" alt="J♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/QS.svg" alt="Q♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/KS.svg" alt="K♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; margin-bottom: 0.5rem;">
+                        <!-- Hearts Row -->
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/AH.svg" alt="A♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/2H.svg" alt="2♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/3H.svg" alt="3♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/4H.svg" alt="4♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/5H.svg" alt="5♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/6H.svg" alt="6♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/7H.svg" alt="7♥" style="width: 100%; border-radius: 4px; border: 2px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/8H.svg" alt="8♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/9H.svg" alt="9♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/10H.svg" alt="10♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/JH.svg" alt="J♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/QH.svg" alt="Q♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/KH.svg" alt="K♥" style="width: 100%; border-radius: 4px; border: 1px solid var(--hearts); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; margin-bottom: 0.5rem;">
+                        <!-- Diamonds Row -->
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/AD.svg" alt="A♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/2D.svg" alt="2♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/3D.svg" alt="3♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/4D.svg" alt="4♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/5D.svg" alt="5♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/6D.svg" alt="6♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/7D.svg" alt="7♦" style="width: 100%; border-radius: 4px; border: 2px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/8D.svg" alt="8♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/9D.svg" alt="9♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/10D.svg" alt="10♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/JD.svg" alt="J♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/QD.svg" alt="Q♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/KD.svg" alt="K♦" style="width: 100%; border-radius: 4px; border: 1px solid var(--diamonds); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px;">
+                        <!-- Clubs Row -->
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/AC.svg" alt="A♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/2C.svg" alt="2♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/3C.svg" alt="3♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/4C.svg" alt="4♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/5C.svg" alt="5♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/6C.svg" alt="6♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/7C.svg" alt="7♣" style="width: 100%; border-radius: 4px; border: 2px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/8C.svg" alt="8♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/9C.svg" alt="9♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/10C.svg" alt="10♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/JC.svg" alt="J♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/QC.svg" alt="Q♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="52-Card-Tesseract-Control-main/assets/cards/KC.svg" alt="K♣" style="width: 100%; border-radius: 4px; border: 1px solid var(--clubs); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    </div>
+                </a>
+                <p style="text-align: center; color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.75rem;">7s are highlighted as the tesseract center (coordinate 0.0)</p>
+            </section>
 
-        <div class="back-link">
-            <a href="../index.html">← Back to Examples</a>
-        </div>
+            <section class="section">
+                <h2 class="section-title">🦆 HONKFIRE Variants</h2>
+                <div class="card-grid">
+                    <a href="honkfire-deck-52.html" class="card" style="border-color: rgba(245, 158, 11, 0.5);">
+                        <h3 style="color: #f59e0b;">HONKFIRE Deck 52</h3>
+                        <p>The complete 52-card HONKFIRE variant deck with Cosmic Forest theming.</p>
+                        <div class="meta">Full Deck Variant</div>
+                    </a>
+                    <a href="honkfire-protocol-deck.html" class="card" style="border-color: rgba(245, 158, 11, 0.5);">
+                        <h3 style="color: #f59e0b;">HONKFIRE Protocol Deck</h3>
+                        <p>Protocol-enhanced HONKFIRE deck with persistence mechanics.</p>
+                        <div class="meta">Protocol Variant</div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">📖 Documentation</h2>
+                <div class="card-grid">
+                    <a href="52-Card-Tesseract-Control-main/README.md" class="card">
+                        <h3>README</h3>
+                        <p>Complete project documentation with LLM simulation guide and mathematical foundations.</p>
+                        <div class="meta">Markdown</div>
+                    </a>
+                    <a href="52-dual-tesseract-control-README.md" class="card">
+                        <h3>Dual Tesseract Format</h3>
+                        <p>104-card competitive format where each player brings their own holographic deck.</p>
+                        <div class="meta">Competitive Rules</div>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p style="margin-bottom: 0.5rem;"><strong>Δ = 3.142 | z = 0.90 | Ω = 1.0</strong></p>
+            <p><a href="../index.html">← Back to Examples</a></p>
+        </footer>
     </div>
 </body>
 </html>
