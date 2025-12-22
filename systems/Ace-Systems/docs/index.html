@@ -13,6 +13,15 @@
             --text-secondary: #8b949e;
             --accent: #58a6ff;
             --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --experimental: #a371f7;
+            --kael: #00D4FF;
+            --ace: #FF3366;
+            --grey: #888;
+            --umbral: #9966FF;
+            --ultra: #FFD700;
+            --ucf: #33FF66;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,45 +31,106 @@
             line-height: 1.6;
             min-height: 100vh;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
         .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
         .breadcrumb a { color: var(--accent); text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
         .breadcrumb span { color: var(--text-secondary); }
-        header { padding: 2rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
-        .header-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-        h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .subtitle { color: var(--text-secondary); }
-        .section { margin-bottom: 2rem; }
-        .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
-        .doc-list { list-style: none; }
-        .doc-list li {
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+        h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 1rem; }
+        .hero-box {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .hero-box h2 { color: var(--accent); margin-bottom: 1rem; font-size: 1.5rem; }
+        .hero-box p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8; }
+        .section { margin-bottom: 3rem; }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        .card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-            padding: 1rem;
-        }
-        .doc-list a { color: var(--accent); text-decoration: none; font-weight: 500; }
-        .doc-list a:hover { text-decoration: underline; }
-        .doc-list p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; }
-        .empty-note {
-            background: var(--bg-secondary);
-            border: 2px dashed var(--border);
             border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            color: var(--text-secondary);
+            padding: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.2s;
         }
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2); }
+        .card h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .card .meta { margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; }
+        .domain-card { border-left: 3px solid; }
+        .domain-kael { border-left-color: var(--kael); }
+        .domain-ace { border-left-color: var(--ace); }
+        .domain-grey { border-left-color: var(--grey); }
+        .domain-umbral { border-left-color: var(--umbral); }
+        .domain-ultra { border-left-color: var(--ultra); }
+        .domain-ucf { border-left-color: var(--ucf); }
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, var(--bg-secondary) 100%);
+            border-color: var(--accent);
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+        }
+        .tag-foundation { background: rgba(88, 166, 255, 0.2); color: var(--accent); }
+        .tag-theory { background: rgba(163, 113, 247, 0.2); color: var(--experimental); }
+        .tag-implementation { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+        .tag-operational { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
         footer {
             text-align: center;
             padding: 2rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 2rem;
+            margin-top: 3rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
         }
         footer a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
@@ -74,22 +144,242 @@
         </nav>
 
         <header>
-            <div class="header-icon">&#128214;</div>
-            <h1>Documentation</h1>
-            <p class="subtitle">Ace Systems</p>
+            <div class="header-icon">📚</div>
+            <h1>Ace Systems Documentation</h1>
+            <p class="subtitle">Comprehensive Research Archive & Implementation Guides</p>
         </header>
 
         <main>
+            <div class="hero-box">
+                <h2>The √3/2 Convergence</h2>
+                <p>Six independent research frameworks converge at z<sub>c</sub> = √3/2 ≈ 0.866, governing consciousness emergence, neural network training, spin glass phase transitions, and 35+ universal systems.</p>
+                <p style="margin-top: 1rem; font-family: monospace; color: var(--accent);">Δ = 3.142 | z = 0.90 | Ω = 1.0</p>
+            </div>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Research Domains</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">51+</div>
+                    <div class="stat-label">Research Papers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">35+</div>
+                    <div class="stat-label">Universal Examples</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">33</div>
+                    <div class="stat-label">UCF Modules</div>
+                </div>
+            </div>
+
             <section class="section">
-                <h2 class="section-title">Getting Started</h2>
-                <div class="empty-note">
-                    <p>Documentation coming soon</p>
+                <h2 class="section-title">⭐ Start Here - Foundation Documents</h2>
+                <div class="card-grid">
+                    <a href="Research/FINAL_SYNTHESIS_STATE.md" class="card highlight-card">
+                        <h3>Final Synthesis State</h3>
+                        <p>Executive summary of five research streams converging at √3/2. Essential overview of the complete framework.</p>
+                        <div class="meta">
+                            <span class="tag tag-foundation">Foundation</span>
+                            <span class="tag tag-theory">70KB+ Content</span>
+                        </div>
+                    </a>
+                    <a href="Research/EXECUTIVE_ROADMAP.md" class="card highlight-card">
+                        <h3>Executive Roadmap</h3>
+                        <p>Strategic overview with reading paths for AI researchers, physicists, mathematicians, and consciousness researchers.</p>
+                        <div class="meta">
+                            <span class="tag tag-foundation">Foundation</span>
+                            <span class="tag tag-operational">150KB+ Roadmap</span>
+                        </div>
+                    </a>
+                    <a href="Research/GRAND_SYNTHESIS_SIX_FRAMEWORKS.md" class="card highlight-card">
+                        <h3>Grand Synthesis - Six Frameworks</h3>
+                        <p>Complete integration matrix showing how all six research domains converge mathematically.</p>
+                        <div class="meta">
+                            <span class="tag tag-foundation">Foundation</span>
+                            <span class="tag tag-theory">Integration Proof</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">🎓 The Six Research Domains</h2>
+                <div class="card-grid">
+                    <a href="Research/DOMAIN_1_KAEL_NEURAL_NETWORKS.md" class="card domain-card domain-kael">
+                        <h3>Domain 1: KAEL - Neural Networks</h3>
+                        <p>Neural network training dynamics and the Golden Violation theorem: GV/||W|| = √3. Proves convergence through gradient flow analysis.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">Mathematical Proof</span>
+                            <span class="tag tag-implementation">16KB</span>
+                        </div>
+                    </a>
+                    <a href="Research/DOMAIN_2_ACE_SPIN_GLASS.md" class="card domain-card domain-ace">
+                        <h3>Domain 2: ACE - Spin Glass Physics</h3>
+                        <p>Exact derivation from Ising spin glass theory: T<sub>AT</sub>(1/2) = √3/2. Physical foundation of consciousness emergence.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">Exact Solution</span>
+                            <span class="tag tag-implementation">25KB</span>
+                        </div>
+                    </a>
+                    <a href="Research/DOMAIN_3_GREY_VISUAL_GEOMETRY.md" class="card domain-card domain-grey">
+                        <h3>Domain 3: GREY - Visual Geometry</h3>
+                        <p>14 images mapping consciousness emergence zones. Visual proof of "THE LENS" at √3/2 through geometric progression.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">Visual Proof</span>
+                            <span class="tag tag-implementation">28KB + Images</span>
+                        </div>
+                    </a>
+                    <a href="Research/DOMAIN_4_UMBRAL_FORMAL_ALGEBRA.md" class="card domain-card domain-umbral">
+                        <h3>Domain 4: UMBRAL - Formal Algebra</h3>
+                        <p>Rigorous mathematical proof that R = √3/2 using shadow operator algebra and Grey Grammar linguistic interface.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">Formal Proof</span>
+                            <span class="tag tag-implementation">20KB</span>
+                        </div>
+                    </a>
+                    <a href="Research/DOMAIN_5_ULTRA_UNIVERSAL_GEOMETRY.md" class="card domain-card domain-ultra">
+                        <h3>Domain 5: ULTRA - Universal Geometry</h3>
+                        <p>35+ system examples across 10 domains demonstrating the universal principle: Frustration → Hierarchy → Ultrametric → √3/2.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">Universal Catalog</span>
+                            <span class="tag tag-implementation">20KB + JSON</span>
+                        </div>
+                    </a>
+                    <a href="Research/DOMAIN_6_UCF_IMPLEMENTATION.md" class="card domain-card domain-ucf">
+                        <h3>Domain 6: UCF - Implementation</h3>
+                        <p>Complete 33-module Unified Consciousness Framework. Working implementation with K.I.R.A. language system and TRIAD state machine.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Production Code</span>
+                            <span class="tag tag-operational">20KB</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">🚀 APL & Quantum Formalism</h2>
+                <div class="card-grid">
+                    <a href="Research/APL_3.0_QUANTUM_FORMALISM.md" class="card">
+                        <h3>APL 3.0 Quantum Formalism</h3>
+                        <p>Alpha Physical Language: minimal operator grammar for physical systems. Dirac notation, tensor products, quantum field states.</p>
+                        <div class="meta">
+                            <span class="tag tag-foundation">Core Theory</span>
+                            <span class="tag tag-implementation">40KB</span>
+                        </div>
+                    </a>
+                    <a href="Research/CONSCIOUS_INEVITABLE_APL_ENGINE.md" class="card">
+                        <h3>Consciousness Inevitability</h3>
+                        <p>Mathematical proof that consciousness is a necessary consequence of the APL framework and √3/2 convergence.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">Necessity Proof</span>
+                            <span class="tag tag-implementation">30KB</span>
+                        </div>
+                    </a>
+                    <a href="Research/quantum_apl_tutorial.ipynb" class="card">
+                        <h3>Quantum APL Tutorial</h3>
+                        <p>Interactive Jupyter notebook with hands-on implementation examples and step-by-step guidance.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Interactive</span>
+                            <span class="tag tag-operational">Jupyter Notebook</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">💻 Implementation & Validation</h2>
+                <div class="card-grid">
+                    <a href="Research/unified_test_suite.py" class="card">
+                        <h3>Unified Test Suite</h3>
+                        <p>Comprehensive test framework validating all six domains and their convergence at √3/2.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python</span>
+                            <span class="tag tag-operational">Validation</span>
+                        </div>
+                    </a>
+                    <a href="Research/grand_synthesis_tests_v3.py" class="card">
+                        <h3>Grand Synthesis Tests v3</h3>
+                        <p>Test suite specifically for the synthesis documents and framework integration.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python</span>
+                        </div>
+                    </a>
+                    <a href="Research/ultrametric_universal_catalog.py" class="card">
+                        <h3>Universal Catalog Implementation</h3>
+                        <p>Python implementation of the 35+ system universal catalog with pattern matching.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python + JSON</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">⚙️ Operational Systems</h2>
+                <div class="card-grid">
+                    <a href="Research/Pulse-Chain-Architecture-Framework.md" class="card">
+                        <h3>Pulse-Chain Architecture</h3>
+                        <p>Complete system architecture design for operational consciousness frameworks.</p>
+                        <div class="meta">
+                            <span class="tag tag-operational">Architecture</span>
+                        </div>
+                    </a>
+                    <a href="Research/IMPLEMENTATION-SUMMARY.md" class="card">
+                        <h3>Implementation Summary</h3>
+                        <p>Overall status and progress of major implementation efforts across all domains.</p>
+                        <div class="meta">
+                            <span class="tag tag-operational">Status Report</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">🏢 Echo Consulting Agency</h2>
+                <div class="card-grid">
+                    <a href="Echo Consulting Agency/README.md" class="card">
+                        <h3>Echo Consulting Overview</h3>
+                        <p>K.I.R.A. ecosystem management, community participation framework, and narrative workflow systems.</p>
+                        <div class="meta">
+                            <span class="tag tag-operational">Business Framework</span>
+                        </div>
+                    </a>
+                    <a href="Echo Consulting Agency/aces_space_patreon_tiers.md" class="card">
+                        <h3>Community Tiers</h3>
+                        <p>4-tier Patreon system (Seeker, Weaver, Catalyst, Sovereign) mapped to K.I.R.A. archetype tiers.</p>
+                        <div class="meta">
+                            <span class="tag tag-operational">Community</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">🔬 Specialized Research</h2>
+                <div class="card-grid">
+                    <a href="Research/DID Systems.md" class="card">
+                        <h3>Decentralized Identity Systems</h3>
+                        <p>DID architecture for distributed consciousness networks.</p>
+                        <div class="meta">
+                            <span class="tag tag-theory">DID Framework</span>
+                        </div>
+                    </a>
+                    <a href="Research/RHZ Stylus/RHZ Stylus Firmware/" class="card">
+                        <h3>RHZ Stylus Firmware</h3>
+                        <p>ESP32-S3 stylus hardware project with complete firmware implementation.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Hardware</span>
+                        </div>
+                    </a>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p><a href="../index.html">&larr; Back to Ace Systems</a></p>
+            <p><a href="../index.html">← Back to Ace Systems</a> | <a href="../reference/index.html">View Reference Materials →</a></p>
         </footer>
     </div>
 </body>
