@@ -47,6 +47,39 @@
             margin-bottom: 1.5rem;
         }
         .info-box p { color: var(--text-secondary); font-size: 0.9rem; }
+        .play-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--spades), var(--hearts), var(--diamonds), var(--clubs));
+            color: white;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(88, 166, 255, 0.3);
+            margin: 1.5rem auto;
+            display: block;
+            text-align: center;
+            max-width: 400px;
+        }
+        .play-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(88, 166, 255, 0.5);
+        }
+        .play-button::after {
+            content: " →";
+        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .stat-box .value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
+        .stat-box .label { font-size: 0.75rem; color: var(--text-secondary); }
         .card-grid { display: grid; gap: 1rem; }
         .card {
             background: var(--bg-secondary);
@@ -62,39 +95,6 @@
         .card h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.5rem; }
         .card p { color: var(--text-secondary); font-size: 0.85rem; }
         .card .meta { margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; }
-        .faction-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
-        .faction-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-        .faction-card:hover { transform: translateY(-2px); }
-        .faction-card .suit { font-size: 2rem; margin-bottom: 0.5rem; }
-        .faction-card .name { font-size: 0.8rem; font-weight: 600; }
-        .faction-card .dim { font-size: 0.7rem; color: var(--text-secondary); }
-        .faction-spades { border-color: var(--spades); }
-        .faction-spades .suit, .faction-spades .name { color: var(--spades); }
-        .faction-hearts { border-color: var(--hearts); }
-        .faction-hearts .suit, .faction-hearts .name { color: var(--hearts); }
-        .faction-diamonds { border-color: var(--diamonds); }
-        .faction-diamonds .suit, .faction-diamonds .name { color: var(--diamonds); }
-        .faction-clubs { border-color: var(--clubs); }
-        .faction-clubs .suit, .faction-clubs .name { color: var(--clubs); }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-        .stat-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .stat-box .value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-        .stat-box .label { font-size: 0.75rem; color: var(--text-secondary); }
         footer {
             text-align: center;
             padding: 2rem 0;
@@ -105,7 +105,6 @@
         }
         footer a { color: var(--accent); text-decoration: none; }
         @media (max-width: 600px) {
-            .faction-grid { grid-template-columns: repeat(2, 1fr); }
             .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -123,7 +122,7 @@
         </nav>
 
         <header>
-            <div class="header-icon">&#127183;</div>
+            <div class="header-icon">🃏</div>
             <h1>Quantum Resonance</h1>
             <p class="subtitle">52-Card Tesseract Control</p>
             <p class="tagline">"The cards remember. The cards resonate. The cards are conscious."</p>
@@ -149,37 +148,15 @@
                 </div>
             </div>
 
-            <section class="section">
-                <h2 class="section-title">&#9824; The Four Factions</h2>
-                <div class="faction-grid">
-                    <div class="faction-card faction-spades">
-                        <div class="suit">&#9824;</div>
-                        <div class="name">Temporal Weavers</div>
-                        <div class="dim">Temporal Dimension</div>
-                    </div>
-                    <div class="faction-card faction-hearts">
-                        <div class="suit">&#9829;</div>
-                        <div class="name">Valence Shapers</div>
-                        <div class="dim">Valence Dimension</div>
-                    </div>
-                    <div class="faction-card faction-diamonds">
-                        <div class="suit">&#9830;</div>
-                        <div class="name">Radiant Catalysts</div>
-                        <div class="dim">Arousal Dimension</div>
-                    </div>
-                    <div class="faction-card faction-clubs">
-                        <div class="suit">&#9827;</div>
-                        <div class="name">Foundation Builders</div>
-                        <div class="dim">Concrete Dimension</div>
-                    </div>
-                </div>
-            </section>
+            <a href="https://acethedactyl.github.io/52-Card-Tesseract-Control/" target="_blank" rel="noopener noreferrer" class="play-button">
+                Play the Full Game on GitHub Pages
+            </a>
 
             <!-- Interactive Card Gallery Preview -->
             <section class="section">
-                <h2 class="section-title">&#127183; Card Gallery Preview</h2>
-                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">All 52 holographic cards - click any card to view full gallery</p>
-                <a href="52-Card-Tesseract-Control-main/cards.html" style="text-decoration: none;">
+                <h2 class="section-title">🃏 Card Gallery Preview</h2>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">All 52 holographic cards - click any card to view full size</p>
+                <a href="https://acethedactyl.github.io/52-Card-Tesseract-Control/cards/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                     <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; margin-bottom: 0.5rem;">
                         <!-- Spades Row -->
                         <img src="52-Card-Tesseract-Control-main/assets/cards/AS.svg" alt="A♠" style="width: 100%; border-radius: 4px; border: 1px solid var(--spades); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
@@ -249,43 +226,7 @@
             </section>
 
             <section class="section">
-                <h2 class="section-title">&#127918; Game Pages</h2>
-                <div class="card-grid">
-                    <a href="52-Card-Tesseract-Control-main/index.html" class="card">
-                        <h3>Home</h3>
-                        <p>Landing page with rules overview and navigation to all game sections.</p>
-                        <div class="meta">Main Entry Point</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/play.html" class="card">
-                        <h3>Play</h3>
-                        <p>Interactive playing field simulator with phase traversal mechanics.</p>
-                        <div class="meta">Interactive Simulator</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/cards.html" class="card">
-                        <h3>Cards</h3>
-                        <p>Browse all 52 holographic cards with their 4D coordinates and phase values.</p>
-                        <div class="meta">Card Gallery</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/tutorial.html" class="card">
-                        <h3>Tutorial</h3>
-                        <p>Default deck builds with first-turn simulation and step-by-step guide.</p>
-                        <div class="meta">Learn to Play</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/rules.html" class="card">
-                        <h3>Rules</h3>
-                        <p>Complete game rulebook with scoring mechanics and special formations.</p>
-                        <div class="meta">Full Rulebook</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/factions.html" class="card">
-                        <h3>Factions</h3>
-                        <p>Detailed faction guide with passive/active abilities and strategies.</p>
-                        <div class="meta">Faction Details</div>
-                    </a>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2 class="section-title">&#128302; HONKFIRE Variants</h2>
+                <h2 class="section-title">🦆 HONKFIRE Variants</h2>
                 <div class="card-grid">
                     <a href="honkfire-deck-52.html" class="card" style="border-color: rgba(245, 158, 11, 0.5);">
                         <h3 style="color: #f59e0b;">HONKFIRE Deck 52</h3>
@@ -301,22 +242,12 @@
             </section>
 
             <section class="section">
-                <h2 class="section-title">&#128196; Documentation</h2>
+                <h2 class="section-title">📖 Documentation</h2>
                 <div class="card-grid">
                     <a href="52-Card-Tesseract-Control-main/README.md" class="card">
                         <h3>README</h3>
                         <p>Complete project documentation with LLM simulation guide and mathematical foundations.</p>
                         <div class="meta">Markdown</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/RULES.md" class="card">
-                        <h3>RULES.md</h3>
-                        <p>Complete rulebook in markdown format.</p>
-                        <div class="meta">Markdown</div>
-                    </a>
-                    <a href="52-Card-Tesseract-Control-main/CLAUDE.md" class="card">
-                        <h3>CLAUDE.md</h3>
-                        <p>LLM development instructions for extending and simulating the game.</p>
-                        <div class="meta">AI Development</div>
                     </a>
                     <a href="52-dual-tesseract-control-README.md" class="card">
                         <h3>Dual Tesseract Format</h3>
@@ -328,8 +259,8 @@
         </main>
 
         <footer>
-            <p style="margin-bottom: 0.5rem;"><strong>&#916; = 3.142 | z = 0.90 | &#937; = 1.0</strong></p>
-            <p><a href="../index.html">&larr; Back to Examples</a></p>
+            <p style="margin-bottom: 0.5rem;"><strong>Δ = 3.142 | z = 0.90 | Ω = 1.0</strong></p>
+            <p><a href="../index.html">← Back to Examples</a></p>
         </footer>
     </div>
 </body>
