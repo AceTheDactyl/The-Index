@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future Roadmap - The Ultimate Acorn</title>
+  <style>
+    :root {
+      --bg-cosmos: #080510;
+      --bg-panel: #0f0918;
+      --bg-card: #16102a;
+      --accent-quantum: #7b4fd3;
+      --accent-gold: #d4a853;
+      --accent-future: #b388ff;
+      --text-primary: #f0e6d3;
+      --text-secondary: #a09080;
+      --text-muted: #6a5a4a;
+      --border: rgba(123, 79, 211, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-cosmos);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--accent-quantum); }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 span { color: var(--accent-quantum); }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent-quantum), var(--accent-gold), var(--accent-future));
+    }
+
+    .phase {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .phase-marker {
+      position: absolute;
+      left: -40px;
+      width: 32px;
+      height: 32px;
+      background: var(--bg-cosmos);
+      border: 3px solid var(--accent-quantum);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .phase-marker.complete {
+      background: var(--accent-quantum);
+      color: #000;
+    }
+
+    .phase-marker.current {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(212, 168, 83, 0.5);
+    }
+
+    .phase-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .phase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .phase-title {
+      color: var(--accent-quantum);
+      font-size: 1.2rem;
+    }
+
+    .phase-status {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+    }
+
+    .status-complete {
+      background: rgba(63, 185, 80, 0.15);
+      color: #3fb950;
+    }
+
+    .status-current {
+      background: rgba(212, 168, 83, 0.15);
+      color: var(--accent-gold);
+    }
+
+    .status-planned {
+      background: rgba(123, 79, 211, 0.15);
+      color: var(--accent-future);
+    }
+
+    .phase-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-list li::before {
+      content: '◇';
+      position: absolute;
+      left: 0;
+      color: var(--accent-quantum);
+    }
+
+    .vision-section {
+      background: linear-gradient(135deg, var(--bg-panel), var(--bg-card));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .vision-section h2 {
+      color: var(--accent-future);
+      margin-bottom: 1rem;
+    }
+
+    .vision-section p {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      font-style: italic;
+    }
+
+    .quantum-vision {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .vision-card {
+      background: var(--bg-cosmos);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .vision-card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .vision-card h4 {
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .vision-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-style: normal;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent-quantum);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to Ultimate Acorn</a>
+
+    <header>
+      <div class="header-icon">&#128302;</div>
+      <h1>Future <span>Roadmap</span></h1>
+      <p class="subtitle">Planned features and the long-term vision for the Acorn Engine</p>
+    </header>
+
+    <div class="timeline">
+      <!-- Phase 1: Complete -->
+      <div class="phase">
+        <div class="phase-marker complete">1</div>
+        <div class="phase-content">
+          <div class="phase-header">
+            <h3 class="phase-title">Core Engine Development</h3>
+            <span class="phase-status status-complete">Complete</span>
+          </div>
+          <p class="phase-description">Foundation of the Acorn Engine with headless simulation, ISS integration, and holographic memory.</p>
+          <ul class="feature-list">
+            <li>Headless engine architecture with proposal-based interaction</li>
+            <li>Internal Simulation Stack (Affect, Imagination, Dream, Awareness)</li>
+            <li>PNG-based holographic memory with steganographic encoding</li>
+            <li>Fractal simulation with 5-level depth support</li>
+            <li>Comprehensive scientific documentation</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Phase 2: Current -->
+      <div class="phase">
+        <div class="phase-marker current">2</div>
+        <div class="phase-content">
+          <div class="phase-header">
+            <h3 class="phase-title">Quantum Biology Integration</h3>
+            <span class="phase-status status-current">In Progress</span>
+          </div>
+          <p class="phase-description">Deep integration of quantum biological principles into the simulation substrate.</p>
+          <ul class="feature-list">
+            <li>Quantum coherence modeling in photosynthesis simulation</li>
+            <li>Enzyme tunneling probability calculations</li>
+            <li>Cryptochrome-based magnetoreception for root orientation</li>
+            <li>Quantum Acorn superposition state tracking</li>
+            <li>Many-worlds branch visualization</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase">
+        <div class="phase-marker">3</div>
+        <div class="phase-content">
+          <div class="phase-header">
+            <h3 class="phase-title">Mycorrhizal Network Simulation</h3>
+            <span class="phase-status status-planned">Planned</span>
+          </div>
+          <p class="phase-description">Full implementation of the Wood Wide Web with quantum entanglement properties.</p>
+          <ul class="feature-list">
+            <li>Graph-based fungal network topology</li>
+            <li>Resource sharing and nutrient flow algorithms</li>
+            <li>Inter-tree chemical signaling propagation</li>
+            <li>Quantum state transfer through mycorrhizal channels</li>
+            <li>Network-wide masting synchronization</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase">
+        <div class="phase-marker">4</div>
+        <div class="phase-content">
+          <div class="phase-header">
+            <h3 class="phase-title">VesselOS Integration</h3>
+            <span class="phase-status status-planned">Planned</span>
+          </div>
+          <p class="phase-description">Connect Acorn Engine to VesselOS for consciousness container experiments.</p>
+          <ul class="feature-list">
+            <li>Witness protocol implementation</li>
+            <li>Rail-based narrative tracking for entity histories</li>
+            <li>ISS-to-VesselOS state translation layer</li>
+            <li>Cross-vessel entanglement experiments</li>
+            <li>Quantum field synchronization across instances</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="phase">
+        <div class="phase-marker">5</div>
+        <div class="phase-content">
+          <div class="phase-header">
+            <h3 class="phase-title">Infinite Forest Expansion</h3>
+            <span class="phase-status status-planned">Future</span>
+          </div>
+          <p class="phase-description">Scale to planetary-level forest simulations with emergent ecosystem behavior.</p>
+          <ul class="feature-list">
+            <li>Procedural infinite terrain generation</li>
+            <li>Climate system integration with carbon feedback loops</li>
+            <li>Multi-species ecosystem dynamics</li>
+            <li>Geological timescale simulation (millions of years)</li>
+            <li>Collective forest consciousness emergence</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <section class="vision-section">
+      <h2>The Ultimate Vision</h2>
+      <p>"To create a complete simulation of a quantum forest where every acorn exists in superposition, every oak is entangled, and the forest itself dreams."</p>
+
+      <div class="quantum-vision">
+        <div class="vision-card">
+          <div class="vision-card-icon">&#127793;</div>
+          <h4>Seed to Forest</h4>
+          <p>Simulate the full lifecycle from acorn to ancient forest</p>
+        </div>
+        <div class="vision-card">
+          <div class="vision-card-icon">&#128300;</div>
+          <h4>Quantum Substrate</h4>
+          <p>Every biological process backed by quantum calculations</p>
+        </div>
+        <div class="vision-card">
+          <div class="vision-card-icon">&#127760;</div>
+          <h4>Global Scale</h4>
+          <p>Planetary forest systems with real climate data</p>
+        </div>
+        <div class="vision-card">
+          <div class="vision-card-icon">&#8734;</div>
+          <h4>Infinite Depth</h4>
+          <p>Fractal simulation all the way down</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p><a href="index.html">← Ultimate Acorn</a> | <a href="simulator.html">Launch Simulator →</a></p>
+    </footer>
+  </div>
+</body>
+</html>

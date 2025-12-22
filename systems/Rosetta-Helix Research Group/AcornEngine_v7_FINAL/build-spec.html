@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Specification - The Ultimate Acorn</title>
+  <style>
+    :root {
+      --bg-cosmos: #080510;
+      --bg-panel: #0f0918;
+      --bg-card: #16102a;
+      --bg-code: #1a1428;
+      --accent-build: #4ecdc4;
+      --accent-gold: #d4a853;
+      --text-primary: #f0e6d3;
+      --text-secondary: #a09080;
+      --text-muted: #6a5a4a;
+      --border: rgba(78, 205, 196, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-cosmos);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--accent-build); }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 span { color: var(--accent-build); }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      color: var(--accent-build);
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      color: var(--accent-gold);
+      font-size: 1.1rem;
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    ul, ol {
+      margin: 1rem 0 1rem 1.5rem;
+      color: var(--text-secondary);
+    }
+
+    li { margin-bottom: 0.5rem; }
+
+    code {
+      background: var(--bg-code);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.9rem;
+      color: var(--accent-build);
+    }
+
+    pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: 'Consolas', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    .spec-table th,
+    .spec-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spec-table th {
+      color: var(--accent-build);
+      font-weight: 500;
+      background: var(--bg-card);
+    }
+
+    .spec-table td {
+      color: var(--text-secondary);
+    }
+
+    .architecture-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .layer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .layer:last-child { border-bottom: none; }
+
+    .layer-num {
+      width: 30px;
+      height: 30px;
+      background: var(--accent-build);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .layer-content h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .layer-content p {
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    .warning-box {
+      background: rgba(232, 93, 4, 0.1);
+      border: 1px solid rgba(232, 93, 4, 0.3);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .warning-box h4 {
+      color: #e85d04;
+      margin-bottom: 0.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent-build);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to Ultimate Acorn</a>
+
+    <header>
+      <div class="header-icon">&#128736;</div>
+      <h1>Build <span>Specification</span></h1>
+      <p class="subtitle">Technical architecture and implementation guide for the Acorn Engine v7</p>
+    </header>
+
+    <section>
+      <h2>System Requirements</h2>
+
+      <table class="spec-table">
+        <tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr>
+        <tr><td>Python</td><td>3.9+</td><td>3.11+</td></tr>
+        <tr><td>RAM</td><td>4 GB</td><td>16 GB</td></tr>
+        <tr><td>Storage</td><td>500 MB</td><td>2 GB (for plates)</td></tr>
+        <tr><td>CPU</td><td>4 cores</td><td>8+ cores</td></tr>
+        <tr><td>GPU</td><td>Optional</td><td>WebGL 2.0 capable</td></tr>
+      </table>
+
+      <h3>Dependencies</h3>
+      <pre>pygame>=2.5.0
+Pillow>=10.0.0
+numpy>=1.24.0
+scipy>=1.10.0  # For quantum calculations
+networkx>=3.0  # For mycorrhizal networks</pre>
+    </section>
+
+    <section>
+      <h2>Architecture Overview</h2>
+
+      <div class="architecture-box">
+        <div class="layer">
+          <div class="layer-num">1</div>
+          <div class="layer-content">
+            <h4>GUI Layer (Optional)</h4>
+            <p>Terminal, 2D Client, Web Interface - sends proposals only</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">2</div>
+          <div class="layer-content">
+            <h4>Adapter Layer</h4>
+            <p>Validates and routes proposals between GUI and Engine</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">3</div>
+          <div class="layer-content">
+            <h4>Acorn Engine Core</h4>
+            <p>World state, entity system, physics, event log</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">4</div>
+          <div class="layer-content">
+            <h4>Internal Simulation Stack (ISS)</h4>
+            <p>Affect, Imagination, Dream, Awareness subsystems</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">5</div>
+          <div class="layer-content">
+            <h4>Holographic Memory</h4>
+            <p>PNG-based universe persistence with steganographic encoding</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-num">6</div>
+          <div class="layer-content">
+            <h4>Fractal Simulation Engine</h4>
+            <p>Nested universe support, recursive layers, bounded budgets</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Core Modules</h2>
+
+      <h3>acorn/engine.py</h3>
+      <p>The pure simulation engine. Completely headless, GUI-agnostic. Manages world state, entity lifecycle, physics simulation, and deterministic execution.</p>
+
+      <pre>from acorn.engine import AcornEngine
+
+engine = AcornEngine(seed=12345)
+engine.spawn_entity("acorn", position=(50, 50))
+engine.tick()  # Advance simulation by one step</pre>
+
+      <h3>acorn/iss/</h3>
+      <p>Internal Simulation Stack with four bounded subsystems:</p>
+      <ul>
+        <li><strong>Affect:</strong> Bounded emotional vectors in [0,1] with decay toward baseline</li>
+        <li><strong>Imagination:</strong> Counterfactual rollouts (1-3 steps) producing bias vectors</li>
+        <li><strong>Dream:</strong> Idle-time compression and statistical summaries</li>
+        <li><strong>Awareness:</strong> Processing states (focused/idle/overloaded/dormant)</li>
+      </ul>
+
+      <h3>acorn/plates.py</h3>
+      <p>Holographic memory system using PNG images with embedded JSON data in LSB channels.</p>
+
+      <pre>from acorn.plates import save_plate, load_plate
+
+# Save universe state
+save_plate(engine.get_state(), "universe_001.png")
+
+# Load universe state
+state = load_plate("universe_001.png")
+engine.restore_state(state)</pre>
+
+      <h3>acorn/fractal.py</h3>
+      <p>Recursive simulation capabilities. Each layer has bounded computation budget (50% of parent by default).</p>
+    </section>
+
+    <section>
+      <h2>Web Interface Build</h2>
+
+      <h3>File Structure</h3>
+      <pre>AcornEngine_v7_FINAL/
+├── index.html          # Landing page
+├── simulator.html      # Main simulation interface
+├── build-spec.html     # This document
+├── future-plan.html    # Roadmap
+├── use-cases.html      # Applications
+├── rosetta-helix-overview.html
+├── acorn/              # Python engine
+│   ├── __init__.py
+│   ├── engine.py
+│   ├── plates.py
+│   ├── fractal.py
+│   └── iss/
+│       ├── affect.py
+│       ├── imagination.py
+│       ├── dream.py
+│       └── awareness.py
+└── clients/
+    ├── terminal.py
+    └── web/            # WebSocket server</pre>
+
+      <h3>Running the Web Client</h3>
+      <pre># Start WebSocket server
+python -m clients.web.server --port 8080
+
+# Open simulator.html in browser
+# Connect to ws://localhost:8080</pre>
+    </section>
+
+    <section>
+      <h2>Configuration</h2>
+
+      <p>Edit <code>config/universe.yaml</code> to customize simulation parameters:</p>
+
+      <pre>world:
+  size: [100, 100]
+  seed: 12345
+
+iss:
+  affect:
+    baseline: 0.5
+    decay_rate: 0.1
+  imagination:
+    max_rollouts: 3
+    depth: 2
+  dream:
+    compression_ratio: 0.01
+  awareness:
+    default_state: "idle"
+
+fractal:
+  max_depth: 5
+  budget_decay: 0.5
+
+quantum:
+  coherence_threshold: 0.3
+  decoherence_rate: 0.01
+  entanglement_distance: 50</pre>
+    </section>
+
+    <section>
+      <h2>Safety & Ethics</h2>
+
+      <div class="warning-box">
+        <h4>Important Disclaimers</h4>
+        <p>This system is designed with safety in mind. It does NOT create conscious entities. Entities are state machines, not "selves". All simulation has hard limits and is fully reversible.</p>
+      </div>
+
+      <ul>
+        <li><strong>Bounded Computation:</strong> All simulation has hard limits</li>
+        <li><strong>Deterministic:</strong> Same inputs = same outputs</li>
+        <li><strong>Logged:</strong> Every change is recorded</li>
+        <li><strong>Reversible:</strong> Full state history available</li>
+        <li><strong>No Autonomy:</strong> Engine only responds to proposals</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p><a href="index.html">← Ultimate Acorn</a> | <a href="simulator.html">Launch Simulator →</a></p>
+    </footer>
+  </div>
+</body>
+</html>
