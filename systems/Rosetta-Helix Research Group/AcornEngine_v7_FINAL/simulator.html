@@ -244,71 +244,152 @@
 
     .acorn-3d {
       width: 200px;
-      height: 280px;
+      height: 200px;
       position: relative;
       margin: 0 auto;
-      perspective: 1000px;
     }
 
+    /* Geometric Seed Symbol */
     .acorn-body {
       position: absolute;
-      bottom: 0;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 160px;
-      background: radial-gradient(ellipse at 30% 30%, #c9a227 0%, #8b6914 50%, #5d4e37 100%);
-      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-      box-shadow:
-        inset -20px -20px 40px rgba(0,0,0,0.4),
-        inset 10px 10px 20px rgba(255,255,255,0.1),
-        0 20px 60px rgba(0,0,0,0.5);
-      animation: pulse 4s ease-in-out infinite;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, var(--accent-gold) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: corePulse 4s ease-in-out infinite;
     }
 
+    .acorn-body::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      box-shadow: 0 0 30px var(--accent-gold);
+    }
+
+    .acorn-body::after {
+      content: '⊙';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      color: var(--bg-cosmos);
+    }
+
+    /* Outer ring - quantum field */
     .acorn-cap {
       position: absolute;
-      top: 60px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       width: 140px;
-      height: 70px;
-      background:
-        repeating-conic-gradient(from 0deg, #5d4e37 0deg 10deg, #4a3d2a 10deg 20deg);
-      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-      box-shadow:
-        inset 0 -10px 20px rgba(0,0,0,0.3),
-        0 5px 15px rgba(0,0,0,0.3);
+      height: 140px;
+      border: 2px solid var(--accent-gold);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: ringPulse 4s ease-in-out infinite;
     }
 
+    .acorn-cap::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      border: 1px solid var(--accent-gold);
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+
+    .acorn-cap::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 110px;
+      height: 110px;
+      border: 1px dashed var(--accent-quantum);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: rotate 20s linear infinite;
+    }
+
+    /* Radiating lines - possibility branches */
     .acorn-stem {
       position: absolute;
-      top: 40px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+    }
+
+    .acorn-stem::before {
+      content: '';
+      position: absolute;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 8px;
-      height: 25px;
-      background: linear-gradient(90deg, #3d2e1a, #5d4e37, #3d2e1a);
-      border-radius: 4px;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent-gold) 30%, var(--accent-gold) 70%, transparent);
+      opacity: 0.4;
+    }
+
+    .acorn-stem::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-gold) 30%, var(--accent-gold) 70%, transparent);
+      opacity: 0.4;
+    }
+
+    @keyframes corePulse {
+      0%, 100% {
+        filter: brightness(1);
+        transform: translate(-50%, -50%) scale(1);
+      }
+      50% {
+        filter: brightness(1.3);
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+    }
+
+    @keyframes ringPulse {
+      0%, 100% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(1.02);
+      }
+    }
+
+    @keyframes rotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
     @keyframes pulse {
-      0%, 100% {
-        filter: brightness(1);
-        box-shadow:
-          inset -20px -20px 40px rgba(0,0,0,0.4),
-          inset 10px 10px 20px rgba(255,255,255,0.1),
-          0 20px 60px rgba(0,0,0,0.5),
-          0 0 40px rgba(212, 168, 83, 0.2);
-      }
-      50% {
-        filter: brightness(1.1);
-        box-shadow:
-          inset -20px -20px 40px rgba(0,0,0,0.4),
-          inset 10px 10px 20px rgba(255,255,255,0.1),
-          0 20px 60px rgba(0,0,0,0.5),
-          0 0 80px rgba(212, 168, 83, 0.4);
-      }
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
     }
 
     .acorn-label {
@@ -1728,13 +1809,28 @@
 
     function updateAcornVisual() {
       const acornBody = document.getElementById('acorn-body');
-      const acornDisplay = document.getElementById('acorn-display');
+      const acornCap = document.querySelector('.acorn-cap');
 
-      if (state.phase === 'germination') {
-        acornBody.style.borderRadius = '50% 50% 40% 40% / 40% 40% 60% 60%';
-        acornBody.style.background = 'radial-gradient(ellipse at 30% 30%, #c9a227 0%, #6b8e23 50%, #2d5a27 100%)';
-      } else if (state.phase === 'seedling' || state.phase === 'sapling' || state.phase === 'mature') {
-        acornBody.style.background = 'radial-gradient(ellipse at 30% 30%, #2d5a27 0%, #1a3518 50%, #0d1f0d 100%)';
+      // Update symbol based on life phase
+      if (state.phase === 'dormancy') {
+        acornBody.style.background = 'radial-gradient(circle, var(--accent-gold) 0%, transparent 70%)';
+        acornBody.setAttribute('data-symbol', '⊙');
+      } else if (state.phase === 'germination') {
+        acornBody.style.background = 'radial-gradient(circle, #52b788 0%, transparent 70%)';
+        acornBody.setAttribute('data-symbol', '✶');
+        if (acornCap) acornCap.style.borderColor = '#52b788';
+      } else if (state.phase === 'seedling') {
+        acornBody.style.background = 'radial-gradient(circle, #2d5a27 0%, transparent 70%)';
+        acornBody.setAttribute('data-symbol', '⚘');
+        if (acornCap) acornCap.style.borderColor = '#2d5a27';
+      } else if (state.phase === 'sapling') {
+        acornBody.style.background = 'radial-gradient(circle, #1a5a5a 0%, transparent 70%)';
+        acornBody.setAttribute('data-symbol', '⧬');
+        if (acornCap) acornCap.style.borderColor = '#1a5a5a';
+      } else if (state.phase === 'mature') {
+        acornBody.style.background = 'radial-gradient(circle, #8b6914 0%, transparent 70%)';
+        acornBody.setAttribute('data-symbol', '◎');
+        if (acornCap) acornCap.style.borderColor = '#8b6914';
       }
     }
 
