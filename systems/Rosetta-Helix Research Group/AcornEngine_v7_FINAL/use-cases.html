@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Potential Use Cases - The Ultimate Acorn</title>
+  <style>
+    :root {
+      --bg-cosmos: #080510;
+      --bg-panel: #0f0918;
+      --bg-card: #16102a;
+      --accent-fire: #e85d04;
+      --accent-gold: #d4a853;
+      --accent-leaf: #52b788;
+      --accent-quantum: #7b4fd3;
+      --accent-blue: #4ecdc4;
+      --text-primary: #f0e6d3;
+      --text-secondary: #a09080;
+      --text-muted: #6a5a4a;
+      --border: rgba(232, 93, 4, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-cosmos);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--accent-fire); }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 span { color: var(--accent-fire); }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .use-case-card {
+      background: linear-gradient(145deg, var(--bg-panel), var(--bg-card));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .use-case-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .icon-research { background: linear-gradient(135deg, rgba(123, 79, 211, 0.3), rgba(123, 79, 211, 0.1)); }
+    .icon-education { background: linear-gradient(135deg, rgba(82, 183, 136, 0.3), rgba(82, 183, 136, 0.1)); }
+    .icon-creative { background: linear-gradient(135deg, rgba(232, 93, 4, 0.3), rgba(232, 93, 4, 0.1)); }
+    .icon-consciousness { background: linear-gradient(135deg, rgba(212, 168, 83, 0.3), rgba(212, 168, 83, 0.1)); }
+    .icon-ecology { background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(78, 205, 196, 0.1)); }
+    .icon-therapy { background: linear-gradient(135deg, rgba(179, 136, 255, 0.3), rgba(179, 136, 255, 0.1)); }
+
+    .card-title {
+      font-size: 1.1rem;
+      color: var(--accent-fire);
+    }
+
+    .card-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .applications-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .applications-list li {
+      padding: 0.4rem 0;
+      padding-left: 1.25rem;
+      position: relative;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .applications-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent-fire);
+    }
+
+    .highlight-section {
+      background: linear-gradient(135deg, var(--bg-panel), var(--bg-card));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .highlight-section h2 {
+      color: var(--accent-gold);
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+
+    .highlight-section p {
+      color: var(--text-secondary);
+    }
+
+    .example-box {
+      background: var(--bg-cosmos);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .example-box h4 {
+      color: var(--accent-fire);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .example-box p {
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .quote-section {
+      text-align: center;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+
+    .quote {
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .quote-attribution {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent-fire);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to Ultimate Acorn</a>
+
+    <header>
+      <div class="header-icon">&#128161;</div>
+      <h1>Potential <span>Use Cases</span></h1>
+      <p class="subtitle">Research applications, educational scenarios, and creative explorations</p>
+    </header>
+
+    <div class="use-cases-grid">
+      <!-- Research -->
+      <div class="use-case-card">
+        <div class="card-header">
+          <div class="card-icon icon-research">&#128300;</div>
+          <h3 class="card-title">Scientific Research</h3>
+        </div>
+        <p class="card-description">Explore emergent behavior in complex systems without the constraints of physical experimentation.</p>
+        <ul class="applications-list">
+          <li>Test hypotheses about quantum effects in biology</li>
+          <li>Model mycorrhizal network dynamics</li>
+          <li>Simulate climate change impacts on forests</li>
+          <li>Study fractal patterns in natural growth</li>
+          <li>Explore self-organizing systems</li>
+        </ul>
+      </div>
+
+      <!-- Education -->
+      <div class="use-case-card">
+        <div class="card-header">
+          <div class="card-icon icon-education">&#127891;</div>
+          <h3 class="card-title">Educational Tools</h3>
+        </div>
+        <p class="card-description">Interactive learning experiences for botany, ecology, physics, and systems thinking.</p>
+        <ul class="applications-list">
+          <li>Visualize oak lifecycle for biology classes</li>
+          <li>Demonstrate thermodynamics principles</li>
+          <li>Teach fractal mathematics interactively</li>
+          <li>Explore ecosystem dynamics hands-on</li>
+          <li>Illustrate quantum concepts accessibly</li>
+        </ul>
+      </div>
+
+      <!-- Creative -->
+      <div class="use-case-card">
+        <div class="card-header">
+          <div class="card-icon icon-creative">&#127912;</div>
+          <h3 class="card-title">Creative Exploration</h3>
+        </div>
+        <p class="card-description">Generate unique visuals, narratives, and world-building foundations.</p>
+        <ul class="applications-list">
+          <li>Procedural world generation for games</li>
+          <li>Create evolving digital art installations</li>
+          <li>Generate branching narrative structures</li>
+          <li>Design fantastical forest ecosystems</li>
+          <li>Inspire speculative fiction writing</li>
+        </ul>
+      </div>
+
+      <!-- Consciousness Studies -->
+      <div class="use-case-card">
+        <div class="card-header">
+          <div class="card-icon icon-consciousness">&#129504;</div>
+          <h3 class="card-title">Consciousness Studies</h3>
+        </div>
+        <p class="card-description">Explore questions about awareness, observation, and emergence in safe simulated environments.</p>
+        <ul class="applications-list">
+          <li>Model observer effects on systems</li>
+          <li>Experiment with ISS layer interactions</li>
+          <li>Study attention and awareness states</li>
+          <li>Explore integrated information theory</li>
+          <li>Simulate collective consciousness emergence</li>
+        </ul>
+      </div>
+
+      <!-- Ecology -->
+      <div class="use-case-card">
+        <div class="card-header">
+          <div class="card-icon icon-ecology">&#127795;</div>
+          <h3 class="card-title">Ecological Modeling</h3>
+        </div>
+        <p class="card-description">Simulate forest ecosystems with realistic biological and environmental interactions.</p>
+        <ul class="applications-list">
+          <li>Model carbon sequestration scenarios</li>
+          <li>Simulate forest succession dynamics</li>
+          <li>Study species interaction networks</li>
+          <li>Test reforestation strategies</li>
+          <li>Predict ecosystem responses to change</li>
+        </ul>
+      </div>
+
+      <!-- Therapeutic -->
+      <div class="use-case-card">
+        <div class="card-header">
+          <div class="card-icon icon-therapy">&#127808;</div>
+          <h3 class="card-title">Contemplative Practice</h3>
+        </div>
+        <p class="card-description">Use the simulation as a meditative tool for reflection and mindfulness.</p>
+        <ul class="applications-list">
+          <li>Meditate on growth and transformation</li>
+          <li>Reflect on interconnection and networks</li>
+          <li>Practice patience through slow observation</li>
+          <li>Explore metaphors for personal growth</li>
+          <li>Engage in forest bathing (digitally)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight-section">
+      <h2>Example Research Scenario</h2>
+      <p>A researcher wants to understand how synchronized masting behavior could emerge without direct communication between trees. Using the Acorn Engine:</p>
+      <div class="example-box">
+        <h4>Experiment Design</h4>
+        <p>Spawn 100 oak entities across a virtual forest. Enable mycorrhizal network connections. Disable all "above-ground" signaling. Run simulation for 500 years. Observe whether masting synchronization emerges through quantum entanglement in the root network alone. Log correlation coefficients between distant trees' acorn production.</p>
+      </div>
+    </div>
+
+    <div class="quote-section">
+      <p class="quote">"The question is not whether the acorn knows it will become an oak. The question is whether the simulation helps us understand how knowing and becoming are the same thing."</p>
+      <p class="quote-attribution">— Rosetta-Helix Research Notes</p>
+    </div>
+
+    <footer>
+      <p><a href="index.html">← Ultimate Acorn</a> | <a href="simulator.html">Launch Simulator →</a></p>
+    </footer>
+  </div>
+</body>
+</html>
