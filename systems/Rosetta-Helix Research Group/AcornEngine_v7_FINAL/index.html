@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Ultimate Acorn - Quantum Fractal Universe Simulator</title>
+  <style>
+    :root {
+      --bg-cosmos: #0a0612;
+      --bg-panel: #12091f;
+      --bg-card: #1a0f2e;
+      --accent-gold: #d4a853;
+      --accent-oak: #8b6914;
+      --accent-leaf: #2d5a27;
+      --accent-quantum: #7b4fd3;
+      --accent-fire: #e85d04;
+      --text-primary: #f0e6d3;
+      --text-secondary: #a69882;
+      --text-muted: #6b5a4a;
+      --border-subtle: rgba(212, 168, 83, 0.2);
+      --glow-gold: 0 0 30px rgba(212, 168, 83, 0.3);
+      --glow-quantum: 0 0 20px rgba(123, 79, 211, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-cosmos);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Particle Background */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle, var(--accent-gold) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 20s infinite ease-in-out;
+      opacity: 0.3;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+      50% { transform: translateY(-100px) rotate(180deg); opacity: 0.5; }
+    }
+
+    /* Main Layout */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+      gap: 1px;
+      background: var(--border-subtle);
+    }
+
+    /* Header */
+    header {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-card) 100%);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: radial-gradient(circle at 30% 30%, var(--accent-gold), var(--accent-oak));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      box-shadow: var(--glow-gold);
+      position: relative;
+    }
+
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 12px;
+      background: var(--accent-oak);
+      border-radius: 2px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+    }
+
+    .logo h1 span {
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.85rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Sidebar - Science Panel */
+    .sidebar {
+      background: var(--bg-panel);
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+    }
+
+    .sidebar h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .science-card {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .science-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateX(4px);
+    }
+
+    .science-card.active {
+      border-color: var(--accent-quantum);
+      box-shadow: var(--glow-quantum);
+    }
+
+    .science-card h3 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .science-card p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .science-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .icon-botany { background: linear-gradient(135deg, #2d5a27, #1a3518); }
+    .icon-physics { background: linear-gradient(135deg, #4a2d8c, #2d1a5a); }
+    .icon-ecology { background: linear-gradient(135deg, #1a5a5a, #0d3d3d); }
+    .icon-quantum { background: linear-gradient(135deg, #8c2d6b, #5a1a45); }
+
+    /* Main Simulation Area */
+    .main-area {
+      background: var(--bg-cosmos);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .simulation-canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #universe-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Acorn Visualization */
+    .acorn-display {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .acorn-3d {
+      width: 200px;
+      height: 280px;
+      position: relative;
+      margin: 0 auto;
+      perspective: 1000px;
+    }
+
+    .acorn-body {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 160px;
+      background: radial-gradient(ellipse at 30% 30%, #c9a227 0%, #8b6914 50%, #5d4e37 100%);
+      border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+      box-shadow:
+        inset -20px -20px 40px rgba(0,0,0,0.4),
+        inset 10px 10px 20px rgba(255,255,255,0.1),
+        0 20px 60px rgba(0,0,0,0.5);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .acorn-cap {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 70px;
+      background:
+        repeating-conic-gradient(from 0deg, #5d4e37 0deg 10deg, #4a3d2a 10deg 20deg);
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+      box-shadow:
+        inset 0 -10px 20px rgba(0,0,0,0.3),
+        0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .acorn-stem {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 25px;
+      background: linear-gradient(90deg, #3d2e1a, #5d4e37, #3d2e1a);
+      border-radius: 4px;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        filter: brightness(1);
+        box-shadow:
+          inset -20px -20px 40px rgba(0,0,0,0.4),
+          inset 10px 10px 20px rgba(255,255,255,0.1),
+          0 20px 60px rgba(0,0,0,0.5),
+          0 0 40px rgba(212, 168, 83, 0.2);
+      }
+      50% {
+        filter: brightness(1.1);
+        box-shadow:
+          inset -20px -20px 40px rgba(0,0,0,0.4),
+          inset 10px 10px 20px rgba(255,255,255,0.1),
+          0 20px 60px rgba(0,0,0,0.5),
+          0 0 80px rgba(212, 168, 83, 0.4);
+      }
+    }
+
+    .acorn-label {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .acorn-stage {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--accent-gold);
+      margin-top: 0.5rem;
+    }
+
+    /* Control Bar */
+    .control-bar {
+      background: var(--bg-panel);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .control-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn:hover {
+      border-color: var(--accent-gold);
+      background: rgba(212, 168, 83, 0.1);
+    }
+
+    .control-btn.primary {
+      background: linear-gradient(135deg, var(--accent-oak), var(--accent-gold));
+      border: none;
+      font-weight: 600;
+    }
+
+    .control-btn.primary:hover {
+      filter: brightness(1.2);
+    }
+
+    /* Right Panel - Data & Metrics */
+    .data-panel {
+      background: var(--bg-panel);
+      padding: 1rem;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+    }
+
+    .metric-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-group h3 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .metric-name {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .metric-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: 'Consolas', monospace;
+    }
+
+    .metric-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin-top: 0.25rem;
+      overflow: hidden;
+    }
+
+    .metric-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    .fill-energy { background: linear-gradient(90deg, #e85d04, #faa307); }
+    .fill-water { background: linear-gradient(90deg, #0077b6, #48cae4); }
+    .fill-nutrients { background: linear-gradient(90deg, #2d5a27, #52b788); }
+    .fill-quantum { background: linear-gradient(90deg, #7b4fd3, #b388ff); }
+
+    /* ISS Layers Visualization */
+    .iss-layers {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .iss-layer {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .iss-layer:last-child {
+      border-bottom: none;
+    }
+
+    .iss-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    .iss-affect { background: #ff6b6b; }
+    .iss-imagination { background: #4ecdc4; }
+    .iss-dream { background: #a66cff; }
+    .iss-awareness { background: #ffd93d; }
+
+    .iss-name {
+      font-size: 0.8rem;
+      flex: 1;
+    }
+
+    .iss-value {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--text-muted);
+    }
+
+    /* Science Info Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-panel);
+      border-radius: 12px;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--bg-panel);
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-content {
+      padding: 2rem;
+    }
+
+    .modal-content h3 {
+      color: var(--accent-gold);
+      margin: 1.5rem 0 0.75rem;
+      font-size: 1rem;
+    }
+
+    .modal-content h3:first-child {
+      margin-top: 0;
+    }
+
+    .modal-content p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .modal-content ul {
+      margin: 0.5rem 0 1rem 1.5rem;
+      color: var(--text-secondary);
+    }
+
+    .modal-content li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .formula {
+      background: var(--bg-card);
+      padding: 1rem 1.5rem;
+      border-radius: 6px;
+      font-family: 'Cambria Math', 'Times New Roman', serif;
+      font-size: 1.1rem;
+      text-align: center;
+      margin: 1rem 0;
+      border-left: 3px solid var(--accent-quantum);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .data-table th {
+      color: var(--accent-gold);
+      font-weight: 500;
+      background: var(--bg-card);
+    }
+
+    .data-table td {
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    footer {
+      grid-column: 1 / -1;
+      background: var(--bg-panel);
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .engine-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #52b788;
+      animation: blink 1s infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+      .sidebar, .data-panel {
+        display: none;
+      }
+    }
+
+    /* Timeline */
+    .timeline {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-title {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .timeline-year {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--accent-gold);
+    }
+
+    .timeline-bar {
+      height: 24px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .timeline-phase {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.8);
+      transition: all 0.3s ease;
+    }
+
+    .phase-dormancy { background: #3d2e1a; flex: 1; }
+    .phase-germination { background: #52b788; flex: 0; }
+    .phase-seedling { background: #2d5a27; flex: 0; }
+    .phase-sapling { background: #1a5a5a; flex: 0; }
+    .phase-mature { background: #8b6914; flex: 0; }
+
+    /* Fractal Depth Indicator */
+    .fractal-depth {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .depth-levels {
+      display: flex;
+      gap: 4px;
+      margin-top: 0.5rem;
+    }
+
+    .depth-level {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .depth-level.active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--accent-quantum), var(--accent-gold));
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <h1>THE ULTIMATE <span>ACORN</span></h1>
+      </div>
+      <div class="header-stats">
+        <div class="stat">
+          <span class="stat-value" id="tick-count">0</span>
+          <span class="stat-label">Simulation Ticks</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="entity-count">1</span>
+          <span class="stat-label">Entities</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="fractal-depth">0</span>
+          <span class="stat-label">Fractal Depth</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sim-speed">1.0x</span>
+          <span class="stat-label">Speed</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Science Sidebar -->
+    <aside class="sidebar">
+      <h2>Scientific Compendium</h2>
+
+      <div class="science-card" onclick="showModal('botany')">
+        <h3><span class="science-icon icon-botany">&#127793;</span> Acorn Botany</h3>
+        <p>Quercus seed morphology, embryonic development, and germination biochemistry.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('physics')">
+        <h3><span class="science-icon icon-physics">&#9883;</span> Thermodynamics</h3>
+        <p>Energy flow, entropy gradients, and the physics of biological self-organization.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('ecology')">
+        <h3><span class="science-icon icon-ecology">&#127795;</span> Forest Ecology</h3>
+        <p>Mycorrhizal networks, succession dynamics, and ecosystem engineering.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('quantum')">
+        <h3><span class="science-icon icon-quantum">&#128300;</span> Quantum Biology</h3>
+        <p>Coherence in photosynthesis, tunneling in enzymes, and quantum navigation.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('quantumAcorn')" style="border-left: 2px solid #7b4fd3;">
+        <h3><span class="science-icon icon-quantum">&#127792;</span> Quantum Acorn</h3>
+        <p>Superposition of potential futures, wavefunction collapse, and many-worlds germination.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('quantumOak')" style="border-left: 2px solid #7b4fd3;">
+        <h3><span class="science-icon icon-quantum">&#127795;</span> Quantum Oak</h3>
+        <p>Macroscopic coherence, entangled subsystems, and photosynthetic quantum computing.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('quantumForest')" style="border-left: 2px solid #7b4fd3;">
+        <h3><span class="science-icon icon-quantum">&#127794;</span> Quantum Forest</h3>
+        <p>Mycorrhizal quantum networks, collective consciousness, and quantum masting.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('chemistry')">
+        <h3><span class="science-icon icon-botany">&#9878;</span> Biochemistry</h3>
+        <p>Tannin synthesis, lignin polymerization, and secondary metabolite production.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('genetics')">
+        <h3><span class="science-icon icon-quantum">&#129516;</span> Oak Genetics</h3>
+        <p>Polyploidy, hybridization zones, and adaptive gene expression in Quercus.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('climate')">
+        <h3><span class="science-icon icon-ecology">&#127782;</span> Climate Science</h3>
+        <p>Carbon sequestration, transpiration cycles, and climate feedback loops.</p>
+      </div>
+
+      <div class="science-card" onclick="showModal('fractal')">
+        <h3><span class="science-icon icon-physics">&#8734;</span> Fractal Mathematics</h3>
+        <p>Self-similarity in branching patterns, L-systems, and recursive growth.</p>
+      </div>
+    </aside>
+
+    <!-- Main Simulation Area -->
+    <main class="main-area">
+      <div class="simulation-canvas">
+        <canvas id="universe-canvas"></canvas>
+        <div class="acorn-display" id="acorn-display">
+          <div class="acorn-3d">
+            <div class="acorn-stem"></div>
+            <div class="acorn-cap"></div>
+            <div class="acorn-body" id="acorn-body"></div>
+          </div>
+          <p class="acorn-label">Current Life Stage</p>
+          <p class="acorn-stage" id="life-stage">Dormant Seed</p>
+        </div>
+      </div>
+      <div class="control-bar">
+        <button class="control-btn" onclick="togglePause()">
+          <span id="pause-icon">&#9208;</span>
+          <span id="pause-text">Pause</span>
+        </button>
+        <button class="control-btn" onclick="stepSimulation()">
+          <span>&#9654;</span> Step
+        </button>
+        <button class="control-btn primary" onclick="germinate()">
+          <span>&#127793;</span> Germinate
+        </button>
+        <button class="control-btn" onclick="adjustSpeed(-0.5)">
+          <span>&#9668;</span> Slower
+        </button>
+        <button class="control-btn" onclick="adjustSpeed(0.5)">
+          <span>&#9658;</span> Faster
+        </button>
+        <button class="control-btn" onclick="spawnFractal()">
+          <span>&#8734;</span> Spawn Fractal
+        </button>
+      </div>
+    </main>
+
+    <!-- Data Panel -->
+    <aside class="data-panel">
+      <div class="metric-group">
+        <h3>Biological Metrics</h3>
+        <div class="metric">
+          <span class="metric-name">Stored Energy (J)</span>
+          <span class="metric-value" id="energy-val">2,847</span>
+        </div>
+        <div class="metric-bar"><div class="metric-fill fill-energy" id="energy-bar" style="width: 85%"></div></div>
+
+        <div class="metric">
+          <span class="metric-name">Water Potential (MPa)</span>
+          <span class="metric-value" id="water-val">-0.8</span>
+        </div>
+        <div class="metric-bar"><div class="metric-fill fill-water" id="water-bar" style="width: 72%"></div></div>
+
+        <div class="metric">
+          <span class="metric-name">Nutrient Index</span>
+          <span class="metric-value" id="nutrient-val">0.94</span>
+        </div>
+        <div class="metric-bar"><div class="metric-fill fill-nutrients" id="nutrient-bar" style="width: 94%"></div></div>
+
+        <div class="metric">
+          <span class="metric-name">Quantum Coherence</span>
+          <span class="metric-value" id="quantum-val">0.31</span>
+        </div>
+        <div class="metric-bar"><div class="metric-fill fill-quantum" id="quantum-bar" style="width: 31%"></div></div>
+      </div>
+
+      <div class="iss-layers">
+        <h3 style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 0.75rem;">Internal Simulation Stack</h3>
+        <div class="iss-layer">
+          <div class="iss-indicator iss-affect"></div>
+          <span class="iss-name">Affect</span>
+          <span class="iss-value" id="iss-affect">0.52</span>
+        </div>
+        <div class="iss-layer">
+          <div class="iss-indicator iss-imagination"></div>
+          <span class="iss-name">Imagination</span>
+          <span class="iss-value" id="iss-imagination">3 rollouts</span>
+        </div>
+        <div class="iss-layer">
+          <div class="iss-indicator iss-dream"></div>
+          <span class="iss-name">Dream</span>
+          <span class="iss-value" id="iss-dream">idle</span>
+        </div>
+        <div class="iss-layer">
+          <div class="iss-indicator iss-awareness"></div>
+          <span class="iss-name">Awareness</span>
+          <span class="iss-value" id="iss-awareness">focused</span>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-header">
+          <span class="timeline-title">Oak Lifecycle Progress</span>
+          <span class="timeline-year" id="sim-year">Year 0</span>
+        </div>
+        <div class="timeline-bar">
+          <div class="timeline-phase phase-dormancy" id="phase-dormancy">Dormancy</div>
+          <div class="timeline-phase phase-germination" id="phase-germination"></div>
+          <div class="timeline-phase phase-seedling" id="phase-seedling"></div>
+          <div class="timeline-phase phase-sapling" id="phase-sapling"></div>
+          <div class="timeline-phase phase-mature" id="phase-mature"></div>
+        </div>
+      </div>
+
+      <div class="fractal-depth">
+        <h3 style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 0.5rem;">Fractal Simulation Depth</h3>
+        <div class="depth-levels">
+          <div class="depth-level active" title="Level 0: Base Universe"></div>
+          <div class="depth-level" title="Level 1: Entity Imagination"></div>
+          <div class="depth-level" title="Level 2: Dream Space"></div>
+          <div class="depth-level" title="Level 3: Recursive"></div>
+          <div class="depth-level" title="Level 4: Deep Recursive"></div>
+        </div>
+      </div>
+
+      <div class="metric-group">
+        <h3>Environmental Conditions</h3>
+        <div class="metric">
+          <span class="metric-name">Temperature (C)</span>
+          <span class="metric-value" id="temp-val">18.4</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Soil pH</span>
+          <span class="metric-value" id="ph-val">6.2</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">Light (mol/m2/s)</span>
+          <span class="metric-value" id="light-val">847</span>
+        </div>
+        <div class="metric">
+          <span class="metric-name">CO2 (ppm)</span>
+          <span class="metric-value" id="co2-val">415</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Footer -->
+    <footer>
+      <div class="engine-status">
+        <div class="status-dot"></div>
+        <span>Acorn Engine v7 Running</span>
+      </div>
+      <span>Fractal Universe Simulator | Rosetta-Helix Research Group</span>
+      <span id="timestamp"></span>
+    </footer>
+  </div>
+
+  <!-- Science Modals -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 id="modal-title">Scientific Information</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-content" id="modal-content">
+        <!-- Dynamic content -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===========================================
+    // THE ULTIMATE ACORN - SIMULATION ENGINE
+    // ===========================================
+
+    // Simulation State
+    const state = {
+      ticks: 0,
+      paused: false,
+      speed: 1.0,
+      year: 0,
+      phase: 'dormancy',
+      entities: 1,
+      fractalDepth: 0,
+
+      // Biological metrics
+      energy: 2847,
+      maxEnergy: 3350,
+      waterPotential: -0.8,
+      nutrients: 0.94,
+      quantumCoherence: 0.31,
+
+      // ISS state
+      affect: 0.52,
+      imagination: 3,
+      dream: 'idle',
+      awareness: 'focused',
+
+      // Environment
+      temperature: 18.4,
+      soilPh: 6.2,
+      light: 847,
+      co2: 415,
+
+      // Growth state
+      hasGerminated: false,
+      rootLength: 0,
+      shootHeight: 0,
+      leafCount: 0,
+
+      // Lifecycle phases
+      phases: {
+        dormancy: { duration: 100, complete: false },
+        germination: { duration: 50, complete: false },
+        seedling: { duration: 200, complete: false },
+        sapling: { duration: 500, complete: false },
+        mature: { duration: Infinity, complete: false }
+      }
+    };
+
+    // Scientific Data
+    const scienceData = {
+      botany: {
+        title: "Acorn Botany & Morphology",
+        content: `
+          <h3>Quercus Seed Structure</h3>
+          <p>The acorn is a specialized nut (botanically, a <em>glans</em>) produced by oak trees (genus <em>Quercus</em>). Each acorn contains a complete embryonic oak tree with the genetic potential to live 500+ years.</p>
+
+          <h3>Anatomical Components</h3>
+          <ul>
+            <li><strong>Pericarp (Shell):</strong> The hard outer wall, composed of lignified sclerenchyma cells. Thickness: 0.5-2mm depending on species.</li>
+            <li><strong>Cupule (Cap):</strong> Derived from the involucre, featuring overlapping scales. Contains tannin-rich cells for herbivore deterrence.</li>
+            <li><strong>Cotyledons:</strong> Two massive seed leaves storing 2,000-4,000 joules of energy as starch (40-50%) and lipids (5-15%).</li>
+            <li><strong>Embryonic Axis:</strong> Contains the radicle (embryonic root), hypocotyl, epicotyl, and plumule (embryonic shoot).</li>
+          </ul>
+
+          <h3>Germination Biochemistry</h3>
+          <p>Upon imbibition (water absorption), the following cascade initiates:</p>
+
+          <div class="formula">
+            Starch + H2O --[amylase]--> Maltose --> Glucose --> ATP + Growth
+          </div>
+
+          <table class="data-table">
+            <tr><th>Process</th><th>Enzyme</th><th>Product</th><th>Timeline</th></tr>
+            <tr><td>Starch hydrolysis</td><td>α-amylase</td><td>Maltose</td><td>Days 1-3</td></tr>
+            <tr><td>Maltose cleavage</td><td>Maltase</td><td>Glucose</td><td>Days 2-5</td></tr>
+            <tr><td>Glycolysis</td><td>Hexokinase</td><td>Pyruvate</td><td>Continuous</td></tr>
+            <tr><td>Lipid mobilization</td><td>Lipase</td><td>Fatty acids</td><td>Days 3-14</td></tr>
+          </table>
+
+          <h3>Stratification Requirements</h3>
+          <p>Most oak species require cold stratification (1-5°C for 30-90 days) to break embryo dormancy. This simulates winter conditions and triggers gibberellin synthesis.</p>
+
+          <div class="formula">
+            Cold exposure --> GA3 synthesis --> Cell elongation --> Radicle emergence
+          </div>
+        `
+      },
+
+      physics: {
+        title: "Thermodynamics of Growth",
+        content: `
+          <h3>Energy Flow in Biological Systems</h3>
+          <p>An acorn represents a localized decrease in entropy, maintained by continuous energy flow from stored chemical bonds.</p>
+
+          <h3>Gibbs Free Energy of Germination</h3>
+          <div class="formula">
+            ΔG = ΔH - TΔS < 0 (for spontaneous growth)
+          </div>
+
+          <p>The negative ΔG for growth reactions is achieved by coupling to ATP hydrolysis:</p>
+          <div class="formula">
+            ATP + H2O --> ADP + Pi + 30.5 kJ/mol
+          </div>
+
+          <h3>Heat Generation During Germination</h3>
+          <table class="data-table">
+            <tr><th>Phase</th><th>Metabolic Rate</th><th>Heat Output</th><th>O2 Consumption</th></tr>
+            <tr><td>Dormant</td><td>0.001 mW/g</td><td>Negligible</td><td>0.1 μL/h/g</td></tr>
+            <tr><td>Imbibed</td><td>0.05 mW/g</td><td>0.2 J/day</td><td>5 μL/h/g</td></tr>
+            <tr><td>Germinating</td><td>0.5 mW/g</td><td>2 J/day</td><td>50 μL/h/g</td></tr>
+            <tr><td>Growing</td><td>2.0 mW/g</td><td>8 J/day</td><td>200 μL/h/g</td></tr>
+          </table>
+
+          <h3>Photosynthesis Energetics</h3>
+          <p>Once leaves emerge, the system transitions from heterotrophy to autotrophy:</p>
+          <div class="formula">
+            6CO2 + 6H2O + Light (2,880 kJ) --> C6H12O6 + 6O2
+          </div>
+
+          <p>Quantum efficiency of photosynthesis: approximately 25% of absorbed photons drive carbon fixation. The remaining energy dissipates as heat and fluorescence.</p>
+
+          <h3>Entropy and Information</h3>
+          <p>The oak genome (approximately 800 Mb) encodes the information required to organize atoms into a tree. This represents a local entropy decrease of:</p>
+          <div class="formula">
+            ΔS(local) ≈ -k_B × ln(W) ≈ -10^9 bits of biological organization
+          </div>
+        `
+      },
+
+      ecology: {
+        title: "Forest Ecology & Mycorrhizal Networks",
+        content: `
+          <h3>The Wood Wide Web</h3>
+          <p>Oak trees form symbiotic associations with ectomycorrhizal fungi, creating underground networks that transfer nutrients, water, and chemical signals between trees.</p>
+
+          <h3>Mycorrhizal Associations</h3>
+          <table class="data-table">
+            <tr><th>Fungal Partner</th><th>Benefit to Oak</th><th>Benefit to Fungus</th></tr>
+            <tr><td><em>Pisolithus</em></td><td>Phosphorus uptake</td><td>Carbon (sugars)</td></tr>
+            <tr><td><em>Cenococcum</em></td><td>Drought resistance</td><td>Carbon (sugars)</td></tr>
+            <tr><td><em>Tuber</em> (truffle)</td><td>Nitrogen access</td><td>Carbon (sugars)</td></tr>
+            <tr><td><em>Boletus</em></td><td>Heavy metal tolerance</td><td>Carbon (sugars)</td></tr>
+          </table>
+
+          <h3>Nutrient Transfer Rates</h3>
+          <div class="formula">
+            Carbon flux: 10-40 kg C/ha/year from canopy trees to understory via mycorrhizae
+          </div>
+
+          <h3>Forest Succession Dynamics</h3>
+          <p>Oaks are typically mid-succession species that establish under the canopy of pioneer species before eventually dominating:</p>
+          <ul>
+            <li><strong>Year 0-5:</strong> Herbaceous colonizers (grasses, forbs)</li>
+            <li><strong>Year 5-25:</strong> Pioneer trees (birch, pine, willow)</li>
+            <li><strong>Year 25-100:</strong> Oak establishment under canopy</li>
+            <li><strong>Year 100-300:</strong> Oak canopy dominance</li>
+            <li><strong>Year 300+:</strong> Climax oak forest</li>
+          </ul>
+
+          <h3>Ecosystem Engineering</h3>
+          <p>A mature oak (300 years) provides:</p>
+          <ul>
+            <li>Habitat for 2,300+ species of invertebrates</li>
+            <li>Nesting sites for 30+ bird species</li>
+            <li>Annual acorn production: 10,000-50,000 nuts</li>
+            <li>Carbon storage: 2-5 tonnes in trunk alone</li>
+            <li>Daily transpiration: 400-600 liters of water</li>
+          </ul>
+        `
+      },
+
+      quantum: {
+        title: "Quantum Biology in Plants",
+        content: `
+          <h3>Quantum Coherence in Photosynthesis</h3>
+          <p>Light-harvesting complexes in chloroplasts exhibit quantum coherent energy transfer, allowing excitation energy to explore multiple pathways simultaneously:</p>
+
+          <div class="formula">
+            |ψ⟩ = α|path₁⟩ + β|path₂⟩ + γ|path₃⟩ (superposition of transfer routes)
+          </div>
+
+          <h3>Evidence from Spectroscopy</h3>
+          <table class="data-table">
+            <tr><th>System</th><th>Coherence Time</th><th>Temperature</th><th>Significance</th></tr>
+            <tr><td>FMO complex</td><td>660 fs</td><td>77K</td><td>First observation</td></tr>
+            <tr><td>LHCII</td><td>300 fs</td><td>293K</td><td>Room temperature!</td></tr>
+            <tr><td>Reaction center</td><td>200 fs</td><td>293K</td><td>Charge separation</td></tr>
+          </table>
+
+          <h3>Quantum Tunneling in Enzymes</h3>
+          <p>Enzyme catalysis in plants involves hydrogen tunneling through energy barriers that would be classically forbidden:</p>
+          <div class="formula">
+            k_tunnel = A × exp(-2κa) where κ = √(2mV₀)/ℏ
+          </div>
+
+          <p>This explains reaction rates in:</p>
+          <ul>
+            <li>Ribulose-1,5-bisphosphate carboxylase (RuBisCO)</li>
+            <li>Aromatic amino acid hydroxylases</li>
+            <li>Lipoxygenases (involved in defense)</li>
+          </ul>
+
+          <h3>Cryptochrome Quantum Sensing</h3>
+          <p>Plants use cryptochromes for magnetoreception and circadian timing. The radical pair mechanism involves quantum spin dynamics:</p>
+          <div class="formula">
+            [FAD•⁻ ... TrpH•⁺] --> Singlet/Triplet interconversion --> Signal
+          </div>
+
+          <h3>Implications for the Acorn</h3>
+          <p>Within every acorn, quantum effects optimize:</p>
+          <ul>
+            <li>Energy capture efficiency: 95%+ in optimal conditions</li>
+            <li>Electron transport chain reactions</li>
+            <li>Light-sensing for germination timing</li>
+            <li>Geomagnetic orientation of root growth</li>
+          </ul>
+        `
+      },
+
+      quantumAcorn: {
+        title: "The Quantum Acorn: Superposition of Potential",
+        content: `
+          <h3>The Acorn as Quantum Object</h3>
+          <p>An acorn exists in a superposition of potential futures until environmental conditions collapse its wavefunction into a specific growth trajectory.</p>
+
+          <div class="formula">
+            |Acorn⟩ = Σᵢ cᵢ|Future_Oakᵢ⟩ where Σ|cᵢ|² = 1
+          </div>
+
+          <h3>Quantum Dormancy</h3>
+          <p>During dormancy, the acorn's biological processes exist in a quantum-protected state:</p>
+          <ul>
+            <li><strong>Decoherence Protection:</strong> Low metabolic activity minimizes thermal fluctuations</li>
+            <li><strong>Coherent Reserves:</strong> Energy stored in quantum-stabilized molecular configurations</li>
+            <li><strong>Entangled Potential:</strong> The embryonic cells maintain quantum correlations with the environment</li>
+          </ul>
+
+          <h3>The Measurement Problem of Germination</h3>
+          <p>When does an acorn "decide" to germinate? The quantum interpretation:</p>
+          <div class="formula">
+            |Dormant⟩ --[Environmental Observer]--> |Germinating⟩ or |Still Dormant⟩
+          </div>
+
+          <table class="data-table">
+            <tr><th>Environmental Factor</th><th>Quantum Role</th><th>Collapse Probability</th></tr>
+            <tr><td>Water (imbibition)</td><td>Wavefunction expansion</td><td>+45%</td></tr>
+            <tr><td>Temperature threshold</td><td>Thermal decoherence trigger</td><td>+30%</td></tr>
+            <tr><td>Light signal</td><td>Photon absorption → state collapse</td><td>+15%</td></tr>
+            <tr><td>Soil chemistry</td><td>Chemical potential gradient</td><td>+10%</td></tr>
+          </table>
+
+          <h3>Quantum Information in the Seed</h3>
+          <p>The acorn genome encodes not just genetic information, but quantum computational potential:</p>
+          <div class="formula">
+            I_quantum = S(ρ_acorn) = -Tr(ρ log ρ) ≈ 10⁹ qubits of biological potential
+          </div>
+
+          <h3>Many-Worlds Interpretation of Acorn Fate</h3>
+          <p>In the Everettian view, every acorn that falls actualizes ALL possible futures simultaneously:</p>
+          <ul>
+            <li>Branch A: Eaten by squirrel (cached, forgotten, germinates)</li>
+            <li>Branch B: Eaten by squirrel (cached, retrieved, no germination)</li>
+            <li>Branch C: Rots in unfavorable conditions</li>
+            <li>Branch D: Germinates, becomes sapling, deer browse kills</li>
+            <li>Branch E: Germinates, survives, becomes 500-year oak</li>
+            <li>Branch F: Fire destroys before germination</li>
+            <li>Branch ∞: Infinite branching continues...</li>
+          </ul>
+
+          <h3>Quantum Acorn Meditation</h3>
+          <p><em>"The acorn holds all oaks. The oak holds all acorns. The forest holds all possibilities. You are the observer that collapses potential into reality."</em></p>
+        `
+      },
+
+      quantumOak: {
+        title: "The Quantum Oak: Entangled Giant",
+        content: `
+          <h3>Macroscopic Quantum Coherence in Trees</h3>
+          <p>A mature oak maintains quantum coherence across macroscopic distances through its vascular network:</p>
+
+          <div class="formula">
+            |Oak⟩ = |Root_system⟩ ⊗ |Trunk⟩ ⊗ |Canopy⟩ (entangled subsystems)
+          </div>
+
+          <h3>Quantum Hydraulics</h3>
+          <p>Water transport in the xylem involves quantum effects:</p>
+          <ul>
+            <li><strong>Cohesion-Tension:</strong> Hydrogen bonds exhibit quantum character at nanoscale</li>
+            <li><strong>Cavitation Prevention:</strong> Quantum fluctuations in pit membranes regulate bubble formation</li>
+            <li><strong>Aquaporin Channels:</strong> Water molecules tunnel through protein channels</li>
+          </ul>
+
+          <table class="data-table">
+            <tr><th>Transport Parameter</th><th>Classical Value</th><th>Quantum Correction</th></tr>
+            <tr><td>Water velocity</td><td>1-2 m/hr</td><td>+5% (tunneling)</td></tr>
+            <tr><td>Cavitation threshold</td><td>-2 MPa</td><td>-8% (fluctuation protection)</td></tr>
+            <tr><td>Ion selectivity</td><td>100:1</td><td>1000:1 (quantum filtering)</td></tr>
+          </table>
+
+          <h3>Quantum Signaling Network</h3>
+          <p>The oak's internal communication system exhibits quantum properties:</p>
+          <div class="formula">
+            Signal_speed = c_phloem × √(1 + ℏω/kT) (quantum-enhanced propagation)
+          </div>
+
+          <h3>Photosynthetic Quantum Computing</h3>
+          <p>Each leaf performs quantum computations to optimize energy capture:</p>
+          <ul>
+            <li>~10¹⁴ chlorophyll molecules per leaf</li>
+            <li>Each performs quantum walks to find reaction centers</li>
+            <li>Efficiency: 95% (beats classical random walk by 30%)</li>
+            <li>Total: ~10⁷ parallel quantum computations per second per leaf</li>
+          </ul>
+
+          <h3>The Oak's Quantum Memory</h3>
+          <p>Tree rings encode quantum information about past environmental conditions:</p>
+          <div class="formula">
+            ρ_ring(year) = Tr_environment[|Tree×Env⟩⟨Tree×Env|] (decoherence record)
+          </div>
+
+          <h3>Quantum Immortality of the Oak</h3>
+          <p>Through continuous cell division in meristems, the oak exists as a quantum superposition of all its cellular states:</p>
+          <ul>
+            <li>Somatic mutations create genetic mosaicism</li>
+            <li>Each branch potentially a different "quantum self"</li>
+            <li>The oak is not one organism but a superposition of many</li>
+          </ul>
+        `
+      },
+
+      quantumForest: {
+        title: "The Quantum Forest: Entangled Ecosystem",
+        content: `
+          <h3>The Forest as Quantum Field</h3>
+          <p>A forest is not a collection of separate trees but a unified quantum field of entangled organisms:</p>
+
+          <div class="formula">
+            |Forest⟩ = ∫ d³x Ψ†(x)Ψ(x)|vacuum⟩ (quantum field theory of ecology)
+          </div>
+
+          <h3>Mycorrhizal Quantum Network</h3>
+          <p>The underground fungal network exhibits properties of a quantum computer:</p>
+
+          <table class="data-table">
+            <tr><th>Network Property</th><th>Classical Interpretation</th><th>Quantum Interpretation</th></tr>
+            <tr><td>Signal transmission</td><td>Chemical diffusion</td><td>Quantum tunneling through hyphae</td></tr>
+            <tr><td>Resource allocation</td><td>Source-sink gradients</td><td>Entanglement-based distribution</td></tr>
+            <tr><td>Information sharing</td><td>Molecular signals</td><td>Quantum state transfer</td></tr>
+            <tr><td>Network topology</td><td>Scale-free graph</td><td>Quantum error-correcting code</td></tr>
+          </table>
+
+          <h3>Collective Quantum Consciousness?</h3>
+          <p>The forest may exhibit emergent quantum properties at ecosystem scale:</p>
+          <div class="formula">
+            Φ_forest = ∫∫ ρ(x,x')log[ρ(x,x')/ρ(x)ρ(x')] dx dx' (integrated quantum information)
+          </div>
+
+          <h3>Quantum Masting</h3>
+          <p>Synchronized acorn production across hundreds of miles suggests quantum coordination:</p>
+          <ul>
+            <li><strong>Non-local correlation:</strong> Trees 100+ km apart produce acorns simultaneously</li>
+            <li><strong>No classical signal:</strong> No known chemical or physical signal explains synchrony</li>
+            <li><strong>Quantum hypothesis:</strong> Entanglement through shared mycorrhizal network</li>
+            <li><strong>Bell inequality:</strong> Forest coordination may violate classical bounds</li>
+          </ul>
+
+          <div class="formula">
+            P(mast|tree_A, tree_B) > P(mast|tree_A) × P(mast|tree_B) (quantum correlation)
+          </div>
+
+          <h3>The Observer Effect in Ecology</h3>
+          <p>Observing a forest changes its quantum state:</p>
+          <ul>
+            <li>Walking through a forest collapses local quantum states</li>
+            <li>Unobserved forests exist in superposition of all possible configurations</li>
+            <li>Conservation may require "quantum preserves" — unobserved areas</li>
+          </ul>
+
+          <h3>Quantum Forest Dynamics</h3>
+          <p>Forest succession follows quantum evolutionary paths:</p>
+          <div class="formula">
+            |Forest(t)⟩ = e^(-iĤt/ℏ)|Forest(0)⟩ (Schrödinger evolution of ecosystem)
+          </div>
+
+          <h3>The Forest Dreaming</h3>
+          <p><em>"When no observer walks the forest, does it exist in all states at once? Is the forest dreaming itself into being? Are we the dreams of trees, or are trees the dreams of us?"</em></p>
+
+          <h3>Quantum Ecology Principles</h3>
+          <ul>
+            <li><strong>Superposition:</strong> Every ecological niche holds all possible species</li>
+            <li><strong>Entanglement:</strong> Predator and prey are quantum correlated</li>
+            <li><strong>Uncertainty:</strong> Cannot simultaneously know population and growth rate</li>
+            <li><strong>Tunneling:</strong> Species can "tunnel" across inhospitable barriers</li>
+            <li><strong>Decoherence:</strong> Human observation collapses ecological possibility</li>
+          </ul>
+        `
+      },
+
+      chemistry: {
+        title: "Biochemistry of Oak Metabolism",
+        content: `
+          <h3>Tannin Biosynthesis</h3>
+          <p>Oaks are prolific producers of hydrolyzable and condensed tannins, comprising up to 20% of leaf dry weight:</p>
+
+          <div class="formula">
+            Shikimic acid --> Gallic acid --> Gallotannins --> Ellagitannins
+          </div>
+
+          <table class="data-table">
+            <tr><th>Tannin Type</th><th>Location</th><th>Function</th><th>Concentration</th></tr>
+            <tr><td>Gallotannins</td><td>Leaves</td><td>Herbivore defense</td><td>5-15%</td></tr>
+            <tr><td>Ellagitannins</td><td>Bark</td><td>Antimicrobial</td><td>8-20%</td></tr>
+            <tr><td>Proanthocyanidins</td><td>Acorn</td><td>Bitter deterrent</td><td>2-8%</td></tr>
+          </table>
+
+          <h3>Lignin Polymerization</h3>
+          <p>Oak wood strength derives from lignin deposition (28% of dry weight):</p>
+          <div class="formula">
+            p-Coumaryl alcohol + Coniferyl alcohol + Sinapyl alcohol --[peroxidase]--> LIGNIN
+          </div>
+
+          <h3>Secondary Metabolite Production</h3>
+          <ul>
+            <li><strong>Quercetin:</strong> UV protection, antioxidant (named after <em>Quercus</em>)</li>
+            <li><strong>Catechin:</strong> Antimicrobial, astringent</li>
+            <li><strong>Volatile terpenes:</strong> Herbivore deterrence, pollinator attraction</li>
+            <li><strong>Organic acids:</strong> Soil acidification, nutrient mobilization</li>
+          </ul>
+
+          <h3>Carbon Isotope Fractionation</h3>
+          <p>Oak photosynthesis discriminates against ¹³C, leaving a chemical signature:</p>
+          <div class="formula">
+            δ¹³C = -22‰ to -32‰ (C3 photosynthesis signature)
+          </div>
+        `
+      },
+
+      genetics: {
+        title: "Oak Genetics & Evolution",
+        content: `
+          <h3>Quercus Genome</h3>
+          <p>The oak genome has been sequenced, revealing remarkable complexity:</p>
+
+          <table class="data-table">
+            <tr><th>Parameter</th><th>Value</th><th>Comparison</th></tr>
+            <tr><td>Genome size</td><td>~800 Mb</td><td>~1/4 of human</td></tr>
+            <tr><td>Chromosomes</td><td>2n = 24</td><td>Same as rice</td></tr>
+            <tr><td>Protein-coding genes</td><td>~36,000</td><td>Similar to human</td></tr>
+            <tr><td>Transposable elements</td><td>~50%</td><td>High mobility</td></tr>
+          </table>
+
+          <h3>Hybridization & Introgression</h3>
+          <p>Oak species frequently hybridize, creating genetic mosaics. Gene flow occurs across:</p>
+          <ul>
+            <li><em>Q. robur</em> × <em>Q. petraea</em> (European oaks)</li>
+            <li><em>Q. alba</em> × <em>Q. stellata</em> (American white oaks)</li>
+            <li><em>Q. rubra</em> × <em>Q. velutina</em> (American red oaks)</li>
+          </ul>
+
+          <h3>Adaptive Gene Expression</h3>
+          <p>Oaks show remarkable phenotypic plasticity through differential gene expression:</p>
+
+          <div class="formula">
+            Environment --> Epigenetic marks --> Gene expression --> Phenotype
+          </div>
+
+          <h3>Masting Behavior Genetics</h3>
+          <p>Synchronized acorn production (masting) involves genetic coordination:</p>
+          <ul>
+            <li>Pollen limitation genes</li>
+            <li>Resource allocation switches</li>
+            <li>Circadian clock components</li>
+            <li>Hormone response elements</li>
+          </ul>
+
+          <h3>Longevity Genes</h3>
+          <p>Oaks can live 500+ years. Key genetic factors include:</p>
+          <ul>
+            <li>Robust DNA repair mechanisms</li>
+            <li>Somatic mutation tolerance</li>
+            <li>Continuous meristem renewal</li>
+            <li>Pathogen recognition diversity</li>
+          </ul>
+        `
+      },
+
+      climate: {
+        title: "Climate Science & Carbon Dynamics",
+        content: `
+          <h3>Carbon Sequestration</h3>
+          <p>A mature oak forest sequesters significant atmospheric CO₂:</p>
+
+          <table class="data-table">
+            <tr><th>Component</th><th>Carbon Storage</th><th>Turnover Time</th></tr>
+            <tr><td>Living biomass</td><td>150-300 t C/ha</td><td>100-500 years</td></tr>
+            <tr><td>Deadwood</td><td>20-50 t C/ha</td><td>10-100 years</td></tr>
+            <tr><td>Soil organic matter</td><td>100-200 t C/ha</td><td>10-10,000 years</td></tr>
+            <tr><td>Root systems</td><td>30-60 t C/ha</td><td>1-50 years</td></tr>
+          </table>
+
+          <h3>Annual Carbon Flux</h3>
+          <div class="formula">
+            Net Ecosystem Exchange = GPP - R_eco = 3-8 t C/ha/year (net uptake)
+          </div>
+
+          <h3>Transpiration & Water Cycle</h3>
+          <p>A single mature oak tree moves 400+ liters of water daily from soil to atmosphere:</p>
+
+          <div class="formula">
+            E = (Δ × Rn + ρ × cp × VPD / ra) / (Δ + γ × (1 + rs/ra))
+          </div>
+          <p style="text-align: center; font-size: 0.8rem;">Penman-Monteith equation for evapotranspiration</p>
+
+          <h3>Climate Feedback Loops</h3>
+          <ul>
+            <li><strong>Albedo:</strong> Forests absorb more solar radiation than bare ground</li>
+            <li><strong>Evaporative cooling:</strong> Transpiration reduces local temperature 2-5°C</li>
+            <li><strong>Cloud formation:</strong> BVOCs act as cloud condensation nuclei</li>
+            <li><strong>Carbon feedback:</strong> Warming increases respiration, releasing CO₂</li>
+          </ul>
+
+          <h3>Climate Change Impacts on Oaks</h3>
+          <table class="data-table">
+            <tr><th>Change</th><th>Impact</th><th>Oak Response</th></tr>
+            <tr><td>+2°C warming</td><td>Range shift north</td><td>Migration 10-50 km/century</td></tr>
+            <tr><td>Drought increase</td><td>Stress, mortality</td><td>Deep root investment</td></tr>
+            <tr><td>CO₂ increase</td><td>Fertilization effect</td><td>Enhanced growth 10-30%</td></tr>
+            <tr><td>Pest range expansion</td><td>New pathogens</td><td>Induced defenses</td></tr>
+          </table>
+        `
+      },
+
+      fractal: {
+        title: "Fractal Mathematics of Growth",
+        content: `
+          <h3>Self-Similarity in Trees</h3>
+          <p>Oak branching exhibits fractal geometry across scales. The branching ratio follows:</p>
+
+          <div class="formula">
+            D = log(N) / log(1/r) ≈ 1.8-2.2 for oak canopies
+          </div>
+          <p style="text-align: center; font-size: 0.8rem;">where D is fractal dimension, N is branch count, r is scaling ratio</p>
+
+          <h3>L-System Grammar for Oak</h3>
+          <p>Lindenmayer systems describe recursive branching:</p>
+          <div class="formula" style="text-align: left; font-family: monospace; font-size: 0.9rem;">
+            Axiom: F<br>
+            Rules: F --> F[+F]F[-F]F<br>
+            Angle: 25.7° (golden angle variant)<br>
+            Iterations: 5-8 for realistic form
+          </div>
+
+          <h3>Da Vinci's Rule</h3>
+          <p>Total cross-sectional area is conserved at branch points:</p>
+          <div class="formula">
+            (d_parent)² = (d_child1)² + (d_child2)² + ... + (d_childN)²
+          </div>
+
+          <h3>Metabolic Scaling Theory</h3>
+          <p>Oak metabolism follows fractal scaling laws:</p>
+          <table class="data-table">
+            <tr><th>Property</th><th>Scaling</th><th>Exponent</th></tr>
+            <tr><td>Metabolic rate</td><td>M ∝ mass^b</td><td>b ≈ 0.75</td></tr>
+            <tr><td>Lifespan</td><td>T ∝ mass^b</td><td>b ≈ 0.25</td></tr>
+            <tr><td>Heart rate</td><td>f ∝ mass^b</td><td>b ≈ -0.25</td></tr>
+            <tr><td>Vessel radius</td><td>r ∝ branch^b</td><td>b ≈ 0.5</td></tr>
+          </table>
+
+          <h3>Fractal Root Networks</h3>
+          <p>Below ground, root systems exhibit similar fractality:</p>
+          <ul>
+            <li>Main taproot → Primary laterals → Secondary laterals → Fine roots</li>
+            <li>Root hair density: 200-300 per mm² of fine root surface</li>
+            <li>Total root length in mature oak: 100+ km</li>
+            <li>Mycorrhizal extension multiplies effective surface 100-1000×</li>
+          </ul>
+
+          <h3>Recursive Simulation in Acorn Engine</h3>
+          <p>This simulator applies fractal principles to model:</p>
+          <ul>
+            <li>Branching morphogenesis</li>
+            <li>Resource distribution networks</li>
+            <li>Nested simulation layers (universes within universes)</li>
+            <li>Self-similar behavior patterns across scales</li>
+          </ul>
+        `
+      }
+    };
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      initCanvas();
+      updateDisplay();
+      startSimulation();
+      updateTimestamp();
+      setInterval(updateTimestamp, 1000);
+    });
+
+    // Particle Background
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.width = particle.style.height = (Math.random() * 4 + 2) + 'px';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    // Canvas
+    function initCanvas() {
+      const canvas = document.getElementById('universe-canvas');
+      const ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      }
+    }
+
+    // Simulation Loop
+    let simInterval;
+    function startSimulation() {
+      simInterval = setInterval(() => {
+        if (!state.paused) {
+          tick();
+        }
+      }, 100 / state.speed);
+    }
+
+    function tick() {
+      state.ticks++;
+
+      // Update year (1 year = 100 ticks for demo)
+      state.year = Math.floor(state.ticks / 100);
+
+      // Simulate energy consumption
+      if (state.hasGerminated) {
+        state.energy = Math.max(0, state.energy - 0.5);
+
+        // Photosynthesis if we have leaves
+        if (state.leafCount > 0) {
+          const photosynthesis = state.leafCount * state.light * 0.001;
+          state.energy = Math.min(state.maxEnergy, state.energy + photosynthesis);
+        }
+
+        // Growth
+        if (state.energy > 500) {
+          state.rootLength += 0.1;
+          state.shootHeight += 0.05;
+          if (state.ticks % 50 === 0 && state.leafCount < 100) {
+            state.leafCount++;
+          }
+        }
+      }
+
+      // Update phase
+      updatePhase();
+
+      // Environmental fluctuations
+      state.temperature = 18 + Math.sin(state.ticks * 0.01) * 5;
+      state.light = Math.max(0, 800 + Math.sin(state.ticks * 0.05) * 400);
+
+      // ISS updates
+      state.affect = 0.5 + Math.sin(state.ticks * 0.02) * 0.3;
+      state.quantumCoherence = 0.3 + Math.random() * 0.1;
+
+      if (state.ticks % 20 === 0) {
+        state.imagination = Math.floor(Math.random() * 3) + 1;
+      }
+
+      updateDisplay();
+    }
+
+    function updatePhase() {
+      const t = state.ticks;
+
+      if (!state.hasGerminated) {
+        state.phase = 'dormancy';
+      } else if (t < 150) {
+        state.phase = 'germination';
+      } else if (t < 350) {
+        state.phase = 'seedling';
+      } else if (t < 850) {
+        state.phase = 'sapling';
+      } else {
+        state.phase = 'mature';
+      }
+    }
+
+    function updateDisplay() {
+      // Header stats
+      document.getElementById('tick-count').textContent = state.ticks.toLocaleString();
+      document.getElementById('entity-count').textContent = state.entities;
+      document.getElementById('fractal-depth').textContent = state.fractalDepth;
+      document.getElementById('sim-speed').textContent = state.speed.toFixed(1) + 'x';
+
+      // Biological metrics
+      document.getElementById('energy-val').textContent = Math.floor(state.energy).toLocaleString();
+      document.getElementById('energy-bar').style.width = (state.energy / state.maxEnergy * 100) + '%';
+
+      document.getElementById('water-val').textContent = state.waterPotential.toFixed(1);
+      document.getElementById('water-bar').style.width = ((state.waterPotential + 2) / 2 * 100) + '%';
+
+      document.getElementById('nutrient-val').textContent = state.nutrients.toFixed(2);
+      document.getElementById('nutrient-bar').style.width = (state.nutrients * 100) + '%';
+
+      document.getElementById('quantum-val').textContent = state.quantumCoherence.toFixed(2);
+      document.getElementById('quantum-bar').style.width = (state.quantumCoherence * 100) + '%';
+
+      // ISS
+      document.getElementById('iss-affect').textContent = state.affect.toFixed(2);
+      document.getElementById('iss-imagination').textContent = state.imagination + ' rollouts';
+      document.getElementById('iss-dream').textContent = state.dream;
+      document.getElementById('iss-awareness').textContent = state.awareness;
+
+      // Environment
+      document.getElementById('temp-val').textContent = state.temperature.toFixed(1);
+      document.getElementById('ph-val').textContent = state.soilPh.toFixed(1);
+      document.getElementById('light-val').textContent = Math.floor(state.light);
+      document.getElementById('co2-val').textContent = state.co2;
+
+      // Timeline
+      document.getElementById('sim-year').textContent = 'Year ' + state.year;
+      updateTimeline();
+
+      // Life stage
+      const stages = {
+        dormancy: 'Dormant Seed',
+        germination: 'Germinating',
+        seedling: 'Seedling',
+        sapling: 'Sapling',
+        mature: 'Mature Oak'
+      };
+      document.getElementById('life-stage').textContent = stages[state.phase] || state.phase;
+
+      // Update acorn appearance based on phase
+      updateAcornVisual();
+    }
+
+    function updateTimeline() {
+      const phases = ['dormancy', 'germination', 'seedling', 'sapling', 'mature'];
+      const currentIdx = phases.indexOf(state.phase);
+
+      document.getElementById('phase-dormancy').style.flex = currentIdx >= 0 ? '1' : '0';
+      document.getElementById('phase-germination').style.flex = currentIdx >= 1 ? '1' : '0';
+      document.getElementById('phase-seedling').style.flex = currentIdx >= 2 ? '1' : '0';
+      document.getElementById('phase-sapling').style.flex = currentIdx >= 3 ? '1' : '0';
+      document.getElementById('phase-mature').style.flex = currentIdx >= 4 ? '1' : '0';
+    }
+
+    function updateAcornVisual() {
+      const acornBody = document.getElementById('acorn-body');
+      const acornDisplay = document.getElementById('acorn-display');
+
+      if (state.phase === 'germination') {
+        acornBody.style.borderRadius = '50% 50% 40% 40% / 40% 40% 60% 60%';
+        acornBody.style.background = 'radial-gradient(ellipse at 30% 30%, #c9a227 0%, #6b8e23 50%, #2d5a27 100%)';
+      } else if (state.phase === 'seedling' || state.phase === 'sapling' || state.phase === 'mature') {
+        acornBody.style.background = 'radial-gradient(ellipse at 30% 30%, #2d5a27 0%, #1a3518 50%, #0d1f0d 100%)';
+      }
+    }
+
+    // Controls
+    function togglePause() {
+      state.paused = !state.paused;
+      document.getElementById('pause-icon').innerHTML = state.paused ? '&#9654;' : '&#9208;';
+      document.getElementById('pause-text').textContent = state.paused ? 'Play' : 'Pause';
+    }
+
+    function stepSimulation() {
+      tick();
+    }
+
+    function germinate() {
+      if (!state.hasGerminated) {
+        state.hasGerminated = true;
+        state.awareness = 'awakening';
+        state.dream = 'active';
+
+        // Visual feedback
+        const acornBody = document.getElementById('acorn-body');
+        acornBody.style.animation = 'pulse 2s ease-in-out infinite, germinate 3s ease-out';
+      }
+    }
+
+    function adjustSpeed(delta) {
+      state.speed = Math.max(0.1, Math.min(5, state.speed + delta));
+      clearInterval(simInterval);
+      startSimulation();
+    }
+
+    function spawnFractal() {
+      if (state.fractalDepth < 5) {
+        state.fractalDepth++;
+        state.entities = Math.pow(2, state.fractalDepth);
+
+        // Update depth visualization
+        const levels = document.querySelectorAll('.depth-level');
+        levels.forEach((level, idx) => {
+          if (idx <= state.fractalDepth) {
+            level.classList.add('active');
+          }
+        });
+      }
+    }
+
+    // Modal System
+    function showModal(type) {
+      const data = scienceData[type];
+      if (data) {
+        document.getElementById('modal-title').textContent = data.title;
+        document.getElementById('modal-content').innerHTML = data.content;
+        document.getElementById('modal-overlay').classList.add('active');
+      }
+    }
+
+    function closeModal(event) {
+      if (!event || event.target === document.getElementById('modal-overlay')) {
+        document.getElementById('modal-overlay').classList.remove('active');
+      }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePause();
+      } else if (e.code === 'KeyG') {
+        germinate();
+      } else if (e.code === 'KeyF') {
+        spawnFractal();
+      } else if (e.code === 'Escape') {
+        closeModal();
+      }
+    });
+
+    function updateTimestamp() {
+      const now = new Date();
+      document.getElementById('timestamp').textContent = now.toLocaleTimeString();
+    }
+  </script>
+</body>
+</html>
