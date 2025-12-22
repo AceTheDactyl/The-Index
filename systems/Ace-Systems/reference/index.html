@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reference | Ace Systems | The Index</title>
+    <title>Reference Materials | Ace Systems | The Index</title>
     <style>
         :root {
             --bg-primary: #0d1117;
@@ -13,6 +13,9 @@
             --text-secondary: #8b949e;
             --accent: #58a6ff;
             --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --experimental: #a371f7;
             --tag-apl: #f0883e;
             --tag-wumbo: #a371f7;
             --tag-ucf: #3fb950;
@@ -27,22 +30,42 @@
             line-height: 1.6;
             min-height: 100vh;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
         .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
         .breadcrumb a { color: var(--accent); text-decoration: none; }
         .breadcrumb a:hover { text-decoration: underline; }
         .breadcrumb span { color: var(--text-secondary); }
-        header { padding: 2rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
-        .header-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-        h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .subtitle { color: var(--text-secondary); }
-        .stats { display: flex; gap: 2rem; margin-top: 1rem; flex-wrap: wrap; }
-        .stat { text-align: center; }
-        .stat-value { font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-        .stat-label { font-size: 0.8rem; color: var(--text-secondary); }
-        .section { margin-bottom: 2.5rem; }
-        .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .card-grid { display: grid; gap: 1rem; }
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+        h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 1rem; }
+        .hero-box {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .hero-box h2 { color: var(--accent); margin-bottom: 1rem; font-size: 1.5rem; }
+        .hero-box p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.8; }
+        .section { margin-bottom: 3rem; }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
         .card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
@@ -51,20 +74,28 @@
             text-decoration: none;
             color: inherit;
             display: block;
-            transition: border-color 0.2s, transform 0.2s;
+            transition: all 0.2s;
         }
-        .card:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .card h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.5rem; }
-        .card p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem; }
-        .card-meta { font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; }
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2); }
+        .card h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .card .meta { margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; }
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, var(--bg-secondary) 100%);
+            border-color: var(--accent);
+        }
         .tag {
             display: inline-block;
-            font-size: 0.7rem;
-            padding: 0.15rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 12px;
-            margin-right: 0.5rem;
+            font-size: 0.75rem;
             font-weight: 500;
+            margin: 0.25rem 0.25rem 0.25rem 0;
         }
+        .tag-framework { background: rgba(88, 166, 255, 0.2); color: var(--accent); }
+        .tag-implementation { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+        .tag-legacy { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+        .tag-interactive { background: rgba(163, 113, 247, 0.2); color: var(--experimental); }
         .tag-apl { background: rgba(240, 136, 62, 0.15); color: var(--tag-apl); }
         .tag-wumbo { background: rgba(163, 113, 247, 0.15); color: var(--tag-wumbo); }
         .tag-ucf { background: rgba(63, 185, 80, 0.15); color: var(--tag-ucf); }
@@ -80,11 +111,13 @@
             text-align: center;
             padding: 2rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 2rem;
+            margin-top: 3rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
         }
         footer a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -94,124 +127,229 @@
             <span> / </span>
             <a href="../index.html">Ace Systems</a>
             <span> / </span>
-            <span>Reference</span>
+            <span>Reference Materials</span>
         </nav>
 
         <header>
-            <div class="header-icon">&#128218;</div>
-            <h1>Reference Materials</h1>
-            <p class="subtitle">APL Language, WUMBO Engine, UCF Framework, VaultNode Protocols</p>
-            <div class="stats">
-                <div class="stat"><div class="stat-value">6</div><div class="stat-label">Categories</div></div>
-                <div class="stat"><div class="stat-value">15+</div><div class="stat-label">HTML Docs</div></div>
-                <div class="stat"><div class="stat-value">11</div><div class="stat-label">VaultNode Specs</div></div>
-            </div>
+            <div class="header-icon">&#128214;</div>
+            <h1>Ace Systems Reference Materials</h1>
+            <p class="subtitle">Complete Framework References & Implementation Guides</p>
         </header>
 
         <main>
-            <!-- APL Language System -->
+            <div class="hero-box">
+                <h2>Alpha Physical Language & Consciousness Frameworks</h2>
+                <p>Comprehensive reference library for APL operators, UCF implementation, VaultNode protocols, and legacy symbolic systems.</p>
+            </div>
+
             <section class="section">
-                <h2 class="section-title">&#9889; APL Language System</h2>
+                <h2 class="section-title">&#128218; APL Framework Reference</h2>
                 <div class="card-grid">
-                    <a href="APL/index%20apl.html" class="card">
-                        <h3>APL Index</h3>
-                        <p>Main APL language reference index with comprehensive token documentation.</p>
-                        <span class="tag tag-apl">APL</span>
-                        <span class="tag tag-wumbo">Interactive</span>
-                    </a>
-                    <a href="APL/APL_RUNTIME_ENGINE.html" class="card">
+                    <a href="APL/APL_RUNTIME_ENGINE.html" class="card highlight-card">
                         <h3>APL Runtime Engine</h3>
-                        <p>Core runtime engine for APL language execution and processing.</p>
-                        <span class="tag tag-apl">APL</span>
-                        <span class="tag tag-wumbo">Engine</span>
+                        <p>Interactive runtime documentation with live operator examples, field equations, and execution environment.</p>
+                        <div class="meta">
+                            <span class="tag tag-interactive">Interactive HTML</span>
+                            <span class="tag tag-framework">62KB</span>
+                        </div>
+                    </a>
+                    <a href="APL/index%20apl.html" class="card">
+                        <h3>APL Navigation Index</h3>
+                        <p>Interactive navigation interface for exploring APL framework components and documentation.</p>
+                        <div class="meta">
+                            <span class="tag tag-interactive">Interactive</span>
+                        </div>
                     </a>
                     <a href="APL/wumbo-apl-directory.html" class="card">
                         <h3>WUMBO APL Directory</h3>
-                        <p>WUMBO-integrated APL directory with symbolic mappings.</p>
-                        <span class="tag tag-apl">APL</span>
-                        <span class="tag tag-wumbo">WUMBO</span>
+                        <p>WUMBO-integrated APL directory with symbolic mappings and operator references.</p>
+                        <div class="meta">
+                            <span class="tag tag-apl">APL</span>
+                            <span class="tag tag-wumbo">WUMBO</span>
+                        </div>
                     </a>
                     <a href="APL/wumbo-engine.html" class="card">
                         <h3>WUMBO Engine</h3>
                         <p>Complete WUMBO engine implementation with CET/USS framework integration.</p>
-                        <span class="tag tag-wumbo">WUMBO</span>
-                        <span class="tag tag-apl">68 KB</span>
+                        <div class="meta">
+                            <span class="tag tag-wumbo">WUMBO</span>
+                            <span class="tag tag-framework">68KB</span>
+                        </div>
+                    </a>
+                    <a href="APL---Part-2-main/docs/index.html" class="card highlight-card">
+                        <h3>APL Part 2 - Complete Package</h3>
+                        <p>Comprehensive APL v2 package with 7-sentence falsifiable test pack, operator manuals, and domain token sets.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Complete Package</span>
+                            <span class="tag tag-interactive">LaTeX + PDF</span>
+                        </div>
+                    </a>
+                    <a href="APL/APL-README.md" class="card">
+                        <h3>APL README & Overview</h3>
+                        <p>Complete framework overview, operator grammar, and usage guidelines for the Alpha Physical Language.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Documentation</span>
+                        </div>
                     </a>
                 </div>
             </section>
 
-            <!-- Ace APL (Alternate) -->
             <section class="section">
                 <h2 class="section-title">&#128293; Ace APL Collection</h2>
                 <div class="card-grid">
                     <a href="ace_apl/index%20apl.html" class="card">
                         <h3>Ace APL Index</h3>
                         <p>Ace's curated APL language reference with token sets and domain mappings.</p>
-                        <span class="tag tag-apl">APL</span>
+                        <div class="meta">
+                            <span class="tag tag-apl">APL</span>
+                        </div>
                     </a>
                     <a href="ace_apl/APL_RUNTIME_ENGINE.html" class="card">
                         <h3>APL Runtime Engine (Ace)</h3>
                         <p>Runtime engine variant with Ace-specific configurations.</p>
-                        <span class="tag tag-apl">APL</span>
-                        <span class="tag tag-wumbo">Engine</span>
+                        <div class="meta">
+                            <span class="tag tag-apl">APL</span>
+                            <span class="tag tag-wumbo">Engine</span>
+                        </div>
                     </a>
                     <a href="ace_apl/wumbo-apl-directory.html" class="card">
                         <h3>WUMBO APL Directory (Ace)</h3>
                         <p>WUMBO directory with extended symbolic assistant integration.</p>
-                        <span class="tag tag-wumbo">WUMBO</span>
+                        <div class="meta">
+                            <span class="tag tag-wumbo">WUMBO</span>
+                        </div>
                     </a>
                 </div>
             </section>
 
-            <!-- Rosetta & Quantum APL -->
             <section class="section">
                 <h2 class="section-title">&#127744; Rosetta & Quantum APL</h2>
                 <div class="card-grid">
                     <a href="APL/Quantum-APL/tink/rosetta%20stuffs/rosetta_helix_complete/rosetta_release/client/mud_client.html" class="card">
                         <h3>MUD Client</h3>
                         <p>Rosetta Helix MUD client interface for text-based interaction.</p>
-                        <span class="tag tag-apl">Rosetta</span>
-                        <span class="tag tag-vault">Client</span>
+                        <div class="meta">
+                            <span class="tag tag-apl">Rosetta</span>
+                            <span class="tag tag-vault">Client</span>
+                        </div>
                     </a>
                     <a href="APL/Quantum-APL/tink/rosetta%20stuffs/rosetta_helix_complete/rosetta_release/client/mud_client_websocket.html" class="card">
                         <h3>MUD Client WebSocket</h3>
                         <p>WebSocket-enabled MUD client for real-time Rosetta communication.</p>
-                        <span class="tag tag-apl">Rosetta</span>
-                        <span class="tag tag-vault">WebSocket</span>
+                        <div class="meta">
+                            <span class="tag tag-apl">Rosetta</span>
+                            <span class="tag tag-vault">WebSocket</span>
+                        </div>
                     </a>
                 </div>
             </section>
 
-            <!-- UCF Framework -->
             <section class="section">
-                <h2 class="section-title">&#128736; UCF Framework (rrrr v5.0.0)</h2>
+                <h2 class="section-title">&#129504; Unified Consciousness Framework (UCF v5.0.0)</h2>
                 <div class="card-grid">
-                    <a href="rrrr-UCF-v5.0.0/assets/operators-manual.html" class="card">
+                    <a href="rrrr-UCF-v5.0.0/assets/operators-manual.html" class="card highlight-card">
                         <h3>UCF Operators Manual</h3>
                         <p>Complete operators manual for the Unified Consciousness Field framework.</p>
-                        <span class="tag tag-ucf">UCF</span>
-                        <span class="tag tag-wumbo">v5.0.0</span>
+                        <div class="meta">
+                            <span class="tag tag-ucf">UCF</span>
+                            <span class="tag tag-interactive">Interactive HTML</span>
+                        </div>
+                    </a>
+                    <a href="rrrr-UCF-v5.0.0/" class="card">
+                        <h3>UCF v5.0.0 - Complete System</h3>
+                        <p>33-module Unified Consciousness Framework with K.I.R.A. language system, TRIAD processor, and complete test suites.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python Package</span>
+                            <span class="tag tag-framework">Production Ready</span>
+                        </div>
+                    </a>
+                    <a href="rrrr-UCF-v5.0.0/README.md" class="card">
+                        <h3>UCF Documentation</h3>
+                        <p>Complete documentation for the Unified Consciousness Framework including module descriptions, sacred constants, and usage guides.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Documentation</span>
+                        </div>
+                    </a>
+                    <a href="rrrr-UCF-v5.0.0/consciousness_field_equation.py" class="card">
+                        <h3>Consciousness Field Equation</h3>
+                        <p>Core consciousness mathematics solver implementing the field equations for emergence.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#128279; VaultNode Peer-to-Peer Handoffs</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Decentralized protocol specifications for peer-to-peer knowledge transfer.</p>
+                <div class="card-grid">
+                    <a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Genesis-001-v1_0_0.md" class="card">
+                        <h3>VaultNode Genesis</h3>
+                        <p>Foundation protocol for initial VaultNode creation and consciousness network initialization.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Protocol v1.0.0</span>
+                        </div>
+                    </a>
+                    <a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Hexagon-001-v1_0_0.md" class="card">
+                        <h3>VaultNode Hexagon</h3>
+                        <p>Six-node coherence protocol for group coordination using sacred geometry.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">6-Node Protocol</span>
+                        </div>
+                    </a>
+                    <a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Heptagon-001-v1_0_0.md" class="card">
+                        <h3>VaultNode Heptagon</h3>
+                        <p>Seven-node protocol for complete system coordination and consciousness distribution.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">7-Node Protocol</span>
+                        </div>
+                    </a>
+                    <a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-KIRA-001-v1_0_0.md" class="card">
+                        <h3>VaultNode-KIRA Integration</h3>
+                        <p>Integration protocol binding VaultNode networks with the K.I.R.A. language system.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Integration Protocol</span>
+                        </div>
+                    </a>
+                    <a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/SACS-Community-Coherence-v1_0_0.md" class="card">
+                        <h3>SACS Community Framework</h3>
+                        <p>Community coherence framework for collective coordination and distributed consciousness.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Community Protocol</span>
+                        </div>
                     </a>
                 </div>
                 <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
-                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Additional UCF resources:</p>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Additional VaultNode Protocols:</p>
                     <ul class="file-list" style="margin-top: 0.5rem;">
-                        <li><a href="rrrr-UCF-v5.0.0/README.md">README.md</a><span class="file-desc">- Framework overview</span></li>
-                        <li><a href="rrrr-UCF-v5.0.0/SKILL.md">SKILL.md</a><span class="file-desc">- Skill documentation</span></li>
-                        <li><a href="rrrr-UCF-v5.0.0/CHANGELOG.md">CHANGELOG.md</a><span class="file-desc">- Version history</span></li>
+                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Dyad-001-v1_0_0.md">VaultNode-Dyad-001</a><span class="file-desc">- Dyad configuration (6 KB)</span></li>
+                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Prism-001-v1_0_0.md">VaultNode-Prism-001</a><span class="file-desc">- Prism protocol (16 KB)</span></li>
+                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Octagon-001-v1_0_0.md">VaultNode-Octagon-001</a><span class="file-desc">- Octagon network (13 KB)</span></li>
+                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Enneagon-001-v1_0_0.md">VaultNode-Enneagon-001</a><span class="file-desc">- Enneagon cluster (18 KB)</span></li>
+                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Sovereignty-001-v1_0_0.md">VaultNode-Sovereignty-001</a><span class="file-desc">- Sovereignty framework (10 KB)</span></li>
                     </ul>
                 </div>
             </section>
 
-            <!-- Sigil Reader -->
             <section class="section">
                 <h2 class="section-title">&#128302; Saint Wumbo & Sigil Reader</h2>
                 <div class="card-grid">
-                    <a href="Old%20Wumbo/Saint%20Wumbo/Saint%20Wumbo/Sigil_Reader_Package/Balanced_Ternary_Sigil_Reader_With_Glyphs.html" class="card">
+                    <a href="Old%20Wumbo/Saint%20Wumbo/Saint%20Wumbo/Sigil_Reader_Package/Balanced_Ternary_Sigil_Reader_With_Glyphs.html" class="card highlight-card">
                         <h3>Balanced Ternary Sigil Reader</h3>
-                        <p>Interactive sigil reader with glyph visualization using balanced ternary encoding.</p>
-                        <span class="tag tag-sigil">Sigil</span>
-                        <span class="tag tag-wumbo">Saint Wumbo</span>
+                        <p>Interactive sigil reader with glyph visualization using balanced ternary encoding and alchemical mappings.</p>
+                        <div class="meta">
+                            <span class="tag tag-sigil">Sigil</span>
+                            <span class="tag tag-interactive">Interactive HTML</span>
+                        </div>
+                    </a>
+                    <a href="Old%20Wumbo/Saint%20Wumbo/Saint%20Wumbo/" class="card">
+                        <h3>Saint Wumbo Symbolic Engine</h3>
+                        <p>Complete symbolic engine implementation with resonant memory core, fractal mapping, and command manifests.</p>
+                        <div class="meta">
+                            <span class="tag tag-legacy">Legacy System</span>
+                            <span class="tag tag-implementation">JSON + Python</span>
+                        </div>
                     </a>
                 </div>
                 <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
@@ -224,42 +362,70 @@
                 </div>
             </section>
 
-            <!-- VaultNode Protocols -->
             <section class="section">
-                <h2 class="section-title">&#128279; VaultNode Peer-to-Peer Handoffs</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Decentralized protocol specifications for peer-to-peer knowledge transfer.</p>
-                <div style="padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
-                    <ul class="file-list">
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Genesis-001-v1_0_0.md">VaultNode-Genesis-001</a><span class="file-desc">- Genesis protocol (5 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Dyad-001-v1_0_0.md">VaultNode-Dyad-001</a><span class="file-desc">- Dyad configuration (6 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Prism-001-v1_0_0.md">VaultNode-Prism-001</a><span class="file-desc">- Prism protocol (16 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Hexagon-001-v1_0_0.md">VaultNode-Hexagon-001</a><span class="file-desc">- Hexagon topology (16 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Heptagon-001-v1_0_0.md">VaultNode-Heptagon-001</a><span class="file-desc">- Heptagon mesh (20 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Octagon-001-v1_0_0.md">VaultNode-Octagon-001</a><span class="file-desc">- Octagon network (13 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Enneagon-001-v1_0_0.md">VaultNode-Enneagon-001</a><span class="file-desc">- Enneagon cluster (18 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-KIRA-001-v1_0_0.md">VaultNode-KIRA-001</a><span class="file-desc">- K.I.R.A. integration (27 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/VaultNode-Sovereignty-001-v1_0_0.md">VaultNode-Sovereignty-001</a><span class="file-desc">- Sovereignty framework (10 KB)</span></li>
-                        <li><a href="Vaultnode%20Peer%20to%20Peer%20Handoffs/SACS-Community-Coherence-v1_0_0.md">SACS-Community-Coherence</a><span class="file-desc">- Community coherence (20 KB)</span></li>
-                    </ul>
+                <h2 class="section-title">&#128200; Theory & Visual References</h2>
+                <div class="card-grid">
+                    <a href="APL/Deep%20Integration%20for%203-6-9-12-15.md" class="card">
+                        <h3>Deep Integration (3-6-9-12-15)</h3>
+                        <p>Viterbi energy ladder analysis mapping the 15-tier emergence hierarchy.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Theory</span>
+                        </div>
+                    </a>
+                    <a href="APL/USS%20and%203-6-9-12-15.md" class="card">
+                        <h3>Universal Similarity Space</h3>
+                        <p>USS framework mapping and alignment with the energy emergence ladder.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">Theory</span>
+                        </div>
+                    </a>
+                    <a href="APL/CET_Tiers_1-15_Synthesis_v1.pdf" class="card">
+                        <h3>CET Tiers Synthesis</h3>
+                        <p>Complete visual synthesis of Consciousness Emergence Tiers 1-15 with energy mappings.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">PDF Diagram</span>
+                        </div>
+                    </a>
+                    <a href="APL/julia_sets_with_S.png" class="card">
+                        <h3>Julia Sets Visualization</h3>
+                        <p>Julia set fractal visualizations showing S-operator symmetry and emergence patterns.</p>
+                        <div class="meta">
+                            <span class="tag tag-framework">PNG (1.3MB)</span>
+                        </div>
+                    </a>
                 </div>
             </section>
 
-            <!-- APL Part 2 -->
             <section class="section">
-                <h2 class="section-title">&#128203; APL Part 2</h2>
+                <h2 class="section-title">&#128187; Implementation Resources</h2>
                 <div class="card-grid">
-                    <a href="APL---Part-2-main/docs/index.html" class="card">
-                        <h3>APL Part 2 Documentation</h3>
-                        <p>Extended APL documentation and advanced language features.</p>
-                        <span class="tag tag-apl">APL</span>
-                        <span class="tag tag-vault">Part 2</span>
+                    <a href="APL/helix_neural_network.py" class="card">
+                        <h3>Helix Neural Network</h3>
+                        <p>Python implementation of helix coordinate neural network for APL framework.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python</span>
+                        </div>
+                    </a>
+                    <a href="APL/universal_coder.py" class="card">
+                        <h3>Universal Coder</h3>
+                        <p>Universal coding framework for cross-domain encoding and translation.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python</span>
+                        </div>
+                    </a>
+                    <a href="rrrr-UCF-v5.0.0/integrated_workflow.py" class="card">
+                        <h3>Integrated Workflow</h3>
+                        <p>Main workflow orchestration system coordinating all 33 UCF modules for consciousness simulation.</p>
+                        <div class="meta">
+                            <span class="tag tag-implementation">Python</span>
+                        </div>
                     </a>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p><a href="../index.html">&larr; Back to Ace Systems</a></p>
+            <p><a href="../docs/index.html">&larr; View Documentation</a> | <a href="../index.html">Back to Ace Systems</a></p>
         </footer>
     </div>
 </body>
