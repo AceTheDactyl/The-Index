@@ -1,0 +1,240 @@
+# Kuramoto-Cognition Training Blueprint (Python)
+
+## Goal
+Train an agent/model to *learn coupling weights* in a Kuramoto oscillator field so that the system:
+1) stays stable under noise (Gaussian baseline),
+2) exhibits **hex/triangular ordering** in its 2D phase-projection,
+3) shows an **order jump** (“crystallization”) near specific z-cross-sections (e.g., z = √3/2).
+
+You will build:
+- a Kuramoto simulator (differentiable or RL-driven),
+- structure metrics (order parameters),
+- a training loop that adjusts coupling weights to maximize “lattice order” while preserving robustness.
+
+---
+
+## 1) Environment: the dynamical substrate
+
+### 1.1 Oscillator field
+Use N oscillators with phases θ_i(t) and (optionally) positions x_i in 2D.
+
+Base Kuramoto dynamics:
+dθ_i/dt = ω_i + Σ_j K_ij * sin(θ_j - θ_i) + ξ_i(t)
+
+Where:
+- ω_i : natural frequencies (can be fixed or sampled)
+- K_ij : trainable coupling weights (this is what the AI learns)
+- ξ_i(t): Gaussian noise term (controls negentropy pressure)
+
+### 1.2 Geometry (choose one)
+Pick one of these, depending on what you want to “crystallize into”:
+
+A) **2D lattice field**
+- Place oscillators on a 2D grid (or random points) with neighbor edges.
+- Couplings only within radius r.
+
+B) **Helix-lifted field** (matches your helix concept)
+- Give each oscillator a “height” z_i (either fixed layers or evolving).
+- Define z_i = t or z_i = v*t + z0_i, but use z only for gating couplings.
+- Coupling kernel depends on Δz and Δx:
+  K_ij = W_ij * G(||x_i-x_j||) * H(|z_i-z_j|)
+
+C) **Ring-to-sheet interference**
+- Multiple rings/modules with different frequencies; let coupling between modules be learnable.
+
+---
+
+## 2) The “√3/2 cross-section” mechanism (phase transition trigger)
+
+To make z-values matter, define a **gating function** that changes coupling strength near target z*.
+
+Let z* = √3/2.
+
+Define gate:
+g(z) = 1 + α * exp(- (z - z*)^2 / (2σ_z^2))
+
+Then effective coupling:
+K_ij_eff(t) = K_ij * g(z_mean(t))   (global gate)
+or
+K_ij_eff(t) = K_ij * g((z_i+z_j)/2) (local gate)
+
+Interpretation:
+- Away from z*, the system is “fluid”
+- Near z*, coupling gets stronger (or changes sign) and order can lock in
+
+This is your controlled “phase transition handle”.
+
+---
+
+## 3) Structure metrics (what the AI is rewarded for)
+
+You need objective measures that detect:
+- synchronization,
+- hexagonal ordering,
+- quasicrystal/pentagonal order if desired,
+- and robustness under noise.
+
+### 3.1 Standard Kuramoto order parameter
+R = |(1/N) Σ_i exp(i θ_i)|
+
+- High R = global phase sync
+- But hex grids often require *local* coordination, not total sync
+
+### 3.2 Local phase coherence
+Compute neighborhood coherence:
+R_local = mean_i |(1/|N(i)|) Σ_{j in N(i)} exp(i θ_j)|
+
+### 3.3 Hexagonal bond-orientational order (ψ6)
+If you have positions x_i (recommended), compute:
+ψ6(i) = (1/|N(i)|) Σ_{j in N(i)} exp(i * 6 * φ_ij)
+ψ6 = mean_i |ψ6(i)|
+
+- ψ6 near 1 → hex lattice order (this is the “√3/2 world”)
+
+### 3.4 Pentagonal / quasicrystal signature (optional)
+Use ψ5:
+ψ5(i) = (1/|N(i)|) Σ exp(i * 5 * φ_ij)
+ψ5 = mean |ψ5(i)|
+
+Or compute peak structure in Fourier space of positions/phases.
+
+### 3.5 Negentropy proxy (optional but powerful)
+Pick a feature (e.g., θ differences, local phase gradients) and measure deviation from Gaussian:
+- Use kurtosis / negentropy approximations
+- Or maximize “structure” while penalizing extreme nonphysical collapse
+
+---
+
+## 4) What “AI cognition” means here (two solid training options)
+
+### Option A (cleanest): Differentiable learning of K (gradient descent)
+Works if your simulator is in PyTorch/JAX.
+
+You parameterize coupling weights:
+K_ij = softplus(A_ij) * mask_ij
+or
+K_ij = κ * exp(-||x_i-x_j||^2 / (2ℓ^2)) + learned residual
+
+Loss function (maximize structure, avoid trivial sync):
+L = -λ6 * ψ6
+    -λloc * R_local
+    +λglob * max(0, R - R_target)^2  (prevents full global lock)
+    +λK * ||K||_1                   (sparsity / physicality)
+    +λnoise * robustness_penalty
+
+Train A_ij (or low-rank factorization) with Adam.
+
+### Option B: Reinforcement learning (agent outputs weights / gates)
+The agent observes state features and outputs:
+- coupling scale κ(t),
+- neighborhood weights,
+- or a low-rank K representation.
+
+Reward:
+r = +ψ6 + β*R_local - penalty(global sync) - penalty(weight energy)
+
+This is great if you want “cognition-like control” rather than static K.
+
+---
+
+## 5) Dataset design (how the agent/model learns generality)
+
+Train across randomized episodes:
+- random ω_i distributions
+- different noise levels σ_noise
+- different initial θ(0) and positions
+- different z-trajectories (some pass through z*, some don’t)
+
+Your model should learn:
+- “when z approaches √3/2, increase coupling (or change topology) to lock into hex order”
+- “otherwise stay flexible and stable”
+
+Split:
+- Train: z* present 70% of episodes
+- Test: unseen z* widths, different target z*, higher noise, different N
+
+---
+
+## 6) Minimal architecture suggestions
+
+### If differentiable static K:
+- Don’t learn full NxN unless small N
+- Use low-rank:
+  K = U U^T with U ∈ R^{N×d}
+- Or learn a kernel:
+  K_ij = f_θ(Δx_ij, Δz_ij, ω_i, ω_j)
+
+### If RL controller:
+Policy network input features (per step):
+- R, R_local, ψ6, ψ5
+- mean |∇θ| (phase gradient)
+- z(t), distance to z*
+- noise level
+Output actions:
+- κ(t) global coupling scale
+- α gate amplitude
+- σ_z gate width
+- or discrete “rewire neighborhood radius”
+
+---
+
+## 7) Evaluation: prove you got the phase transition
+
+Run a sweep over z:
+- Track ψ6(z), R_local(z), R(z)
+- Look for a sharp rise in ψ6 near z = √3/2 (or near the gate target)
+
+Stress tests:
+- increase noise 2–5×
+- perturb initial θ
+- random node dropout
+A good model:
+- still forms hex order near z*
+- doesn’t collapse into trivial global sync
+- recovers after perturbations
+
+---
+
+## 8) Concrete implementation milestones (do these in order)
+
+1) Build simulator (NumPy first; PyTorch later)
+2) Add z-gating function g(z)
+3) Implement ψ6 and R_local
+4) Verify manually: hand-tune κ, α to see ψ6 spike near z*
+5) Switch K to learnable params (low-rank or kernel)
+6) Train with differentiable loss OR RL reward
+7) Produce “phase transition plots”: ψ6 vs z, with confidence intervals
+8) Export learned coupling rule f_θ as your “cognition”
+
+---
+
+## 9) Practical defaults (good starting numbers)
+
+- N = 256 (16×16) or N = 400 (20×20)
+- neighbor radius: 1–2 lattice steps
+- ω_i ~ Normal(0, 0.2)
+- σ_noise in [0.01, 0.2] (curriculum)
+- α (gate amp): start 0.0 → 2.0 curriculum
+- σ_z (gate width): 0.05–0.2
+- R_target: 0.6 (avoid full sync)
+
+---
+
+## 10) Deliverables (what you’ll end up with)
+
+- A trained coupling rule that *learns when to crystallize*
+- A reproducible “√3/2 transition” curve
+- A library module:
+  - kuramoto_env.py
+  - metrics.py (R, R_local, ψ6, ψ5)
+  - train.py (diff or RL)
+  - evaluate.py (sweeps + robustness)
+
+---
+
+## Optional next upgrade: φ-mode (quasicrystal training)
+Add a second target with 5-fold order:
+- introduce competing module scales with ratio ~ φ
+- reward ψ5 (or Fourier 5-fold peaks)
+- penalize periodic translational order
+This trains the system to shift between hex (√3/2) and quasi (φ) regimes under control parameters.

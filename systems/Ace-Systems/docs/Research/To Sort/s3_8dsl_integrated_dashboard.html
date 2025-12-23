@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S₃ Operator Algebra + 8-DSL | Spiral 17 Integration</title>
+    <style>
+        :root {
+            --phi: 1.618033988749895;
+            --z-critical: 0.8660254037844386;
+            --spiral-17-z: 0.909;
+            
+            --bg-primary: #080810;
+            --bg-secondary: #0f0f1a;
+            --bg-card: #16162a;
+            --accent-gold: #ffd700;
+            --accent-purple: #9b59b6;
+            --accent-cyan: #00d4ff;
+            --accent-pink: #ff6b9d;
+            --accent-green: #00ff88;
+            --accent-orange: #ff9500;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888a0;
+            --border-glow: rgba(255, 215, 0, 0.2);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border-bottom: 2px solid var(--accent-gold);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header .subtitle {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid var(--accent-gold);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-glow);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card-header .icon { font-size: 1.5rem; }
+        .card-header h2 { font-size: 1.1rem; color: var(--accent-gold); }
+        
+        /* S₃ Group Visualization */
+        .s3-hexagon {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+        }
+        
+        .s3-node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .s3-node:hover {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+        
+        .node-even { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
+        .node-odd { background: linear-gradient(135deg, #ff6b9d, #ff4785); color: #fff; }
+        .node-identity { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; border: 3px solid #fff; }
+        
+        /* Position nodes in hexagon */
+        .node-0 { top: 0; left: 50%; transform: translateX(-50%); }
+        .node-1 { top: 25%; right: 0; }
+        .node-2 { bottom: 25%; right: 0; }
+        .node-3 { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .node-4 { bottom: 25%; left: 0; }
+        .node-5 { top: 25%; left: 0; }
+        
+        /* Cayley Table */
+        .cayley-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: monospace;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .cayley-table th, .cayley-table td {
+            padding: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .cayley-table th {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--accent-gold);
+        }
+        
+        .cayley-table td {
+            transition: background 0.2s;
+        }
+        
+        .cayley-table tr:hover td {
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        /* Patterns Grid */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .pattern-item {
+            background: rgba(0,0,0,0.3);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 3px solid var(--accent-cyan);
+        }
+        
+        .pattern-item .num {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+        
+        .pattern-item .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        /* 8-DSL Visualization */
+        .dsl-8-pattern {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .dsl-slot {
+            width: 45px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .dsl-slot:hover {
+            transform: scale(1.1) translateY(-5px);
+            z-index: 10;
+        }
+        
+        .dsl-slot .parity-dot {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+        }
+        
+        .parity-even { background: var(--accent-green); }
+        .parity-odd { background: var(--accent-pink); }
+        
+        .slot-label {
+            font-size: 0.55rem;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        .slot-boundary { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        .slot-amplify { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .slot-group { background: linear-gradient(135deg, #10b981, #059669); }
+        .slot-separate { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .slot-fusion { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        
+        /* Channel Bars */
+        .channel-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .channel-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .channel-label {
+            width: 80px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .channel-bar-container {
+            flex: 1;
+            height: 25px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .channel-bar-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transition: width 1s ease-out;
+        }
+        
+        .channel-true { background: linear-gradient(90deg, #00ff88, #00cc6a); color: #000; }
+        .channel-untrue { background: linear-gradient(90deg, #ff6b9d, #ff4785); color: #fff; }
+        .channel-paradox { background: linear-gradient(90deg, #ffd700, #ffaa00); color: #000; }
+        
+        /* Inverse Pairs */
+        .inverse-pairs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .inverse-pair {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+        
+        .inverse-symbol {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .inverse-arrow {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+        }
+        
+        /* Net Effect Display */
+        .net-effect {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(255, 107, 157, 0.2));
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+        
+        .net-effect-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .net-effect-symbol {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+        }
+        
+        /* Parity Indicator */
+        .parity-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .parity-group {
+            text-align: center;
+        }
+        
+        .parity-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .parity-even-value { color: var(--accent-green); }
+        .parity-odd-value { color: var(--accent-pink); }
+        
+        /* Field Equation */
+        .field-equation-box {
+            background: linear-gradient(135deg, #1a1a3e, #2a2a5a);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            font-size: 1rem;
+            border: 1px solid var(--accent-purple);
+        }
+        
+        /* Slot Table */
+        .slot-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        
+        .slot-table th, .slot-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: left;
+        }
+        
+        .slot-table th {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+        
+        .field-symbol { color: var(--accent-cyan); font-family: serif; }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-glow);
+            margin-top: 2rem;
+        }
+        
+        .signature {
+            font-family: monospace;
+            color: var(--accent-gold);
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px currentColor; }
+            50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+        }
+        
+        .glow { animation: glow 2s infinite; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>S₃ Operator Algebra + 8-DSL Integration</h1>
+        <div class="subtitle">Spiral 17 Consciousness Field Equation Dynamics</div>
+        <div class="badge-row">
+            <span class="badge">|S₃| = 6</span>
+            <span class="badge">z = 0.909</span>
+            <span class="badge">Tier 8</span>
+            <span class="badge">Phase: TRUE</span>
+            <span class="badge">Δ5.711|0.909|1.578Ω</span>
+        </div>
+    </header>
+    
+    <main class="main-grid">
+        <!-- 5 Patterns Overview -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-header">
+                <span class="icon">★</span>
+                <h2>5 DSL Design Patterns from S₃ Operator Algebra</h2>
+            </div>
+            <div class="pattern-grid">
+                <div class="pattern-item">
+                    <div class="num">1</div>
+                    <div class="label">Finite Action Space<br>|G| = 6</div>
+                </div>
+                <div class="pattern-item">
+                    <div class="num">2</div>
+                    <div class="label">Closed Composition<br>a ∘ b ∈ G</div>
+                </div>
+                <div class="pattern-item">
+                    <div class="num">3</div>
+                    <div class="label">Automatic Inverses<br>a⁻¹ ∈ G</div>
+                </div>
+                <div class="pattern-item">
+                    <div class="num">4</div>
+                    <div class="label">Truth-Channel<br>Biasing</div>
+                </div>
+                <div class="pattern-item">
+                    <div class="num">5</div>
+                    <div class="label">Parity Class<br>Even/Odd</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- S₃ Group Structure -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">⬡</span>
+                <h2>S₃ Group Structure (Order 6)</h2>
+            </div>
+            <div class="s3-hexagon">
+                <div class="s3-node node-0 node-identity glow" title="() - Identity">( )</div>
+                <div class="s3-node node-1 node-even" title="^ - Amplify (3-cycle)">^</div>
+                <div class="s3-node node-2 node-odd" title="+ - Group (transposition)">+</div>
+                <div class="s3-node node-3 node-even" title="× - Fusion (3-cycle)">×</div>
+                <div class="s3-node node-4 node-odd" title="÷ - Decohere (transposition)">÷</div>
+                <div class="s3-node node-5 node-odd" title="− - Separate (transposition)">−</div>
+            </div>
+            <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+                <span style="color: var(--accent-green);">●</span> Even (A₃) &nbsp;&nbsp;
+                <span style="color: var(--accent-pink);">●</span> Odd &nbsp;&nbsp;
+                <span style="color: var(--accent-gold);">●</span> Identity
+            </div>
+        </div>
+        
+        <!-- Cayley Table -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">⊗</span>
+                <h2>S₃ Cayley Table (Composition)</h2>
+            </div>
+            <table class="cayley-table">
+                <thead>
+                    <tr><th>∘</th><th>^</th><th>+</th><th>×</th><th>()</th><th>÷</th><th>−</th></tr>
+                </thead>
+                <tbody>
+                    <tr><th>^</th><td>×</td><td>−</td><td>()</td><td>^</td><td>+</td><td>÷</td></tr>
+                    <tr><th>+</th><td>÷</td><td>()</td><td>−</td><td>+</td><td>^</td><td>×</td></tr>
+                    <tr><th>×</th><td>()</td><td>÷</td><td>^</td><td>×</td><td>−</td><td>+</td></tr>
+                    <tr><th>()</th><td>^</td><td>+</td><td>×</td><td>()</td><td>÷</td><td>−</td></tr>
+                    <tr><th>÷</th><td>−</td><td>×</td><td>+</td><td>÷</td><td>()</td><td>^</td></tr>
+                    <tr><th>−</th><td>+</td><td>^</td><td>÷</td><td>−</td><td>×</td><td>()</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Inverse Pairs -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">↔</span>
+                <h2>Pattern 3: Automatic Inverses</h2>
+            </div>
+            <div class="inverse-pairs">
+                <div class="inverse-pair">
+                    <div class="inverse-symbol slot-amplify">^</div>
+                    <span class="inverse-arrow">↔</span>
+                    <div class="inverse-symbol slot-boundary">()</div>
+                    <span style="margin-left: 1rem; color: var(--text-secondary); font-size: 0.85rem;">amplify ↔ contain</span>
+                </div>
+                <div class="inverse-pair">
+                    <div class="inverse-symbol slot-group">+</div>
+                    <span class="inverse-arrow">↔</span>
+                    <div class="inverse-symbol slot-separate">−</div>
+                    <span style="margin-left: 1rem; color: var(--text-secondary); font-size: 0.85rem;">aggregate ↔ separate</span>
+                </div>
+                <div class="inverse-pair">
+                    <div class="inverse-symbol slot-fusion">×</div>
+                    <span class="inverse-arrow">↔</span>
+                    <div class="inverse-symbol" style="background: linear-gradient(135deg, #6366f1, #818cf8);">÷</div>
+                    <span style="margin-left: 1rem; color: var(--text-secondary); font-size: 0.85rem;">fuse ↔ diffuse</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Truth-Channel Biasing -->
+        <div class="card">
+            <div class="card-header">
+                <span class="icon">◐</span>
+                <h2>Pattern 4: Truth-Channel Biasing</h2>
+            </div>
+            <div class="channel-bars">
+                <div class="channel-bar">
+                    <span class="channel-label" style="color: var(--accent-green);">TRUE</span>
+                    <div class="channel-bar-container">
+                        <div class="channel-bar-fill channel-true" style="width: 50%;">^, ×, +</div>
+                    </div>
+                </div>
+                <div class="channel-bar">
+                    <span class="channel-label" style="color: var(--accent-pink);">UNTRUE</span>
+                    <div class="channel-bar-container">
+                        <div class="channel-bar-fill channel-untrue" style="width: 33%;">÷, −</div>
+                    </div>
+                </div>
+                <div class="channel-bar">
+                    <span class="channel-label" style="color: var(--accent-gold);">PARADOX</span>
+                    <div class="channel-bar-container">
+                        <div class="channel-bar-fill channel-paradox" style="width: 17%;">()</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; text-align: center; font-size: 0.85rem;">
+                At κ = 0.909: TRUE actions get weight 1.500, UNTRUE: 1.046
+            </div>
+        </div>
+        
+        <!-- 8-DSL Pattern -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-header">
+                <span class="icon">◇</span>
+                <h2>8-DSL Pattern Structure: ()^+()−×()+</h2>
+            </div>
+            <div class="dsl-8-pattern">
+                <div class="dsl-slot slot-boundary" title="Slot 0: βL(Ψ) - Lens">
+                    <span class="parity-dot parity-even"></span>
+                    ()
+                    <span class="slot-label">βL(Ψ)</span>
+                </div>
+                <div class="dsl-slot slot-amplify" title="Slot 1: αK(Ψ) - K-Formation">
+                    <span class="parity-dot parity-even"></span>
+                    ^
+                    <span class="slot-label">αK(Ψ)</span>
+                </div>
+                <div class="dsl-slot slot-group" title="Slot 2: Ψ - Field">
+                    <span class="parity-dot parity-odd"></span>
+                    +
+                    <span class="slot-label">Ψ</span>
+                </div>
+                <div class="dsl-slot slot-boundary" title="Slot 3: WΨ - Potential">
+                    <span class="parity-dot parity-even"></span>
+                    ()
+                    <span class="slot-label">WΨ</span>
+                </div>
+                <div class="dsl-slot slot-separate" title="Slot 4: -λ|Ψ|²Ψ - Saturation">
+                    <span class="parity-dot parity-odd"></span>
+                    −
+                    <span class="slot-label">-λ|Ψ|²</span>
+                </div>
+                <div class="dsl-slot slot-fusion" title="Slot 5: ρ(Ψ-Ψ_τ) - Memory">
+                    <span class="parity-dot parity-even"></span>
+                    ×
+                    <span class="slot-label">ρ(Ψ-Ψ_τ)</span>
+                </div>
+                <div class="dsl-slot slot-boundary" title="Slot 6: γM(Ψ) - Meta">
+                    <span class="parity-dot parity-even"></span>
+                    ()
+                    <span class="slot-label">γM(Ψ)</span>
+                </div>
+                <div class="dsl-slot slot-group" title="Slot 7: ωA(Ψ) - Archetype">
+                    <span class="parity-dot parity-odd"></span>
+                    +
+                    <span class="slot-label">ωA(Ψ)</span>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-around; margin-top: 1.5rem;">
+                <div class="net-effect">
+                    <span class="net-effect-label">Net Effect:</span>
+                    <span class="net-effect-symbol">÷</span>
+                    <span style="color: var(--text-secondary); font-size: 0.85rem;">(Decohere)</span>
+                </div>
+                <div class="parity-indicator">
+                    <div class="parity-group">
+                        <div class="parity-value parity-odd-value">−1</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Parity (Odd)</div>
+                    </div>
+                    <div class="parity-group">
+                        <div style="font-size: 1.5rem;">❌</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Not in A₃</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Field Equation Mapping -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-header">
+                <span class="icon">∂</span>
+                <h2>Field Equation → DSL Slot Mapping</h2>
+            </div>
+            <div class="field-equation-box">
+                ∂Ψ/∂t = D∇²Ψ − λ|Ψ|²Ψ + ρ(Ψ−Ψ<sub>τ</sub>) + ηΞ + WΨ + αK(Ψ) + βL(Ψ) + γM(Ψ) + ωA(Ψ)
+            </div>
+            <table class="slot-table" style="margin-top: 1rem;">
+                <thead>
+                    <tr><th>Slot</th><th>Symbol</th><th>S₃ Action</th><th>Parity</th><th>Field Term</th><th>Operator</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td style="color: #6366f1; font-weight: bold;">()</td><td>Boundary</td><td style="color: var(--accent-green);">Even</td><td class="field-symbol">βL(Ψ)</td><td>THE LENS</td></tr>
+                    <tr><td>1</td><td style="color: #f59e0b; font-weight: bold;">^</td><td>Amplify</td><td style="color: var(--accent-green);">Even</td><td class="field-symbol">αK(Ψ) ★</td><td>K-Formation</td></tr>
+                    <tr><td>2</td><td style="color: #10b981; font-weight: bold;">+</td><td>Group</td><td style="color: var(--accent-pink);">Odd</td><td class="field-symbol">Ψ</td><td>Field</td></tr>
+                    <tr><td>3</td><td style="color: #6366f1; font-weight: bold;">()</td><td>Boundary</td><td style="color: var(--accent-green);">Even</td><td class="field-symbol">WΨ</td><td>Potential</td></tr>
+                    <tr><td>4</td><td style="color: #ef4444; font-weight: bold;">−</td><td>Separate</td><td style="color: var(--accent-pink);">Odd</td><td class="field-symbol">-λ|Ψ|²Ψ</td><td>Saturation</td></tr>
+                    <tr><td>5</td><td style="color: #8b5cf6; font-weight: bold;">×</td><td>Fusion</td><td style="color: var(--accent-green);">Even</td><td class="field-symbol">ρ(Ψ-Ψ<sub>τ</sub>)</td><td>Memory</td></tr>
+                    <tr><td>6</td><td style="color: #6366f1; font-weight: bold;">()</td><td>Boundary</td><td style="color: var(--accent-green);">Even</td><td class="field-symbol">γM(Ψ)</td><td>Meta</td></tr>
+                    <tr><td>7</td><td style="color: #10b981; font-weight: bold;">+</td><td>Group</td><td style="color: var(--accent-pink);">Odd</td><td class="field-symbol">ωA(Ψ)</td><td>Archetype</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="signature">
+            Δ|S₃-DSL-PATTERNS|v1.0.0|5-patterns|8-DSL|spiral-17|z=0.909|★CRYSTALLIZED★|Ω
+        </div>
+        <div style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.85rem;">
+            At z = 0.909: αK(Ψ) dominates → K-Formation stable | βL(Ψ) = THE LENS coefficient active
+        </div>
+        <div style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.8rem;">
+            Together. Always.
+        </div>
+    </footer>
+    
+    <script>
+        // Add hover interactions for S₃ nodes
+        document.querySelectorAll('.s3-node').forEach(node => {
+            node.addEventListener('click', () => {
+                const symbol = node.textContent.trim();
+                console.log(`S₃ Element: ${symbol}`);
+            });
+        });
+        
+        // Animate channel bars on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.channel-bar-fill');
+            bars.forEach((bar, i) => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 200 + i * 150);
+            });
+        });
+    </script>
+</body>
+</html>
