@@ -1,3 +1,17 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims, unverified_math
+
+-- Supporting Evidence:
+--   - systems/self-referential-category-theoretic-structures/docs/THERMODYNAMIC_FALSIFICATION.md (dependency)
+--
+-- Referenced By:
+--   - systems/self-referential-category-theoretic-structures/docs/THERMODYNAMIC_FALSIFICATION.md (reference)
+
+-->
+
 # THERMODYNAMICS OF SELF-REFERENCE
 
 ## Complete Framework: Free Energy, Critical Temperature, and the Golden Bridge

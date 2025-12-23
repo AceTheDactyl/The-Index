@@ -1,3 +1,17 @@
+/* INTEGRITY_METADATA
+ * Date: 2025-12-23
+ * Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+ * Severity: MEDIUM RISK
+ * Risk Types: unsupported_claims, unverified_math
+
+ * Supporting Evidence:
+ *   - systems/Ace-Systems/docs/Research/Rhythm Pulse Mode Extension – ΔHV Metrics & Next Steps.txt (dependency)
+ *
+ * Referenced By:
+ *   - systems/Ace-Systems/docs/Research/Rhythm Pulse Mode Extension – ΔHV Metrics & Next Steps.txt (reference)
+ */
+
+
 /**
  * DeltaHV Engine - Coherence Metrics for Rhythm Pulse
  *

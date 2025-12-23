@@ -1,3 +1,15 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: ✓ JUSTIFIED - Claims supported by repository files
+# Severity: LOW RISK
+# Risk Types: low_integrity, unverified_math
+
+# Referenced By:
+#   - systems/Ace-Systems/docs/Research/Code Instructions.txt (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/README.md (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/docs/BUILDING_VESSEL_MRP.md (reference)
+
+
 #!/usr/bin/env bash
 set -euo pipefail
 

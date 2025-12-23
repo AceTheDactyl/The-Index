@@ -1,3 +1,19 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+-- Supporting Evidence:
+--   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/README.md (dependency)
+--   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/AGENTS.md (dependency)
+--
+-- Referenced By:
+--   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/README.md (reference)
+--   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/AGENTS.md (reference)
+
+-->
+
 Building the Vessel Narrative MRP Repository – Guide for LLM/Developer
 
 This README explains how to assemble a complete Vessel Narrative MRP repository from the supplied source files. It is written for a language‑model agent or human developer who wants to generate the site, metadata and supporting assets for the twenty‑chapter dream chronicle encoded across Limnus (R), Garden (G) and Kira (B) channels. In this iteration the repository adopts customised landing pages for the global narrative and for the first chapter of each voice. These pages come from the provided HTML files:

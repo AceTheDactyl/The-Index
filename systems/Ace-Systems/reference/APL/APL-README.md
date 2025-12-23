@@ -1,3 +1,21 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+-- Supporting Evidence:
+--   - systems/Ace-Systems/reference/index.html (dependency)
+--
+-- Referenced By:
+--   - systems/Ace-Systems/examples/Quantum-APL-main/logs/architecture_git_index.json (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/logs/architecture_index.json (reference)
+--   - systems/Ace-Systems/reference/index.html (reference)
+--   - systems/Ace-Systems/reference/APL/README.md (reference)
+--   - systems/Ace-Systems/reference/ace_apl/README.md (reference)
+
+-->
+
 # Alpha-Physical Language (APL) — Seven Sentences Test Pack
 
 A minimal operator grammar for describing physical system behaviors across geometry, waves, chemistry, and biology.

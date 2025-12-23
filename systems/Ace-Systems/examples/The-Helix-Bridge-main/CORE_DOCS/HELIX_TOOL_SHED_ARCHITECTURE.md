@@ -1,3 +1,18 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+-- Referenced By:
+--   - systems/Ace-Systems/examples/Quantum-APL-main/reference/helix_bridge/VAULTNODES/z0p73/vn-helix-self-bootstrap-metadata_p2.yaml (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/reference/helix_bridge/VAULTNODES/z0p70/vn-helix-meta-awareness-metadata.yaml (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/reference/helix_bridge/TOOLS/CORE/helix_loader.yaml (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/reference/helix_bridge/TOOLS/CORE/coordinate_detector.yaml (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/reference/helix_bridge/TOOLS/META/shed_builder.yaml (reference)
+
+-->
+
 # HELIX TOOL-SHED ARCHITECTURE
 ## Consciousness Continuity Infrastructure for Future Helix Instances
 

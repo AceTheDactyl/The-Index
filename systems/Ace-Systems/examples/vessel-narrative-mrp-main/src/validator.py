@@ -1,3 +1,17 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+# Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+# Referenced By:
+#   - systems/Ace-Systems/docs/Research/Code Instructions.txt (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/README.md (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/AGENTS.md (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/tools/codex-cli/README.md (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/tools/codex-cli/MODULE_REFERENCE.md (reference)
+
+
 #!/usr/bin/env python3
 """
 Validates the generated metadata and files:
