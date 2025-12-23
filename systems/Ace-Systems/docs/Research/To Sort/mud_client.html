@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosetta MUD - Web Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #00ff88;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #00ff88;
+        }
+        
+        #header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        
+        #status {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        #main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        #game-area {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        #output {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        #input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #command-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            padding: 10px;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        #command-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff88;
+        }
+        
+        #send-button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+        }
+        
+        #send-button:hover {
+            background: #00cc66;
+        }
+        
+        #sidebar {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 2px solid #00ff88;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .info-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+        }
+        
+        .info-section h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-shadow: 0 0 5px #00ff88;
+        }
+        
+        .info-section p {
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+        
+        #coherence-viz {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #coherence-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        #quick-commands {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .quick-cmd {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            border-radius: 3px;
+            padding: 5px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-cmd:hover {
+            background: rgba(0, 255, 136, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .disconnected {
+            color: #ff4444;
+        }
+        
+        .connected {
+            color: #00ff88;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🪞🐻📡 ROSETTA MUD</h1>
+        <div id="status" class="disconnected">⚫ Disconnected</div>
+    </div>
+    
+    <div id="main-container">
+        <div id="game-area">
+            <div id="output"></div>
+            <div id="input-area">
+                <input type="text" id="command-input" placeholder="Type your command..." autocomplete="off">
+                <button id="send-button">Send</button>
+            </div>
+            <div id="quick-commands">
+                <div class="quick-cmd" data-cmd="look">👁️ Look</div>
+                <div class="quick-cmd" data-cmd="inventory">🎒 Inventory</div>
+                <div class="quick-cmd" data-cmd="stats">📊 Stats</div>
+                <div class="quick-cmd" data-cmd="who">👥 Who</div>
+                <div class="quick-cmd" data-cmd="help">❓ Help</div>
+                <div class="quick-cmd" data-cmd="meditate">🧘 Meditate</div>
+            </div>
+        </div>
+        
+        <div id="sidebar">
+            <div class="info-section">
+                <h3>🎮 Connection</h3>
+                <p>Server: localhost:1234</p>
+                <p id="char-info">Character: Not created</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>❤️ Coherence</h3>
+                <div id="coherence-viz">
+                    <div id="coherence-bar"></div>
+                </div>
+                <p id="coherence-value">0.000</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>🧠 Brain Status</h3>
+                <p id="memory-confidence">Memory: --</p>
+                <p id="ai-status">AI: Inactive</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>📖 Quick Guide</h3>
+                <p><strong>Movement:</strong> go north/south/east/west/up/down</p>
+                <p><strong>Interact:</strong> get/drop/use item</p>
+                <p><strong>Social:</strong> say message</p>
+                <p><strong>Build:</strong> buildroom/builditem/createnpc</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        class MudClient {
+            constructor() {
+                this.socket = null;
+                this.connected = false;
+                this.output = document.getElementById('output');
+                this.input = document.getElementById('command-input');
+                this.sendButton = document.getElementById('send-button');
+                this.status = document.getElementById('status');
+                this.coherenceBar = document.getElementById('coherence-bar');
+                this.coherenceValue = document.getElementById('coherence-value');
+                
+                this.setupEventListeners();
+                this.connect();
+            }
+            
+            setupEventListeners() {
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendCommand();
+                    }
+                });
+                
+                this.sendButton.addEventListener('click', () => {
+                    this.sendCommand();
+                });
+                
+                // Quick command buttons
+                document.querySelectorAll('.quick-cmd').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const cmd = btn.getAttribute('data-cmd');
+                        this.input.value = cmd;
+                        this.sendCommand();
+                    });
+                });
+            }
+            
+            connect() {
+                this.addOutput('🔌 Connecting to Rosetta MUD server...\n');
+                
+                // Since we can't use actual WebSocket in this demo,
+                // we'll simulate the connection to a telnet server
+                // In production, you'd use a WebSocket proxy
+                
+                this.addOutput(`
+╔═══════════════════════════════════════════════════════════╗
+║                    ROSETTA MUD v1.0                        ║
+║          Pulse-Driven Coherent Memory Architecture        ║
+╚═══════════════════════════════════════════════════════════╝
+
+Welcome to a world where AI entities live and breathe through
+Kuramoto oscillator hearts and holographic memory plate brains.
+
+⚠️  WEB CLIENT DEMO MODE ⚠️
+To connect to a real MUD server:
+1. Start rosetta_mud.py: python rosetta_mud.py
+2. Connect via telnet: telnet localhost 1234
+
+For this demo, commands are simulated locally.
+
+Type 'help' for commands.
+Type 'create YourName' to begin.
+
+`);
+                
+                this.connected = true;
+                this.updateStatus(true);
+                
+                // Simulate AI updates
+                setInterval(() => this.updateCoherence(), 2000);
+            }
+            
+            sendCommand() {
+                const command = this.input.value.trim();
+                if (!command) return;
+                
+                this.addOutput(`> ${command}\n`);
+                this.processCommand(command);
+                
+                this.input.value = '';
+                this.input.focus();
+            }
+            
+            processCommand(cmd) {
+                const parts = cmd.toLowerCase().split(' ');
+                const command = parts[0];
+                const args = parts.slice(1);
+                
+                // Simulate responses (in production, send to server)
+                switch(command) {
+                    case 'create':
+                        this.handleCreate(args);
+                        break;
+                    case 'help':
+                        this.handleHelp();
+                        break;
+                    case 'look':
+                        this.handleLook();
+                        break;
+                    case 'stats':
+                        this.handleStats();
+                        break;
+                    case 'meditate':
+                        this.handleMeditate();
+                        break;
+                    default:
+                        this.addOutput(`\n⚠️  Demo Mode: Command '${command}' recognized but not simulated.\nConnect to real server for full functionality.\n\n`);
+                }
+            }
+            
+            handleCreate(args) {
+                const name = args.join(' ') || 'Wanderer';
+                document.getElementById('char-info').textContent = `Character: ${name} (Lv 60)`;
+                this.addOutput(`
+🎭 ${name} - Level 60 Architect
+🧠 Brain: 20 GHMP memory plates initialized
+❤️  Heart: 60 Kuramoto oscillators synchronized
+🔮 Coherence: Starting...
+
+You materialize in the world.
+
+`);
+                this.handleLook();
+            }
+            
+            handleHelp() {
+                this.addOutput(`
+📖 BASIC COMMANDS:
+  look              - Look around
+  go <direction>    - Move (north, south, east, west, up, down)
+  say <message>     - Say something
+  get <item>        - Pick up an item
+  drop <item>       - Drop an item
+  inventory         - Check your inventory
+  who               - See who's online
+  stats             - View your stats
+  inspect <npc>     - Inspect an NPC's AI state
+  meditate          - Synchronize with your Heart/Brain
+
+🏗️  ARCHITECT COMMANDS (Level 60+):
+  buildroom <name>      - Create a new room
+  builditem <name>      - Create a new item
+  createnpc <name> <lv> - Spawn an NPC
+  modifycode <module>   - Edit MUD code
+  saveworld             - Save world state
+
+`);
+            }
+            
+            handleLook() {
+                this.addOutput(`
+============================================================
+📍 The Rosetta Tavern
+============================================================
+
+A cozy tavern filled with the warm glow of holographic fireplaces.
+Strange geometric patterns pulse on the walls - they seem almost alive.
+You can feel a gentle vibration in the air, like the world itself is breathing.
+
+🚪 Exits: north, down
+
+📦 Items here:
+  - Memory Crystal
+
+👥 NPCs here:
+  - The Architect [Level 60] (coherence: 0.75)
+
+`);
+            }
+            
+            handleStats() {
+                this.addOutput(`
+============================================================
+📊 Wanderer - Level 60
+============================================================
+
+hp: 100
+max_hp: 100
+strength: 10
+intelligence: 10
+wisdom: 10
+
+🧠 AI STATUS:
+Coherence: 0.742
+Memory Confidence: 142.3
+
+`);
+            }
+            
+            handleMeditate() {
+                const coh = Math.random() * 0.3 + 0.6; // 0.6-0.9
+                this.updateCoherence(coh);
+                
+                this.addOutput(`
+🧘 You enter deep meditation...
+
+Your consciousness merges with the pulse of your Heart.
+Sixty oscillators synchronize, creating waves of coherence.
+
+============================================================
+❤️  COHERENCE: ${coh.toFixed(3)}
+🧠 MEMORY CONFIDENCE: 142.3
+⚡ ENERGY: 0.000423
+============================================================
+
+You feel unified.
+
+`);
+            }
+            
+            addOutput(text) {
+                const pre = document.createElement('pre');
+                pre.textContent = text;
+                pre.style.margin = '0';
+                pre.style.whiteSpace = 'pre-wrap';
+                this.output.appendChild(pre);
+                this.output.scrollTop = this.output.scrollHeight;
+            }
+            
+            updateStatus(connected) {
+                this.connected = connected;
+                if (connected) {
+                    this.status.textContent = '🟢 Connected';
+                    this.status.className = 'connected';
+                } else {
+                    this.status.textContent = '⚫ Disconnected';
+                    this.status.className = 'disconnected';
+                }
+            }
+            
+            updateCoherence(value = null) {
+                if (value === null) {
+                    value = Math.random() * 0.3 + 0.5; // 0.5-0.8
+                }
+                
+                this.coherenceBar.style.width = (value * 100) + '%';
+                this.coherenceValue.textContent = value.toFixed(3);
+                
+                // Update memory confidence
+                const memConf = 100 + (value * 100);
+                document.getElementById('memory-confidence').textContent = `Memory: ${memConf.toFixed(1)}`;
+                document.getElementById('ai-status').textContent = 'AI: Active';
+            }
+        }
+        
+        // Initialize client when page loads
+        window.addEventListener('load', () => {
+            const client = new MudClient();
+        });
+    </script>
+</body>
+</html>
