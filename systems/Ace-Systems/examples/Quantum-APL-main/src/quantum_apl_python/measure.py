@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/src/quantum_apl_python/measure.py
+
 """CLI to trigger APL measurement operators and append tokens.
 
 Runs the same measurement sequence as scripts/apply_apl_measurements.js

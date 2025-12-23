@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/src/quantum_apl_python/hex_prism.py
+
 """Hexagonal prismatic projection for Negative Entropy geometry.
 
 Implements the formulas documented in docs/HEXAGONAL_NEG_ENTROPY_PROJECTION.md

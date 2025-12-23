@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Test file validates system behavior
+// Severity: LOW RISK
+// Risk Types: ['test_coverage']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/tests/test_collapse_alias.js
+
 const assert = require('assert');
 
 function withEnv(env, fn) {

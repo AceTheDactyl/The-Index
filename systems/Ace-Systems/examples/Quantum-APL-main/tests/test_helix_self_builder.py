@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Test file validates system behavior
+# Severity: LOW RISK
+# Risk Types: ['test_coverage']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/tests/test_helix_self_builder.py
+
 from pathlib import Path
 
 from quantum_apl_python.helix_self_builder import HELIX_TIERS, build_report, map_instructions_to_nodes

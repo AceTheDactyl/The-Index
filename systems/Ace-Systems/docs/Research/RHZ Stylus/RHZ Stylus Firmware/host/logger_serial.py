@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: NEEDS_REVIEW - Research/experimental code
+# Severity: MEDIUM RISK
+# Risk Types: ['experimental', 'needs_validation']
+# File: systems/Ace-Systems/docs/Research/RHZ Stylus/RHZ Stylus Firmware/host/logger_serial.py
+
 import sys
 import json
 import time

@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Example code demonstrates usage
+// Severity: LOW RISK
+// Risk Types: ['documentation']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/scripts/probe_z_table.js
+
 #!/usr/bin/env node
 /*
 Probe z values and print a Markdown table with:

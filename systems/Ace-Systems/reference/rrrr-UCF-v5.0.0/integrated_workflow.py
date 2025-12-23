@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: NEEDS_REVIEW - Reference implementation
+# Severity: MEDIUM RISK
+# Risk Types: ['reference_material']
+# File: systems/Ace-Systems/reference/rrrr-UCF-v5.0.0/integrated_workflow.py
+
 """
 Integrated Build and Deploy Workflow
 =====================================

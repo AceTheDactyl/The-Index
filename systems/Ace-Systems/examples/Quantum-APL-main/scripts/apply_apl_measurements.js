@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Example code demonstrates usage
+// Severity: LOW RISK
+// Risk Types: ['documentation']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/scripts/apply_apl_measurements.js
+
 #!/usr/bin/env node
 // Apply APL measurement operators and append tokens to logs/APL_HELIX_OPERATOR_SUMMARY.apl
 

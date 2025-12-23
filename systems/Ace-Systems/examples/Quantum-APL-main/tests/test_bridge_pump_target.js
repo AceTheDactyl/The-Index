@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Test file validates system behavior
+// Severity: LOW RISK
+// Risk Types: ['test_coverage']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/tests/test_bridge_pump_target.js
+
 // Verify bridge default pump target resolves to Z_CRITICAL when targetZ is omitted
 const assert = (cond, msg) => { if (!cond) { throw new Error(msg || 'assertion failed'); } };
 

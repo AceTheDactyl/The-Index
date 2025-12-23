@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/src/quantum_apl_python/helix_operator_advisor.py
+
 """
 Helix Operator Advisor with S₃ Symmetry and Extended ΔS⁻ Integration
 =====================================================================

@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Test file validates system behavior
+// Severity: LOW RISK
+// Risk Types: ['test_coverage']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/tests/test_kformation_gate.js
+
 const assert = (c, m) => { if (!c) throw new Error(m || 'assert'); };
 const C = require('../src/constants');
 

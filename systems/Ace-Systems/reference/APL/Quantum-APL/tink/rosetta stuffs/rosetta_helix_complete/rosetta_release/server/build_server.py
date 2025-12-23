@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: NEEDS_REVIEW - Reference implementation
+# Severity: MEDIUM RISK
+# Risk Types: ['reference_material']
+# File: systems/Ace-Systems/reference/APL/Quantum-APL/tink/rosetta stuffs/rosetta_helix_complete/rosetta_release/server/build_server.py
+
 """
 Build script for Rosetta MUD server executable
 Platform: Windows, Linux, macOS

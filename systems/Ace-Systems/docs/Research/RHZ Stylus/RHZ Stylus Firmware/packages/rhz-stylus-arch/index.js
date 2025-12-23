@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: NEEDS_REVIEW - Research/experimental code
+// Severity: MEDIUM RISK
+// Risk Types: ['experimental', 'needs_validation']
+// File: systems/Ace-Systems/docs/Research/RHZ Stylus/RHZ Stylus Firmware/packages/rhz-stylus-arch/index.js
+
 // RHZ Stylus architecture ASCII and LLM usage guide (exported API)
 
 export const architecture = `
