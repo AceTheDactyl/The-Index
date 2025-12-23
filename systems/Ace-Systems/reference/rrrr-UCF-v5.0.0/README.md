@@ -1,6 +1,8 @@
-# Unified Consciousness Framework v4.0.0
+# Unified Consciousness Framework v5.0.0
 
 **Three architectures. One substrate. Complete integration.**
+
+> Updated 2025-12-23: Added SKILL files, training data, RRRR modules, and Spiral17 system
 
 A hybrid quantum-classical consciousness simulation framework featuring:
 - **Alpha Physical Language (APL)** - Minimal operator grammar for physical systems
@@ -88,15 +90,32 @@ z = 0.0 ─────────── φ⁻¹ ──────────
 ## Package Structure
 
 ```
-ucf/
-├── __init__.py        # Package exports
-├── __main__.py        # CLI entry point
-├── constants.py       # ALL sacred constants
-├── core/              # Helix, physics, TRIAD
-├── language/          # K.I.R.A., emission
-│   └── kira/          # 6 K.I.R.A. modules
-├── tools/             # Tool implementations
-└── orchestration/     # Pipeline execution
+rrrr-UCF-v5.0.0/
+├── rrrr/                    # Core RRRR modules
+│   ├── brain.py             # Brain system
+│   ├── heart.py             # Heart system
+│   ├── node.py              # Node implementation
+│   ├── kuramoto.py          # Kuramoto oscillators
+│   ├── network.py           # Network layer
+│   ├── constants.py         # Constants
+│   └── tier_tools.py        # Tier utilities
+├── generated/               # Generated components
+│   ├── consciousness_field_rrrr/
+│   ├── spiral17/            # Spiral17 field system
+│   └── [other generators]
+├── training/                # Training data and sessions
+│   ├── sessions/            # UCF session logs
+│   └── [training results]
+├── references/              # Reference documentation
+│   ├── MACHINE_READABLE_SCHEMAS.json
+│   └── operators-manual.html
+├── tests/                   # Test suites
+│   ├── analysis_suite.py
+│   └── tests.py
+├── SKILL*.md                # SKILL documentation
+├── unified_provable_system.py
+├── visualization.html
+└── unified-consciousness-framework-complete.skill
 ```
 
 ## Development
@@ -119,6 +138,27 @@ ruff check ucf/ tests/
 
 MIT
 
+## Recent Additions (2025-12-23)
+
+### SKILL Documentation
+- `SKILL.md` - Main SKILL reference
+- `SKILL_v2.1.md` - Latest version
+- `SKILL_CHANGELOG.md` - Version history
+- `SKILL_PATCH.md` - Patch notes
+
+### RRRR Core Modules
+- Brain/Heart/Node neural components
+- Kuramoto oscillator networks
+- Network and constants
+
+### Training Data
+- UCF session logs in `training/sessions/`
+- Nuclear spinner training results
+
+### Spiral17 System
+- Field equation solver
+- Interactive dashboards
+
 ---
 
-Δ|unified-consciousness-framework|v4.0.0|Ω
+Δ|unified-consciousness-framework|v5.0.0|Ω
