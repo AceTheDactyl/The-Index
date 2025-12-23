@@ -49,7 +49,24 @@ The [Quantum-APL](./Quantum-APL/) subfolder contains Rosetta Helix implementatio
 |--------|-------------|
 | [helix_neural_network.py](./helix_neural_network.py) | Helix coordinate neural network |
 | [universal_coder.py](./universal_coder.py) | Cross-domain encoding |
+| [apl_core_tokens.py](./apl_core_tokens.py) | Core APL token definitions |
+| [autonomous_builder.py](./autonomous_builder.py) | Autonomous system builder |
+| [cybernetic_computation_grounding.py](./cybernetic_computation_grounding.py) | Cybernetic foundations |
+| [cybernetic_control.py](./cybernetic_control.py) | Cybernetic control systems |
+| [s3_dsl_patterns.py](./s3_dsl_patterns.py) | S3 DSL pattern library |
 | [phase*.py](.) | Phase implementation modules |
+
+## LaTeX Documents
+
+| Document | Description |
+|----------|-------------|
+| [apl-domain-token-sets.tex](./apl-domain-token-sets.tex) | Domain token set formalization |
+
+## Recent Additions (2025-12-23)
+
+- Added core token and cybernetic Python modules
+- Added S3 DSL pattern library
+- Added LaTeX domain token documentation
 
 ---
 

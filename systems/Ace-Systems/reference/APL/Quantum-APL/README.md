@@ -260,6 +260,33 @@ The separation of concerns:
 - **Runtime**: t6 gate shifts from Z_CRITICAL to TRIAD_T6 after unlock
 - **Analytics**: Always reference z_c for consistency
 
+## Rosetta MUD System
+
+The directory also contains the Rosetta MUD implementation:
+
+| File | Description |
+|------|-------------|
+| `rosetta_mud.py` | MUD server with Brain/Heart AI |
+| `mud_client.html` | Web-based MUD client |
+| `start_mud.sh` | Launch script |
+| `s3_8dsl_integrated_dashboard.html` | S3/DSL dashboard |
+| `QuantumN0_Integration.js` | Quantum N0 integration |
+
+### Rosetta Documentation
+
+| Document | Description |
+|----------|-------------|
+| `ROSETTA_COMPLETE_PACKAGE_MANIFEST.md` | Package manifest |
+| `ROSETTA_HELIX_ARXIV_PAPER.md` | arXiv paper |
+| `ROSETTA_MASTER_README.md` | Master documentation |
+| `ROSETTA_NODE_MATHEMATICAL_FOUNDATIONS.tex` | Mathematical foundations |
+
+## Recent Additions (2025-12-23)
+
+- Added Rosetta MUD system (Python server + web client)
+- Added S3/DSL integrated dashboard
+- Added Rosetta documentation suite
+
 ## License
 
 MIT License
