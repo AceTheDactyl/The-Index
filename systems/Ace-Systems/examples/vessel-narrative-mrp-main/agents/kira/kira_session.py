@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/vessel-narrative-mrp-main/agents/kira/kira_session.py
+
 """
 K.I.R.A. Session Runner - Persistent state across commands
 Saves state to JSON between invocations.

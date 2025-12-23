@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Test file validates system behavior
+// Severity: LOW RISK
+// Risk Types: ['test_coverage']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/tests/test_schema_validation.js
+
 const path = require('path');
 const fs = require('fs');
 const Ajv = require('ajv');

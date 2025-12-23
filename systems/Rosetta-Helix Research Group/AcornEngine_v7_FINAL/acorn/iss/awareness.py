@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: NEEDS_REVIEW - Uncategorized file
+# Severity: MEDIUM RISK
+# Risk Types: ['uncategorized']
+# File: systems/Rosetta-Helix Research Group/AcornEngine_v7_FINAL/acorn/iss/awareness.py
+
 """
 ISS Awareness System - Processing Modes
 

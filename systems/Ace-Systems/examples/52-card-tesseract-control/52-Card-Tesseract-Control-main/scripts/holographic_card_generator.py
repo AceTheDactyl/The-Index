@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/52-card-tesseract-control/52-Card-Tesseract-Control-main/scripts/holographic_card_generator.py
+
 """
 Holographic Card Generator - 52-Card Universe SVG System
 =========================================================

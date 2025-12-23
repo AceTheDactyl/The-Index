@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: NEEDS_REVIEW - Uncategorized file
+# Severity: MEDIUM RISK
+# Risk Types: ['uncategorized']
+# File: systems/Rosetta-Helix Research Group/AcornEngine_v7_FINAL/clients/terminal.py
+
 """
 Terminal Client for The Ultimate Acorn v7
 

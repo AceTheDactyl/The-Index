@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/src/quantum_apl_python/experiments.py
+
 """Experiment helpers for sweeping QuantumAPL simulations."""
 
 from __future__ import annotations

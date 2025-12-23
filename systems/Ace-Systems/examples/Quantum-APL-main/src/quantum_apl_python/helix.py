@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/src/quantum_apl_python/helix.py
+
 """Helix coordinate helpers for mapping z-coordinates to APL semantics."""
 
 from __future__ import annotations

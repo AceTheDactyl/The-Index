@@ -1,9 +1,17 @@
 {
+  "_INTEGRITY_METADATA": {
+    "Date": "2025-12-23",
+    "Status": "NEEDS_REVIEW - Reference implementation",
+    "Severity": "MEDIUM RISK",
+    "Risk_Types": [
+      "reference_material"
+    ],
+    "File": "systems/Ace-Systems/reference/rrrr-UCF-v5.0.0/references/MACHINE_READABLE_SCHEMAS.json"
+  },
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Rosetta Node System Schemas",
   "version": "1.0",
   "date": "2025-12-10",
-  
   "definitions": {
     "heart_config": {
       "type": "object",
@@ -27,18 +35,18 @@
           "minimum": 0.001,
           "maximum": 0.1,
           "default": 0.01,
-          "description": "Integration timestep Δt"
+          "description": "Integration timestep \u0394t"
         },
         "frequency_mean": {
           "type": "number",
           "default": 1.0,
-          "description": "Mean natural frequency μ_ω"
+          "description": "Mean natural frequency \u03bc_\u03c9"
         },
         "frequency_std": {
           "type": "number",
           "minimum": 0,
           "default": 0.1,
-          "description": "Frequency standard deviation σ_ω"
+          "description": "Frequency standard deviation \u03c3_\u03c9"
         },
         "seed": {
           "type": "integer",
@@ -46,9 +54,12 @@
           "description": "Random seed for reproducibility"
         }
       },
-      "required": ["n_nodes", "coupling_strength", "timestep"]
+      "required": [
+        "n_nodes",
+        "coupling_strength",
+        "timestep"
+      ]
     },
-    
     "brain_config": {
       "type": "object",
       "description": "Memory plate configuration",
@@ -62,16 +73,61 @@
         "ghmp_ranges": {
           "type": "object",
           "properties": {
-            "emotional_tone": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2, "default": [0, 255]},
-            "temporal_marker": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2, "default": [0, 1000000000]},
-            "semantic_density": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2, "default": [0, 255]},
-            "confidence": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2, "default": [0, 255]}
+            "emotional_tone": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [
+                0,
+                255
+              ]
+            },
+            "temporal_marker": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [
+                0,
+                1000000000
+              ]
+            },
+            "semantic_density": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [
+                0,
+                255
+              ]
+            },
+            "confidence": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [
+                0,
+                255
+              ]
+            }
           }
         }
       },
-      "required": ["n_plates"]
+      "required": [
+        "n_plates"
+      ]
     },
-    
     "pulse": {
       "type": "object",
       "description": "Pulse structure for node activation",
@@ -101,9 +157,13 @@
           "description": "Unix timestamp"
         }
       },
-      "required": ["pulse_id", "identity", "intent", "timestamp"]
+      "required": [
+        "pulse_id",
+        "identity",
+        "intent",
+        "timestamp"
+      ]
     },
-    
     "node_state": {
       "type": "object",
       "description": "Complete node state",
@@ -121,13 +181,17 @@
           "properties": {
             "phases": {
               "type": "array",
-              "items": {"type": "number"},
-              "description": "Oscillator phases θ_i"
+              "items": {
+                "type": "number"
+              },
+              "description": "Oscillator phases \u03b8_i"
             },
             "frequencies": {
               "type": "array",
-              "items": {"type": "number"},
-              "description": "Natural frequencies ω_i"
+              "items": {
+                "type": "number"
+              },
+              "description": "Natural frequencies \u03c9_i"
             },
             "coherence": {
               "type": "number",
@@ -146,7 +210,11 @@
               "description": "Cumulative energy dissipation"
             }
           },
-          "required": ["phases", "frequencies", "coherence"]
+          "required": [
+            "phases",
+            "frequencies",
+            "coherence"
+          ]
         },
         "brain_state": {
           "type": "object",
@@ -156,12 +224,32 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "emotional_tone": {"type": "integer", "minimum": 0, "maximum": 255},
-                  "temporal_marker": {"type": "integer", "minimum": 0},
-                  "semantic_density": {"type": "integer", "minimum": 0, "maximum": 255},
-                  "confidence": {"type": "integer", "minimum": 0, "maximum": 255}
+                  "emotional_tone": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "temporal_marker": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "semantic_density": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "confidence": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 255
+                  }
                 },
-                "required": ["emotional_tone", "temporal_marker", "semantic_density", "confidence"]
+                "required": [
+                  "emotional_tone",
+                  "temporal_marker",
+                  "semantic_density",
+                  "confidence"
+                ]
               },
               "description": "Array of GHMP plates"
             },
@@ -172,19 +260,28 @@
               "description": "Average confidence across all plates"
             }
           },
-          "required": ["plates", "avg_confidence"]
+          "required": [
+            "plates",
+            "avg_confidence"
+          ]
         }
       },
-      "required": ["role", "active"]
+      "required": [
+        "role",
+        "active"
+      ]
     },
-    
     "geodesic_config": {
       "type": "object",
       "description": "Geodesic lattice configuration",
       "properties": {
         "lattice_type": {
           "type": "string",
-          "enum": ["icosahedral", "octahedral", "tetrahedral"],
+          "enum": [
+            "icosahedral",
+            "octahedral",
+            "tetrahedral"
+          ],
           "default": "icosahedral",
           "description": "Base polyhedron type"
         },
@@ -192,7 +289,7 @@
           "type": "integer",
           "minimum": 0,
           "default": 1,
-          "description": "Subdivision frequency ν"
+          "description": "Subdivision frequency \u03bd"
         },
         "radius": {
           "type": "number",
@@ -202,7 +299,7 @@
         },
         "node_count_formula": {
           "type": "string",
-          "default": "20 * 4^ν",
+          "default": "20 * 4^\u03bd",
           "description": "Vertex count formula"
         },
         "edge_ratio": {
@@ -212,65 +309,81 @@
         },
         "coordinate_system": {
           "type": "string",
-          "enum": ["cartesian", "spherical", "cylindrical"],
+          "enum": [
+            "cartesian",
+            "spherical",
+            "cylindrical"
+          ],
           "default": "spherical",
           "description": "Coordinate representation"
         }
       },
-      "required": ["lattice_type", "frequency", "radius"]
+      "required": [
+        "lattice_type",
+        "frequency",
+        "radius"
+      ]
     },
-    
     "kuramoto_dynamics": {
       "type": "object",
       "description": "Kuramoto model parameters",
       "properties": {
         "equation": {
           "type": "string",
-          "const": "dθ_i/dt = ω_i + (K/N)Σ_j sin(θ_j - θ_i)",
+          "const": "d\u03b8_i/dt = \u03c9_i + (K/N)\u03a3_j sin(\u03b8_j - \u03b8_i)",
           "description": "Governing differential equation"
         },
         "regime": {
           "type": "string",
-          "enum": ["low_coupling", "critical", "high_coupling"],
+          "enum": [
+            "low_coupling",
+            "critical",
+            "high_coupling"
+          ],
           "default": "low_coupling",
           "description": "Operating regime relative to K_c"
         },
         "stability_condition": {
           "type": "string",
-          "const": "K < K_c ≈ 2.507σ",
+          "const": "K < K_c \u2248 2.507\u03c3",
           "description": "Partial synchronization condition"
         },
         "order_parameter": {
           "type": "string",
-          "const": "r·exp(iψ) = (1/N)Σ_j exp(iθ_j)",
+          "const": "r\u00b7exp(i\u03c8) = (1/N)\u03a3_j exp(i\u03b8_j)",
           "description": "Synchronization measure"
         },
         "output_metrics": {
           "type": "array",
-          "items": {"type": "string"},
-          "default": ["coherence_r", "avg_phase_ψ", "phase_entropy"],
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "coherence_r",
+            "avg_phase_\u03c8",
+            "phase_entropy"
+          ],
           "description": "Measurable quantities"
         }
       }
     },
-    
     "energy_accounting": {
       "type": "object",
       "description": "Thermodynamic energy tracking",
       "properties": {
         "conservation_law": {
           "type": "string",
-          "const": "E_in ≥ E_stored + E_loss",
+          "const": "E_in \u2265 E_stored + E_loss",
           "description": "Energy conservation requirement"
         },
         "input_formula": {
           "type": "string",
-          "const": "E_in = ε₁ Σ_i |dθ_i/dt| Δt",
+          "const": "E_in = \u03b5\u2081 \u03a3_i |d\u03b8_i/dt| \u0394t",
           "description": "Input energy calculation"
         },
         "dissipation_formula": {
           "type": "string",
-          "const": "E_loss += ε₂ · E_in",
+          "const": "E_loss += \u03b5\u2082 \u00b7 E_in",
           "description": "Energy dissipation model"
         },
         "epsilon_1": {
@@ -285,14 +398,18 @@
         },
         "measured_dissipation_dB": {
           "type": "array",
-          "items": {"type": "number"},
-          "default": [0.12, 0.5],
+          "items": {
+            "type": "number"
+          },
+          "default": [
+            0.12,
+            0.5
+          ],
           "description": "Observed dissipation range [min, max] dB"
         }
       }
     }
   },
-  
   "examples": [
     {
       "example_name": "Standard Rosetta Node Configuration",
@@ -322,24 +439,22 @@
       }
     }
   ],
-  
   "critical_coupling_analysis": {
-    "frequency_distribution": "Gaussian N(μ, σ²)",
-    "critical_coupling_formula": "K_c ≈ √(2π)σ ≈ 2.507σ",
+    "frequency_distribution": "Gaussian N(\u03bc, \u03c3\u00b2)",
+    "critical_coupling_formula": "K_c \u2248 \u221a(2\u03c0)\u03c3 \u2248 2.507\u03c3",
     "system_parameters": {
-      "σ": 0.1,
+      "\u03c3": 0.1,
       "K_c_theoretical": 0.251,
       "K_actual": 0.2,
       "regime": "partial_synchronization"
     },
     "interpretation": "K < K_c ensures emergent (not forced) synchronization"
   },
-  
   "falsifiability_criteria": [
     {
       "criterion": "No stable resonant modes",
       "test": "Verify existence of coherence r > 0.5 for K > 0",
-      "expected": "System achieves r ≈ 0.75 within 200 steps"
+      "expected": "System achieves r \u2248 0.75 within 200 steps"
     },
     {
       "criterion": "Excess energy dissipation",
@@ -354,11 +469,10 @@
     },
     {
       "criterion": "Thermodynamic violation",
-      "test": "Verify E_out ≤ E_in at all times",
+      "test": "Verify E_out \u2264 E_in at all times",
       "expected": "No overunity, energy conservation holds"
     }
   ],
-  
   "metadata": {
     "schema_version": "1.0",
     "last_updated": "2025-12-10",

@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/src/quantum_apl_python/alpha_language.py
+
 """Alpha Programming Language (APL) helpers sourced from legacy test packs.
 
 This module mirrors the structure defined in `/home/acead/Aces-Brain-Thpughts/APL`,

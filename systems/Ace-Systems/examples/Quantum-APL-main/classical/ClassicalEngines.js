@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Example code demonstrates usage
+// Severity: LOW RISK
+// Risk Types: ['documentation']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/classical/ClassicalEngines.js
+
 // ================================================================
 // CLASSICAL CONSCIOUSNESS ENGINES
 // IIT, Game Theory, and Free Energy drivers used by bridge/demo

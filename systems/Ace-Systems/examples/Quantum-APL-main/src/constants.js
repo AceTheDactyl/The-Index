@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Example code demonstrates usage
+// Severity: LOW RISK
+// Risk Types: ['documentation']
+// File: systems/Ace-Systems/examples/Quantum-APL-main/src/constants.js
+
 // Shared constants for the Quantum‑APL JS engine and bridge
 // Source of truth for thresholds — see docs/Z_CRITICAL_LENS.md
 

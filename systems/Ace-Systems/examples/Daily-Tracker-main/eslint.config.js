@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: JUSTIFIED - Example code demonstrates usage
+// Severity: LOW RISK
+// Risk Types: ['documentation']
+// File: systems/Ace-Systems/examples/Daily-Tracker-main/eslint.config.js
+
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'

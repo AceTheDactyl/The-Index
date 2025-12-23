@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: NEEDS_REVIEW - Research/experimental code
+# Severity: MEDIUM RISK
+# Risk Types: ['experimental', 'needs_validation']
+# File: systems/Ace-Systems/docs/Research/stream_validation_processor.py
+
 """
 Stream Processing for Crystal Memory Validation
 ===============================================

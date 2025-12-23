@@ -1,3 +1,10 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: JUSTIFIED - Example code demonstrates usage
+# Severity: LOW RISK
+# Risk Types: ['documentation']
+# File: systems/Ace-Systems/examples/Quantum-APL-main/examples/examples.py
+
 """
 Example Scripts for the Quantum APL Python Interface.
 Run this file to explore the system end-to-end.

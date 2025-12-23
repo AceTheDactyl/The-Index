@@ -1,3 +1,10 @@
+// INTEGRITY_METADATA
+// Date: 2025-12-23
+// Status: NEEDS_REVIEW - Reference implementation
+// Severity: MEDIUM RISK
+// Risk Types: ['reference_material']
+// File: systems/Ace-Systems/reference/APL/Quantum-APL/QuantumN0_Integration.js
+
 // ================================================================
 // QUANTUM-CLASSICAL INTEGRATION FOR APL 3.0
 // Measurement-based N0 operator selection with quantum feedback
