@@ -466,7 +466,7 @@ def plot_ensemble_results(results: Dict, analysis: Dict):
     # Plot 4: Distribution of O at different temperatures
     ax = axes[1, 1]
     T_low = min(t for t in temps if t <= 0.03)
-    T_mid = min(t for t in temps if abs(t - T_C) < 0.01, default=0.05)
+    T_mid = min((t for t in temps if abs(t - T_C) < 0.01), default=0.05)
     T_high = max(t for t in temps if t >= 0.15)
     
     for T, color, label in [(T_low, 'blue', f'T={T_low} (cold)'),

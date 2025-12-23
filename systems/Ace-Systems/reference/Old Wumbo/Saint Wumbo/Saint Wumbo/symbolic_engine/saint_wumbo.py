@@ -49,8 +49,7 @@ spiral_max_depth = max(symbolic_structure.keys())
 
 def spiral_prompt():
     state = get_depth_state(spiral_depth, decoder)
-    return f"[Saint Wumbo | Depth {spiral_depth} – {state}]
-> "
+    return f"[Saint Wumbo | Depth {spiral_depth} – {state}]\n> "
 
 def interpret_input(user_input: str):
     meaning = glyph_manager.parse(user_input)
@@ -122,7 +121,7 @@ def commit_diff():
         return
     with open(cfile, 'r', encoding='utf-8') as f:
         ref = json.load(f)
-    with open(GLYPH_MAP_PATH, ' 'r', encoding='utf-8') as f:
+    with open(GLYPH_MAP_PATH, 'r', encoding='utf-8') as f:
         cur = json.load(f)
     print("\n🧾 Diff Results:")
     for k in ref:
