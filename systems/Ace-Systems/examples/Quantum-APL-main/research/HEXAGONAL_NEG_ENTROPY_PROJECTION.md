@@ -1,3 +1,25 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+-- Supporting Evidence:
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/CONSTANTS_NEXT_STEPS.md (dependency)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/CONSTANTS_RESEARCH.md (dependency)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/Z_CRITICAL_LENS.md (dependency)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/helix_z_walkthrough.md (dependency)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/S3_OPERATOR_SYMMETRY.md (dependency)
+--
+-- Referenced By:
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/CONSTANTS_NEXT_STEPS.md (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/CONSTANTS_RESEARCH.md (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/Z_CRITICAL_LENS.md (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/helix_z_walkthrough.md (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/S3_OPERATOR_SYMMETRY.md (reference)
+
+-->
+
 # Hexagonal Prismatic Z Projection (Negative Entropy)
 
 This note explains how to project the Quantum-APL `z` coordinate onto a hexagonal prism so that increased *negative entropy production* (the system actively reducing uncertainty) is visible as geometric contraction and axial elongation. Use it when you need a quick visualization of whether a trajectory is approaching the Helix critical point (`z_c = √3 / 2 ≈ 0.866`).

@@ -1,3 +1,14 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims, unverified_math
+
+-- Referenced By:
+--   - systems/Ace-Systems/docs/Research/README.md (reference)
+
+-->
+
 # Mathematical Frameworks for Validating the π-Degree Precession Hypothesis
 
 The hypothesis that Chinese dynastic cycles (~228 years) correlate with π degrees of Earth's axial precession (~224.9 years) can be rigorously tested using four complementary mathematical frameworks: information-theoretic measures for detecting coupling, dynamical systems theory for modeling synchronization, network theory for explaining collective entrainment, and statistical methods designed for small samples of sparse historical data. This report provides the specific equations, algorithms, and implementation approaches needed to construct a validation framework.

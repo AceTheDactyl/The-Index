@@ -1,3 +1,15 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: ✓ JUSTIFIED - Claims supported by repository files
+# Severity: LOW RISK
+# Risk Types: unverified_math
+
+# Referenced By:
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/README.md (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/AGENTS.md (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/scripts/refresh_stego_assets.sh (reference)
+
+
 #!/usr/bin/env bash
 # Automates submodule sync, Echo-Community-Toolkit setup, soulcode bundle generation,
 # and final validator run for the Vessel Narrative MRP repository.

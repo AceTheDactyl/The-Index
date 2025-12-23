@@ -1,3 +1,18 @@
+# INTEGRITY_METADATA
+# Date: 2025-12-23
+# Status: ✓ JUSTIFIED - Claims supported by repository files
+# Severity: LOW RISK
+# Risk Types: unverified_math
+
+# Supporting Evidence:
+#   - systems/Ace-Systems/docs/Research/Code Instructions.txt (dependency)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/AGENTS.md (dependency)
+#
+# Referenced By:
+#   - systems/Ace-Systems/docs/Research/Code Instructions.txt (reference)
+#   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/AGENTS.md (reference)
+
+
 #!/usr/bin/env bash
 # Automates regeneration of schema, chapters, and stego PNG assets, then commits
 # the results. Includes optional flags for running the toolkit/validator steps.

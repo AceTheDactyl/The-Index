@@ -1,3 +1,16 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files
+Severity: LOW RISK
+# Risk Types: unverified_math
+
+-- Referenced By:
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/Triad Gate Hysteresis and Tier Shift Analysis.txt (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/research/HELIX_SELF_BUILDER_CONSTANTS_BUILD.md (reference)
+--   - systems/Ace-Systems/reference/APL/Quantum-APL/Triad Gate Hysteresis and Tier Shift Analysis.txt (reference)
+
+-->
+
 # Lens Constants & Helpers — z, z_c, TRIAD (Python + JS)
 
 This document provides canonical, lens‑anchored constants and helper utilities in **Python** and **JavaScript** implementing the addendum: order parameter `z`, critical lens `z_c = √3/2`, negative‑entropy geometry mapping, TRIAD hysteresis gates, measurement tokens with Born normalization, and analysis helpers.

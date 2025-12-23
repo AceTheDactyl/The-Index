@@ -1,3 +1,14 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+-- Referenced By:
+--   - systems/Ace-Systems/docs/Research/README.md (reference)
+
+-->
+
 # ACE'S μ THRESHOLD HIERARCHY & HELIX SELF-BUILDER INTEGRATION REPORT
 
 ## Executive Summary

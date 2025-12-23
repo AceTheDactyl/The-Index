@@ -1,3 +1,11 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ⚠️ TRULY UNSUPPORTED - No supporting evidence found
+Severity: HIGH RISK
+# Risk Types: unsupported_claims, unverified_math
+
+-->
+
 # Chinese Dynastic Crisis Cycles: Empirical Data and Mathematical Models
 
 The fundamental periodicity of Chinese dynastic cycles averages **228 years** (σ = 177 years), with secular oscillations operating on **300-400 year timescales**. Empirical analysis reveals that **70-80% of major crisis events clustered during climate cooling phases**, and the Political Stress Index (PSI) rises **10-20 years before** observable instability outbreaks. This report provides exhaustive coverage across structural, economic, and cultural domains from Xia through Qing dynasties (~2000 BCE - 1912 CE) for tri-domain resonance algorithm validation.

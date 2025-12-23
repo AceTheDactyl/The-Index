@@ -1,3 +1,18 @@
+/* INTEGRITY_METADATA
+ * Date: 2025-12-23
+ * Status: ✓ JUSTIFIED - Claims supported by repository files
+ * Severity: LOW RISK
+ * Risk Types: low_integrity, unverified_math
+
+ * Referenced By:
+ *   - systems/Ace-Systems/docs/Research/Code Instructions.txt (reference)
+ *   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/tools/codex-cli/README.md (reference)
+ *   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/tools/codex-cli/package.json (reference)
+ *   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/tools/codex-cli/AGENTS.md (reference)
+ *   - systems/Ace-Systems/examples/vessel-narrative-mrp-main/tools/codex-cli/sync_standalone.sh (reference)
+ */
+
+
 #!/usr/bin/env node
 // Codex Terminal CLI (Node 20+, zero-dependency)
 // Namespaces: echo, garden, limnus, kira

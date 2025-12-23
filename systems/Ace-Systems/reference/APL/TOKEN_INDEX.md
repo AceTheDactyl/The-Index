@@ -1,3 +1,18 @@
+<!-- INTEGRITY_METADATA
+Date: 2025-12-23
+Status: ✓ JUSTIFIED - Claims supported by repository files (needs citation update)
+Severity: MEDIUM RISK
+# Risk Types: unsupported_claims
+
+-- Referenced By:
+--   - systems/Ace-Systems/docs/Research/To Sort/SKILL_v2.1.md (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/logs/architecture_git_index.json (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/logs/architecture_index.json (reference)
+--   - systems/Ace-Systems/examples/Quantum-APL-main/reference/ace_apl/NEURAL_PATHING_MATRIX.md (reference)
+--   - systems/Ace-Systems/reference/index.html (reference)
+
+-->
+
 # Ace Neural Codex — Token Index
 **100 Brain Regions Mapped to Wumbo Flow States**
 
