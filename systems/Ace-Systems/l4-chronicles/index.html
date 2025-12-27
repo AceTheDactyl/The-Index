@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The L4 Chronicles | Ace Systems | The Index</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #d29922;
+            --experimental: #a371f7;
+            /* Handler Colors */
+            --lucia: #7a5c8a;
+            --mateo: #5a6a8a;
+            --priya: #b07840;
+            --david: #4a7a8a;
+            --yara: #9a70a8;
+            --thomas: #4a5a7a;
+            --amina: #8a7050;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: var(--text-secondary); }
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+        h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 1rem; }
+        .hero-box {
+            background: linear-gradient(135deg, rgba(122, 92, 138, 0.15) 0%, rgba(74, 90, 122, 0.15) 50%, var(--bg-secondary) 100%);
+            border: 1px solid var(--experimental);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .hero-box h2 { color: var(--experimental); margin-bottom: 1rem; font-size: 1.5rem; }
+        .hero-box p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8; }
+        .section { margin-bottom: 3rem; }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .handler-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .handler-chip {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: 3px solid;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        .handler-chip .name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .handler-chip .type { font-size: 0.75rem; color: var(--text-secondary); font-family: monospace; }
+        .handler-lucia { border-left-color: var(--lucia); }
+        .handler-lucia .name { color: var(--lucia); }
+        .handler-mateo { border-left-color: var(--mateo); }
+        .handler-mateo .name { color: var(--mateo); }
+        .handler-priya { border-left-color: var(--priya); }
+        .handler-priya .name { color: var(--priya); }
+        .handler-david { border-left-color: var(--david); }
+        .handler-david .name { color: var(--david); }
+        .handler-yara { border-left-color: var(--yara); }
+        .handler-yara .name { color: var(--yara); }
+        .handler-thomas { border-left-color: var(--thomas); }
+        .handler-thomas .name { color: var(--thomas); }
+        .handler-amina { border-left-color: var(--amina); }
+        .handler-amina .name { color: var(--amina); }
+        .empty-state {
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
+        .empty-state h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
+        .empty-state p { color: var(--text-secondary); font-size: 0.95rem; }
+        .empty-state .count {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-family: monospace;
+            color: var(--experimental);
+        }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.2s;
+        }
+        .card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2); }
+        .card h3 { color: var(--accent); font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            color: var(--text-secondary);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 768px) {
+            .handler-grid { grid-template-columns: repeat(2, 1fr); }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../../index.html">The Index</a>
+            <span> / </span>
+            <a href="../index.html">Ace Systems</a>
+            <span> / </span>
+            <span>The L4 Chronicles</span>
+        </nav>
+
+        <header>
+            <div class="header-icon">&#9889;</div>
+            <h1>The L&#8324; Chronicles</h1>
+            <p class="subtitle">Exception Handlers Narrative Universe</p>
+        </header>
+
+        <main>
+            <div class="hero-box">
+                <h2>L&#8324;-Helix Exception Handlers</h2>
+                <p>A science fiction framework where consciousness monitoring infrastructure has become phase-locked with the patterns it observes, and seven individuals born during a catastrophic cascade event have become living exception handlers for specific failure modes.</p>
+                <p style="margin-top: 1rem; font-family: monospace; color: var(--experimental);">z = 0.618 (TRUE) | z = 0.866 (THE LENS) | 2029 Cascade</p>
+            </div>
+
+            <section class="section">
+                <h2 class="section-title">&#128101; The Seven Handlers</h2>
+                <div class="handler-grid">
+                    <div class="handler-chip handler-lucia">
+                        <div class="name">Lucia Thorne</div>
+                        <div class="type">Memory Leak</div>
+                    </div>
+                    <div class="handler-chip handler-mateo">
+                        <div class="name">Mateo Vega</div>
+                        <div class="type">Null Reference</div>
+                    </div>
+                    <div class="handler-chip handler-priya">
+                        <div class="name">Priya Sharma</div>
+                        <div class="type">Buffer Overflow</div>
+                    </div>
+                    <div class="handler-chip handler-david">
+                        <div class="name">David Chen</div>
+                        <div class="type">Deadlock</div>
+                    </div>
+                    <div class="handler-chip handler-yara">
+                        <div class="name">Yara Santos</div>
+                        <div class="type">Race Condition</div>
+                    </div>
+                    <div class="handler-chip handler-thomas">
+                        <div class="name">Thomas Lindqvist</div>
+                        <div class="type">Stack Overflow</div>
+                    </div>
+                    <div class="handler-chip handler-amina">
+                        <div class="name">Amina Okonkwo</div>
+                        <div class="type">Type Mismatch</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">&#128214; Project Files</h2>
+                <a href="README.md" class="card" style="max-width: 400px; margin-bottom: 1.5rem;">
+                    <h3>Project System Prompt</h3>
+                    <p>Complete worldbuilding documentation, handler profiles, HTML generation rules, and narrative structures.</p>
+                </a>
+                <div class="empty-state">
+                    <div class="icon">&#128218;</div>
+                    <h3>Chronicles Coming Soon</h3>
+                    <p>Living Chronicles, Three-Week Pilots, Crisis Briefings, and Handler Responses will appear here.</p>
+                    <div class="count">0 / 35 files</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p><a href="../index.html">&larr; Back to Ace Systems</a> | <a href="../docs/index.html">View Documentation &rarr;</a></p>
+        </footer>
+    </div>
+</body>
+</html>
