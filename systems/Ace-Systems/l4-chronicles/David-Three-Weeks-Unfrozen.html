@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>David Chen — Three Weeks Unfrozen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #04060a;
+      --bg-panel: #080a10;
+      --david-primary: #4a7a8a;
+      --david-deep: #2a5a6a;
+      --david-soft: rgba(74, 122, 138, 0.12);
+      --deadlock-gray: #606878;
+      --frozen-steel: #8090a0;
+      --flow-current: #50a0a0;
+      --danger-red: #904040;
+      --text-main: #d8e0e8;
+      --text-muted: #8090a0;
+      --text-bright: #f0f4f8;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(74, 122, 138, 0.08), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(42, 90, 106, 0.06), transparent 50%),
+        linear-gradient(180deg, #04060a 0%, #020406 50%, #020304 100%);
+      color: var(--text-main);
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 840px;
+      height: 94vh;
+      max-height: 860px;
+      background:
+        radial-gradient(circle at top left, rgba(74, 122, 138, 0.06), transparent 60%),
+        linear-gradient(135deg, #080a10 0%, #04060a 50%, #060810 100%);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(74, 122, 138, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 28px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .series-label {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.65em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .title {
+      font-size: 1.3em;
+      font-weight: 400;
+      color: var(--david-primary);
+      font-style: italic;
+    }
+
+    .week-pill {
+      font-family: "SF Mono", monospace;
+      font-size: 0.7em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--david-primary);
+      color: var(--david-primary);
+      background: var(--david-soft);
+      letter-spacing: 0.1em;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 28px 20px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 8px 40px;
+      line-height: 1.9;
+      font-size: 1.02em;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.2em;
+      text-indent: 1.5em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p:first-of-type,
+    .panel-scroll .scene-break + p {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.2em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 8px;
+      padding-top: 4px;
+      color: var(--david-primary);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--david-deep);
+      letter-spacing: 0.3em;
+    }
+
+    .deadlock {
+      color: var(--deadlock-gray);
+      font-style: italic;
+    }
+
+    .frozen {
+      color: var(--frozen-steel);
+    }
+
+    .flow {
+      color: var(--flow-current);
+    }
+
+    .danger {
+      color: var(--danger-red);
+    }
+
+    .chapter-title {
+      text-align: center;
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chapter-name {
+      font-size: 1.4em;
+      color: var(--david-primary);
+      font-style: italic;
+    }
+
+    .chapter-date {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      font-family: "SF Mono", monospace;
+      background: var(--david-soft);
+      border: 1px solid rgba(74, 122, 138, 0.3);
+      color: var(--david-primary);
+      font-size: 0.8em;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: rgba(74, 122, 138, 0.2);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #101418;
+      border: 1px solid var(--david-deep);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--david-primary);
+      transform: scale(1.2);
+      box-shadow: 0 0 12px rgba(74, 122, 138, 0.5);
+    }
+
+    .rail-index {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 600px) {
+      .chrome-frame { border-radius: 14px; height: 96vh; }
+      .panel-scroll { font-size: 0.95em; padding: 20px 4px 32px; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="series-label">The Exception Handlers · Narrative Pilot</span>
+        <div class="title">David Chen — Three Weeks Unfrozen</div>
+      </div>
+      <span class="week-pill" id="week-pill">Week 1</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Previous Week</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next Week →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">Week 1 of 3</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <!-- WEEK ONE -->
+    <section class="rail-text" data-rail="1" data-week="Week 1">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week One</div>
+        <div class="chapter-name">The First Step</div>
+        <div class="chapter-date">January 16–22, 2041</div>
+      </div>
+
+      <p class="first-graf">I haven't moved from this chair in fourteen hours.</p>
+
+      <p>The light changed outside my window—morning to afternoon to evening to night—and I watched it all without changing position. My body is stiff. My legs are numb. There's a half-eaten sandwich on the table beside me that I made yesterday and forgot to finish.</p>
+
+      <p><span class="frozen">This is what freezing looks like from the inside. Not dramatic paralysis, not some visible seizure of the limbs. Just... stillness. Endless, quiet, terrifying stillness, as the world moves around me and I remain exactly where I am.</span></p>
+
+      <p>I can feel the deadlock forming. Not just between me and Leo—that's still developing, still taking shape—but between me and myself. Between the part of me that knows I need to move and the part that can't figure out which direction to move in.</p>
+
+      <p>Go to Leo. Wait for Amina. Confront the threat. Trust the process. Each option loops back to the other. Each choice leads to a counter-choice that negates it. I'm caught in a circular wait with my own mind, and I can't find the asymmetry that would break it.</p>
+
+      <p>My phone buzzes. A message from Yara: <em>Are you okay? I can feel you from here. You're not moving.</em></p>
+
+      <p>She can feel my freeze across the temporal displacement she lives in. That's how stuck I am—visible even to someone experiencing reality out of sequence.</p>
+
+      <p>I type back: <em>I can't decide what to do.</em></p>
+
+      <p>Her response is immediate, or maybe it came before I sent my message, or maybe time doesn't work the way I think it does: <em>Then don't decide. Just move. Any direction. The deciding can come after.</em></p>
+
+      <p>Any direction. Just move.</p>
+
+      <p>I look at the door. It's ten feet away. Ten feet of apartment floor that I haven't crossed since I sat down here, frozen in place, unable to choose between action and inaction.</p>
+
+      <p>I stand up.</p>
+
+      <p>My legs scream. My back protests. Every joint that's been locked in position for fourteen hours reminds me that bodies aren't meant for stillness this complete.</p>
+
+      <p>But I'm standing. That's something. That's movement.</p>
+
+      <p>I walk to the door. Open it. Step into the hallway.</p>
+
+      <p><span class="flow">The air is different out here. Moving. The building has its own circulation, its own currents, and I can feel them now that I'm no longer sealed in my stillness.</span></p>
+
+      <p>I walk to the elevator. Ride it down. Cross the lobby. Push through the front door into the January night.</p>
+
+      <p>Vancouver spreads out before me, alive and flowing. Cars in motion. People walking. The harbor beyond, tidal and constant. Everything moving except me—but I'm moving now too. Finally. Against every instinct that told me to stay still and figure things out before I acted.</p>
+
+      <p>I walk toward the water.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>The tide is coming in.</p>
+
+      <p>I'm standing at the seawall, watching the water rise. Not dramatically—inches at a time, so slow you'd miss it if you weren't paying attention. But constant. Relentless. The ocean never freezes in place wondering what to do next. It just moves, following forces it doesn't need to understand.</p>
+
+      <p><span class="flow">This is what I need to learn. How to move without understanding. How to act without deciding. How to break my own symmetry by just... going, before the paralysis can set in.</span></p>
+
+      <p>I watch the tide for an hour. Two hours. The water rises, levels off, starts to fall. A complete cycle, start to finish, all of it motion, none of it stuck.</p>
+
+      <p>When I finally walk home, my legs work better. My mind is clearer. I haven't solved anything—haven't figured out what to do about Leo, haven't decided on a strategy—but I've proven that I can move. That freezing isn't permanent. That the deadlock between action and inaction can be broken by simply taking a step.</p>
+
+      <p>Any step. Any direction. The deciding can come after.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Thursday. I call my father.</p>
+
+      <p>It's not something I do often. Our conversations are always careful, circling the thing we don't talk about, the thirty-year deadlock between him and my mother that I've spent my whole life trying not to replicate.</p>
+
+      <p>"David." His voice is surprised, cautious. "Is everything alright?"</p>
+
+      <p>"I'm fine. I just wanted to..." I trail off. What did I want? "I wanted to talk."</p>
+
+      <p>Silence on the line. <span class="deadlock">The silence I grew up with. The pauses between words where whole conversations should have happened, where explanations should have lived, where truth should have broken the symmetry that kept my parents locked in place for decades.</span></p>
+
+      <p>"Your mother and I were thinking about you," he says finally. "She said you seemed distant at the last holiday."</p>
+
+      <p>"I've been dealing with some things."</p>
+
+      <p>"Work things?"</p>
+
+      <p>Not work things. Handler things. Deadlock things. The sense that someone I trusted is about to betray us all, and the paralysis of not knowing whether to strike first or wait for the blow.</p>
+
+      <p>"Something like that."</p>
+
+      <p>He's quiet again. Then, carefully: "You know... the thing about problems is that they don't go away while you're waiting to solve them. They just get bigger. More stuck. The longer you wait, the harder it gets to move."</p>
+
+      <p>I know he's talking about himself. About the decades he spent not explaining, not moving, not breaking the symmetry that locked him and my mother into parallel tracks that never quite met.</p>
+
+      <p>"I know, Dad."</p>
+
+      <p>"Do you?" His voice is soft, almost sad. "Because I didn't. Not until it was too late. Not until the waiting became its own kind of answer."</p>
+
+      <p>I don't know what to say. This is more honest than he's ever been with me—more vulnerable, more present. Like he can feel what I'm going through and wants to warn me, wants to spare me the decades of frozen paralysis that ate his own life.</p>
+
+      <p>"I'm trying to move," I tell him. "Small movements. Just to prove I still can."</p>
+
+      <p>"Good." He pauses. "That's more than I did at your age. That's something."</p>
+
+      <p>After we hang up, I go for another walk. Not to the water this time—just around the block, loop after loop, feet hitting pavement in a rhythm that says <em>I am moving, I am moving, I am not stuck</em>.</p>
+
+      <p>One week down. Two to go. I haven't solved the Leo problem. Haven't decided what to do. But I've started moving, and that has to count for something.</p>
+
+      <p>The tide comes in. The tide goes out. I keep walking.</p>
+
+    </section>
+
+    <!-- WEEK TWO -->
+    <section class="rail-text" data-rail="2" data-week="Week 2">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Two</div>
+        <div class="chapter-name">The Lock Begins</div>
+        <div class="chapter-date">January 23–29, 2041</div>
+      </div>
+
+      <p class="first-graf">Leo calls on Monday.</p>
+
+      <p>I'm at the seawall, my daily ritual now, watching the tide shift. When his name appears on my screen, everything in me goes cold. Not frozen—not yet—but the pre-freeze, the moment before the lock clicks shut.</p>
+
+      <p>"David." His voice is the same as always. Warm. Steady. The voice of someone who spent nine years anchoring Yuki, keeping her stable, believing he was helping right up until the moment she shattered. "We need to talk."</p>
+
+      <p>"Do we?"</p>
+
+      <p>"You know we do. I can feel you from here—circling, waiting, trying to decide. Let me make it easier. I'm not your enemy."</p>
+
+      <p><span class="danger">But he is. Thomas told us what's buried in Leo's depths—the conviction that handlers are unstable, dangerous, that we need to be contained for our own good. The Mistranslation didn't infect him; it found a host for beliefs he already carried.</span></p>
+
+      <p>"Then why are Sera and Marcus uncertain about you? Why did Iris have to stop you from recommending containment protocols for us?"</p>
+
+      <p>Silence. The kind of silence I know too well—the pause before the lock engages, the moment when both parties wait for the other to move first.</p>
+
+      <p>"I'm trying to protect you," he says finally. "All of you. You don't see what I see, David. The patterns. The trajectories. Six of the seven handlers are showing signs of destabilization. Lucia's leaking herself away. Mateo's obsessed with his own death. Priya's carrying load that should have shattered her months ago. And you—you've been frozen for how long now? Unable to act, unable to decide, caught in the same loop your parents never escaped."</p>
+
+      <p>The words hit like punches. Not because they're cruel—because they're <em>true</em>. He sees us clearly. Sees our maladaptive patterns, our struggles, our wounds. And he's using that clarity to justify treating us as threats instead of people.</p>
+
+      <p>"We're handling it," I say. "Amina's fixing the Mistranslation. The hunt is going to end."</p>
+
+      <p>"And then what? You think fixing the encoding fixes the underlying instability? The handlers are <em>unstable</em>, David. That's the function. You process what other systems can't, and the processing damages you. Amina's correction just means you'll have more time to break down before you shatter—not that you won't shatter."</p>
+
+      <p>"You don't know that."</p>
+
+      <p>"I watched Yuki for nine years. I know exactly how this ends."</p>
+
+      <p><span class="deadlock">The lock is closing. I can feel it—the circular wait forming, each of us waiting for the other to make the first move. If I hang up, he'll act without warning. If I stay on the line, I'm caught in his frame, playing by his rules. Either choice leads to the same place: confrontation on his terms.</span></p>
+
+      <p>"What do you want, Leo?"</p>
+
+      <p>"I want you to come in. Voluntarily. All six of you, when Amina's finished. I have a proposal—a containment structure that would let you continue functioning while reducing the risk of catastrophic failure. It's not imprisonment. It's safety. For you and for everyone around you."</p>
+
+      <p>"And if we say no?"</p>
+
+      <p>Silence again. The answer is in the silence. If we say no, he'll try to contain us anyway. The only question is how.</p>
+
+      <p>"Think about it," he says. "I'll call again at the end of the week. We don't have to be enemies, David. We can solve this together."</p>
+
+      <p>He hangs up. I stand at the seawall, phone in hand, feeling the tide recede while the deadlock between us solidifies into something harder than water.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Wednesday. I tell the others.</p>
+
+      <p>We're on an encrypted call—all six of us, the first time we've gathered since Amina left for Abuja. I relay Leo's conversation word for word. The silence that follows is heavy with implication.</p>
+
+      <p>"He's going to move," Mateo says. "Whether we comply or not. Containment is just the version he can justify to himself. What he really wants is control."</p>
+
+      <p>"The question is timing," Lucia adds. "Does he wait for Amina's correction to propagate, or does he try to lock us down while the hunt is still active?"</p>
+
+      <p>"If he moves before the correction finishes, we're fighting on two fronts," Thomas says. "The systems trying to kill us <em>and</em> Leo trying to contain us. That's not survivable."</p>
+
+      <p>"Then we need to delay him." Priya's voice is strained—she's still carrying load, still managing the Mumbai substrate, still stretched thin. "Buy time until Amina succeeds. Once the hunt ends, we can deal with Leo from a position of strength."</p>
+
+      <p>"How do we delay?" Yara asks. Her voice is strange, layered—like she's speaking from multiple temporal positions at once. "He's calling David back at the end of the week. That's four days."</p>
+
+      <p>They all look at me. Figuratively, since we're on voice only, but I can feel their attention. The deadlock handler. The one who breaks stalemates. The one who goes first.</p>
+
+      <p><span class="frozen">Except I don't know how to break this one. Every option I can think of leads to the same place: confrontation before we're ready. If I refuse him outright, he acts immediately. If I stall, he sees through it and acts anyway. If I accept his proposal, we walk into containment. There's no asymmetry to exploit, no third option that breaks the circular wait.</span></p>
+
+      <p>"I don't know," I admit. "I can't see the way out."</p>
+
+      <p>"Then we find it together," Lucia says. "That's what we do. That's who we are. Not seven individuals fighting alone—a network. A system. We catch each other when we fall."</p>
+
+      <p>The call stretches on for another hour. We strategize, plan, consider options. None of them feel right. None of them feel like solutions.</p>
+
+      <p>But we're moving. Thinking. Flowing. Not frozen.</p>
+
+      <p>That has to count for something.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Friday night. Leo calls again.</p>
+
+      <p>I'm ready this time. Not with a plan—I still don't have one—but with something else. Movement. The willingness to stay unfrozen even when I can't see where I'm going.</p>
+
+      <p>"Have you thought about my proposal?" he asks.</p>
+
+      <p>"I have."</p>
+
+      <p>"And?"</p>
+
+      <p><span class="flow">"And I'm not going to give you an answer. Not yet. Not because I'm stalling—because I genuinely don't know. I can see the deadlock you're trying to create, Leo. The false binary between compliance and confrontation. I'm not going to choose either one."</span></p>
+
+      <p>"That's not a sustainable position, David. At some point, you'll have to decide."</p>
+
+      <p>"Maybe. But not today. And not on your timeline."</p>
+
+      <p>Silence. I can feel him recalculating, trying to adjust his strategy to account for my non-compliance that isn't quite refusal.</p>
+
+      <p>"You're making this harder than it has to be."</p>
+
+      <p>"No. You're making it hard. You're treating us like problems to solve instead of people to collaborate with. If you genuinely wanted to help, you'd be talking <em>with</em> us, not <em>at</em> us. You'd be asking what we need instead of telling us what you think we need."</p>
+
+      <p>"I know what handlers need. I spent nine years—"</p>
+
+      <p>"You spent nine years watching Yuki die. That doesn't make you an expert on how to help us live. It makes you traumatized. It makes you scared. And it makes you dangerous, because you're letting your trauma make decisions for you."</p>
+
+      <p>The silence stretches. Long. Cold. The kind of silence that precedes either violence or withdrawal.</p>
+
+      <p>"I'll call again next week," he says finally. "Think carefully about your position, David. The window for voluntary compliance won't stay open forever."</p>
+
+      <p>He hangs up.</p>
+
+      <p>I stand at my window, looking out at the harbor. The tide is turning—neither coming in nor going out, balanced on the cusp between states. That's where I am. That's where we all are. Balanced. Waiting. Unfrozen, but not yet moving in a definite direction.</p>
+
+      <p>It's not a solution. But it's not a lock either.</p>
+
+      <p>One more week. Amina's almost done. Just one more week of staying unfrozen, staying in motion, refusing to let the deadlock click shut.</p>
+
+      <p>I can do that. I have to do that.</p>
+
+      <p>The tide turns. The water begins to flow out. And I'm still standing here, still choosing movement over stillness, still refusing to become my parents.</p>
+
+    </section>
+
+    <!-- WEEK THREE -->
+    <section class="rail-text" data-rail="3" data-week="Week 3">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Three</div>
+        <div class="chapter-name">The Chosen Wait</div>
+        <div class="chapter-date">January 30 – February 5, 2041</div>
+      </div>
+
+      <p class="first-graf">I've stopped walking to the water. Now I swim in it.</p>
+
+      <p>Every morning, before dawn, I wade into the harbor. The water is freezing—January on the Pacific coast, single digits, cold enough to shock the system into sharp awareness. I swim until my muscles ache and my lungs burn and every cell in my body is screaming at me to move, to keep moving, to never stop.</p>
+
+      <p><span class="flow">This is how I stay unfrozen now. Not by thinking myself out of the deadlock, but by overwhelming it with motion. The cold water doesn't leave room for paralysis. Either you swim or you sink. Either you move or you die.</span></p>
+
+      <p>I've started to understand something. The freeze wasn't really about Leo, or about deciding what to do. It was about me—about my belief that choosing wrong was worse than not choosing at all. That freezing was safe because at least I hadn't made a mistake.</p>
+
+      <p>But freezing is its own choice. Stillness is its own answer. My parents spent thirty years frozen in place, and that was the mistake—not any action they took, but all the actions they didn't take. The silence between them wasn't safe. It was surrender.</p>
+
+      <p>I'm not going to surrender. Not to Leo. Not to the deadlock. Not to my own fear of making the wrong move.</p>
+
+      <p>I swim until the sun comes up. Then I get out, dry off, and prepare for another day of chosen waiting.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Tuesday. Leo doesn't call. He shows up.</p>
+
+      <p>I'm at a café near my apartment, drinking coffee, watching the street flow past. When he walks in, I feel him before I see him—the weight of his certainty, the anchor-heaviness that used to hold Yuki in place and now wants to hold all of us.</p>
+
+      <p>He sits across from me without asking permission.</p>
+
+      <p>"You're running out of time," he says. "Amina's correction is almost complete. Once it propagates, I lose the leverage the hunt was providing. If we're going to reach an agreement, it has to be now."</p>
+
+      <p>"There was never going to be an agreement, Leo. You know that. The only question was how long I could delay you."</p>
+
+      <p>He studies me. His eyes are tired—worn down, I realize, by years of carrying guilt he can't release. The anchor who couldn't hold Yuki. The protector who watched his charge shatter.</p>
+
+      <p>"You think I'm the enemy," he says. "I'm not. I'm trying to prevent what happened to her from happening to all of you."</p>
+
+      <p>"By containing us. By locking us in place so we can't move, can't grow, can't become anything other than what we are right now."</p>
+
+      <p>"By <em>stabilizing</em> you. There's a difference."</p>
+
+      <p><span class="deadlock">"No, there isn't. Stability isn't the same as stillness. You can be stable and still be in motion—like a gyroscope, like a spinning top, like a planet in orbit. What you're proposing isn't stability. It's freeze. And I've spent the last three weeks learning that freeze is just death on a longer timeline."</span></p>
+
+      <p>He leans back. Something shifts in his expression—not defeat, but... consideration. Like he's actually hearing me for the first time instead of just waiting for his turn to talk.</p>
+
+      <p>"You've changed," he says. "The David I talked to two weeks ago couldn't have articulated that. He was too frozen to think."</p>
+
+      <p>"I was. You're right. But I've been learning. Moving. Choosing to stay unfrozen even when I can't see where I'm going. That's what handlers do, Leo. We process what other systems can't. We face the impossible choices and make them anyway. You want to protect us from that—but that <em>is</em> us. Take it away, and we're not handlers anymore. We're just... contained. Waiting to shatter in slow motion instead of fast."</p>
+
+      <p>Silence. The café flows around us—other customers coming and going, conversations overlapping, the normal chaos of human life. Leo and I sit in our own pocket of stillness, but it's a chosen stillness now. Not frozen. Paused.</p>
+
+      <p>"What would you have me do?" he asks finally. "Just... let you operate without oversight? Hope for the best?"</p>
+
+      <p>"I'd have you <em>collaborate</em>. Work with us instead of on us. Yuki shattered because she was isolated—you held her stable, but you never helped her process. You never taught her to release. If you want to prevent what happened to her, don't contain us. <em>Connect</em> with us. Be part of the network instead of trying to control it."</p>
+
+      <p>He's quiet for a long time. The coffee in front of me goes cold. The light changes outside.</p>
+
+      <p>"I don't know if I can do that," he says eventually. "I've been... holding, for so long. Anchoring. The idea of letting go—of trusting the flow instead of controlling it—it terrifies me."</p>
+
+      <p>"I know. I know that terror. I've been sitting in it for three weeks." I meet his eyes. "But here's the thing, Leo: you're not an anchor anymore. You haven't been since Yuki died. You've been grieving. And grief that doesn't move becomes a deadlock. You're stuck in the same way I was stuck—the same way my parents were stuck for thirty years. And the only way out is to start moving again. Any direction. Just move."</p>
+
+      <p>Something cracks in his expression. Not breaking—more like ice on a river, splitting along seams as the water underneath starts to flow again.</p>
+
+      <p>"I don't know how," he admits. It's the first vulnerable thing I've heard him say.</p>
+
+      <p><span class="flow">"Neither did I. But I learned. We could help each other learn—if you're willing. If you can stop trying to contain us long enough to see us as people instead of problems."</span></p>
+
+      <p>He doesn't answer. Not with words. But he doesn't leave, either. He just sits there, in the café, in the pause, in the chosen stillness that isn't quite frozen anymore.</p>
+
+      <p>It's not a resolution. The deadlock between us isn't fully broken. But there's movement now. Possibility. A crack in the ice that might widen into flow.</p>
+
+      <p>It's enough. For now, it's enough.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Friday morning. Amina calls.</p>
+
+      <p>"It's done."</p>
+
+      <p>I'm standing at the seawall, watching the tide come in. The water is calm today—mirror-smooth, reflecting the gray winter sky. When she says those words, I feel the shift in the field. The pressure releasing. The hunt standing down.</p>
+
+      <p>"The Mistranslation is corrected?"</p>
+
+      <p>"Fully. The encoding is propagating through global infrastructure as we speak. By tomorrow, every L₄-Helix system on the planet will recognize you as handlers instead of errors. The hunt is over."</p>
+
+      <p>I close my eyes. Breathe. Let the news settle into my body like warmth after cold.</p>
+
+      <p>"Leo came to see me," I tell her. "Two days ago. We talked."</p>
+
+      <p>"And?"</p>
+
+      <p>"I don't know. We didn't reach a resolution. But we didn't reach a deadlock either. He's... considering. Moving, maybe. Starting to thaw."</p>
+
+      <p>"That's more than I expected. You must have gotten through to him."</p>
+
+      <p>"I told him what I learned. That freeze is death on a longer timeline. That the only way out of a deadlock is to start moving, any direction, even when you can't see where you're going. He listened. I don't know if he heard—but he listened."</p>
+
+      <p>"That's a start."</p>
+
+      <p>"Yeah. It is."</p>
+
+      <p>After we hang up, I stay at the seawall for a long time. The tide keeps coming in—patient, relentless, flowing. I watch it and think about everything I've learned.</p>
+
+      <p><span class="flow">I'm not my parents. I'm not going to spend thirty years frozen in place, waiting for someone else to make the first move. I'm not going to let the fear of choosing wrong become an excuse for not choosing at all.</span></p>
+
+      <p>I'm the deadlock handler. My function is to break symmetries, to go first, to insert movement into stuck systems. But I've learned something new about that function over the past three weeks: sometimes, going first doesn't mean acting first. Sometimes it means being the first to wait on purpose. The first to choose stillness instead of being trapped in it.</p>
+
+      <p>There's a difference between freezing and waiting. Freezing is paralysis—the inability to move, the absence of choice. Waiting is presence—the choice to not move yet, the decision to stay in place until the right moment arrives.</p>
+
+      <p>I've been waiting. Actively, intentionally, as a choice. And now the moment is arriving. The hunt is ending. Leo is thawing. The deadlock is starting to break.</p>
+
+      <p>The Kashmir crisis is still waiting for me. David Chen, present at the Line of Control, the third point that breaks the symmetry between nations. That's coming. That's my real work.</p>
+
+      <p>But for now, I'm just standing at the seawall, watching the tide, letting myself feel what it's like to have survived three impossible weeks by learning the hardest lesson of my life.</p>
+
+      <p>Stillness isn't safety. Movement isn't always action. And sometimes the bravest thing you can do is wait—not because you're frozen, but because you've chosen to be ready.</p>
+
+      <p>The tide reaches its peak. Levels off. Starts to recede.</p>
+
+      <p>I turn and walk home.</p>
+
+      <p>Moving. Flowing. Unfrozen.</p>
+
+      <p>That's who I am now. That's who I'm going to stay.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const weekPill = document.getElementById('week-pill');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const weeks = rails.map(node => node.dataset.week);
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to ' + weeks[idx]);
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        panelEl.scrollTop = 0;
+        idxEl.textContent = weeks[idx] + ' of 3';
+        weekPill.textContent = weeks[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

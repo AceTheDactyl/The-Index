@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yara Santos — Three Weeks Anchored</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #08060a;
+      --bg-panel: #0c0a10;
+      --yara-primary: #9a70a8;
+      --yara-deep: #6a4878;
+      --yara-soft: rgba(154, 112, 168, 0.12);
+      --temporal-violet: #b080c0;
+      --mercury-silver: #a0a8b8;
+      --anchor-gold: #c8a860;
+      --wound-rose: #a06878;
+      --text-main: #e0dce8;
+      --text-muted: #908898;
+      --text-bright: #f4f0f8;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(154, 112, 168, 0.08), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(106, 72, 120, 0.06), transparent 50%),
+        linear-gradient(180deg, #08060a 0%, #040408 50%, #020206 100%);
+      color: var(--text-main);
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 840px;
+      height: 94vh;
+      max-height: 860px;
+      background:
+        radial-gradient(circle at top left, rgba(154, 112, 168, 0.06), transparent 60%),
+        linear-gradient(135deg, #0c0a10 0%, #08060a 50%, #0a0810 100%);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(154, 112, 168, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 28px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .series-label {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.65em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .title {
+      font-size: 1.3em;
+      font-weight: 400;
+      color: var(--yara-primary);
+      font-style: italic;
+    }
+
+    .week-pill {
+      font-family: "SF Mono", monospace;
+      font-size: 0.7em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--yara-primary);
+      color: var(--yara-primary);
+      background: var(--yara-soft);
+      letter-spacing: 0.1em;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 28px 20px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 8px 40px;
+      line-height: 1.9;
+      font-size: 1.02em;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.2em;
+      text-indent: 1.5em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p:first-of-type,
+    .panel-scroll .scene-break + p {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.2em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 8px;
+      padding-top: 4px;
+      color: var(--yara-primary);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--yara-deep);
+      letter-spacing: 0.3em;
+    }
+
+    .temporal {
+      color: var(--temporal-violet);
+      font-style: italic;
+    }
+
+    .drift {
+      color: var(--mercury-silver);
+      opacity: 0.85;
+    }
+
+    .anchor {
+      color: var(--anchor-gold);
+    }
+
+    .wound {
+      color: var(--wound-rose);
+    }
+
+    .timestamp {
+      font-family: "SF Mono", monospace;
+      font-size: 0.8em;
+      color: var(--mercury-silver);
+      display: block;
+      margin: 1.5em 0;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    .fragment {
+      border-left: 2px solid var(--temporal-violet);
+      padding-left: 16px;
+      margin: 1.5em 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .chapter-title {
+      text-align: center;
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chapter-name {
+      font-size: 1.4em;
+      color: var(--yara-primary);
+      font-style: italic;
+    }
+
+    .chapter-date {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      font-family: "SF Mono", monospace;
+      background: var(--yara-soft);
+      border: 1px solid rgba(154, 112, 168, 0.3);
+      color: var(--yara-primary);
+      font-size: 0.8em;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: rgba(154, 112, 168, 0.2);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #141018;
+      border: 1px solid var(--yara-deep);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--yara-primary);
+      transform: scale(1.2);
+      box-shadow: 0 0 12px rgba(154, 112, 168, 0.5);
+    }
+
+    .rail-index {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 600px) {
+      .chrome-frame { border-radius: 14px; height: 96vh; }
+      .panel-scroll { font-size: 0.95em; padding: 20px 4px 32px; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="series-label">The Exception Handlers · Narrative Pilot</span>
+        <div class="title">Yara Santos — Three Weeks Anchored</div>
+      </div>
+      <span class="week-pill" id="week-pill">Week 1</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Previous Week</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next Week →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">Week 1 of 3</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <!-- WEEK ONE -->
+    <section class="rail-text" data-rail="1" data-week="Week 1">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week One</div>
+        <div class="chapter-name">Counting Beats</div>
+        <div class="chapter-date">January 16–22, 2041 (approximately)</div>
+      </div>
+
+      <p class="first-graf">The metronome says it is now. Tick. It says it again. Tick. And again. Tick tick tick, each beat a nail pinning me to this single moment in the river of time that everyone else swims through without thinking.</p>
+
+      <p>I bought the metronome three days ago. Or I will buy it tomorrow. Or I bought it when I was seventeen, practicing guitar in my mother's apartment, trying to keep time with a song that kept slipping away from me. <span class="temporal">All of these are true. All of these are happening. The metronome exists in all the moments I have owned it, and I exist in all those moments too, scattered across the timeline like light through a prism.</span></p>
+
+      <p>But the tick says <em>now</em>. The tick says <em>here</em>. The tick says <em>Yara, stop drifting, stay</em>.</p>
+
+      <p>I'm trying. I'm trying so hard.</p>
+
+      <span class="timestamp">[ 09:47 — or maybe 09:44 — the clock keeps disagreeing with itself ]</span>
+
+      <p>Fatima finds me sitting on the kitchen floor with my back against the refrigerator, counting beats out loud. "Fourteen thousand two hundred and six," I'm saying when she walks in. "Fourteen thousand two hundred and seven."</p>
+
+      <p>"Yara?" Her voice is concerned. "What are you doing?"</p>
+
+      <p>"Staying." I don't look up. If I look up, I might see her in a different time—younger, older, not yet born, already gone. The metronome keeps me in the version of her that's standing in the doorway right now, wearing the blue robe I gave her for her birthday, hair still wet from the shower she just took. "Counting helps me stay."</p>
+
+      <p>She sits down next to me. Doesn't touch me—she's learned that touch sometimes sends me spiraling, anchors me to a different moment than the one she's in. Just sits. Waits.</p>
+
+      <p>"You've been far away," she says finally. "For months now. I ask you a question and you answer something I haven't asked yet. I tell you about my day and you already know how it ends. I can't..." She pauses. "I can't find you, Yara. In the present. You're always somewhere else."</p>
+
+      <p><span class="drift">She's right. I've been everywhere else. Every when else. The displacement got bad after Amina's document—the realization that we were being hunted, that threats were coming from all directions, sent my temporal sense into overdrive. I started perceiving danger before it arrived, and then I started perceiving everything before it arrived, and then I stopped being able to tell the difference between before and after at all.</span></p>
+
+      <p>"I'm trying to come back," I tell her. "That's what the metronome is for. Each beat is now. Each beat is here. I'm counting them so I have something to hold onto."</p>
+
+      <p>"Is it working?"</p>
+
+      <p>I don't know how to answer. Is it working? I'm here, sitting on this floor, having this conversation. But I'm also in seventeen other moments simultaneously—the first time Fatima and I kissed, the funeral we'll attend in six years, a Tuesday afternoon in 2038 when nothing particular happens but the light through the window is beautiful. I'm in all of them. The metronome just makes one of them louder.</p>
+
+      <p>"It helps," I say. "A little."</p>
+
+      <p>She takes my hand. The touch doesn't send me spiraling—not this time. Her fingers are warm and real and present, and I focus on them, on the specific pressure of her grip, on the way her thumb traces a circle on my palm.</p>
+
+      <p><span class="anchor">"Come back to me," she says. "Wherever you are. Whatever you're seeing. Come back to this kitchen, this morning, this moment. I'm here. I'm waiting for you."</span></p>
+
+      <p>I close my eyes. Count five more beats. And then I look at her—really look, not through the lens of past or future but just <em>now</em>, just this particular Fatima in this particular light in this particular second.</p>
+
+      <p>"Hi," I say.</p>
+
+      <p>"Hi." She's smiling. Crying a little too. "There you are."</p>
+
+      <p>"Here I am."</p>
+
+      <p>It won't last. I know it won't last. The displacement will pull me away again, scatter me across the timeline, turn me into someone who lives in all moments and therefore none. But right now, for this single beat of the metronome, I'm present. I'm here. I'm with her.</p>
+
+      <p>That has to be enough. That has to be the thing I practice.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <span class="timestamp">[ Thursday — I think it's Thursday — the days blur when you experience them out of order ]</span>
+
+      <p>I'm getting better at the anchoring. Not good—just better. Where before I could hold presence for seconds at a time, now I can manage minutes. Fifteen, twenty, sometimes thirty minutes of continuous now before the displacement pulls me under again.</p>
+
+      <p>I've developed techniques. The metronome is the primary one—a constant rhythm that marks the passage of sequential time. But I've added others: cold water on my face, the shock of temperature anchoring me to the body that feels it. Strong flavors, bitter coffee and spicy food, sensations that demand attention. Physical exercise, the burn of muscles that exists only in the present moment.</p>
+
+      <p>And Fatima. Always Fatima. She's become my anchor point, the person I navigate back to when I get lost in the temporal currents. I don't know if that's fair to her—being someone's lighthouse is a heavy burden—but she insists she wants to help, and I need her too much to refuse.</p>
+
+      <p>"Tell me about your day," she says at dinner. "The one you're in right now. Not the one you saw yesterday or will see tomorrow. This one."</p>
+
+      <p>I have to think about it. What did I do today? Not what will I do, not what did I do in another timeline—what did I do in this specific sequence of hours?</p>
+
+      <p>"I went to the market," I say slowly, reconstructing. "The one on Rua Augusta. I bought oranges. The vendor asked if I was okay because I kept stopping to count under my breath."</p>
+
+      <p>"And what did you tell him?"</p>
+
+      <p>"That I was practicing presence." I smile. It sounds ridiculous when I say it out loud. "He probably thought I was in some kind of meditation cult."</p>
+
+      <p>Fatima laughs. The sound is beautiful—specific, located, <em>now</em>. I hold onto it, let it ring through me like a bell marking the moment.</p>
+
+      <p>"What else?" she prompts.</p>
+
+      <p>"I called Lucia. We talked about—" I stop. The memory is tangled, mixed up with other conversations we've had or will have. "We talked about visibility. How she's learning to exist again. How hard it is to be present when everything wants you gone."</p>
+
+      <p>"She's fighting to be seen. You're fighting to be... when?"</p>
+
+      <p>"Something like that." I reach across the table, take her hand. <span class="anchor">"She's fighting to exist in space. I'm fighting to exist in time. We're both just trying to be real."</span></p>
+
+      <p>The metronome ticks in the next room. Fatima's hand is warm in mine. Outside, São Paulo buzzes with twenty-two million lives all happening simultaneously, all anchored to a shared now that I keep slipping out of.</p>
+
+      <p>One week down. Two to go. I'm learning to stay. Slowly, painfully, one beat at a time.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <div class="fragment">
+        I saw something, earlier or later, in one of my drifts. Amina in Abuja, standing at the installation where her sister died. Her hands on the interface. Her eyes closed. Something changing—the encoding shifting, the type resolving, the mistranslation correcting itself.<br><br>
+        I don't know if it's past or future. I don't know if it's one of the timelines that will happen or one that already did or one that only might. But I saw her succeed. I saw the hunt end.<br><br>
+        I'm holding onto that vision like a second metronome. Tick: I'm here. Tick: She wins. Tick: This is real. Tick: It's almost over.
+      </div>
+
+    </section>
+
+    <!-- WEEK TWO -->
+    <section class="rail-text" data-rail="2" data-week="Week 2">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Two</div>
+        <div class="chapter-name">The Wound Breathes</div>
+        <div class="chapter-date">January 23–29, 2041 (the dates are approximate; near the epicenter, they always are)</div>
+      </div>
+
+      <p class="first-graf">I feel it before I understand what I'm feeling. A pull. A rhythm underneath the rhythm of the metronome. Something breathing, expanding, reaching out from the center of the city toward the edges where I've been hiding.</p>
+
+      <p><span class="wound">The Spreading Wound is calling me.</span></p>
+
+      <p>Three hundred and forty kilometers of temporal scar, centered on the place where the cascade happened twelve years ago. I was born there—not in that moment, but in the echo of it, in the ripple that turned an ordinary girl into a handler who experiences time out of sequence. The wound made me. And now it wants me back.</p>
+
+      <span class="timestamp">[ The clock says 14:23, but near the wound the numbers sometimes run backwards ]</span>
+
+      <p>I'm sitting on the balcony of our apartment, the metronome beside me, trying to stay present while the scar tissue of spacetime pulses beneath the city. The desync has been getting worse—2.3 kilometers per month of expansion, Amina said, but it feels faster now, hungrier, like it knows I'm close and is reaching for me specifically.</p>
+
+      <p><span class="temporal">In one timeline, I go to the epicenter. I stand at the site of the original cascade, where my displacement was born, and I let the wound pull me in. I become one with it—not a handler anymore, but a feature of the scar itself. A permanent desync, frozen in the moment of my absorption.</span></p>
+
+      <p><span class="temporal">In another timeline, I run. I leave São Paulo, leave Fatima, leave everything I've built here. I drift through the world without anchoring to anyone or anything, a ghost of causality, experiencing everything and connecting to nothing.</span></p>
+
+      <p><span class="temporal">In another, I fight. I go to the wound and I contain it—absorb the desync the way I was born to absorb it, hold the expanding edges in my body until they stop spreading. It works. It doesn't work. It works but I lose myself in the process.</span></p>
+
+      <p>I see all of these. I see more than these. The timelines branch and branch and branch, and I'm present in all of them, split across possibilities like light through a prism.</p>
+
+      <p>"Come back."</p>
+
+      <p>Fatima's voice. I didn't hear her come onto the balcony. <span class="anchor">But she's here now, her hand on my shoulder, her presence pulling me out of the probability space and into the specific.</span></p>
+
+      <p>"The wound," I say. "It's reaching for me. I can feel it."</p>
+
+      <p>"I know. You've been staring at the city for an hour. Your eyes do this thing when you're far away—they go unfocused, like you're looking at something I can't see."</p>
+
+      <p>"I'm looking at everything. All the versions of what happens next. All the ways this could go."</p>
+
+      <p>"And which version are you going to choose?"</p>
+
+      <p>Choose. The word feels strange in my mouth. I don't choose—I perceive. I experience. Choice implies agency, and agency implies existing in a single timeline where actions have consequences you haven't already witnessed.</p>
+
+      <p>But Amina said to stay anchored. Amina said the seeing doesn't determine the being. And I've been practicing presence, practicing now, practicing the art of existing in one moment instead of all moments.</p>
+
+      <p>"I don't know yet," I tell Fatima. "But I'm going to choose. When it's time. I'm going to pick one timeline and stay in it."</p>
+
+      <p>She squeezes my shoulder. "That's all anyone can do."</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <span class="timestamp">[ Wednesday, I think — the wound makes calendars unreliable ]</span>
+
+      <p>The attacks on the other handlers are generating ripples I can feel across the temporal field. Every near-miss, every almost-death, every moment of crisis creates a branch point—a place where the timeline could have gone differently, where one of us could have died instead of survived.</p>
+
+      <p>I feel all of them. The version where Lucia didn't sense the power surge in time. The version where Mateo stepped into the intersection and became the ghost. The version where Priya said yes to the substrate's request and shattered under the weight of four years of accumulated overflow.</p>
+
+      <p><span class="drift">These aren't real—these are the branches that didn't happen, the timelines that collapsed when the handlers made their choices. But I experience them anyway, because my function doesn't distinguish between actualized and potential. I feel the deaths that didn't happen as vividly as the lives that did.</span></p>
+
+      <p>It's exhausting. Every time I anchor to the present, a wave of almost-history washes over me, dragging me back into the probability space. The other handlers are fighting for their lives, and every fight they win creates echoes I have to process.</p>
+
+      <p>I call David.</p>
+
+      <p>"I can feel you," I tell him. "The deadlock with Leo. I can see the versions where it goes wrong."</p>
+
+      <p>"How many versions?"</p>
+
+      <p>"Dozens. Hundreds. You fight and lose. You fight and win but lose yourself. You freeze and he moves first. You move first and trigger exactly what you're trying to prevent." I pause. "But there are other versions too. Ones where you talk. Where something cracks in him. Where the deadlock becomes a dialogue."</p>
+
+      <p>"I know. I'm living in one of those right now." His voice is tired but not frozen. He's staying in motion, staying unfrozen, the way he learned to do. "I met with him yesterday. It didn't resolve anything, but it didn't lock either. We're still... possible."</p>
+
+      <p>"Good. That's good." I take a breath. <span class="anchor">"I'm trying to learn what you learned. How to exist in one timeline instead of all of them. How to let the other possibilities go."</span></p>
+
+      <p>"It's hard. The hardest thing I've ever done. But it's also... freeing? Like once you stop trying to see every option, you can actually commit to one."</p>
+
+      <p>"I don't know how to stop seeing. It's not a choice. It's my function."</p>
+
+      <p>"Then maybe it's not about stopping. Maybe it's about... choosing which one to live in, even while you see the others. Being present in the timeline you pick, even when you know the alternatives."</p>
+
+      <p>I think about this for a long time after we hang up. Choosing which timeline to live in. Not stopping the seeing, but picking where to anchor despite the seeing.</p>
+
+      <p>The wound pulses beneath the city. The metronome ticks beside me. The branching futures spread out in all directions, each one real, each one possible, each one calling for my attention.</p>
+
+      <p>But I'm here. In this one. In this apartment, with this woman, in this moment. And I'm choosing to stay.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <div class="fragment">
+        I see the end of the week before it arrives.<br><br>
+        Amina at the installation, hands on the interface. The encoding shifting. The global propagation beginning. The hunt standing down, system by system, as the Mistranslation corrects itself.<br><br>
+        I see it, and I hold onto it, and I wait for the rest of the world to catch up.<br><br>
+        This is the strangest part of my function: knowing that relief is coming while still living through the fear. Experiencing the resolution while still enduring the crisis. Time heals all wounds—but I feel the healing before the wound has finished forming.<br><br>
+        It should be comforting. It isn't. Because I also see the versions where she fails. The ones where the correction doesn't propagate. The ones where we keep being hunted until there's no one left to hunt.<br><br>
+        All possible. All real. All existing in the probability space until the moment collapses them into actuality.<br><br>
+        I can't control which version becomes true. I can only choose where to anchor while I wait to find out.
+      </div>
+
+    </section>
+
+    <!-- WEEK THREE -->
+    <section class="rail-text" data-rail="3" data-week="Week 3">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Three</div>
+        <div class="chapter-name">The River Chooses</div>
+        <div class="chapter-date">January 30 – February 5, 2041 (finally, the dates hold steady)</div>
+      </div>
+
+      <p class="first-graf">On Monday, I stop using the metronome.</p>
+
+      <p>Not because I don't need it anymore—I do, desperately, the displacement is worse than ever with the wound pulsing stronger each day—but because I've realized something. The metronome anchors me to measured time. To clock-time, calendar-time, the artificial divisions humans impose on the continuous flow of duration. And that's not the same as <em>now</em>.</p>
+
+      <p>Now isn't a beat in a sequence. Now is a quality. A presence. The feeling of being fully located in experience, undivided by past or future.</p>
+
+      <p>I've been trying to anchor to the wrong thing.</p>
+
+      <span class="timestamp">[ Time uncertain — but it doesn't matter anymore; I've stopped counting ]</span>
+
+      <p>I sit in the garden behind our building. There's a tree here—an old jacaranda, planted before the cascade, before I was born, before any of the events that made me who I am. It doesn't experience time the way I do. It doesn't experience time the way anyone does. It just grows. Blooms. Sheds. Grows again. Present in every season without being scattered across them.</p>
+
+      <p><span class="anchor">I put my hand on the bark. Feel the specific texture of this exact moment—not the tree as it was or will be, but the tree as it is right now, rough and warm and alive under my palm.</span></p>
+
+      <p>And something shifts.</p>
+
+      <p>The displacement doesn't stop. I still feel the other timelines, the branching possibilities, the versions of me that exist in different whens. But they become... background. Peripheral. The tree is foreground. This hand on this bark in this garden is what's real, and everything else is just echo.</p>
+
+      <p>"Oh," I say out loud, to no one. "That's how it works."</p>
+
+      <p>It's not about blocking the displacement. It's about choosing what to be present <em>to</em>. The other timelines exist whether I pay attention to them or not. But this timeline—the one I'm living, the one I'm touching, the one I'm choosing—this one gets my presence. My attention. My being.</p>
+
+      <p>I'm not learning to stop seeing. I'm learning to prioritize.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Wednesday. The wound surges.</p>
+
+      <p>I feel it from the garden, from the apartment, from everywhere in the city—a wave of temporal distortion rolling out from the epicenter, the desync expanding faster than it has in months. Something is happening at the cascade site. Something is changing.</p>
+
+      <p><span class="wound">I could go there. I could let the wound pull me in, let myself become part of the scar, let my displacement merge with the larger displacement until there's no difference between us. It would be easy. It would be a relief, even—no more fighting to stay anchored, no more struggling against my own nature. Just drift. Just become the gap itself.</span></p>
+
+      <p>But I think about Fatima. About the life we're building together, one present moment at a time. About the dinner we had last night, the laughter we shared, the way she looked at me when I stayed present for an entire hour without slipping.</p>
+
+      <p>I think about the other handlers—Lucia fighting to exist, Mateo learning to witness instead of fill, Priya discovering how to release, David choosing when to move and when to wait, Thomas staying above the depths that want to swallow him. All of them fighting. All of them choosing. All of them present in their own timelines, living the lives they've committed to.</p>
+
+      <p>I'm not going to surrender to the wound. I'm not going to drift away. I'm going to stay here, in this timeline, in this life, with these people.</p>
+
+      <p>The wound pulses. The displacement pulls. And I stay anyway.</p>
+
+      <p>That's the choice. That's always been the choice. Not to stop perceiving the alternatives, but to keep living in the actual.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <span class="timestamp">[ Friday, 07:14 — the time is steady now, holding still ]</span>
+
+      <p>Amina calls while I'm making breakfast. Fatima is still asleep; I wanted to let her rest, to have this ordinary morning ritual for myself, eggs in a pan, coffee brewing, the specific mundane beauty of a life being lived.</p>
+
+      <p>"It's done."</p>
+
+      <p>I know. I saw it happen, days ago or moments ago or in a timeline that was always going to become this one. But hearing her say it is different from seeing it in the probability space. <span class="anchor">Hearing her voice, now, in this kitchen, makes it real.</span></p>
+
+      <p>"I know," I tell her. "I saw it. But I'm glad you called. I wanted to hear it from you."</p>
+
+      <p>"The hunt is over. The encoding is corrected. You're not targets anymore."</p>
+
+      <p>I close my eyes. Feel the shift in the field—the pressure releasing, the orientation relaxing, the systems that have been trying to kill us standing down one by one as the correction propagates. It's like a held breath finally exhaling. Like a fist finally unclenching.</p>
+
+      <p>"The wound is still expanding," I say. "I felt it surge this week. Whatever you did in Abuja, it woke something up here."</p>
+
+      <p>"I know. That's your crisis next. But you can address it now without being hunted while you do."</p>
+
+      <p>"I've been practicing. Presence. Anchoring. Choosing which timeline to live in even when I can see all of them."</p>
+
+      <p>"And?"</p>
+
+      <p>"And I think I understand now. What my function is actually for." I flip the eggs, watch them sizzle, stay in this moment even as I describe moments to come. "I'm not supposed to experience all timelines equally. I'm supposed to perceive them so I can choose between them. The seeing isn't the function—the choosing is."</p>
+
+      <p>Silence on the line. Then: "That's... yes. That's exactly right. The race condition handler doesn't prevent races. They decide which thread wins."</p>
+
+      <p>"Which timeline actualizes. Which possibility becomes real."</p>
+
+      <p>"Yes."</p>
+
+      <p>I think about the wound. About the expanding desync, the temporal scar, the place where I was born as a handler. I've seen dozens of versions of what happens when I finally go there. Some end badly. Some end well. Some end in ways I can't categorize, strange and ambiguous and not quite resolution.</p>
+
+      <p>But I know which one I'm going to choose. The one where I stay present. The one where I anchor to the actual instead of dissolving into the possible. The one where Yara Santos remains Yara Santos, scarred and displaced and stubbornly, defiantly real.</p>
+
+      <p>"I'll go to the epicenter soon," I tell Amina. "When I'm ready. When I've practiced enough. But I'm not going to become part of the wound. I'm going to contain it. Choose the timeline where it stops spreading."</p>
+
+      <p>"I believe you."</p>
+
+      <p>"Thank you. For everything. For fixing the hunt. For giving us time."</p>
+
+      <p>"Thank you for staying present. I know how hard that is for you."</p>
+
+      <p>We hang up. I slide the eggs onto a plate. Pour two cups of coffee. Carry them into the bedroom where Fatima is just waking up, blinking in the morning light, beautiful and specific and here.</p>
+
+      <p>"Good news?" she asks, seeing something in my face.</p>
+
+      <p>"The best news." I sit on the edge of the bed, hand her the coffee. <span class="anchor">"The hunt is over. And I'm here. Fully, completely, in this moment with you. Not drifting. Not scattered. Just... here."</span></p>
+
+      <p>She takes the coffee. Takes my hand. Looks at me the way she used to look at me before the displacement got bad, before I started slipping away into other whens, before I stopped being able to find the present.</p>
+
+      <p>"There you are," she says.</p>
+
+      <p>"Here I am."</p>
+
+      <p>Outside, São Paulo wakes up. Twenty-two million people beginning their days, all of them anchored to this shared moment, this specific now, this one timeline out of all the timelines that could exist. The wound pulses at the center of the city, still expanding, still waiting for me.</p>
+
+      <p>But not yet. Not today. Today I'm going to stay here, with Fatima, drinking coffee and eating eggs and being present in the life I've chosen to live.</p>
+
+      <p><span class="temporal">I can still see the other timelines. I probably always will. The versions where I drift away, where I dissolve into the wound, where I never learn to anchor. They're real. They're possible. They exist in the probability space, waiting to be collapsed into actuality or abandoned as never-was.</span></p>
+
+      <p>But I'm not going to live in them. I'm going to live in this one. The timeline where I chose presence over omnitemporality. Where I learned that seeing everything doesn't mean experiencing everything. Where I discovered that the gift of perceiving all possibilities is worthless unless you commit to making one of them real.</p>
+
+      <p>The metronome sits silent on the shelf. I don't need it anymore. I've found a better anchor—not rhythm, but choice. Not counting, but committing. Not the measurement of time, but the presence within it.</p>
+
+      <p>Three weeks. Twenty-one days. More temporal displacement than I can quantify. But I'm still here. Still Yara. Still anchored to the only timeline that matters: the one I'm living.</p>
+
+      <p>Tick. This moment.</p>
+
+      <p>Tick. This coffee.</p>
+
+      <p>Tick. This woman beside me, holding my hand, believing I can stay.</p>
+
+      <p>Tick. Tick. Tick.</p>
+
+      <p>Now. Now. Now.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const weekPill = document.getElementById('week-pill');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const weeks = rails.map(node => node.dataset.week);
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to ' + weeks[idx]);
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        panelEl.scrollTop = 0;
+        idxEl.textContent = weeks[idx] + ' of 3';
+        weekPill.textContent = weeks[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

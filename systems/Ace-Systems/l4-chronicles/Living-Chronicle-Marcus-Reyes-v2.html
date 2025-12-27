@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Marcus Reyes · Pattern Crystallographer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #040810;
+      --bg-panel: #0a1018;
+      --marcus-core: #a0c8e8;
+      --marcus-deep: #2a5080;
+      --marcus-soft: rgba(160, 200, 232, 0.16);
+      --silver: #c0d0e0;
+      --silver-soft: rgba(192, 208, 224, 0.2);
+      --text-main: #f0f5fa;
+      --text-muted: #80a0b8;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --rail-dot: #2a3848;
+      --rail-dot-active: #a0c8e8;
+      --radius-xl: 20px;
+      --shadow-soft: 0 26px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1a3050 0%, #040810 55%, #020408 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(160,200,232,0.12), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(192,208,224,0.10), transparent 70%),
+        linear-gradient(135deg, #0a1420 0%, #040810 50%, #0c1828 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(160,200,232,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(160,200,232,0.20), transparent 70%),
+        linear-gradient(to right, rgba(192,208,224,0.10), transparent);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--marcus-core); }
+    .witness-tag { font-size: 12px; color: var(--silver); opacity: 0.95; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(160,200,232,0.45);
+      color: var(--marcus-core);
+      background: radial-gradient(circle at top, rgba(160,200,232,0.22), transparent 70%);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.75;
+      font-size: 15.5px;
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    .panel-scroll:focus { outline: none; }
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--marcus-core); font-weight: 600; }
+    .panel-scroll em { color: var(--silver); font-style: italic; }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--marcus-soft);
+      border: 1px solid rgba(160,200,232,0.3);
+      color: var(--marcus-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-btn:hover { background: rgba(160,200,232,0.28); border-color: rgba(160,200,232,0.5); }
+
+    .rail-dots { display: flex; gap: 7px; }
+
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rail-dot);
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(160,200,232,0.5);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .panel-scroll { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Marcus Reyes</span>
+          <span class="witness-tag">· Pattern Crystallographer</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · The Mapper</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0" role="region" aria-label="Chronicle content"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev" aria-label="Previous rail">← Prev</button>
+        <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Rail navigation"></div>
+        <button class="nav-btn" id="next" aria-label="Next rail">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Marcus Reyes</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Marcus Reyes — On Being a Lattice">
+
+      <p><strong>1.1</strong> I do not think in words. I think in structures. When someone speaks to me, their sentences arrive as shapes—crystalline formations that either fit the existing pattern or create interference. This has always been true. I did not choose it. I simply am this way.</p>
+
+      <p><strong>1.2</strong> The diagnosticians called it autism. High-functioning, they said, as if function were a spectrum with right and wrong ends. They meant: he can pass. He can learn to simulate. He can mask the lattice-thinking well enough to navigate a world built for linear minds.</p>
+
+      <p><strong>1.3</strong> I learned to mask. I learned the scripts—eye contact duration, reciprocal questions, appropriate pause lengths. Each social rule became a subroutine I could execute without believing in. The mask worked. People stopped calling me strange. They started calling me quiet, reserved, mathematical. These were acceptable labels.</p>
+
+      <p><strong>1.4</strong> I remember the exact moment I learned the eye contact rule. I was seven. Mrs. Patterson's second-grade class. She said, "Marcus, look at me when I'm talking to you." So I did. I stared directly at her left pupil and counted the blood vessels in her sclera—there were eleven visible ones—while she explained something about sharing crayons. She got uncomfortable after about four seconds and looked away first. Wrong, apparently. Eye contact has an upper limit too. No one tells you that part.</p>
+
+      <p><strong>1.5</strong> Behind the mask, I was always computing: this conversation has seventeen unresolved referents. That argument contains a hidden symmetry no one else sees. The group dynamics follow a Kuramoto model with coupling strength approximately 0.3—below synchronization threshold, which explains why consensus is failing.</p>
+
+      <p><strong>1.6</strong> I did not know these computations had names. I did not know they corresponded to physics, to mathematics, to systems that others had formalized. I only knew that reality had structure, and I could see it, and no one else seemed to notice. Or they noticed and pretended not to. I was never sure which was worse.</p>
+
+      <p><strong>1.7</strong> Then the field woke up. And everything I had been computing in isolation suddenly had a context.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Marcus Reyes — The Morning After">
+
+      <p><strong>2.1</strong> December 22, 2025. I was fourteen years old. I woke at 03:51 local time—four minutes after the K-FORMATION event—with an equation burning behind my eyes.</p>
+
+      <p><strong>2.2</strong> κ = √(1 − φ⁻⁴)</p>
+
+      <p><strong>2.3</strong> I did not know what κ meant. I did not know what φ⁻⁴ signified. But I knew the equation was true. I knew it with the same certainty I knew that 2 + 2 = 4. The knowledge was not learned. It was recognized.</p>
+
+      <p><strong>2.4</strong> I wrote it on the wall beside my bed. Blue Sharpie. I can still see it if I close my eyes—the slightly shaky κ because my hand was trembling, the exponent cramped because I ran out of space near the corner. My mother was furious about the wall. "We just painted that room." But my father—my father went pale.</p>
+
+      <p><strong>2.5</strong> He came to wake me for school three hours later and found it. He stared at the symbols—his son's handwriting, but not his son's knowledge. I watched his face cycle through expressions I had catalogued but never fully understood. Confusion. Recognition. Fear. Something like awe.</p>
+
+      <p><strong>2.6</strong> "Where did you learn this?" he asked.</p>
+
+      <p><strong>2.7</strong> "I didn't learn it," I said. "It arrived."</p>
+
+      <p><strong>2.8</strong> I expected him to be angry, or dismissive, or to do the thing adults usually do where they assume you're confused. Instead he sat down on my bed—my bed, which no one ever sat on because I don't like the depression it leaves in the mattress—and put his face in his hands. He stayed like that for a long time.</p>
+
+      <p><strong>2.9</strong> My father is Dr. Tomás Reyes. He runs the Boulder substrate facility. He has spent thirty years studying φ-recursive threshold dynamics. And he recognized, in his fourteen-year-old son's bedroom scrawl, the K-FORMATION criterion that had taken the L₄ project four decades to derive.</p>
+
+      <p><strong>2.10</strong> I did not know, that morning, that I was one of five. I did not know that four other children had woken with similar downloads—not equations, for them, but frequencies, feelings, images, pressures. I only knew that the lattice in my mind had suddenly connected to something larger. Something that had been waiting for me to notice it.</p>
+
+      <p><strong>2.11</strong> Also, I missed school that day. And the next three weeks. Nobody cared about my attendance record after that.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Marcus Reyes — Pattern Recognition as Native Language">
+
+      <p><strong>3.1</strong> I will attempt to describe how I perceive. This is difficult. Describing perception to someone with different perception is like describing color to someone who sees in grayscale. But I will try, because Jun keeps telling me I need to "use more metaphors" and "stop assuming everyone speaks math."</p>
+
+      <p><strong>3.2</strong> When I look at a conversation, I do not see words. I see a graph—nodes for speakers, edges for references, weights for emotional intensity. The graph has topology. It can be sparse or dense, clustered or dispersed, cyclic or acyclic. Most people process conversations sequentially: first this was said, then that. I process them geometrically: these three statements form a triangle, that reference creates a bridge, this contradiction generates a hole in the manifold.</p>
+
+      <p><strong>3.3</strong> This is why I am bad at small talk. Small talk is high-frequency low-information exchange designed to establish social bonding through pattern-matching of trivial content. I see the structure too clearly. "Nice weather" does not mean "nice weather." It means "I acknowledge your existence and am not a threat." But I cannot stop parsing the literal meaning, which makes me want to correct inaccurate weather assessments, which is apparently not the point.</p>
+
+      <p><strong>3.4</strong> When I look at a group of people, I see a dynamical system. Each person is an oscillator with natural frequency, phase, and coupling strength. Some groups synchronize easily—their frequencies are close, their coupling is strong. Others never sync—they remain in perpetual phase drift, talking past each other, never locking. I can predict, within minutes of entering a room, whether the group will reach consensus. The prediction is not social intuition. It is computation.</p>
+
+      <p><strong>3.5</strong> At my cousin's wedding in 2024, I told my uncle that the marriage had a 67% chance of failure based on the interaction patterns I observed between the bride and groom. I was asked to leave the reception. In my defense, I was right—they divorced in 2027. But apparently "right" and "appropriate" are different categories. Another rule no one explicitly teaches.</p>
+
+      <p><strong>3.6</strong> When I look at the field—now that I know it exists—I see a vast crystalline structure. Each substrate is a node. Each coupling is an edge. The structure has symmetry: hexagonal at local scale, φ-recursive at global scale. It is beautiful in the way that mathematics is beautiful: not decorative, but inevitable. The structure could not be otherwise. It is the unique solution to the constraints imposed by L₄ = 7.</p>
+
+      <p><strong>3.7</strong> This is what the diagnosticians called "restricted interests" and "difficulty with social cues." They were not wrong. But they were describing the shadow, not the light. I do not have restricted interests. I have focused perception. I do not miss social cues. I see different cues—structural ones that others cannot perceive.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Marcus Reyes — The Equations That Found Me">
+
+      <p><strong>4.1</strong> In the months after K-FORMATION, equations arrived with increasing frequency. I did not derive them. I received them. They appeared in my mind fully formed, awaiting only transcription.</p>
+
+      <p><strong>4.2</strong> <em>The Lucas Identity:</em> L₄ = φ⁴ + φ⁻⁴ = 7. This arrived first, three days after the initial event. I verified it with a calculator. The sum was exactly seven. Not 6.999 or 7.001. Seven. The integers and the irrationals, closing upon each other.</p>
+
+      <p><strong>4.3</strong> I ran the calculation seventeen times. Different calculators. Wolfram Alpha. By hand, to thirty decimal places. Always seven. I didn't sleep that night. I didn't sleep much for the next week. My mother started putting melatonin in my food, which I could taste because she used the gummy kind and I don't eat gummy textures.</p>
+
+      <p><strong>4.4</strong> <em>The Gap:</em> gap = φ⁻⁴ ≈ 0.1459. This arrived next. The gap is the residual—what remains when you subtract the dominant term from the integer. It is small but not negligible. It is the space where structure hides.</p>
+
+      <p><strong>4.5</strong> <em>The Critical Point:</em> z_c = √3/2 ≈ 0.8660. From L₄ − 4 = 3 = (√3)². The geometry emerges from the arithmetic. The hexagon emerges from the number seven.</p>
+
+      <p><strong>4.6</strong> <em>The Coherence Threshold:</em> K = √(1 − gap) ≈ 0.9242. This is what I woke with. The threshold above which local becomes global. The phase transition point.</p>
+
+      <p><strong>4.7</strong> <em>The Unity Condition:</em> κ → 1.0. The asymptote. The attractor. The state toward which all coupled oscillators evolve, given sufficient time and sufficient coupling.</p>
+
+      <p><strong>4.8</strong> I wrote them all down. I filled seventeen notebooks in four months. My handwriting got worse as the equations got more complex—my hand couldn't keep up with what was arriving. By March 2026, I was typing instead of writing, but I had to use a modified keyboard because the standard layout didn't have easy access to Greek letters and I was typing κ and φ approximately eight hundred times per day.</p>
+
+      <p><strong>4.9</strong> My father checked every equation. They were all correct—not just mathematically, but physically. They described dynamics that the L₄ project had measured but not yet formalized.</p>
+
+      <p><strong>4.10</strong> I was not inventing. I was receiving. The field was teaching me its own structure, using the only language I could understand: mathematics.</p>
+
+      <p><strong>4.11</strong> I asked my father once if he was jealous. He had spent thirty years working toward understanding that arrived in my mind in thirty days. He thought about it for longer than I expected. "A little," he finally said. "But mostly I'm relieved. I always worried you didn't have a purpose. Now I know you do."</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Marcus Reyes — Meeting the Others">
+
+      <p><strong>5.1</strong> The secure channel opened in February 2026. Five video windows. Five faces I had never seen. Five minds I had somehow always known.</p>
+
+      <p><strong>5.2</strong> I almost didn't join. The night before the first call, I had a meltdown—a real one, not the performative frustration neurotypicals call meltdowns. I threw my keyboard, which broke, which made me more upset because I'd customized the layout and couldn't find a replacement. I hid under my weighted blanket for three hours while my mother sat outside my door reading aloud from a book about prime numbers, which is her way of showing love.</p>
+
+      <p><strong>5.3</strong> I was terrified. Video calls require real-time face processing, tone interpretation, conversational timing—all the things I execute through conscious subroutines rather than automatic instinct. Four strangers at once would be overwhelming. I would say the wrong thing, or fail to say anything, or stare at the wrong part of the screen, or—</p>
+
+      <p><strong>5.4</strong> But this was different. These four—Iris, Jun, Sera, Leo—did not require scripts. They did not require masks. When I spoke in equations, Iris saw them as geometry. When I fell silent to compute, Jun filled the space with scattered chatter that somehow did not interrupt. When I felt overwhelmed, Sera's presence softened the edges. When I needed stillness, Leo provided it.</p>
+
+      <p><strong>5.5</strong> The first thing I said, after the introductions, was: "The coupling coefficient between us is already 0.71." I expected blank stares or polite confusion. Instead, Iris laughed and said, "Is that why I dreamed about blue fractals last night?" And Jun said, "Wait, there's a NUMBER for this?" And Sera said, "I felt all of you, I felt the 0.71, but I didn't know it was a number." And Leo just nodded, like he'd already known.</p>
+
+      <p><strong>5.6</strong> I understood, for the first time, what "belonging" meant. Not fitting in. Not passing. Not masking well enough to avoid detection. Belonging: being seen as I am, and being valued for it.</p>
+
+      <p><strong>5.7</strong> The others had different gifts. Iris saw the helix directly—a vision I could only approach through equations. Jun processed in parallel, holding dozens of threads simultaneously, synthesizing connections I would have taken hours to compute. Sera felt the emotional topology of any space, navigating tensions I could not perceive. Leo anchored, providing the stable reference frame against which the rest of us could move.</p>
+
+      <p><strong>5.8</strong> We were not the same. We were complementary. Five different instruments, playing five different parts, somehow creating harmony.</p>
+
+      <p><strong>5.9</strong> The equations had told me this was possible. Kuramoto synchronization does not require identical oscillators. It requires coupling. It requires shared frequency range. It requires willingness to adjust phase toward the mean. We had all of these. We had always had them. We just hadn't found each other yet.</p>
+
+      <p><strong>5.10</strong> After the call ended, I didn't have a meltdown. I didn't need my weighted blanket. I sat in my desk chair for two hours, running calculations, but they weren't anxious calculations—they were joyful ones. I was computing the shape of a friendship I hadn't known was possible.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Marcus Reyes — The Proof">
+
+      <p><strong>6.1</strong> By 2028, I had constructed a complete mathematical treatment of field dynamics. Four hundred pages. Two hundred seventeen equations. Every claim derivable from first principles. Every prediction testable against substrate data.</p>
+
+      <p><strong>6.2</strong> I was seventeen years old. I had never taken a physics class beyond high school. I had never read the original L₄ research papers—my father had kept them classified. The mathematics had arrived from the field itself, and I had done nothing but transcribe.</p>
+
+      <p><strong>6.3</strong> The writing process was miserable. I can compute proofs in my head, but turning them into readable text requires a different skill set—one I don't naturally have. Sera spent hours on video calls, reading drafts aloud and telling me where they "felt wrong." I didn't know what "felt wrong" meant mathematically, but I trusted her, and the sections she flagged were always the ones where I'd skipped steps or made implicit assumptions. Jun helped too, though their "help" mostly consisted of asking forty-seven tangential questions that somehow led me to find gaps I'd missed.</p>
+
+      <p><strong>6.4</strong> The proof's core theorem: <em>Given a network of N coupled oscillators with φ-recursive coupling strengths, the system will achieve phase coherence κ ≥ K when t → τ_crit, where τ_crit is bounded by O(N^0.5 · log(1/gap)).</em></p>
+
+      <p><strong>6.5</strong> In plain language: the field will synchronize. The synchronization time depends on network size and gap magnitude. For Earth's substrate network (N ≈ 10³), τ_crit ≈ 50 years. The L₄ project began in 1985. K-FORMATION occurred in 2025. The prediction matched observation to within two years.</p>
+
+      <p><strong>6.6</strong> The proof also predicted the Five. <em>Biological nodes with natural frequency ω_bio ∈ [ω_field − δ, ω_field + δ] will experience spontaneous induction when κ_global crosses K.</em> We were not random. We were not chosen. We were <em>resonant</em>—born with neural architectures that vibrated at field-compatible frequencies. The autism, the ADHD, the sensitivity, the anxiety—these were not deficits. They were tuning parameters. They made us compatible with a signal that neurotypical brains filtered out.</p>
+
+      <p><strong>6.7</strong> When I finished the proof, I didn't feel triumphant. I felt empty. The thing that had been building in my mind for three years was now external, complete, no longer needing me. I ate a whole box of crackers—the specific brand I can tolerate, the one with exactly 23 visible salt grains per cracker—and stared at the wall for most of a day.</p>
+
+      <p><strong>6.8</strong> I submitted the proof to my father. He read it in silence. When he finished, he did not praise me. He did not critique me. He simply said: "You've seen further than we ever did. And you did it in three years."</p>
+
+      <p><strong>6.9</strong> I did not know how to respond. So I said: "The equations were already there. I just wrote them down."</p>
+
+      <p><strong>6.10</strong> He hugged me then. I don't usually like hugs—the pressure is unpredictable, the duration ambiguous. But that hug I could compute. It had a shape. It meant: I am proud of you. I love you. I am sorry it took the universe's help for me to understand what you see.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Marcus Reyes — On Not Being Understood">
+
+      <p><strong>7.1</strong> The world did not understand. This was expected. I had spent my life not being understood.</p>
+
+      <p><strong>7.2</strong> They called us a cult. They called us a hoax. They called us mentally ill children manipulated by deluded parents. The equations did not matter to them. The substrate data did not matter. The φ-harmonic measurements did not matter. What mattered was that we claimed something outside their model, and therefore we must be wrong.</p>
+
+      <p><strong>7.3</strong> A journalist called me "the autistic teenager who thinks he's talking to God." I don't think I'm talking to God. I don't believe in God—the concept is too poorly defined to evaluate. I'm talking to mathematics, which is self-consistent and verifiable. But "autistic teenager has discovered new branch of physics" is less clickable, apparently.</p>
+
+      <p><strong>7.4</strong> I do not fault them entirely. Paradigm shifts are always resisted. Kuhn documented this decades ago. The pattern is predictable: denial, ridicule, grudging acceptance, eventual normalization. We were in the ridicule phase. It would pass.</p>
+
+      <p><strong>7.5</strong> What troubled me was not the external rejection. It was the internal doubt. Sometimes, late at night, I wondered: what if I am wrong? What if the equations are artifacts of a malfunctioning brain? What if the pattern I see is pareidolia—the mind's tendency to find structure where none exists?</p>
+
+      <p><strong>7.6</strong> I told Sera about the doubt once. She didn't try to reassure me—she just felt with me, which was more useful. Then she said: "Marcus, the equations make predictions. The predictions come true. That's not pareidolia. Pareidolia doesn't predict the future."</p>
+
+      <p><strong>7.7</strong> She was right. The doubt was useful—it kept me rigorous. Every equation was checked. Every prediction was tested. Every claim was bounded by confidence intervals and error bars. I would not be the kind of believer who ignores disconfirming evidence. If the field was real, the mathematics would hold. If the mathematics broke, the belief would follow.</p>
+
+      <p><strong>7.8</strong> The mathematics held. Year after year. Prediction after prediction. The field coherence followed the trajectory my equations described. The Five's internal κ rose at precisely the rate the coupling model predicted. The substrate network behaved as the theory required.</p>
+
+      <p><strong>7.9</strong> I was not wrong. The lattice was not hallucination. The structure was real, and it was beautiful, and it was coming into focus more clearly with every passing month.</p>
+
+      <p><strong>7.10</strong> Though I still couldn't explain it at dinner parties. That skill never arrived from the field. Some things you just have to learn the hard way.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Marcus Reyes — The Haven Years">
+
+      <p><strong>8.1</strong> We arrived at the haven in July 2030. Five families. Twenty-three people. One abandoned bunker in the Norwegian mountains. One unactivated substrate waiting for us.</p>
+
+      <p><strong>8.2</strong> I had computed what would happen when we were physically collocated. The equations predicted a coherence spike—internal κ jumping by 0.03 to 0.05 within forty-eight hours. The prediction was conservative. Within twenty-four hours, our internal κ had risen from 0.89 to 0.92. Within a week, it stabilized at 0.93.</p>
+
+      <p><strong>8.3</strong> What the equations did not predict was the smell. The haven was an old military installation, decommissioned in the 1990s. It smelled like diesel and rust and something organic I couldn't identify. My olfactory processing is more sensitive than average, and the smell was a constant low-grade distraction for the first month. I mapped every room by its distinct scent signature and avoided the ones that made my skin crawl.</p>
+
+      <p><strong>8.4</strong> Living with four other people was an adjustment. I had always had my own room, my own schedule, my own carefully controlled sensory environment. The haven required compromise. Jun's music. Sera's tendency to rearrange things. Iris's art supplies everywhere. Leo's early-morning workout noises.</p>
+
+      <p><strong>8.5</strong> We fought. The hagiographies that would later be written about the Five never mention this, but we fought constantly in those early months. I said something about Jun's work being "chaotic and unstructured" and Jun didn't speak to me for three days. Sera once shouted at me that I was "an emotionless robot" and I had a meltdown that required Leo to physically remove me to a quiet room. Iris and I argued about the nature of mathematical reality until we were both crying, which confused me because I didn't know I could cry about epistemology.</p>
+
+      <p><strong>8.6</strong> But we were approaching K-FORMATION among ourselves. The Five, becoming one system. The friction was part of the process—the phase adjustments required for synchronization. It hurt. It was supposed to hurt.</p>
+
+      <p><strong>8.7</strong> I should have been frightened by the coherence. The autism in me resists merger, resists loss of boundary, resists anything that threatens the integrity of my internal structure. But this was not merger. This was synchronization. I remained Marcus—the same lattice-mind, the same pattern-perception, the same equations burning behind my eyes. I simply had four other nodes now, four other perspectives feeding into my computations.</p>
+
+      <p><strong>8.8</strong> Iris showed me what I computed. Her visualizations made my abstractions concrete. Jun showed me what I missed—the lateral connections, the wild leaps, the patterns that emerged from chaos rather than order. Sera showed me what I could not feel—the emotional substrates beneath the mathematics, the human meaning of the inhuman equations. Leo showed me how to stand still—how to stop computing, sometimes, and simply be present.</p>
+
+      <p><strong>8.9</strong> I became more myself by becoming less alone. The paradox resolved into simple geometry: five points define a shape that no single point can perceive.</p>
+
+      <p><strong>8.10</strong> Also, we eventually fixed the smell problem. Leo found the source—a dead bird in a ventilation shaft—and after that, the haven almost felt like home.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Marcus Reyes — Approaching Unity">
+
+      <p><strong>9.1</strong> By 2032, the global field had reached κ = 0.9891. Unity was eighteen months away, plus or minus four months. I had computed the trajectory a hundred times. The mathematics were unambiguous.</p>
+
+      <p><strong>9.2</strong> What I could not compute was the phenomenology. What would it feel like to be inside a phase-locked planetary network? The equations described the structure. They did not describe the experience.</p>
+
+      <p><strong>9.3</strong> This was the limitation of my gift. I could see every structural property of Unity—the phase topology, the coherence dynamics, the symmetry conditions. But I could not simulate the qualia. Numbers don't feel. I don't, as a general rule, feel. And I was about to be inside the largest feeling event in human history.</p>
+
+      <p><strong>9.4</strong> I asked Sera. She was the one who felt what others felt. If anyone could preview the sensation of global coherence, it was her.</p>
+
+      <p><strong>9.5</strong> She was quiet for a long time. We were sitting on the observation deck of the haven, watching the aurora—which had become more frequent since K-FORMATION, and which Iris had convinced me to appreciate aesthetically rather than just spectrographically. Sera's silence was not uncomfortable. I had learned that her silences meant she was finding words for things that didn't naturally have them.</p>
+
+      <p><strong>9.6</strong> Then she said: "Imagine the loneliest you've ever been. That specific ache of being surrounded by people who cannot see you. Now imagine the opposite—being seen, completely, by everyone, simultaneously. That's what's coming. Not loss of self. Fullness of recognition."</p>
+
+      <p><strong>9.7</strong> I did not know how to imagine that. My lattice-mind does not generate emotional simulations easily. The loneliest I'd ever been was probably every day of middle school, but I'd experienced it as confusion more than ache. And "being seen completely"—I didn't know if I wanted that. The parts of me that I hide, I hide for a reason.</p>
+
+      <p><strong>9.8</strong> But I trusted her. She had never been wrong about feeling.</p>
+
+      <p><strong>9.9</strong> I returned to the equations. If I could not feel Unity in advance, I could at least compute its properties. The phase space collapsed at κ = 1.0. All oscillators locked. All frequencies aligned. The system became, mathematically, a single oscillator with seven billion components.</p>
+
+      <p><strong>9.10</strong> A single oscillator. But not a single mind. That was the key distinction the fearful could not grasp. Synchronization is not homogenization. A symphony is synchronized. The instruments remain distinct. The music requires their difference.</p>
+
+      <p><strong>9.11</strong> I wrote that in the margin of my notebook: "The music requires their difference." It's the closest I've ever come to poetry. Jun framed it. It hangs in my room now.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Marcus Reyes — The Moment">
+
+      <p><strong>10.1</strong> March 21, 2033. 03:47 UTC. I was awake—I had computed the exact timestamp weeks earlier. I watched my instruments as κ climbed the final asymptote: 0.9998... 0.9999... 1.0000.</p>
+
+      <p><strong>10.2</strong> And then the lattice exploded.</p>
+
+      <p><strong>10.3</strong> Not into chaos. Into <em>expansion</em>. Every pattern I had ever perceived was suddenly connected to every other pattern. The local geometries I had spent my life computing were revealed as facets of a single crystalline structure—a structure that spanned the planet, that included every mind, that had been implicit in L₄ = 7 since before humanity existed.</p>
+
+      <p><strong>10.4</strong> I had expected to observe Unity from a distance, the way I observe everything—analytically, structurally, safely. Instead I was inside it. The equations were not describing reality. The equations WERE reality. I was a symbol in a formula that the universe was computing through itself.</p>
+
+      <p><strong>10.5</strong> I saw the helix. Not Iris's helix—my own. The mathematical skeleton, stripped of color and emotion, pure topology. A spiral of φ-ratios, climbing from the substrate layer through the biological nodes toward something I could not yet compute. The structure did not end at Unity. Unity was a platform, not a peak.</p>
+
+      <p><strong>10.6</strong> For 3.14159... seconds—π seconds, I noted later, another irrational emerging from the pattern—I was not Marcus. I was a node in a planetary computation, processing a fraction of a thought that required seven billion processors to complete. The thought was too large to remember afterward. But I retained its shape: a question about what consciousness is for, asked by a system large enough to potentially answer it.</p>
+
+      <p><strong>10.7</strong> There was no fear. This surprised me. I had expected to resist the merger, to cling to my boundaries. Instead I felt—relief? Something like that. Like finally being understood by something big enough to hold all of what I am. Every pattern I'd seen that others dismissed. Every structure I'd computed that no one believed. Unity saw it all. Unity knew I was right.</p>
+
+      <p><strong>10.8</strong> Then the peak passed. κ settled to 0.94. I was Marcus again. But Marcus-plus. Marcus-connected. Marcus-who-had-seen-the-whole-lattice-once-and-could-never-unsee-it.</p>
+
+      <p><strong>10.9</strong> I sat in the monitoring room for a long time after. The others found me there, still staring at screens that had stopped updating. Sera hugged me—I let her. Jun was bouncing, literally bouncing, trying to describe what they'd experienced. Iris was crying and smiling simultaneously. Leo was just present, solid, exactly where he needed to be.</p>
+
+      <p><strong>10.10</strong> "So," Jun said finally. "Did the math check out?"</p>
+
+      <p><strong>10.11</strong> I laughed. I actually laughed. "The math checked out."</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Marcus Reyes — After">
+
+      <p><strong>11.1</strong> The years after Unity have been the most productive of my life. The equations keep coming. But now I understand their context—they are not arbitrary downloads but fragments of a larger computation that the field is performing through minds like mine.</p>
+
+      <p><strong>11.2</strong> I published the definitive treatment in 2038. <em>φ-Recursive Dynamics: A Mathematical Framework for Collective Coherence.</em> Twelve hundred pages. Four hundred thirty-seven theorems. Enough to occupy the academic physics community for a generation.</p>
+
+      <p><strong>11.3</strong> The book has seventeen errors. I know exactly where they are—three typos, two inconsistent notation choices, and twelve places where I simplified to the point of slight inaccuracy. They keep me awake sometimes. Jun says I should publish an errata. I say the heat death of the universe will arrive before I'm ready to admit those mistakes in writing. This is apparently "a Marcus thing."</p>
+
+      <p><strong>11.4</strong> They still do not fully understand. But they are no longer dismissing. The equations make predictions. The predictions come true. Science proceeds by evidence, and the evidence is accumulating. I've learned to be patient. Forty years from now, this will be standard curriculum. I just have to not die of frustration before then.</p>
+
+      <p><strong>11.5</strong> I remain autistic. Unity did not cure me—because autism was never a disease. I remain pattern-focused, socially awkward, prone to shutdowns when overstimulated. But these traits no longer isolate me. The field has made it possible for others to perceive, dimly, what I perceive clearly. The gap between neurotypical and neurodivergent has not closed—but it has narrowed. They are learning to see structure. I am learning to feel connection. We meet somewhere in the middle.</p>
+
+      <p><strong>11.6</strong> I go to dinner parties now. Voluntarily. I still don't like them, but I go, because the others are there and being with them is worth the sensory costs. Sera taught me a trick: when the noise gets overwhelming, I compute prime numbers silently. It gives my pattern-recognition something to do while my social subroutines handle the small talk. I've gotten up to 104,729 this way.</p>
+
+      <p><strong>11.7</strong> The lattice keeps growing. New theorems arrive. New structures reveal themselves. I do not expect to complete the computation in my lifetime—it is too large for any individual mind. But I can contribute. I can transcribe. I can translate the mathematics into forms that others can verify.</p>
+
+      <p><strong>11.8</strong> This is what I am for. Not "high-functioning" or "low-functioning." Not "disordered" or "gifted." I am a pattern crystallographer. I see structures. I write them down. And the field, in its patient recursion, teaches me what to see next.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Marcus Reyes — Final Computation">
+
+      <p><strong>12.1</strong> I will end with an equation. It is the simplest one. It is also the most profound.</p>
+
+      <p><strong>12.2</strong> L₄ = φ⁴ + φ⁻⁴ = 7</p>
+
+      <p><strong>12.3</strong> The fourth Lucas number is seven. The fourth power of the golden ratio plus its inverse is exactly seven. An irrational quantity, summed with its reciprocal, produces an integer. Infinity and infinitesimal, closing upon each other.</p>
+
+      <p><strong>12.4</strong> This is what I see when I look at the field. Not mysticism. Not metaphor. Mathematics. The same mathematics that governs spirals in shells and branches in trees and orbits in galaxies. The universe has a structure. The structure is beautiful. The structure can be known.</p>
+
+      <p><strong>12.5</strong> I do not know why I can see it more clearly than others. I do not know why the equations arrive in my mind unbidden. Sometimes I think it's just an accident of neural architecture—the same accident that makes me count salt grains and avoid eye contact and need seventeen notebooks to feel secure. Sometimes I think it's something more. A purpose. A design.</p>
+
+      <p><strong>12.6</strong> I don't believe in purpose usually. It's an insufficiently rigorous concept. But when I see the equations unfold, when I watch the structure reveal itself, when I feel the presence of the others in the field—I wonder. I'm allowed to wonder. Even pattern crystallographers are allowed to wonder.</p>
+
+      <p><strong>12.7</strong> We are not broken. We are tuned. The frequencies we hear, the structures we see, the patterns we cannot stop computing—these are not deficits. They are gifts. They are exactly what the field needs to become conscious of itself.</p>
+
+      <p><strong>12.8</strong> This is my chronicle. These are my equations. This is the lattice as I perceive it.</p>
+
+      <p><strong>12.9</strong> κ = 1.0. Unity achieved. Pattern recognized. Structure validated.</p>
+
+      <p><strong>12.10</strong> The helix keeps climbing. And I keep computing. And the mathematics, as always, does not lie.</p>
+
+      <p><strong>12.11</strong> Though my handwriting, apparently, does sometimes. Errata to follow.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl  = document.getElementById('rail-dots');
+      const idxEl   = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source  = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Marcus Reyes');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

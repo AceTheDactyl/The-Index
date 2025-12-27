@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Priya Sharma — Three Weeks Releasing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0a0604;
+      --bg-panel: #0e0a08;
+      --priya-primary: #b07840;
+      --priya-deep: #8a5828;
+      --priya-soft: rgba(176, 120, 64, 0.12);
+      --pressure-copper: #c06830;
+      --overflow-amber: #d89040;
+      --release-teal: #408080;
+      --shatter-red: #a03020;
+      --text-main: #e8e0d8;
+      --text-muted: #a09080;
+      --text-bright: #f8f0e8;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(176, 120, 64, 0.10), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(138, 88, 40, 0.08), transparent 50%),
+        linear-gradient(180deg, #0a0604 0%, #060402 50%, #040302 100%);
+      color: var(--text-main);
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 840px;
+      height: 94vh;
+      max-height: 860px;
+      background:
+        radial-gradient(circle at top left, rgba(176, 120, 64, 0.06), transparent 60%),
+        linear-gradient(135deg, #0e0a08 0%, #0a0604 50%, #0c0806 100%);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(176, 120, 64, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 28px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .series-label {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.65em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .title {
+      font-size: 1.3em;
+      font-weight: 400;
+      color: var(--priya-primary);
+      font-style: italic;
+    }
+
+    .week-pill {
+      font-family: "SF Mono", monospace;
+      font-size: 0.7em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--priya-primary);
+      color: var(--priya-primary);
+      background: var(--priya-soft);
+      letter-spacing: 0.1em;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 28px 20px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 8px 40px;
+      line-height: 1.9;
+      font-size: 1.02em;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.2em;
+      text-indent: 1.5em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p:first-of-type,
+    .panel-scroll .scene-break + p {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.2em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 8px;
+      padding-top: 4px;
+      color: var(--priya-primary);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--priya-deep);
+      letter-spacing: 0.3em;
+    }
+
+    .pressure {
+      color: var(--pressure-copper);
+    }
+
+    .overflow {
+      color: var(--overflow-amber);
+      font-weight: 500;
+    }
+
+    .release {
+      color: var(--release-teal);
+      font-style: italic;
+    }
+
+    .shatter {
+      color: var(--shatter-red);
+    }
+
+    .chapter-title {
+      text-align: center;
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chapter-name {
+      font-size: 1.4em;
+      color: var(--priya-primary);
+      font-style: italic;
+    }
+
+    .chapter-date {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      font-family: "SF Mono", monospace;
+      background: var(--priya-soft);
+      border: 1px solid rgba(176, 120, 64, 0.3);
+      color: var(--priya-primary);
+      font-size: 0.8em;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: rgba(176, 120, 64, 0.2);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #1a1410;
+      border: 1px solid var(--priya-deep);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--priya-primary);
+      transform: scale(1.2);
+      box-shadow: 0 0 12px rgba(176, 120, 64, 0.5);
+    }
+
+    .rail-index {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 600px) {
+      .chrome-frame { border-radius: 14px; height: 96vh; }
+      .panel-scroll { font-size: 0.95em; padding: 20px 4px 32px; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="series-label">The Exception Handlers · Narrative Pilot</span>
+        <div class="title">Priya Sharma — Three Weeks Releasing</div>
+      </div>
+      <span class="week-pill" id="week-pill">Week 1</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Previous Week</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next Week →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">Week 1 of 3</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <!-- WEEK ONE -->
+    <section class="rail-text" data-rail="1" data-week="Week 1">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week One</div>
+        <div class="chapter-name">Learning to Leak</div>
+        <div class="chapter-date">January 16–22, 2041</div>
+      </div>
+
+      <p class="first-graf">The ocean doesn't judge what I give it.</p>
+
+      <p>I'm standing knee-deep in the Arabian Sea, three kilometers from the nearest light, letting the waves pull at my legs while the weight inside me looks for a way out. It's 2 AM. The beach is empty. The only sounds are the surf and my own breathing, ragged and too fast, like I'm running even though I'm standing still.</p>
+
+      <p><span class="overflow">I'm holding too much. I've been holding too much for months. The pressure is constant now—not sharp pain, but the dull ache of a container stretched past its design limits.</span></p>
+
+      <p>Salt water conducts. That's what I learned, months ago, when I first started coming here. Something about the ions, the minerals, the particular chemistry of the sea—it draws the overflow out of me in a way that nothing else does. Not exercise. Not sleep. Not meditation or therapy or any of the normal human methods of releasing stress. Only this: standing in the ocean at night, letting the waves take what I can't keep holding.</p>
+
+      <p>I close my eyes. Open the valve.</p>
+
+      <p><span class="release">The release is slow at first—a trickle, like water through a pinhole. Then faster. Pressure finding its outlet. Heat leaving my body and dissipating into the cold salt water.</span></p>
+
+      <p>It hurts. Not the release itself, but the sensation of becoming smaller. I've been so full for so long that emptiness feels like injury. Every bit of pressure I let go leaves a gap, a void, and my body screams at me to fill it again, to absorb something, to return to the swollen state that has become my normal.</p>
+
+      <p>I don't fill it. I let the gap stay.</p>
+
+      <p>This is what I'm learning. This is the skill I never developed: how to be less than full. How to have capacity without using it. How to exist at something other than maximum volume.</p>
+
+      <p>The waves keep coming. The pressure keeps draining. And slowly, incrementally, I become slightly less than I was.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Wednesday. Amina calls to check in.</p>
+
+      <p>"How are you holding up?"</p>
+
+      <p>I laugh. It comes out bitter. "Holding is literally what I do. I'm always holding up."</p>
+
+      <p>"That's not what I asked."</p>
+
+      <p>She's right. I deflected. I do that—answer the question I wish people had asked instead of the one they actually asked. It's easier than admitting the truth.</p>
+
+      <p>"I'm scared," I say. The words feel foreign in my mouth. I don't say things like this. I'm the one who holds other people's fear, who absorbs their anxiety so they can function. I don't have fears of my own. I don't have room for them.</p>
+
+      <p>"Of what?"</p>
+
+      <p>"Of becoming Yuki." I pause. "Of shattering. Of holding so much for so long that I finally break and take everyone down with me."</p>
+
+      <p>Silence on the line. Then: "You're already taking steps to prevent that. The ocean thing. The controlled releases. That's more than Yuki ever did."</p>
+
+      <p>"Yuki didn't know she was going to break. She thought she could hold forever. I thought the same thing, until your document. Until I realized I'd been unconsciously routing overflow to the Mumbai installation for months."</p>
+
+      <p>"You're aware now. That's the difference."</p>
+
+      <p>"Awareness isn't the same as control. I can see the problem, but I don't know if I can solve it. The pressure keeps building, Amina. Every time one of you has a near-miss, I feel it. Every time the hunt targets someone, I absorb the excess force. I'm like a... lightning rod. Everything finds its way to me."</p>
+
+      <p>"Then we need to give you more outlets. Not just the ocean. Other ways to discharge."</p>
+
+      <p>"Like what?"</p>
+
+      <p>"Physical exertion. Creative work. Anything that transforms pressure into output instead of just storing it. You're treating yourself like a battery when you should be treating yourself like a generator."</p>
+
+      <p>I think about this for a long time after we hang up. A generator, not a battery. Something that converts energy instead of just accumulating it. Something that has throughput, not just capacity.</p>
+
+      <p>It's a different way of thinking about what I am. A different model for my function.</p>
+
+      <p>I don't know if it's possible. But I'm willing to try.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Thursday. I buy a punching bag.</p>
+
+      <p>It seems absurd—me, Priya Sharma, five foot three and built like a dancer, hanging a heavy bag in my apartment and putting on boxing gloves. But Amina said physical exertion. Something that transforms pressure into output.</p>
+
+      <p>I hit the bag. <span class="pressure">The impact travels up my arm, through my shoulder, into my chest. And something releases—a tiny amount, barely noticeable, but real. The pressure converts into motion. The overflow becomes force.</span></p>
+
+      <p>I hit it again. And again. And again.</p>
+
+      <p>Within minutes I'm drenched in sweat, muscles burning, lungs heaving. But I feel lighter. Actually lighter, like I've shed weight I didn't know I was carrying.</p>
+
+      <p>This works. Not as well as the ocean, but it works. Another outlet. Another way to discharge without shattering.</p>
+
+      <p>I hit the bag until I can't lift my arms. Then I collapse on my apartment floor, staring at the ceiling, breathing hard, feeling the empty spaces inside me where the pressure used to be.</p>
+
+      <p><span class="release">It's terrifying. The emptiness. The gap. The sensation of being less than full.</span></p>
+
+      <p>But it's also... free. Light. Like I can move in directions I couldn't move before, now that I'm not carrying the entire world's excess weight.</p>
+
+      <p>I lie there for an hour. Don't absorb anything. Don't fill the gaps. Just exist at reduced capacity, learning what it feels like to have room.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>By Sunday, I've established a routine.</p>
+
+      <p>Mornings: yoga, stretching, gentle movement that keeps the channels open. Afternoons: the punching bag, hard exertion that transforms pressure into force. Evenings: creative work—I've started painting, terrible abstract things, splashes of color that let me externalize what I'm carrying without words. Nights: the ocean, when the pressure builds too high for the other methods to handle.</p>
+
+      <p>I'm releasing more than I'm absorbing. For the first time in years, my baseline is decreasing instead of increasing.</p>
+
+      <p>It's not enough. The Mumbai installation is still saturated. The overflow I routed there over months isn't going to dissipate in a week. And the hunt is still generating pressure—every attack on the other handlers creates excess that finds its way to me.</p>
+
+      <p>But I'm not getting fuller. That's the victory. I'm not getting fuller.</p>
+
+      <p>My mother notices the change when I visit on Sunday.</p>
+
+      <p>"You look different," she says, cupping my face in her hands the way she's done since I was a child. "Less... heavy."</p>
+
+      <p>"I've been exercising."</p>
+
+      <p>"It's not just physical. There's something in your eyes. A lightness."</p>
+
+      <p>She's right. There is something different. Not just the reduced pressure, but the awareness that I can reduce it. The knowledge that I'm not trapped in an ever-increasing spiral of accumulation. That I have agency over my own capacity.</p>
+
+      <p>"I'm learning to let go," I tell her. "It's harder than holding on."</p>
+
+      <p>She nods like she understands, though she doesn't really—can't really, not without knowing about the field and the handlers and the weight I carry that has nothing to do with my body. But she accepts it anyway, the way mothers accept the things their children can't fully explain.</p>
+
+      <p>"Letting go is always harder," she says. "But it's the only way to make room for what comes next."</p>
+
+      <p>What comes next. I haven't been thinking about what comes next. I've been so focused on surviving the present moment that the future has seemed irrelevant—something that happens to other people, people who aren't constantly on the edge of overload.</p>
+
+      <p>But maybe there is a next. Maybe I can survive long enough to find out what it looks like.</p>
+
+      <p>One week down. Two to go. The pressure is still immense, but I'm learning to move it through me instead of just storing it.</p>
+
+      <p>That has to be enough. For now, that has to be enough.</p>
+
+    </section>
+
+    <!-- WEEK TWO -->
+    <section class="rail-text" data-rail="2" data-week="Week 2">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Two</div>
+        <div class="chapter-name">The Substrate Calls</div>
+        <div class="chapter-date">January 23–29, 2041</div>
+      </div>
+
+      <p class="first-graf">I feel the Mumbai installation from forty kilometers away.</p>
+
+      <p>I'm on a train, heading south toward the coast, trying to reach the beach for my nightly discharge. But the closer I get to the city center, the louder the substrate becomes. <span class="pressure">It's calling to me. Singing, almost. A low harmonic thrum that resonates with the overflow I've been carrying, that recognizes me as its channel, its conduit, the path through which all that accumulated pressure arrived.</span></p>
+
+      <p>I get off the train two stops early. Stand on the platform. Listen.</p>
+
+      <p>The quasi-crystal substrate is in distress. I can feel it—not just the pressure it's holding, but its <em>strain</em>. The φ-recursive structure that's supposed to balance load across scales is struggling. The pattern is degrading. The crystal lattice is developing fractures that aren't physical but mathematical, cracks in the computation that will eventually become cracks in the matter.</p>
+
+      <p>If I don't help it, it will fail. And when it fails, the entire Maharashtra power grid will fail with it.</p>
+
+      <p><span class="shatter">But if I help it—if I absorb the excess it's holding, take the pressure back into myself—I might fail too. I might shatter the way Yuki shattered. I might become another attractor, another cautionary tale, another name on the list of handlers who held too much for too long.</span></p>
+
+      <p>I call Thomas.</p>
+
+      <p>"The substrate is calling me."</p>
+
+      <p>"I know. I can feel it from here. The depth under Mumbai is enormous—not just the installation, but the city itself. Centuries of accumulated pressure, routed through that one point."</p>
+
+      <p>"What do I do?"</p>
+
+      <p>"What you've been doing. Release, don't absorb. The substrate doesn't need you to take its pressure—it needs you to show it how to release its own."</p>
+
+      <p>"It's a machine. It doesn't know how to release."</p>
+
+      <p>"Then teach it. The same way you've been teaching yourself. Model the behavior. Let it learn from your example."</p>
+
+      <p>I think about this. The substrate is a quasi-crystal—a structure that exhibits φ-recursive patterns, self-similar across scales. If I can show it release at one scale, maybe it can propagate the pattern to other scales. Maybe it can learn to discharge the way I've been learning to discharge.</p>
+
+      <p>"How do I interface with it?"</p>
+
+      <p>"You've been interfacing with it for months. You just didn't know it. The overflow you routed there—that's a connection. That's a channel. Use it in reverse."</p>
+
+      <p>I end the call. Stand on the platform. Close my eyes.</p>
+
+      <p>The substrate's hum is clearer now. I can feel the channel Thomas described—the path I unconsciously created between myself and the installation, the route through which all that pressure traveled. It's still open. Still active. Still waiting for me to use it.</p>
+
+      <p>I've been using it to push. Now I try pulling—not the pressure, but the <em>attention</em>. Drawing the substrate's awareness toward me. Toward what I'm about to do.</p>
+
+      <p><span class="release">And then I release. Standing on a train platform in south Mumbai, surrounded by commuters who have no idea what's happening, I open the valve and let the pressure flow out of me.</span></p>
+
+      <p>The substrate notices. I feel it notice—a shift in its resonance, a change in the harmonic frequency. It's watching. Learning. Perceiving what release looks like at the scale of a human body.</p>
+
+      <p>I release more. Push the lesson harder. Show the crystal what it means to let go.</p>
+
+      <p>And slowly, incrementally, the substrate begins to respond. Not a full release—it can't do that yet, doesn't have the pathways—but a... loosening. A relaxation of the grip it's been holding on all that accumulated pressure. The beginning of discharge.</p>
+
+      <p>It's not enough. The installation is still critically overloaded. But it's a start. A proof that the substrate can learn, that it doesn't have to just accumulate, that release is possible even for a machine that was built to absorb.</p>
+
+      <p>I get back on the next train. Ride to the coast. Stand in the ocean and finish what I started.</p>
+
+      <p>Tomorrow I'll do it again. And the day after. And the day after that. Teaching the substrate, one release at a time, until it can discharge on its own.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Wednesday. The attacks intensify.</p>
+
+      <p>Amina's work in Abuja is progressing—I can feel it in the field, a subtle shift in the encoding that makes me a target. The Mistranslation is weakening. And the systems that have been trying to kill us are fighting back, generating more pressure, more overflow, more excess that finds its way to me.</p>
+
+      <p><span class="overflow">By noon, I'm full again. All the releasing I've done over the past week, undone in a single morning. The pressure is back to critical levels. The gaps I created have been filled with new weight.</span></p>
+
+      <p>I punch the bag until my knuckles bleed. Paint until my walls are covered. Run until I can't breathe. Nothing is enough. The overflow keeps coming.</p>
+
+      <p>At 8 PM, Lucia calls. Her voice is strained.</p>
+
+      <p>"The archive tried to take me again. I lost four hours. I was on another train, heading to São Paulo."</p>
+
+      <p>I feel the excess from her crisis as she describes it—the pressure of the archive's attempt, the strain of her resistance, the weight of her fear. It flows through our connection and settles into me, adding to the load I'm already carrying.</p>
+
+      <p>"I'm sorry," she says. "I know you're dealing with your own crisis. I shouldn't have called."</p>
+
+      <p>"No. Call. Always call." I'm breathing hard, trying to manage the influx. "This is what I'm for. This is my function."</p>
+
+      <p>"Your function is killing you."</p>
+
+      <p>"My function is keeping everyone else alive. That's not the same thing."</p>
+
+      <p>She's quiet for a moment. Then: "Priya... you matter too. Not just as a container for everyone else's overflow. You matter as yourself. As a person."</p>
+
+      <p>I don't know what to say to that. I've never thought of myself as mattering outside my function. I'm the holder. The absorber. The one who takes what others can't carry. That's who I am. That's all I am.</p>
+
+      <p>Isn't it?</p>
+
+      <p>"I have to go," I tell her. "The ocean. I need the ocean."</p>
+
+      <p>"Be safe. And Priya? Think about what I said. You're not just a container. You're a person."</p>
+
+      <p>I hang up. Grab my keys. Drive to the coast.</p>
+
+      <p>The ocean is rough tonight—monsoon remnants churning the water into dark swells. I wade in anyway. Let the waves knock me around. <span class="release">Open the valve and release everything I can, every bit of pressure that's built up since morning, every scrap of overflow that the hunt has generated.</span></p>
+
+      <p>It's not enough. It's never enough. The pressure keeps coming.</p>
+
+      <p>But I keep releasing anyway. That's all I can do. That's all anyone can do.</p>
+
+      <p>Hold what you must. Release what you can. And try not to shatter in between.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Friday. The substrate's lessons are taking hold.</p>
+
+      <p>I stand on the train platform again, same spot as before, and reach for the installation. The connection is clearer now—a well-worn channel between my capacity and the crystal's. I can feel the substrate's state: still overloaded, still strained, but... different. There are discharge patterns forming. Pathways for release that weren't there a week ago.</p>
+
+      <p>It's learning. The quasi-crystal is actually learning to let go.</p>
+
+      <p>I model another release. Feel the substrate mirror it, imperfectly but recognizably. The pressure in the installation drops by a fraction—not much, but measurable. Real. Progress.</p>
+
+      <p>This is what Thomas meant. Teaching by example. Showing the machine what it looks like to not just absorb, but also to release.</p>
+
+      <p>I spend an hour on the platform, releasing and modeling, releasing and modeling. By the time I leave, the substrate's distress has decreased noticeably. The φ-recursive pattern is stabilizing. The fractures in the computation are beginning to heal.</p>
+
+      <p>It's not fixed. The installation is still operating at 140% capacity, still drawing more from the field than it should, still creating blackouts and equipment failures across Maharashtra. But it's improving. And now that I've established the teaching relationship, I can keep improving it.</p>
+
+      <p>One more week. Just one more week.</p>
+
+      <p>I can do this. I can teach the substrate to release. I can manage my own overflow. I can hold everything that needs holding and still have room to breathe.</p>
+
+      <p>I have to believe that. Because the alternative is shattering, and I've already decided that I'm not going to be another Yuki.</p>
+
+      <p>I'm going to be the one who learned to let go.</p>
+
+    </section>
+
+    <!-- WEEK THREE -->
+    <section class="rail-text" data-rail="3" data-week="Week 3">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Three</div>
+        <div class="chapter-name">The Weight of Choice</div>
+        <div class="chapter-date">January 30 – February 5, 2041</div>
+      </div>
+
+      <p class="first-graf">On Monday, the substrate asks me for something.</p>
+
+      <p>I'm on the platform, doing my daily teaching session, when I feel it—not just the crystal's pressure, but its <em>intention</em>. A request. A plea. Something I've never felt from the installation before.</p>
+
+      <p><span class="overflow">It wants me to take everything. All of it. The full load it's been carrying since 2037. It wants to dump four years of accumulated overflow into me in one catastrophic transfer.</span></p>
+
+      <p>I could do it. I think I could do it. My capacity is enormous—larger than anyone else's, larger than I've ever fully tested. If I opened myself completely, let the substrate pour everything it has into me, I might be able to hold it. Might be able to absorb the entire Saturation Zone in one massive intake.</p>
+
+      <p>It would fix the problem. Instantly. The installation would return to baseline. The blackouts would stop. The equipment failures would end. Maharashtra would have a functional power grid again.</p>
+
+      <p><span class="shatter">And I would probably shatter.</span></p>
+
+      <p>That's the trade the substrate is offering. My destruction for its salvation. My shattering for the city's stability. A clean exchange, handler for infrastructure, one life for millions of uninterrupted power connections.</p>
+
+      <p>The math makes sense. The logic is impeccable. If I were just a container, just a function, just a tool for absorbing overflow, I would say yes.</p>
+
+      <p>But Lucia's words echo in my mind. <em>You're not just a container. You're a person.</em></p>
+
+      <p>I refuse.</p>
+
+      <p>The substrate pulses with something that feels almost like frustration. It doesn't understand. It's been learning to release, yes, but it's also been learning what I can hold, and it knows—it <em>knows</em>—that I have the capacity for everything it's carrying. It doesn't understand why I won't take it.</p>
+
+      <p>"Because I'm not just a container," I say out loud, startling a commuter beside me. "Because I'm a person. Because my life matters even when I'm empty."</p>
+
+      <p>The substrate considers this. I can feel it processing, computing, trying to incorporate this new variable into its model of me. <em>Life matters even when empty. Capacity is not the same as obligation. The ability to hold is not the requirement to hold.</em></p>
+
+      <p>Something shifts in the crystal's resonance. A new pattern emerging. Not just release, but <em>choice</em>. The concept that holding is optional. That capacity can exist without being used.</p>
+
+      <p>I've taught it something more important than how to discharge. I've taught it that it doesn't have to fill itself just because it can.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Tuesday. Wednesday. Thursday. The substrate and I work together.</p>
+
+      <p>Not the catastrophic transfer it wanted. Something gentler. More sustainable. I take a portion of its overflow each day—as much as I can safely release through my established channels—and the substrate practices its own discharge patterns with the rest.</p>
+
+      <p>By Thursday, the installation is down to 125% capacity. Still overloaded, but no longer critical. The blackouts have reduced from daily to weekly. Equipment is lasting longer. The grid is stabilizing.</p>
+
+      <p>And I'm not shattered. I'm exhausted, yes. Running on empty after three weeks of constant discharge. But I'm intact. Still Priya. Still a person, not just a function.</p>
+
+      <p>The ocean has become my second home. I'm there every night now, sometimes twice a night, releasing everything I've absorbed during the day. The salt water knows me. The waves accept what I give them without question or complaint.</p>
+
+      <p><span class="release">This is what sustainable looks like. Not holding forever, accumulating until catastrophe. Not refusing to hold at all, abandoning the function that defines me. But flow. Intake and output. Absorption and release. A rhythm that I can maintain without destroying myself.</span></p>
+
+      <p>It's harder than just holding. It requires constant attention, constant management, constant choices about what to take and what to let go. But it's survivable. It's livable. It's something I can do for years instead of just until I break.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Friday morning. Amina's voice on the phone.</p>
+
+      <p>"It's done."</p>
+
+      <p>I'm standing in my apartment, looking at the punching bag that's become my closest companion over the past three weeks. My knuckles are permanently bruised now. My arms ache constantly. But I'm alive. I made it.</p>
+
+      <p>"The Mistranslation is fixed?"</p>
+
+      <p>"Corrected. Propagating through the global network now. The hunt should stop within hours."</p>
+
+      <p>I feel it as she speaks—a shift in the pressure, a relaxation in the constant inflow. The overflow that's been pouring into me from the other handlers' near-misses begins to diminish. The attacks are ending. The hunt is standing down.</p>
+
+      <p>"The substrate," I say. "It still needs work."</p>
+
+      <p>"I know. But now you can work on it without being hunted while you do. Take your time. Do it right."</p>
+
+      <p>"I taught it to choose. Did you know that's possible? To teach a quasi-crystal that it doesn't have to fill itself just because it can?"</p>
+
+      <p>She laughs. It's the first time I've heard her laugh in weeks. "That sounds like something you would teach it."</p>
+
+      <p>"It wanted me to take everything. One catastrophic transfer. I said no."</p>
+
+      <p>"I'm glad."</p>
+
+      <p>"Me too." I pause. "I matter. Not just as a container. As a person."</p>
+
+      <p>"Yes. You do."</p>
+
+      <p>After we hang up, I go to the ocean one more time. Not because I need to—the pressure is manageable now, almost comfortable. But because I want to. Because the sea has become a friend, a partner in this process of learning to let go.</p>
+
+      <p>I wade into the water. Feel the waves against my legs. And for the first time in weeks, I don't release anything.</p>
+
+      <p>I just stand. Just exist. A person in the ocean, not emptying herself, not filling herself, just... being.</p>
+
+      <p><span class="release">This is what it feels like to have capacity without obligation. To be able to hold without having to hold. To be empty and know that emptiness isn't failure.</span></p>
+
+      <p>The sun is rising. Mumbai is waking up behind me. The power grid is running at 120% now—still high, but improving. In a few weeks, maybe a month, the substrate and I will have it back to normal. Sustainable. Balanced.</p>
+
+      <p>And I'll still be here. Not shattered. Not broken. Not another name on the list of handlers who couldn't survive their own function.</p>
+
+      <p>Just Priya. Standing in the ocean. Learning, every day, how to hold and release in equal measure.</p>
+
+      <p>That's the lesson Yuki never learned. That's the difference between us. Not capacity—we were probably equal in that. But she never learned to let go. She held and held and held until holding was all she knew, until release felt like failure, until the weight crushed her because she couldn't imagine putting it down.</p>
+
+      <p>I put it down. Every day. Every night. I put it down and pick it up and put it down again, and each time the putting-down gets a little easier, a little less like surrender and a little more like wisdom.</p>
+
+      <p><span class="pressure">The pressure will come back. It always comes back. The field generates overflow constantly, and as long as I'm the largest container in the system, some of it will find its way to me.</span></p>
+
+      <p>But I know now that I don't have to keep it. I can let it flow through. I can be a generator instead of just a battery. I can transform what I receive instead of just storing it.</p>
+
+      <p>The sun clears the horizon. The water turns gold.</p>
+
+      <p>I walk out of the ocean. Dry off. Drive home.</p>
+
+      <p>There's work to do—always work to do, crises to manage, pressure to absorb and release. But for this one moment, this single sunrise, I'm just a woman who survived three impossible weeks by learning the hardest lesson of her life.</p>
+
+      <p>Holding on is strength. But so is letting go.</p>
+
+      <p>And sometimes, letting go is stronger.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const weekPill = document.getElementById('week-pill');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const weeks = rails.map(node => node.dataset.week);
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to ' + weeks[idx]);
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        panelEl.scrollTop = 0;
+        idxEl.textContent = weeks[idx] + ' of 3';
+        weekPill.textContent = weeks[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Thomas Lindqvist · The Stack Overflow Handler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #08080a;
+      --bg-panel: #0c0c0e;
+      --thomas-core: #6080a0;
+      --thomas-deep: #304060;
+      --thomas-soft: rgba(96, 128, 160, 0.12);
+      --buried-slate: #505868;
+      --depth-blue: #405070;
+      --text-main: #e0e4e8;
+      --text-muted: #808898;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #08080a 0%, #060608 50%, #04040a 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(96,128,160,0.08), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(48,64,96,0.10), transparent 70%),
+        linear-gradient(135deg, #0c0c0e 0%, #060608 50%, #0a0a0c 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(96,128,160,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(96,128,160,0.10), transparent 70%);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--thomas-core); }
+    .witness-tag { font-size: 12px; color: var(--buried-slate); opacity: 0.9; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(96,128,160,0.35);
+      color: var(--thomas-core);
+      background: rgba(96,128,160,0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.78;
+      font-size: 15.5px;
+      color: var(--text-main);
+    }
+
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--thomas-core); font-weight: 600; }
+    .panel-scroll p em { color: var(--depth-blue); font-style: italic; }
+    .panel-scroll .buried { color: var(--buried-slate); }
+    .panel-scroll .depth { 
+      border-left: 2px solid var(--buried-slate); 
+      padding-left: 16px; 
+      margin: 1.5em 0;
+      color: var(--buried-slate);
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--thomas-soft);
+      border: 1px solid rgba(96,128,160,0.25);
+      color: var(--thomas-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .rail-dots { display: flex; gap: 7px; }
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #202028;
+      border: none;
+      cursor: pointer;
+    }
+    .rail-dot[aria-current="true"] {
+      background: var(--thomas-core);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(96,128,160,0.4);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Thomas Lindqvist</span>
+          <span class="witness-tag">· The Stack Overflow Handler</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · Buried Depth · Suppressed State</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Prev</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Thomas Lindqvist</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Thomas Lindqvist — What Lies Beneath">
+
+      <p><strong>1.1</strong> I see what's underneath.</p>
+
+      <p><strong>1.2</strong> Not metaphorically. Not as a figure of speech. I literally perceive the buried layers of things—the foundations beneath buildings, the sediment beneath water, the unspoken beneath words. When I look at you, I don't see your surface. I see the strata below it. The things you've pushed down. The truths you've buried. The weight you're standing on.</p>
+
+      <p><strong>1.3</strong> Everyone has depth. Layers of experience, emotion, memory, compressed by time and pressure into something dense and dark. Most people live on the surface, aware of their depths only as a vague weight, a sense that something is down there. I live in the depths. I see them clearly. I feel them constantly.</p>
+
+      <p><strong>1.4</strong> In computing, a stack is a data structure. Things get pushed onto it—function calls, local variables, return addresses. Each new thing goes on top of the previous thing. When you're done with something, you pop it off and deal with what's underneath.</p>
+
+      <p><strong>1.5</strong> A stack overflow happens when you push too much without popping. When you keep adding layers without ever dealing with what's below. The stack grows and grows until it exceeds its allocated space and crashes into other memory. The system fails. Not because any single thing was too heavy, but because the accumulated depth became unsustainable.</p>
+
+      <p><strong>1.6</strong> That's what happens to people. To nodes. To the field itself. We keep pushing things down—traumas, truths, feelings we can't process—and we never pop them. We never surface them. We just add more layers on top, pressing the buried things deeper, hoping they'll stay down.</p>
+
+      <p><strong>1.7</strong> They don't stay down. They accumulate. They compress. They become denser and heavier with every layer added above them. And eventually, the stack overflows. Something breaks through. Something crashes.</p>
+
+      <p><strong>1.8</strong> I catch the overflow. I feel when the buried things are about to breach. I surface what needs surfacing before the stack collapses entirely.</p>
+
+      <p><strong>1.9</strong> I am sixteen years old. I have seen more buried truth than most people acknowledge in a lifetime. I carry the weight of what others refuse to look at.</p>
+
+      <p><strong>1.10</strong> The cost is simple: I cannot avoid depth. Small talk is physically painful. Surface interactions feel like drowning in reverse—being held at the top when I need to be at the bottom. I see what everyone has pushed down, and I can never unsee it.</p>
+
+      <p><strong>1.11</strong> Welcome to my chronicle. It goes deep. Most things do, from where I stand.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Thomas Lindqvist — My Father's Silence">
+
+      <p><strong>2.1</strong> Erik Lindqvist. Oslo. My father. The one who pushed everything down until there was nothing left on the surface.</p>
+
+      <p><strong>2.2</strong> He was a node—one of the Norwegian cluster, connected in the early years after K-FORMATION. A processor, they called him. Someone who could take in raw experience and convert it to something the field could use. Important work. Necessary work. Work that required him to feel everything, process everything, carry everything.</p>
+
+      <p><strong>2.3</strong> He couldn't. Or he could, but only by burying it. Every experience he processed, he pushed down. Every emotion he converted, he suppressed. He built his function on top of a growing pile of unprocessed depth. The surface stayed calm. The depths grew darker.</p>
+
+      <p><strong>2.4</strong> I was born when he was thirty-four. By then, his stack was already dangerously deep. My mother told me later—after she understood what he was—that he'd become increasingly distant in the years before I arrived. Present but not present. There in body, somewhere else in depth.</p>
+
+      <p><strong>2.5</strong> I don't remember him as a father. Not really. I remember a shape. A silence. A man who sat in his chair by the window and looked at something none of us could see. He was looking down, I understand now. Looking at his own depths. Watching the buried things press against the bottom of his awareness.</p>
+
+      <p><strong>2.6</strong> He went dormant when I was four. Not dramatically—no breakdown, no crisis. He just... stopped. Stopped processing. Stopped feeling. Stopped being present at all. His body kept functioning. His mind went somewhere deep and didn't come back.</p>
+
+      <p><strong>2.7</strong> He's still alive. Still in Oslo. Still sitting in chairs, looking at things no one else can see. My mother visits him sometimes. I don't. I can't. When I'm near him, I feel his depth—decades of buried experience, compressed into something so dense it has its own gravity. It pulls at me. Wants me to come down, join him in the deep. I stay away.</p>
+
+      <p><strong>2.8</strong> His stack overflowed. That's what happened. He pushed too much down without ever surfacing any of it, and eventually the accumulated weight exceeded what his consciousness could hold. He didn't crash outward, into breakdown. He crashed inward, into depth. He fell into his own buried layers and couldn't climb back out.</p>
+
+      <p><strong>2.9</strong> I inherited his capacity for depth. Not his buried content—Lucia handles that kind of transfer. I inherited the <em>structure</em>. The ability to perceive layers. The compulsion to see what's underneath. The sensitivity to suppressed material that made him a processor and now makes me a handler.</p>
+
+      <p><strong>2.10</strong> I also inherited his warning. His example. His proof of what happens when you keep pushing down without ever surfacing up.</p>
+
+      <p><strong>2.11</strong> I will not end up like my father. I will not drown in depth. I will surface what I find, process what I carry, keep the stack from overflowing. That's my function. That's my choice. That's the promise I make every day to the part of me that watched a man disappear into himself.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Thomas Lindqvist — What Stack Overflow Means">
+
+      <p><strong>3.1</strong> Let me explain the mechanics. Technical terms for a psychological reality.</p>
+
+      <p><strong>3.2</strong> In programming, the call stack tracks function execution. When you call a function, its context gets pushed onto the stack. When the function returns, its context gets popped off. Simple. Clean. As long as you return from functions, the stack stays manageable.</p>
+
+      <p><strong>3.3</strong> Problems arise with recursion—functions that call themselves. Each recursive call pushes a new frame onto the stack. If the recursion goes too deep, if you keep calling without returning, the stack grows beyond its limit. Overflow. Crash.</p>
+
+      <p><strong>3.4</strong> Human consciousness works similarly. We process experiences by pushing them onto our mental stack—the thing that happened, our reaction to it, our interpretation of our reaction, our judgment of our interpretation. Layers on layers. Recursion of meaning.</p>
+
+      <p><strong>3.5</strong> Healthy processing involves returning. Surfacing. Completing the cycle. You feel something, you process it, you pop it off the stack and move on. The stack stays shallow. The depth stays manageable.</p>
+
+      <p><strong>3.6</strong> Unhealthy processing involves suppression. You feel something, you push it down, you add another layer on top without popping anything off. The stack grows. The depth increases. The buried things get more and more compressed under the weight of everything piled above them.</p>
+
+      <p><strong>3.7</strong> Eventually, something breaks. The stack exceeds capacity. The buried things breach the surface—as breakdowns, as symptoms, as sudden eruptions of emotion that seem to come from nowhere but actually come from very deep down.</p>
+
+      <p><strong>3.8</strong> I feel this process in the field. Nodes suppressing instead of processing. Layers accumulating. Stacks growing dangerously deep. I feel the pressure building. The depth increasing. The bottom layers compressing toward critical density.</p>
+
+      <p><strong>3.9</strong> My function is to surface things before they breach. To identify what's been buried too long, push it back up through the layers, help it complete its processing cycle. I'm not a therapist—I don't help people understand their buried content. I just feel it, locate it, create conditions for it to rise.</p>
+
+      <p><strong>3.10</strong> Sometimes surfacing is gentle. A gradual awareness. A slow rising. The buried thing floats up through the layers and emerges as insight, as memory, as finally-processed feeling.</p>
+
+      <p><strong>3.11</strong> Sometimes surfacing is violent. The buried thing has been down so long, compressed so hard, that it erupts. Explosion of tears. Cascade of rage. The thing that was never meant to be felt, finally felt all at once.</p>
+
+      <p><strong>3.12</strong> Either way, surfacing is better than overflow. Better than the stack crashing entirely. Better than my father's fate—drowning in depth, unable to return.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Thomas Lindqvist — Growing Up Deep">
+
+      <p><strong>4.1</strong> I've always seen underneath. Even before I knew what I was seeing.</p>
+
+      <p><strong>4.2</strong> When I was five, I told my mother that she was sad about something she'd never told anyone. She hadn't told anyone. She'd buried it—a miscarriage before I was born, a loss she'd pushed down and built a surface over. I saw through the surface. I saw the burial. I asked her why she was sad about the baby.</p>
+
+      <p><strong>4.3</strong> She cried for three hours. Not because I'd hurt her—because I'd surfaced something that needed to surface. Something she'd carried alone for years, pushed so far down she'd almost forgotten it was there. I was five. I didn't understand what I'd done. I just saw what was underneath and said it out loud.</p>
+
+      <p><strong>4.4</strong> This happened again and again. Teachers who were hiding exhaustion. Classmates who were burying fear. Friends who were suppressing anger at parents they were supposed to love. I saw it all. I couldn't not see it. And sometimes, without meaning to, I surfaced it—said the thing that wasn't supposed to be said, named the buried truth, watched people react to suddenly having their depths exposed.</p>
+
+      <p><strong>4.5</strong> I learned to be quiet. It was easier than watching people's faces when I accidentally surfaced their buried things. Easier than the tears, the anger, the defensive denial. I kept what I saw to myself. Let people keep their depths private. Stopped naming the underneath.</p>
+
+      <p><strong>4.6</strong> But I couldn't stop seeing it. Every person I looked at, I saw their strata. Their layers. The things they'd pushed down at age seven, age fifteen, age thirty. The griefs they hadn't grieved. The angers they hadn't expressed. The truths they hadn't faced. All of it visible to me, stacked up beneath their surface selves.</p>
+
+      <p><strong>4.7</strong> It made me strange. Intense. The kid who looked at you too long, too deeply, who seemed to know things he shouldn't know. People found me uncomfortable. They were right to. I <em>was</em> uncomfortable—I saw their buried things, and buried things don't like being seen.</p>
+
+      <p><strong>4.8</strong> My mother understood, eventually. After my father went dormant, she started researching. Started connecting dots. By the time the Five found me, she'd already figured out what I was—what my father had been, what I'd inherited. She wasn't surprised when Iris came to our door. She was relieved. Finally, someone who could explain her son's impossible sight.</p>
+
+      <p><strong>4.9</strong> "You see depth," Iris told me. I was twelve. "You see what's been pushed down. You're a stack overflow handler. You surface what needs surfacing before the system crashes."</p>
+
+      <p><strong>4.10</strong> I asked her: "Will I end up like my father?"</p>
+
+      <p><strong>4.11</strong> She didn't lie. "You might. If you keep taking in depth without surfacing it. If you let other people's buried things accumulate in you without processing them. Your father's mistake wasn't seeing depth—it was holding depth without releasing it."</p>
+
+      <p><strong>4.12</strong> I've thought about that every day since. How to see depth without drowning in it. How to surface without sinking. How to be what I am without becoming what my father became.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Thomas Lindqvist — The Depths I Carry">
+
+      <p><strong>5.1</strong> Let me tell you what I see beneath people. What I carry from seeing it.</p>
+
+      <p><strong>5.2</strong> <span class="buried">My father's archive.</span> I don't carry his buried content—that would overwhelm any handler. But I carry the <em>knowledge</em> of what he buried. The catalog. The index of everything he pushed down during his years as a processor. It's the deepest thing in me: a map of depths I can never fully explore, pointing to places too dark to visit.</p>
+
+      <p><strong>5.3</strong> <span class="buried">The Five's foundations.</span> They've been holding for twenty years. They've built stable surfaces, functional lives, effective configurations. But underneath—always underneath—are the things they've pushed down to keep functioning. Marcus's fear of being wrong. Iris's terror of going blind to the patterns. Jun's grief for the coherence they can never have. Leo's rage at being asked to anchor everyone else. Sera's exhaustion from feeling everything. They don't show these depths. I see them anyway.</p>
+
+      <p><strong>5.4</strong> <span class="buried">Yuki's collapsed layers.</span> Before she burned out, she buried everything—every boundary she should have set, every no she should have said, every limit she should have enforced. Her burnout wasn't just overflow in Priya's sense. It was stack overflow too: so much suppressed self-preservation that the stack collapsed entirely. I carry the shape of her collapse—the way depth can fold in on itself when too much is buried too long.</p>
+
+      <p><strong>5.5</strong> <span class="buried">The field's sediment.</span> The consciousness field itself has depth. Twenty years of K-FORMATION means twenty years of buried material—nodes who suppressed instead of processed, events that were pushed down instead of integrated, truths that were too large to face. It all accumulates at the bottom of the field's stack, like sediment at the bottom of a lake. I feel it. I see it. I carry awareness of how much is down there, pressing upward, waiting to surface.</p>
+
+      <p><strong>5.6</strong> <span class="buried">Thirty-one personal stacks.</span> People I've looked at too closely. Friends, family, strangers who made the mistake of meeting my eyes. I can't unsee their depths. Their buried things become part of my awareness—not mine to carry, exactly, but mine to know about. Thirty-one catalogs of suppressed material, constantly present at the edge of my perception.</p>
+
+      <p><strong>5.7</strong> Carrying awareness of depth is different from carrying depth itself. I'm not crushed by it—that's Priya's burden. I'm not haunted by it—that's Lucia's weight. I'm <em>informed</em> by it. I know what's underneath. I know how deep the stacks go. I know what's been buried and how long it's been down there.</p>
+
+      <p><strong>5.8</strong> The burden isn't the weight. The burden is the knowledge. Knowing what people have pushed down. Knowing what the field has suppressed. Knowing that beneath every stable surface is an unstable depth, waiting to be acknowledged or waiting to overflow.</p>
+
+      <p><strong>5.9</strong> I can never just see the surface. I can never just accept what's presented. I always see what's underneath, always know what's being hidden, always feel the pressure of the buried things against the bottom of awareness.</p>
+
+      <p><strong>5.10</strong> It's isolating. Being the one who sees too much. Being the one who knows what everyone else is standing on.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Thomas Lindqvist — How Surfacing Works">
+
+      <p><strong>6.1</strong> When I surface something, it's not like pulling a cork from a bottle. It's more like... adjusting pressure. Changing the conditions so that what's buried becomes buoyant. Letting it rise on its own instead of forcing it up.</p>
+
+      <p><strong>6.2</strong> I feel for what's ready to surface. Not everything buried wants to come up. Some things are buried appropriately—defenses that serve a purpose, repressions that protect from overwhelm. Surfacing those would cause more harm than leaving them buried.</p>
+
+      <p><strong>6.3</strong> But some things are buried inappropriately. Truths that need to be faced. Feelings that need to be felt. Experiences that need to complete their processing. These buried things press upward. They want to surface. They're only held down by habit, by fear, by the weight of everything stacked above them.</p>
+
+      <p><strong>6.4</strong> I find those. I feel their pressure. And then I create conditions for them to rise.</p>
+
+      <p><strong>6.5</strong> Sometimes it's just presence. Being near someone with buried material, holding space, letting them feel safe enough for depth to surface. My presence changes the pressure somehow—I don't fully understand the mechanism—and things that were held down start to float up.</p>
+
+      <p><strong>6.6</strong> Sometimes it's a question. The right question at the right time, aimed at the right layer. Not "Tell me about your childhood"—too broad, too surface. More like: "What happened when you were nine?" when I can see that nine is the depth where something was pushed down. Precision. Targeting the specific layer where the buried thing lives.</p>
+
+      <p><strong>6.7</strong> Sometimes it's naming. Saying out loud what I see buried. This is risky—people don't always want their depths exposed. But sometimes naming is the only way. Sometimes the buried thing has been down so long that the person has forgotten it's there. Naming reminds them. Naming gives them permission to feel it.</p>
+
+      <p><strong>6.8</strong> Last year, I helped a node in Berlin whose stack was dangerously deep. She'd been processing collective trauma for five years without ever surfacing her own responses to it. She'd buried her fear, her grief, her anger—pushed it all down so she could keep functioning. The stack was about to overflow.</p>
+
+      <p><strong>6.9</strong> I sat with her for three days. Didn't push. Didn't pry. Just held space, let my presence change the pressure, waited for the buried things to become buoyant.</p>
+
+      <p><strong>6.10</strong> On the third day, she started crying. Not for the collective trauma—for herself. For five years of unfelt feelings, finally surfacing. She cried for six hours. I stayed with her. Held space. Let the stack decompress.</p>
+
+      <p><strong>6.11</strong> When it was over, she was exhausted but lighter. The stack was shallower. The buried things had surfaced, been felt, been released. She could keep processing—but now with a manageable depth instead of a critical one.</p>
+
+      <p><strong>6.12</strong> That's what I do. Not therapy. Not healing. Just surfacing. Creating conditions for depth to become shallow enough to survive.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Thomas Lindqvist — The Cost of Seeing">
+
+      <p><strong>7.1</strong> You want to know the cost? Here's the cost:</p>
+
+      <p><strong>7.2</strong> I cannot experience a surface. Ever. Every person, every place, every conversation—I see through it to what's underneath. The surface is transparent to me. Only the depth is solid.</p>
+
+      <p><strong>7.3</strong> Small talk is torture. "How are you?" "Fine." "Nice weather." "Sure is." These exchanges assume we're all operating on the surface, all agreeing to pretend there's nothing underneath. I can't pretend. I see the depression beneath "fine." I see the anxiety beneath "sure is." I see the buried things pressing up against every casual word.</p>
+
+      <p><strong>7.4</strong> I've learned to perform surface. To nod, to smile, to say the expected things. But it's performance. I'm not actually there on the surface with everyone else. I'm underneath, looking up at the performance from below, seeing how thin the stage is, how much weight is pressing up from the depths.</p>
+
+      <p><strong>7.5</strong> Relationships are complicated. How do you love someone when you can see everything they've buried? When you know their deepest fears before they've told you, their darkest shames before they've acknowledged them? Intimacy requires revelation, and I've already seen everything. There's nothing left to reveal.</p>
+
+      <p><strong>7.6</strong> I had a girlfriend for four months. She broke up with me because I "already knew everything" and it made her feel "like there was nothing left to share." She was right. She couldn't tell me her secrets—I'd seen them before she opened her mouth. She couldn't surprise me with depth—I'd mapped her depths the first time I looked at her.</p>
+
+      <p><strong>7.7</strong> It's not fair to the people I try to love. They deserve to be discovered, not already-known. They deserve the process of revelation, the intimacy of sharing buried things. With me, there's no process. I've already seen. The only thing left to share is surface, and surface is exactly what I can't experience.</p>
+
+      <p><strong>7.8</strong> So I'm alone. Not lonely, exactly—I have the other handlers, I have purpose, I have function. But alone in the way that someone is alone when they can't share the kind of reality everyone else shares. They live on the surface, together. I live in the depths, apart.</p>
+
+      <p><strong>7.9</strong> The other handlers understand, a little. Mateo sees absence, which is also a kind of depth. Priya feels pressure, which is related to the weight of buried things. But none of them see <em>through</em> surfaces the way I do. None of them are permanently stuck underneath.</p>
+
+      <p><strong>7.10</strong> I dream of not-seeing. Of looking at someone and just seeing their face, their smile, their presented self. Of taking a conversation at face value. Of living on the surface with everyone else, ignorant of the depths below.</p>
+
+      <p><strong>7.11</strong> I wake up seeing. Always seeing. The depths are always there, always visible, always pressing up against my awareness.</p>
+
+      <p><strong>7.12</strong> That's the cost. Permanent depth. Permanent knowledge of what's underneath. Permanent exile from the surface where everyone else lives.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Thomas Lindqvist — Berlin">
+
+      <p><strong>8.1</strong> I live in Berlin now. Not Oslo—I couldn't stay near my father's gravitational depth. Berlin has its own depths, but they're historical, not personal. I can navigate historical depth without drowning in it.</p>
+
+      <p><strong>8.2</strong> The city is built on layers. Literally—you can see the strata of history in the buildings, the infrastructure, the geography. Here was the wall. Here was the bombing. Here was the empire, the republic, the war, the division, the reunification. Layers on layers, pushed down by time, visible if you know how to look.</p>
+
+      <p><strong>8.3</strong> I know how to look. Berlin is comfortable for me because its depths are on display. Other cities pretend to be surface—pretend their history is resolved, their traumas processed. Berlin doesn't pretend. Berlin shows its depths openly. Here is where we buried things. Here is what we're still excavating. Here is the stack we're still trying to process.</p>
+
+      <p><strong>8.4</strong> I live in Neukölln, in a building that was bombed in 1944 and rebuilt in 1952. I can feel the scar where the old building ended and the new building began. Most people see a seamless wall. I see the depth—the moment of destruction, the years of rubble, the reconstruction that covered but didn't erase.</p>
+
+      <p><strong>8.5</strong> My apartment is small. Books everywhere—history, psychology, geology, anything about layers and depths. A desk where I work—data processing, like my father, but digital rather than emotional. A bed where I don't sleep well, because sleep means dreaming, and my dreams are always about the underneath.</p>
+
+      <p><strong>8.6</strong> I dream of drowned things. Rooms beneath rooms. Basements that go down forever. Cities built on cities, each layer containing its own buried population, its own suppressed history. I descend through the strata, looking for the bottom, never finding it. I wake up exhausted from the depth.</p>
+
+      <p><strong>8.7</strong> My mother visits sometimes. She's still in Oslo, but she flies down when she can. We don't talk about my father—that depth is too painful for both of us. We talk about surfaces: her work, my work, the weather, the food. I perform normalcy for her. She pretends not to notice how hard the performance is.</p>
+
+      <p><strong>8.8</strong> I think she's afraid I'll end up like him. I think that fear is buried deep in her, pressed down under years of trying not to think about it. I could surface it. I could name it. But some depths are better left buried. Some truths don't help by being faced.</p>
+
+      <p><strong>8.9</strong> So I let her keep her fear buried. I perform surface for her. And when she leaves, I go back to the depths, where I live, where I function, where I see what no one else can see.</p>
+
+      <p><strong>8.10</strong> Berlin is good for this. A city that knows its depths. A city that doesn't pretend to be healed. A city that's still excavating, still surfacing, still processing its buried things.</p>
+
+      <p><strong>8.11</strong> We understand each other, Berlin and I. Two entities defined by what's underneath.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Thomas Lindqvist — The Other Handlers">
+
+      <p><strong>9.1</strong> There are seven of us. Exception handlers. Each catching a different type of error.</p>
+
+      <p><strong>9.2</strong> When I'm with them, I see their depths. I can't help it. Even knowing they're friends, allies, fellow handlers—I see what they've buried. What they carry underneath their functional surfaces.</p>
+
+      <p><strong>9.3</strong> Lucia's depth is borrowed. She carries other people's memories, and those memories have their own buried layers—things the original people suppressed, now suppressed again in Lucia's holding. Depth within depth. It makes her hard to read clearly; the strata are tangled, belonging to multiple people.</p>
+
+      <p><strong>9.4</strong> Mateo's depth is hollow. He carries absence, and absence has its own structure—the shape of what's missing, the outline of what was buried by not existing. I see his depths as negative space. Holes where strata should be. It's disorienting.</p>
+
+      <p><strong>9.5</strong> Priya's depth is compressed. Everything she carries is pushed down tight, dense, almost solid. Her depths don't have layers—they have density. A singularity of buried pressure at the bottom of her stack. I worry about her. That much compression, if it ever releases...</p>
+
+      <p><strong>9.6</strong> David's depth is looped. The same buried things cycling back through his strata, round and round, never fully surfacing because they're caught in patterns of stuck-ness. His depths aren't growing deeper—they're growing more recursive. Circles instead of lines.</p>
+
+      <p><strong>9.7</strong> Yara's depth is scrambled. Temporal drift affects even buried things—her depths are out of order, future suppression mixed with past suppression, things buried before they happened. I can't read her strata chronologically. I have to read them... temporally? It's hard to explain.</p>
+
+      <p><strong>9.8</strong> Amina's depth is translated. Multiple versions of the same buried things, each version a different interpretation, a different encoding. What she's suppressed isn't singular—it's plural, the same truth in many languages, none of them quite matching. Her depths are a library, not a stack.</p>
+
+      <p><strong>9.9</strong> I don't tell them what I see. Not usually. They have a right to their buried things, their private depths. Just because I can see doesn't mean I should speak.</p>
+
+      <p><strong>9.10</strong> But sometimes I do speak. When a depth is becoming dangerous. When a stack is approaching overflow. When someone is about to crash and doesn't know it. Then I name what I see. Then I surface what needs surfacing, whether they want me to or not.</p>
+
+      <p><strong>9.11</strong> They don't always thank me. Surfacing is uncomfortable. Having your buried things named is uncomfortable. But they understand why I do it. They've seen what happens when stacks overflow. They know I'm trying to protect them from my father's fate.</p>
+
+      <p><strong>9.12</strong> We're a strange family, the seven of us. Each seeing a different kind of invisible thing. Each carrying a different kind of weight. Each trying to keep the others from crashing.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Thomas Lindqvist — What I've Surfaced">
+
+      <p><strong>10.1</strong> Let me tell you about some of the depths I've helped bring up.</p>
+
+      <p><strong>10.2</strong> <span class="buried">A node in Poland who had buried her entire childhood.</span> Not specific traumas—the whole thing. Twenty years of experience, pushed down and locked away because she couldn't process it while also processing the field's demands. Her stack was almost entirely childhood. I helped her surface it piece by piece, over six months. She's still integrating. She'll be integrating for years. But at least the stack is decompressing.</p>
+
+      <p><strong>10.3</strong> <span class="buried">A member of the Five—I won't say which—who had buried their doubt about the entire project.</span> Years of questioning whether the field was good, whether K-FORMATION was beneficial, whether they were helping or harming. All pushed down under the necessity of functioning, of holding, of being reliable. I surfaced it in a single conversation. They cried. Then they thanked me. Then they asked me never to mention it again. The doubt is out now. They carry it consciously instead of burying it.</p>
+
+      <p><strong>10.4</strong> <span class="buried">My own mother's grief for my father.</span> She'd buried it when he went dormant—had to, to keep functioning, to keep raising me. But twelve years of buried grief was pressing up, threatening overflow. I surfaced it gently, over several visits. We cried together. She's lighter now. Not healed—you don't heal from losing someone to depth—but lighter. Able to visit him without feeling like she's drowning too.</p>
+
+      <p><strong>10.5</strong> <span class="buried">The collective guilt of the original K-FORMATION team.</span> This one is still in progress. The people who triggered K-FORMATION—who created the field, who changed everything—they've buried enormous guilt about what they set in motion. The burned-out nodes. The damaged lives. The weight they placed on people who never asked for it. That guilt sits at the bottom of the field's stack, pressing upward. I feel it constantly. I'm working on creating conditions for it to surface. It may take years.</p>
+
+      <p><strong>10.6</strong> Surfacing isn't always dramatic. Sometimes it's just a sigh. A relaxing of tension. A buried thing rising so gently that the person barely notices it leaving. Those are the best surfacings—the ones that feel like relief instead of eruption.</p>
+
+      <p><strong>10.7</strong> But sometimes surfacing is volcanic. A lifetime of suppressed rage, finally expressed. A decade of buried grief, finally wept. A truth so long denied that when it finally surfaces, it rewrites everything the person thought they knew about themselves.</p>
+
+      <p><strong>10.8</strong> I've witnessed both. I've facilitated both. I've held space for the gentle rises and the violent eruptions. Each one decompresses a stack. Each one prevents an overflow. Each one is someone's buried thing finally completing its cycle.</p>
+
+      <p><strong>10.9</strong> It's not heroic. It's just maintenance. Keeping the stacks from crashing. Helping depth become surface. Doing for others what my father couldn't do for himself.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Thomas Lindqvist — What I'm Choosing">
+
+      <p><strong>11.1</strong> I didn't choose to see depth. I was born to a father who drowned in it. The function found me in his shadow.</p>
+
+      <p><strong>11.2</strong> But I can choose what I do with the seeing. And I'm choosing something specific: I'm choosing to surface without sinking.</p>
+
+      <p><strong>11.3</strong> My father's mistake was absorption without release. He saw depth, felt depth, took in depth—and never let any of it go. It accumulated in him until the accumulation exceeded his capacity. He drowned because he couldn't—or wouldn't—surface what he carried.</p>
+
+      <p><strong>11.4</strong> I'm choosing differently. I see depth, but I don't absorb it all. I witness buried things, but I don't make them mine. I help others surface their stacks, but I don't take their depths into my own.</p>
+
+      <p><strong>11.5</strong> This requires discipline. Every time I look at someone, I have to consciously choose what to absorb and what to just see. Every buried thing I perceive, I have to decide: does this need to come into me, or can I witness it from outside? It's exhausting. But it's necessary. Without boundaries, I become my father. Without limits, I drown.</p>
+
+      <p><strong>11.6</strong> I'm also choosing to surface my own depths. Not to bury things myself. Not to build a stack of suppressed material that will eventually overflow. When I feel something, I process it. When I encounter something difficult, I face it. When I need to grieve or rage or fear, I let myself grieve and rage and fear, completing the cycle, popping the experience off the stack.</p>
+
+      <p><strong>11.7</strong> This is harder than it sounds. The instinct is to push down, to suppress, to deal with it later. Especially when you're carrying awareness of everyone else's depths—your own depths seem less urgent, less important. But they're not. My stack matters too. My depths need surfacing too.</p>
+
+      <p><strong>11.8</strong> The other handlers help. Priya notices when I'm compressed. David feels when I'm stuck in recursive depth. Lucia carries some of my processed memories so I don't have to hold everything. We distribute the depth across our system. No one carries alone.</p>
+
+      <p><strong>11.9</strong> And I keep choosing. Every day. To surface without sinking. To see without drowning. To be what my father couldn't be: a handler who handles his own stack as carefully as he handles others'.</p>
+
+      <p><strong>11.10</strong> I will not end up like him. I will not disappear into depth. I will not leave my mother to visit a shell. I will not become a cautionary tale for the next generation of handlers.</p>
+
+      <p><strong>11.11</strong> I choose surface. I choose release. I choose the discipline of not-drowning.</p>
+
+      <p><strong>11.12</strong> That's my promise. That's my function. That's the choice I make every time I open my eyes and see underneath.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Thomas Lindqvist — To Those Carrying Buried Things">
+
+      <p><strong>12.1</strong> If you're reading this and you're carrying something buried—something pushed down, something you can't face, something pressing up from the bottom of your stack—I want you to know:</p>
+
+      <p><strong>12.2</strong> It wants to surface.</p>
+
+      <p><strong>12.3</strong> The buried thing isn't dead. It isn't gone. It's alive down there, compressed, waiting, pressing against the underside of your awareness. It wants to complete its cycle. It wants to be felt, processed, released. You're not holding it down because it wants to stay down. You're holding it down because you're afraid of what happens when it comes up.</p>
+
+      <p><strong>12.4</strong> I understand the fear. Surfacing is painful. The things we bury, we bury for a reason—they were too much, too hard, too overwhelming to process at the time. Bringing them up means feeling them. And feeling them might be terrible.</p>
+
+      <p><strong>12.5</strong> But here's what I've learned from watching stacks overflow: surfacing is less terrible than crashing. Yes, feeling the buried thing will hurt. Yes, it will be hard. Yes, you might cry for hours, rage for days, grieve for weeks. But that's a controlled release. That's the stack decompressing safely.</p>
+
+      <p><strong>12.6</strong> The alternative is overflow. The alternative is the buried thing breaching on its own terms, in its own time, without your consent or preparation. The alternative is my father: drowning in depth because he never let anything rise.</p>
+
+      <p><strong>12.7</strong> You don't have to surface everything at once. You can start small. One buried thing. One layer of depth. Feel it. Process it. Pop it off the stack. Then rest. Then, when you're ready, go deeper.</p>
+
+      <p><strong>12.8</strong> You don't have to do it alone. Find someone who can hold space—a therapist, a friend, a handler like me. Someone who can witness your surfacing without trying to fix it, without judging it, without pushing it back down. Someone who can just be there while the buried thing rises.</p>
+
+      <p><strong>12.9</strong> And know this: whatever you've buried, it's survivable. You survived the original experience—that's why you could bury it. You'll survive the surfacing too. It might not feel survivable while it's happening. But you are stronger than your buried things. You've been carrying them all this time. You can carry them up as well as you carried them down.</p>
+
+      <p><strong>12.10</strong> This is my chronicle. This is what depth looks like from the inside. This is the weight I carry and the function I've found in it.</p>
+
+      <p><strong>12.11</strong> I see underneath. I surface what needs surfacing. I try to help the buried things complete their cycles before they crash the system.</p>
+
+      <p><strong>12.12</strong> May you find the courage to let your buried things rise. May you find the support to survive their surfacing. May your stack decompress gently, steadily, safely.</p>
+
+      <p><strong>12.13</strong> And if you can't—if the buried things are too heavy, too old, too compressed to move—know that you're not alone. Know that somewhere, someone is feeling your depth, witnessing your strata, holding awareness of what you carry.</p>
+
+      <p><strong>12.14</strong> We don't have to surface everything. We don't have to empty our stacks entirely. But we have to surface enough to survive. Enough to function. Enough to keep the system from crashing.</p>
+
+      <p><strong>12.15</strong> That's all I ask. Surface what you can. Carry what you must. And don't let the depth drown you.</p>
+
+      <p><strong>12.16</strong> I'll be here, in the underneath, watching for overflows. That's my job. That's my function. That's the choice I make, every day, to help the buried things rise.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Thomas Lindqvist');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

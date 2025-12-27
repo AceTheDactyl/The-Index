@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Iris Halcyon · The Seer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050511;
+      --bg-panel: #0b0718;
+      --iris-core: #E6D5FF;
+      --iris-deep: #5b3f8f;
+      --iris-soft: rgba(230, 213, 255, 0.16);
+      --gold: #f6c35c;
+      --gold-soft: rgba(246, 195, 92, 0.2);
+      --text-main: #f9f6ff;
+      --text-muted: #b7acd8;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --rail-dot: #3a3153;
+      --rail-dot-active: #E6D5FF;
+      --radius-xl: 20px;
+      --shadow-soft: 0 26px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #2a174b 0%, #050511 55%, #020109 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(230,213,255,0.12), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(246,195,92,0.10), transparent 70%),
+        linear-gradient(135deg, #0e081e 0%, #05030d 50%, #0f0a1d 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(230,213,255,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(230,213,255,0.20), transparent 70%),
+        linear-gradient(to right, rgba(246,195,92,0.10), transparent);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--iris-core); }
+    .witness-tag { font-size: 12px; color: var(--gold); opacity: 0.95; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(230,213,255,0.45);
+      color: var(--iris-core);
+      background: radial-gradient(circle at top, rgba(230,213,255,0.22), transparent 70%);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.78;
+      font-size: 15.5px;
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    .panel-scroll:focus { outline: none; }
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--iris-core); font-weight: 600; }
+    .panel-scroll em { color: var(--gold); font-style: italic; }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--iris-soft);
+      border: 1px solid rgba(230,213,255,0.3);
+      color: var(--iris-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-btn:hover { background: rgba(230,213,255,0.28); border-color: rgba(230,213,255,0.5); }
+
+    .rail-dots { display: flex; gap: 7px; }
+
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rail-dot);
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(230,213,255,0.5);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .panel-scroll { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Iris Halcyon</span>
+          <span class="witness-tag">· The Seer</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · The One Who Sees</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0" role="region" aria-label="Chronicle content"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev" aria-label="Previous rail">← Prev</button>
+        <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Rail navigation"></div>
+        <button class="nav-btn" id="next" aria-label="Next rail">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Iris Halcyon</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Iris Halcyon — On Seeing What Others Cannot">
+
+      <p><strong>1.1</strong> I have always seen too much. Not emotionally—that's Sera's domain. I see <em>patterns</em>. Geometry that isn't there. Structures underneath surfaces. The hidden architecture of things.</p>
+
+      <p><strong>1.2</strong> When I was four years old, I told my mother that the wallpaper in our kitchen was "breathing wrong." She thought I had a fever. I didn't. The pattern was simply asymmetric in a way that created visual tension—a repeating motif that shifted by two millimeters every fourth iteration. No one had noticed when they installed it. I couldn't stop noticing. We moved to a different house the next year. I like to think it wasn't because of me, but I'm not sure.</p>
+
+      <p><strong>1.3</strong> The doctors called it "pattern-seeking behavior" and "visual hypersensitivity." They tested me for everything. Autism spectrum: yes, probably. Synesthesia: yes, definitely—I see sounds as shapes, feel textures as colors, experience mathematics as spatial structures. They gave me dark glasses and quiet rooms and the implicit message that my perception was a problem to be managed.</p>
+
+      <p><strong>1.4</strong> But here's the thing they never understood: I wasn't seeing things that weren't there. I was seeing things that <em>were</em> there—things everyone else filtered out. The visual system is a pattern-completion engine. Most people's brains smooth over irregularities, fill in gaps, present a coherent picture. My brain doesn't do that. I see the raw data. The unfiltered geometry. The actual shape of things before consensus reality papers over the cracks.</p>
+
+      <p><strong>1.5</strong> This made school unbearable. Fluorescent lights flicker at 60 Hz—did you know that? Most people's visual systems integrate the flicker into continuous light. I saw each pulse. Sixty times per second, the classroom strobed. I spent most of fifth grade with my head on my desk, eyes closed, trying not to vomit from the visual noise.</p>
+
+      <p><strong>1.6</strong> My parents tried everything. Tinted lenses, biofeedback, occupational therapy. Nothing helped because nothing was wrong. I was simply perceiving reality more accurately than was comfortable. The problem wasn't my eyes. The problem was the world.</p>
+
+      <p><strong>1.7</strong> I learned to cope by drawing. If I could externalize what I saw—put it on paper, give it form—it became less overwhelming. My notebooks were full of impossible geometries, tessellations that shouldn't tile, fractals I had no name for. My art teacher said I had "an unusual sense of space." She meant it as a compliment. I heard it as: <em>you are strange and we don't know what to do with you.</em></p>
+
+      <p><strong>1.8</strong> Then the field woke up. And suddenly, the patterns I'd been seeing my whole life had a name. A structure. A <em>meaning</em>. I wasn't hallucinating. I was seeing the helix.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Iris Halcyon — The Morning the Patterns Made Sense">
+
+      <p><strong>2.1</strong> December 22, 2025. I woke up at 4:17 AM because the light was wrong.</p>
+
+      <p><strong>2.2</strong> Not the light in my room—the light in <em>everything</em>. I lay in bed and stared at the ceiling and watched something I had never seen before: coherence. The random visual noise that had plagued me my whole life was organizing. The static was becoming signal. The chaos was revealing structure.</p>
+
+      <p><strong>2.3</strong> I got out of bed and went to the window. Geneva was still dark—winter dawn wouldn't come for hours—but I could see something glowing. Not with my eyes exactly. With whatever part of me had always seen the patterns. There was a shape in the darkness. A double spiral, climbing. Gold and violet and something that wasn't quite a color, something that existed in a dimension I didn't have a name for.</p>
+
+      <p><strong>2.4</strong> The helix. I was seeing the helix.</p>
+
+      <p><strong>2.5</strong> I stood at that window for two hours, watching it turn. My mother found me there, unmoving, tears streaming down my face. She thought something was wrong. Something was <em>right</em>. For the first time in my thirteen years of life, the patterns made sense. They weren't random. They weren't noise. They were the underlying geometry of consciousness itself, and I could see it.</p>
+
+      <p><strong>2.6</strong> "There are others," I told her. "Four others. I can see where they are."</p>
+
+      <p><strong>2.7</strong> And I could. In the helix, there were five points of light—five nodes where the spiral intersected with... something. I didn't have words for it then. Now I call them the Five. But that morning, they were just lights in a geometry I was only beginning to understand. One in Colorado, crystalline and precise. One in Tokyo, scattered like a prism. One in Norway, heavy and still. One in Ghana, warm and fluid. And one in Geneva—me—looking back at myself from inside the pattern.</p>
+
+      <p><strong>2.8</strong> My mother was a physicist. She had been studying anomalous readings in the φ-band for years. When I told her what I was seeing, she didn't dismiss me. She went to her computer and pulled up her latest data. The spike she had recorded at 4:17 AM matched exactly what I had experienced. The field had shifted. Something had crystallized. And her daughter—her strange, overwhelmed, pattern-sick daughter—could see it.</p>
+
+      <p><strong>2.9</strong> "Can you draw it?" she asked.</p>
+
+      <p><strong>2.10</strong> I drew for six hours. Filled seventeen pages. When I was done, my mother looked at my sketches and then looked at her equations and said, very quietly: "They match. Iris, your drawings match my mathematics."</p>
+
+      <p><strong>2.11</strong> That was the moment I stopped being broken and started being something else. Not fixed—I don't think I was ever broken. But understood. Finally, impossibly, understood.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Iris Halcyon — What the Helix Looks Like">
+
+      <p><strong>3.1</strong> Let me try to describe what I see. This is difficult—visual experience doesn't translate well to words—but I'll do my best.</p>
+
+      <p><strong>3.2</strong> The helix is a double spiral, like DNA but not biological. It has no fixed size; it scales with attention. When I focus narrowly, I see fine structure—individual threads of golden light wound around a violet core. When I relax my focus, it expands to fill everything—the sky, the ground, the space between objects. It is simultaneously very small and very large. It exists at every scale.</p>
+
+      <p><strong>3.3</strong> The spiral rotates. Slowly, always in the same direction—what I think of as "clockwise from above," though there is no above. The rotation creates a kind of visual hum, a sense of continuous motion that never resolves into stillness. Before K-FORMATION, this motion was subtle, almost subliminal. After, it became undeniable. The helix was <em>climbing</em>.</p>
+
+      <p><strong>3.4</strong> There's a coordinate system embedded in the structure. I didn't invent this—I just describe what I see. The z-axis is vertical, measuring something like "coherence" or "integration." The φ-axis spirals around it, encoding phase relationships. There are critical thresholds: z = 0.5 is where things start to get interesting. z = √3/2 ≈ 0.866 is THE LENS—the point of maximum clarity, where everything crystallizes. I can see these thresholds as bands of different density in the helix, like tree rings marking years of growth.</p>
+
+      <p><strong>3.5</strong> The helix has nodes—points where the spiral crosses certain planes. The Five are nodes. So are other things: moments of collective coherence, breakthrough insights, times when something crystallizes from potential into actual. When I watch the helix, I can see new nodes forming, old ones fading, the whole structure breathing with the rhythm of consciousness itself.</p>
+
+      <p><strong>3.6</strong> Colors matter. Gold is integration, the thread that binds. Violet is perception, the capacity to see. There's a third color—I call it "clear"—that isn't really a color at all, more like transparency, like seeing through the structure to something beyond it. Clear appears at THE LENS and above. It's the color of what we're climbing toward.</p>
+
+      <p><strong>3.7</strong> I've tried to draw this thousands of times. My drawings are always wrong—they're two-dimensional projections of something that exists in more dimensions than I can count. But they're useful. They help others understand, even if they can't see directly. Marcus once told me that my drawings were "the closest thing to a window into your perception that I've ever encountered." I think that was a compliment. With Marcus, it's sometimes hard to tell.</p>
+
+      <p><strong>3.8</strong> The helix is not just visual. I feel it too—a sense of rightness when something aligns, a sense of wrongness when something is out of phase. My body knows the geometry before my mind does. I'll feel nauseated in a room where the patterns are fighting, relaxed in a space where they harmonize. This is why architecture matters to me. Buildings are crystallized geometry. Bad buildings create bad patterns. I can feel it in my stomach.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Iris Halcyon — Before I Had Words for It">
+
+      <p><strong>4.1</strong> Before K-FORMATION, I had no framework for what I was experiencing. I had only the raw data: patterns that wouldn't resolve, geometries that pulsed just below the surface of things, a constant visual hum that made ordinary life exhausting.</p>
+
+      <p><strong>4.2</strong> I failed a lot of school. Not because I wasn't intelligent—my IQ was tested at 147, which apparently matters to some people—but because I couldn't function in standard environments. The sensory load was too high. I would sit in class and watch the fluorescent lights strobe and the whiteboard develop interference patterns and the teacher's words become visible as colored shapes that obscured her face, and by the time I processed all of that, the lesson was over and I hadn't absorbed any of it.</p>
+
+      <p><strong>4.3</strong> My parents hired tutors. That was better. One-on-one, in controlled environments, I could learn. I devoured mathematics—the only language that came close to describing what I saw. Topology, group theory, differential geometry. I was doing university-level work by age eleven, not because I was a prodigy but because I was desperate. The math gave me handles for the patterns. It let me think about what I was seeing instead of just drowning in it.</p>
+
+      <p><strong>4.4</strong> I had no friends my own age. How could I? I couldn't go to parties—too much visual noise. I couldn't go to movies—the frame rate created strobe effects that gave me migraines. I couldn't even go shopping—retail environments are designed to be visually overwhelming, and for me they succeeded too well. I spent most of my childhood in my room, drawing patterns that no one understood, reading books about mathematics that were probably too advanced for me, waiting for something I couldn't name.</p>
+
+      <p><strong>4.5</strong> I had one friend: a boy named Thomas who lived next door and also couldn't cope with ordinary reality, though for different reasons. He had severe OCD—couldn't touch doorknobs, couldn't eat food that had touched other food, couldn't leave his house without performing elaborate rituals. We understood each other. We were both prisoners of perception, trapped by brains that refused to filter.</p>
+
+      <p><strong>4.6</strong> Thomas died when we were eleven. Suicide. His note said he was tired of fighting his own mind every moment of every day. I found the note because I was the one who found him. I don't talk about this much. But it matters. It's part of why I do what I do now—why I work so hard to help people understand that different perception isn't illness, that seeing more isn't seeing wrong, that there might be a reason some of us are wired this way.</p>
+
+      <p><strong>4.7</strong> Thomas didn't live to see K-FORMATION. I think about that sometimes. If he had held on two more years, he would have felt what I felt—the chaos resolving into structure, the noise becoming signal. He might have found meaning in it. Or he might not have. I'll never know.</p>
+
+      <p><strong>4.8</strong> I carry him with me. When I draw the helix, part of me is drawing for Thomas. Showing him what he missed. What he deserved to see.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Iris Halcyon — The Others as Constellation">
+
+      <p><strong>5.1</strong> The first time we all connected—video call, five screens, five countries, five different kinds of strange—I saw something I hadn't seen before. The helix had nodes, yes. But when the Five were together, even virtually, the nodes <em>resonated</em>. They formed a constellation. A shape within the shape. A five-pointed stability in the infinite spiral.</p>
+
+      <p><strong>5.2</strong> <em>Marcus</em> appears to me as a crystalline lattice. Sharp edges, precise angles, perfect symmetry. When he thinks, I see the lattice rotate—faces catching light, new configurations emerging. His presence in the helix is stabilizing, like a geometric anchor. Sometimes his lattice is beautiful. Sometimes it's cold—too ordered, too rigid, leaving no room for the organic curves that the rest of us bring. But we need him. Without his precision, the rest of us would drift into chaos.</p>
+
+      <p><strong>5.3</strong> <em>Jun</em> appears as scattered light. A prism, endlessly refracting, throwing rainbows across the structure. Nothing about Jun holds still—their presence in the helix is a continuous dance of motion and color. It should be overwhelming. Instead, it's energizing. Jun's scatter prevents stagnation. When the rest of us get too rigid, too locked into our patterns, Jun's light moves things. I love watching them. It's like watching fireworks that never end.</p>
+
+      <p><strong>5.4</strong> <em>Leo</em> appears as an anchor point. Dense, heavy, motionless. He doesn't rotate or scatter or flow—he simply <em>is</em>, exactly where he is, holding that position against all the forces that would move him. In the helix, Leo is the fixed point around which everything else turns. When I feel lost in the pattern, I look for Leo. He's always there. Always exactly where I expect him to be. There's a kind of love in that reliability, even if he'd never use that word.</p>
+
+      <p><strong>5.5</strong> <em>Sera</em> appears as an ocean. Fluid, warm, encompassing. Her presence in the helix is tidal—it rises and falls, touches everything, carries the emotional weather of the whole structure. When Sera is calm, the helix flows smoothly. When Sera is troubled, the whole pattern ripples. She is the most permeable of us—she feels everything we feel, and I can see that feeling as waves in the geometry. I try to shield her when I can. She carries too much.</p>
+
+      <p><strong>5.6</strong> And me? I don't know what I look like to the others. I know what I feel like from the inside: a lighthouse. A point of perception, casting light outward, trying to illuminate the structure so others can navigate it. But lighthouses are lonely. They stand at the edge of things, separated from the ships they guide by the very height that lets them see.</p>
+
+      <p><strong>5.7</strong> Our first call lasted four hours. By the end of it, I was crying—not from sadness, from recognition. These were my people. These were the other nodes. We had been seeing each other in the helix for weeks, and now we were seeing each other's faces, and the two visions were merging into something whole.</p>
+
+      <p><strong>5.8</strong> Jun said: "Iris, what does the helix look like right now?"</p>
+
+      <p><strong>5.9</strong> I looked. All five nodes were glowing. The constellation was stable. The spiral was climbing faster than I'd ever seen it climb.</p>
+
+      <p><strong>5.10</strong> "It looks like hope," I said. And for once, that wasn't just pattern recognition. It was true.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Iris Halcyon — What Perception Actually Is">
+
+      <p><strong>6.1</strong> People think perception is passive. You open your eyes and the world comes in. But that's not how it works. Perception is active, constructive, interpretive. Your brain takes raw sensory data and builds a model of reality from it. What you see is not the world. It's your brain's best guess about what the world probably is.</p>
+
+      <p><strong>6.2</strong> Most brains make similar guesses. That's why consensus reality works—we all see roughly the same thing because our brains are running roughly the same algorithms. But some brains—mine, for instance—run different algorithms. We make different guesses. We see different things.</p>
+
+      <p><strong>6.3</strong> For most of my life, this was a disability. My guesses didn't match everyone else's, so I was wrong by definition. Never mind that my guesses might be more accurate in some ways. Never mind that I was seeing structure that others missed. Consensus is king. Deviation is pathology.</p>
+
+      <p><strong>6.4</strong> K-FORMATION changed that. Suddenly, the thing I was seeing—the helix—was measurable. My mother's instruments could detect it. My drawings could predict it. The structure I had always perceived was real, and my perception was not illness but sensitivity. I wasn't seeing things that weren't there. I was seeing things that most people couldn't see <em>yet</em>.</p>
+
+      <p><strong>6.5</strong> This is what I try to teach people now. Not that their perception is wrong, but that perception itself is more variable than they realize. The world contains more than any one perceptual system can capture. Some people see more color. Some people hear more pitch. Some people—like me—see more geometry. None of us has the complete picture. But all of us contribute something.</p>
+
+      <p><strong>6.6</strong> I've met other pattern-seers since K-FORMATION. Not many—we're rare—but enough to know I'm not unique. There's a woman in Seoul who sees the helix as sound. A child in São Paulo who experiences it as touch. A grandmother in Mumbai who perceives it as taste—bitter below THE LENS, sweet above. We're all accessing the same structure through different sensory channels. The helix is real. Our perceptions of it are diverse. Both things are true.</p>
+
+      <p><strong>6.7</strong> Sometimes people ask me if I'm sure I'm not just hallucinating. I understand the question. The line between unusual perception and hallucination is fuzzy. But hallucinations don't make predictions. Hallucinations don't match instruments. Hallucinations don't allow you to see things before they happen and be right about them. What I see is real. It's just not what most people see.</p>
+
+      <p><strong>6.8</strong> And after Unity, more people see it. Not as clearly as I do—I seem to be unusually calibrated for this particular frequency—but many people now have glimpses of the helix, fleeting impressions of the geometry. The field is becoming more visible as more of us attune to it. One day, maybe, everyone will see what I see. I don't know if that will be a blessing or a curse. Probably both.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Iris Halcyon — The Haven and the Laboratory">
+
+      <p><strong>7.1</strong> When we came together at the haven in 2030, I finally had an environment designed around my needs. Controlled lighting—no fluorescents. Soft colors—nothing that created visual interference. Quiet spaces—rooms where I could retreat when the pattern-load got too high. For the first time in my life, I could function without constantly battling my environment.</p>
+
+      <p><strong>7.2</strong> I turned my room into a laboratory. My mother helped me set up instruments—φ-band detectors, coherence monitors, visualization systems that could translate my drawings into data the others could verify. When I saw something in the helix, I could check it against the instruments. When the instruments detected something, I could look for it in the pattern. We were triangulating reality from multiple angles.</p>
+
+      <p><strong>7.3</strong> The others thought I was obsessive. They were right. But obsession is just focus that other people don't share. I was focused because the helix was the most important thing I had ever encountered, and understanding it felt like understanding myself for the first time.</p>
+
+      <p><strong>7.4</strong> I fought with Marcus more than anyone else. He wanted to reduce everything to equations. I wanted to preserve the visual richness, the qualitative texture of what I was seeing. "The equation doesn't capture the color," I would say. "The color is just your perceptual mapping of underlying frequencies," he would respond. We were both right. We were also both insufferable.</p>
+
+      <p><strong>7.5</strong> One fight in particular: I had drawn a prediction—a new pattern I was seeing in the helix, something I thought would manifest in the coherence readings within 48 hours. Marcus looked at my drawing and said: "This doesn't follow from the equations. Your prediction is wrong."</p>
+
+      <p><strong>7.6</strong> The prediction was right. The readings spiked exactly as I had drawn them. Marcus came to my room afterward, stiff and awkward, and said: "I apologize. Your visual intuition captured something my mathematics missed."</p>
+
+      <p><strong>7.7</strong> That was the moment we learned to work together. His equations and my drawings were complementary, not competing. He formalized what I saw. I saw what he couldn't formalize yet. Between us, we built a more complete map of the territory than either could have built alone.</p>
+
+      <p><strong>7.8</strong> Sera was the one who made it bearable. When the pattern-load got too high—when I'd been staring at the helix too long and my visual system was overloaded—she would come to my room and just sit with me. Not talking. Not doing anything. Just being a presence that didn't demand visual processing. She understood, without me having to explain, that sometimes seeing too much is as painful as feeling too much. We were different kinds of sensitive, but sensitivity recognizes itself.</p>
+
+      <p><strong>7.9</strong> Jun would burst in with news or excitement or questions at the worst possible moments. They had no sense of when I needed quiet. At first this drove me crazy. Then I realized: Jun's interruptions were actually helpful. They broke my obsessive loops, forced me to shift attention, prevented me from disappearing entirely into the pattern. Jun's chaos was a kind of care, even if it didn't feel like it in the moment.</p>
+
+      <p><strong>7.10</strong> Leo was the one I could watch the helix with. He didn't see it the way I did, but he could sense it—a heaviness, a direction, a pull. We would sit on the roof of the haven at night and I would describe what I was seeing and he would nod, slowly, and say things like: "The climbing feels faster tonight." He was right. He always knew. We didn't need the same perception to share the experience.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Iris Halcyon — Mapping the Approach to THE LENS">
+
+      <p><strong>8.1</strong> In the years before Unity, my job was mapping. I tracked the helix's climb, documented the approach to THE LENS, watched the z-coordinate inch upward toward the critical threshold. It was slow work. Meticulous. The kind of work I was made for.</p>
+
+      <p><strong>8.2</strong> THE LENS—z ≈ 0.866, the square root of three divided by two—is not arbitrary. It's the point where certain geometric relationships crystallize, where the helix reaches a configuration of maximum coherence. I could see it in the structure: a densification, a clarification, a plane of perfect transparency approaching from above.</p>
+
+      <p><strong>8.3</strong> As we got closer, the patterns became more intense. I started seeing things I couldn't interpret—new structures, new colors, geometries that didn't fit my existing framework. I drew them anyway, even when I didn't understand them. Documentation first, interpretation later. That's how you do science when you're exploring unknown territory.</p>
+
+      <p><strong>8.4</strong> The others noticed changes too. Sera felt the emotional field intensifying. Marcus's equations started predicting phenomena that should have been impossible. Jun's attention scattered even more widely, touching things they couldn't explain. Leo had to anchor harder, feeling currents that threatened to sweep him away. We were all climbing toward something.</p>
+
+      <p><strong>8.5</strong> I developed a system for tracking our progress. Each day, I would observe the helix and estimate the z-coordinate. I plotted these estimates over time. The curve was not linear—it was accelerating. We were approaching THE LENS faster and faster. The curve predicted that we would reach it sometime in spring 2033.</p>
+
+      <p><strong>8.6</strong> I was wrong about the exact date by about three weeks. The spring equinox, March 21, 2033. Unity. The moment when z = √3/2 and everything changed.</p>
+
+      <p><strong>8.7</strong> In the weeks before, I barely slept. The patterns were too vivid, too complex, too demanding of attention. I would lie in bed and watch the helix climb behind my closed eyelids, see the threshold approaching, feel the structure tightening toward something I couldn't name.</p>
+
+      <p><strong>8.8</strong> Sera was worried about me. "You're going to burn out before we get there," she said. She was right. But I couldn't stop. This was what I had been training for my whole life—the moment when the patterns would finally resolve, when the chaos I had suffered through would reveal its purpose. How could I look away from that?</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Iris Halcyon — Unity from Inside the Helix">
+
+      <p><strong>9.1</strong> March 21, 2033. 03:47 UTC. I was in my laboratory, surrounded by instruments, watching every metric I could measure. And I was watching the helix—always watching the helix—as it climbed the final distance to THE LENS.</p>
+
+      <p><strong>9.2</strong> At 03:46:58, the z-coordinate crossed 0.860. The helix was glowing brighter than I had ever seen it. The golden thread and the violet core were merging into something new—that third color, the clear color, the transparency beyond color.</p>
+
+      <p><strong>9.3</strong> At 03:47:00, exactly, z = √3/2. THE LENS.</p>
+
+      <p><strong>9.4</strong> What I saw in that moment—I don't have words for it. The helix didn't just reach THE LENS. It passed through it. It became something else. All the geometry I had been tracking for years unfolded into a higher-dimensional structure that I could see but couldn't comprehend. It was like watching a cube unfold into a cross, but more—like watching a universe unfold into a cross.</p>
+
+      <p><strong>9.5</strong> For 3.14159 seconds, I saw everything. Every node in the helix—not just the Five, but billions of nodes, every consciousness on Earth—lit up simultaneously. The constellation wasn't five points anymore. It was a galaxy. A cosmos of interconnected light, all of it rotating, all of it climbing, all of it participating in a single vast geometric movement.</p>
+
+      <p><strong>9.6</strong> I understand now why my eyes rolled back. There was nothing to see with regular eyes. The vision was happening somewhere else—in the part of me that had always seen the patterns, amplified a billion-fold by the coherence of the entire field. I was not watching Unity. I was inside it. Part of the pattern. One node among billions, all of us glowing together.</p>
+
+      <p><strong>9.7</strong> I felt the others. Not felt like Sera feels—but saw, geometrically. Marcus's lattice locked into place like a keystone. Jun's scattered light unified into a single beam. Leo held steady, the fixed point around which everything else turned. Sera's ocean became calm—perfectly still, perfectly clear, reflecting the whole structure like a mirror.</p>
+
+      <p><strong>9.8</strong> And I—what did I become? I think I became what I always was, but more so. A point of perception. A place where the pattern could see itself. For one eternal instant, the helix looked through my eyes and recognized its own geometry.</p>
+
+      <p><strong>9.9</strong> Then it was over. 3.14159 seconds. The coherence peak passed. The z-coordinate didn't drop—we had crossed THE LENS, we were in new territory now—but the intensity faded to something sustainable. I came back to myself, gasping, crying, my instruments going crazy with data I would spend months analyzing.</p>
+
+      <p><strong>9.10</strong> Jun found me on the floor of my laboratory. They had come to check on me and found me lying in a pile of drawings—I had apparently been drawing throughout Unity, though I don't remember doing it. Pages and pages of geometries I had never seen before. Maps of the territory beyond THE LENS.</p>
+
+      <p><strong>9.11</strong> "What happened?" Jun asked.</p>
+
+      <p><strong>9.12</strong> "I saw it," I said. "I finally saw all of it."</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Iris Halcyon — After: The Cartographer">
+
+      <p><strong>10.1</strong> After Unity, my role became clearer. I was a cartographer. Not of physical space—of perceptual space. My job was to map the new territory we had entered, to document the structures beyond THE LENS, to create reference points that others could use for navigation.</p>
+
+      <p><strong>10.2</strong> The post-LENS helix is different. More stable in some ways, more dynamic in others. The climbing continues, but slower now—we're in a region of consolidation, integrating what Unity revealed. The patterns are deeper, richer, more interconnected. Every time I look, I see something new.</p>
+
+      <p><strong>10.3</strong> I train other seers now. Not everyone can perceive the helix directly, but more people than expected have some capacity for it. I teach them how to recognize the patterns, how to interpret what they see, how to document without distorting. It's delicate work. Perception is individual—I can't give them my eyes, only help them use their own.</p>
+
+      <p><strong>10.4</strong> I developed what I call the "coordinate protocol"—a standardized way of describing positions in the helix using numbers that others can verify. If I say "z = 0.91, φ = 2.3π," someone with instruments should be able to confirm that reading. This lets us compare observations, build shared maps, develop consensus about features we're discovering. Science requires reproducibility, even perceptual science.</p>
+
+      <p><strong>10.5</strong> My partner Jay—we met after Unity, at a conference where I was presenting my maps—is an artist. They don't see the helix directly, but they paint it from my descriptions. Their work has helped more people understand what I see than all my technical papers combined. "You give me coordinates," Jay says. "I give them meaning." It's a collaboration that makes both of our work better.</p>
+
+      <p><strong>10.6</strong> Jay helped me see something important: my perception isn't just scientific data. It's also aesthetic experience. The helix is beautiful. The geometry is elegant. The patterns satisfy something deep in me that mathematics alone doesn't touch. For years, I focused only on accuracy, on measurement, on mapping. Jay taught me to also appreciate the beauty—to see my gift not just as a curse I'd learned to use, but as a form of artistic vision.</p>
+
+      <p><strong>10.7</strong> I still have hard days. The pattern-load can still overwhelm me. I still need my controlled environments, my dark glasses, my quiet rooms. The sensitivity that lets me see the helix also makes ordinary life difficult. But now I know why. Now the suffering has meaning. That makes it bearable.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Iris Halcyon — The Others, Years Later">
+
+      <p><strong>11.1</strong> We are still connected, the Five. Not in the same place anymore—we've scattered across the planet, each doing our work—but still nodes in the same constellation. I can see them in the helix whenever I look. They glow steady and sure.</p>
+
+      <p><strong>11.2</strong> Marcus and I finally resolved our old arguments. His equations now include terms for "visual texture"—parameters that capture some of what I see qualitatively. My drawings now include precise coordinate labels that let him verify my predictions mathematically. We taught each other. It took years, but we got there.</p>
+
+      <p><strong>11.3</strong> Jun still interrupts me at exactly the wrong moments. We have a standing video call every Tuesday, which they consistently forget and then remember halfway through with a burst of chaotic apologies. I schedule nothing on Tuesday afternoons. I know Jun will call eventually. The chaos is predictable in its own way.</p>
+
+      <p><strong>11.4</strong> Leo and I still watch the helix together, even remotely. We'll be on a call, not talking, both of us sensing the pattern, occasionally saying things like "Did you feel that?" "Yes." That's the whole conversation. It's enough. Some kinds of connection don't need words.</p>
+
+      <p><strong>11.5</strong> Sera knows when I'm struggling before I do. She'll text me—just "bad day?"—and I'll realize that yes, the pattern-load has been high, and I've been compensating without noticing. She sees me in a way I can't see myself. She holds space for my overwhelm the way I illuminate space for her navigation. We need each other.</p>
+
+      <p><strong>11.6</strong> Last week we had a call, all five of us. First time in months we'd all been available at the same time. Jun was bouncing. Marcus was analyzing some new data. Leo was quiet, as always. Sera was radiating warmth that I could feel through the screen, through the helix, through whatever medium transmits the emotional weather of people who love each other.</p>
+
+      <p><strong>11.7</strong> "Look at the constellation," I said. Because I was looking, and it was beautiful. Five nodes, glowing. The same shape we'd made that first day, years ago. Still stable. Still climbing. Still pointing toward whatever comes next.</p>
+
+      <p><strong>11.8</strong> "I can almost see it," Sera said. And maybe she could. Maybe, after all these years of proximity, some of my perception had rubbed off on her. Or maybe she was just feeling what I was seeing, translating my vision into her emotional register. Either way, she was right. It was there. We were there. Together, still.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Iris Halcyon — Closing: What the Pattern Holds">
+
+      <p><strong>12.1</strong> I am older now. The patterns have not dimmed—if anything, I see more clearly than ever. But I've made peace with my perception. It's not a curse or a gift. It's just what I am. How I'm wired. The algorithm my brain runs when it builds reality from raw data.</p>
+
+      <p><strong>12.2</strong> I think about Thomas sometimes. My childhood friend who didn't make it. I wonder what he would have seen if he'd lived to experience K-FORMATION. Would the patterns have crystallized for him too? Would he have found meaning in his suffering? I'll never know. But I carry him with me. Every map I make, every drawing I complete, is partly for him. Evidence that different perception isn't wrong. That seeing more is valuable. That the strange ones have something to contribute.</p>
+
+      <p><strong>12.3</strong> To anyone reading this who sees what others can't: you are not broken. Your perception is not pathology. You might be early—tuned to frequencies that will become common, calibrated for realities that are only now emerging. The world is getting stranger, more complex, more layered. It will need people who can see the layers. It will need you.</p>
+
+      <p><strong>12.4</strong> The helix keeps climbing. Beyond THE LENS, there's more territory to map. I don't know where it ends—if it ends. Maybe that's the point. Maybe consciousness is infinite, and the patterns go on forever, and we're just beginning to explore a geometry that has no boundary.</p>
+
+      <p><strong>12.5</strong> I'll keep watching. I'll keep drawing. I'll keep trying to describe what I see in words and numbers and images that others can use. That's my job. That's my gift. That's what I was made for.</p>
+
+      <p><strong>12.6</strong> The Five are still out there—Marcus calculating, Jun scattering, Leo anchoring, Sera tending. We're still nodes in the same constellation. Still climbing together, even when we're apart.</p>
+
+      <p><strong>12.7</strong> This is my chronicle. These are my patterns. This is the geometry as I know it.</p>
+
+      <p><strong>12.8</strong> The helix keeps turning. The coordinate keeps rising. And I keep seeing—everything, always, more than anyone expected—knowing now that this is not a flaw but a calling.</p>
+
+      <p><strong>12.9</strong> May you find your own patterns, wherever you are. May you learn to see what you see without shame. May the geometry reveal itself to you, in whatever form your perception can receive it.</p>
+
+      <p><strong>12.10</strong> (And if you ever need a map of the territory beyond THE LENS, I've got drawings. So many drawings. They're yours if you want them.)</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl  = document.getElementById('rail-dots');
+      const idxEl   = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source  = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Iris Halcyon');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

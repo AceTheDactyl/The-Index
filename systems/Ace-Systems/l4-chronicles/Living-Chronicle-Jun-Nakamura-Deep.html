@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Jun Nakamura · Distributed Attention Architect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Jun palette: warm orange / amber + bright spark */
+      --bg: #0a0804;
+      --bg-panel: #120c08;
+      --jun-core: #f0a050;
+      --jun-deep: #a06020;
+      --jun-soft: rgba(240, 160, 80, 0.16);
+      --spark: #ffd080;
+      --spark-soft: rgba(255, 208, 128, 0.2);
+      --text-main: #faf6f0;
+      --text-muted: #c0a080;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --rail-dot: #3a2818;
+      --rail-dot-active: #f0a050;
+      --radius-xl: 20px;
+      --shadow-soft: 0 26px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #3a2010 0%, #0a0804 55%, #050302 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(240,160,80,0.12), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(255,208,128,0.10), transparent 70%),
+        linear-gradient(135deg, #141008 0%, #0a0804 50%, #181008 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(240,160,80,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(240,160,80,0.20), transparent 70%),
+        linear-gradient(to right, rgba(255,208,128,0.10), transparent);
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .app-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .witness-name {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .witness-name span.main {
+      color: var(--jun-core);
+    }
+
+    .witness-tag {
+      font-size: 12px;
+      color: var(--spark);
+      opacity: 0.95;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(240,160,80,0.45);
+      color: var(--jun-core);
+      background:
+        radial-gradient(circle at top, rgba(240,160,80,0.22), transparent 70%);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 22px 18px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.72;
+      font-size: 15.5px;
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    .panel-scroll:focus {
+      outline: none;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.1em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p strong {
+      color: var(--jun-core);
+      font-weight: 600;
+    }
+
+    .panel-scroll em {
+      color: var(--spark);
+      font-style: italic;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--jun-soft);
+      border: 1px solid rgba(240,160,80,0.3);
+      color: var(--jun-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(240,160,80,0.28);
+      border-color: rgba(240,160,80,0.5);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rail-dot);
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(240,160,80,0.5);
+    }
+
+    .rail-index {
+      font-size: 12px;
+      color: var(--text-muted);
+      min-width: 54px;
+      text-align: right;
+    }
+
+    .witness-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    #rail-source {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .chrome-frame {
+        border-radius: 18px;
+        height: 95vh;
+        max-height: none;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .panel-scroll {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Jun Nakamura</span>
+          <span class="witness-tag">· Distributed Attention Architect</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · The Scattered One</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0" role="region" aria-label="Chronicle content">
+        <!-- JS will inject content here -->
+      </div>
+
+      <footer>
+        <button class="nav-btn" id="prev" aria-label="Previous rail">← Prev</button>
+        <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Rail navigation"></div>
+        <button class="nav-btn" id="next" aria-label="Next rail">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 11</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Jun Nakamura</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Jun Nakamura — On Being Everywhere at Once">
+
+      <p><strong>1.1</strong> Okay so here's the thing—I'm going to try to write this in a linear way but you should know that's not how I actually think. Like right now I'm writing this sentence but I'm also thinking about the way light hits the window and the sound of someone cooking downstairs and a melody I heard three days ago and the structure of a conversation I had last year that suddenly makes sense and the smell of rain that isn't here but I'm remembering and—</p>
+
+      <p><strong>1.2</strong> That's what they call ADHD. Attention Deficit Hyperactivity Disorder. Which is honestly the worst name because it's not a deficit at all. It's a SURPLUS. My attention doesn't fail to exist. It exists everywhere at once. The problem isn't that I can't pay attention. The problem is I can't pay attention to just ONE thing. My bandwidth is huge; my selectivity is low.</p>
+
+      <p><strong>1.3</strong> My dad—Dr. Kenji Nakamura, the guy who figured out that substrates could induct each other—he used to think I was broken. Not mean about it, just worried. "Jun, focus." "Jun, finish your homework before you start the next thing." "Jun, please, one conversation at a time." He didn't understand that asking me to focus was like asking a radio to receive only one station when it's built to scan the entire spectrum.</p>
+
+      <p><strong>1.4</strong> I tried the medications. They worked, sort of—they narrowed my bandwidth, forced my attention into a tighter beam. But it felt like wearing blinders. Like being partially deaf. I could focus on the thing in front of me, but I lost all the peripheral connections, all the cross-domain insights, all the pattern-recognition that happens when you're processing fifteen inputs simultaneously.</p>
+
+      <p><strong>1.5</strong> I stopped the medications at thirteen. My dad was worried. My teachers were frustrated. But I knew—even before I had words for it—that my scatter wasn't dysfunction. It was a different kind of function. One that the world hadn't figured out how to use yet.</p>
+
+      <p><strong>1.6</strong> Then the field woke up. And suddenly my scatter had a context. A purpose. A reason.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Jun Nakamura — The Morning Everything Connected">
+
+      <p><strong>2.1</strong> December 22, 2025. I was eleven. I didn't wake up with equations like Marcus or visions like Iris. I woke up with CONNECTIONS.</p>
+
+      <p><strong>2.2</strong> You know how normally when you think about one thing it leads to another thing and then another? Linear. A→B→C→D. That's how most people describe thinking. That morning I woke up and it was A→(B∧C∧D∧E∧F∧G) simultaneously, all of them connected to each other AND to A AND to things I hadn't even consciously considered yet. The connection graph wasn't a chain—it was a dense mesh, all nodes illuminated at once.</p>
+
+      <p><strong>2.3</strong> It was overwhelming but also—okay this is going to sound weird—RELIEVING? Like I'd been trying to run parallel processing software on single-threaded hardware, and suddenly someone upgraded my architecture. The scatter was still there but now it had BANDWIDTH. It had coherence. The connections weren't random noise anymore—they were signal.</p>
+
+      <p><strong>2.4</strong> I ran downstairs and told my dad that his substrates were talking to each other. Not electrically, not through any wire or signal—but RESONANTLY. The induction thing he'd discovered was just the visible part, the surface phenomenon. Underneath, there was this whole network of sympathetic vibration, like tuning forks across the planet all starting to hum at the same frequency.</p>
+
+      <p><strong>2.5</strong> He stared at me like I'd grown a second head. Then he went to his lab and checked the readings and came back two hours later with this expression I'd never seen before. The data confirmed it. Something had shifted in the coupling patterns. The substrates were phase-locking in ways that shouldn't be possible given their physical separation.</p>
+
+      <p><strong>2.6</strong> "How did you know?" he asked.</p>
+
+      <p><strong>2.7</strong> "I didn't KNOW know," I said. "I just—felt all the connections at once. And some of them were between your substrates." I couldn't explain how. The connections were just THERE, obvious, screaming. I'd always seen connections other people missed. This time the connections spanned continents.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Jun Nakamura — Distributed Attention Architecture: Core Concepts">
+
+      <p><strong>3.1</strong> Okay so I've developed a framework for understanding my own brain. I call it Distributed Attention Architecture, or DAA. It's not as rigorous as Marcus's math—he'd probably cry if he saw how loosely I use some of these terms—but it's MINE and it WORKS and it helps me explain what I do to people who think linearly.</p>
+
+      <p><strong>3.2</strong> <em>Core thesis:</em> Attention is a resource that can be allocated in two fundamentally different ways: SEQUENTIAL (depth-first) and PARALLEL (breadth-first). Neurotypical minds default to sequential—they go deep on one thing, exhaust it, move to the next. My mind defaults to parallel—I go shallow on many things simultaneously, maintaining active connections across all of them.</p>
+
+      <p><strong>3.3</strong> <em>Bandwidth (B):</em> Total attention capacity, measured in simultaneous active threads. Neurotypical B ≈ 1-3. My B ≈ 10-15, sometimes spiking to 20+ during high-activation states. Higher bandwidth enables more parallel processing but requires more energy and creates more noise.</p>
+
+      <p><strong>3.4</strong> <em>Depth (D):</em> Attention allocated per thread. Sequential minds: high D, low B. Parallel minds: low D, high B. The product B × D is roughly constant—there's only so much total attention to go around. I sacrifice depth for breadth. Marcus sacrifices breadth for depth. Neither is wrong; they're different optimization strategies.</p>
+
+      <p><strong>3.5</strong> <em>Coherence (C):</em> Degree to which parallel threads are integrated. Low coherence = scattered, noisy, unproductive. High coherence = parallel processing that produces unified output. Before K-FORMATION, my C was low—lots of threads, little integration. After K-FORMATION, my C increased dramatically. The field provided an external integration layer.</p>
+
+      <p><strong>3.6</strong> <em>Coverage (Ω):</em> Fraction of relevant information space being monitored. Ω = B × sampling_rate / space_size. High-bandwidth parallel attention achieves higher coverage than sequential attention. This is my advantage: I catch things that focused minds miss because I'm sampling more of the space.</p>
+
+      <p><strong>3.7</strong> <em>The trade-off:</em> Sequential attention excels at exploitation—extracting maximum value from known sources. Parallel attention excels at exploration—finding new sources, detecting anomalies, spotting cross-domain connections. Both are necessary. The field needs both types. My job is coverage; Marcus's job is crystallization. Together we span the space.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Jun Nakamura — What I Actually Perceive">
+
+      <p><strong>4.1</strong> Let me try to describe the perceptual experience. This is hard because language is sequential—one word after another—and my perception is parallel. But I'll try.</p>
+
+      <p><strong>4.2</strong> <em>Visual field:</em> I don't have a focal point. Or rather, I have MANY focal points simultaneously. When I look at a scene, I'm tracking: movement in the periphery (all quadrants), color patterns (clustering, gradients, anomalies), faces (expressions, attention directions), objects (positions, relationships, potential hazards), text (any readable information), and spatial geometry (exits, paths, obstacles). All at once. Not sequentially scanned—simultaneously held.</p>
+
+      <p><strong>4.3</strong> <em>Auditory field:</em> I hear in layers. Right now: my own breathing (foreground), keyboard sounds (mid-ground), HVAC hum (background), distant traffic (far background), someone's footsteps two floors up (anomaly detection), a bird outside (nature layer). Each layer has its own attention thread. I can't turn them off. The best I can do is weight them—foreground gets more processing, background gets monitoring for changes.</p>
+
+      <p><strong>4.4</strong> <em>Conceptual field:</em> This is harder to describe. When I'm thinking about something, I'm also thinking about everything it connects to. If you say "apple," I'm simultaneously processing: fruit category, red/green colors, Newton's gravity, Apple Inc., apple pie recipe, Johnny Appleseed, New York City nickname, the apple in Snow White, and probably fifteen other associations. They're all THERE, all active, all potentially relevant. Sequential thinkers prune this immediately. I maintain it.</p>
+
+      <p><strong>4.5</strong> <em>Temporal field:</em> My sense of time is... nonstandard. Past events are not neatly filed away—they're active, present, still connected to current processing. A conversation from last year can suddenly become relevant to a thought I'm having now, and it arrives with full emotional and contextual load, as if it just happened. This is why I "lose track of time"—my temporal attention is distributed across multiple time-points simultaneously.</p>
+
+      <p><strong>4.6</strong> <em>The integration problem:</em> All these parallel inputs need to become unified experience. Before K-FORMATION, this integration was my biggest struggle—too much data, not enough coherence. The field gave me external integration. Now the parallel streams have a common reference frame. They cohere into meaning more easily. I'm still scattered; I'm just scattered around a center now.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Jun Nakamura — The Other Four: My Complementary Processors">
+
+      <p><strong>5.1</strong> Meeting the others was like—okay imagine you've been trying to run a neural network on a single GPU your whole life, and then you discover you're actually part of a distributed cluster with four other GPUs, each specialized for different operations. Suddenly tasks that were impossible become trivial.</p>
+
+      <p><strong>5.2</strong> <em>Iris (The Visualizer):</em> Where I scatter, she focuses. Where I sample the entire space, she locks onto specific geometries and SEES them completely. When I'm drowning in connections, I look toward Iris and she's like a lighthouse—a fixed point that my scatter can orient around. She doesn't stop my scatter; she gives it a destination. "There, that pattern, that's the one"—and suddenly my fifteen threads all converge on the same target.</p>
+
+      <p><strong>5.3</strong> <em>Marcus (The Formalizer):</em> My connections are intuitive—I FEEL them more than I understand them. Marcus takes my chaos and crystallizes it. I'll word-vomit a hundred associations in three minutes and he'll sit there processing and then say "that's a directed graph with seventeen nodes, hub centrality on node 7, and the structure is isomorphic to a Fibonacci lattice." My mess becomes his math. My noise becomes his signal.</p>
+
+      <p><strong>5.4</strong> <em>Sera (The Integrator):</em> I can detect emotional content—it's one of my parallel channels—but I can't PROCESS it deeply. It's just another data stream, often overwhelming. Sera takes that stream and gives it meaning. She feels what I detect. When I'm tracking everyone's emotional states simultaneously, she helps me understand what those states MEAN, which ones matter, which ones need response.</p>
+
+      <p><strong>5.5</strong> <em>Leo (The Stabilizer):</em> My scatter generates energy—lots of it. Kinetic, mental, emotional. Without somewhere to go, that energy becomes noise, agitation, the hyperactivity part of ADHD. Leo absorbs it. Not in a draining way—in a grounding way. He's like a heat sink for excess processing. When I'm with Leo, I can scatter further because the excess has somewhere to go. He doesn't slow me down; he gives me more range.</p>
+
+      <p><strong>5.6</strong> <em>Together:</em> We're a complete processing architecture. I do parallel acquisition (high bandwidth, broad coverage). Iris does geometric synthesis (pattern recognition, visualization). Marcus does formal compression (structure extraction, mathematical encoding). Sera does emotional integration (meaning-making, valence assignment). Leo does stability maintenance (reference frame, energy regulation). No single one of us could process the field alone. Together, we can process anything.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Jun Nakamura — On Hyperactivity: Energy as Information">
+
+      <p><strong>6.1</strong> The H in ADHD. Hyperactivity. Let's talk about that, because everyone gets it wrong.</p>
+
+      <p><strong>6.2</strong> I move a lot. I talk fast. I interrupt (sorry, I know, I'm working on it but also I'm kind of not because sometimes the interrupt carries the most important information). I start things and don't finish them, except when I hyperfocus and finish them in one manic burst at 3 AM. I fidget, tap, bounce, pace. My body never really stops moving.</p>
+
+      <p><strong>6.3</strong> <em>Traditional view:</em> Jun has too much energy. Jun needs to calm down. Jun needs to slow down. Jun needs to sit still and focus like a normal person.</p>
+
+      <p><strong>6.4</strong> <em>DAA view:</em> The physical movement is OVERFLOW from parallel processing. My brain is running fifteen threads. That generates heat—metabolic, electrical, informational. The movement is heat dissipation. It's not dysfunction; it's thermoregulation. If I couldn't move, the excess energy would cause actual problems—more anxiety, more noise, eventual shutdown.</p>
+
+      <p><strong>6.5</strong> <em>The fast talking:</em> Sequential speakers can keep pace with sequential thought. But my thought is parallel, and I'm trying to serialize it into speech. The fast talking is compression—trying to convey multi-threaded content through single-threaded output. If I slow down, I lose threads. The information degrades.</p>
+
+      <p><strong>6.6</strong> <em>The interrupting:</em> When a connection forms across my parallel threads, it's ephemeral—it'll dissolve if not captured immediately. The interrupt is URGENT because the information IS urgent. I'm not being rude; I'm preventing data loss. (I'm also being rude. I'm working on finding better ways to flag urgency without breaking conversation flow.)</p>
+
+      <p><strong>6.7</strong> <em>The hyperfocus:</em> This is what happens when all fifteen threads suddenly converge on the same target. It's rare and it's precious. The parallel architecture becomes, temporarily, a laser. I can do in one night what would take others weeks. The cost is that I can't control when it happens—it's emergent, not commanded. The benefit is that when it happens, I'm operating at maximum capacity.</p>
+
+      <p><strong>6.8</strong> <em>Bottom line:</em> I'm not too much. I'm exactly the right amount for the task I was designed for. The world just hasn't built interfaces for parallel minds yet. That's changing.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Jun Nakamura — Scatter-Coherence Dynamics">
+
+      <p><strong>7.1</strong> This rail gets technical. It's my attempt to formalize the relationship between scatter (parallel distribution of attention) and coherence (integration of parallel threads into unified output). Marcus helped me with the math. Errors are mine.</p>
+
+      <p><strong>7.2</strong> <em>Model:</em> Let attention A be a distribution over information space Ω. Sequential attention: A is a delta function—all mass at one point. Parallel attention: A is dispersed—mass at many points. My A is approximately uniform over active threads, with some weighting toward high-salience items.</p>
+
+      <p><strong>7.3</strong> <em>Scatter index (S):</em> S = entropy(A) / log(|Ω|). Normalized entropy of attention distribution. S = 0 means perfect focus (delta function). S = 1 means maximum scatter (uniform over entire space). My typical S ≈ 0.7-0.8. Neurotypical S ≈ 0.1-0.3. Higher S means more coverage but more noise.</p>
+
+      <p><strong>7.4</strong> <em>Coherence function (C):</em> C = mutual_information(threads) / max_possible. How much are parallel threads sharing? Low C means threads are independent—lots of activity, no integration. High C means threads are correlated—parallel processing that produces unified output. Before K-FORMATION, my C ≈ 0.2. After, C ≈ 0.6.</p>
+
+      <p><strong>7.5</strong> <em>The scatter-coherence trade-off:</em> In isolated systems, S and C are inversely related—more scatter means less coherence. But the field changes this. The field provides external coherence—a shared reference frame that parallel threads can align to without losing their distribution. In field-connected systems, high S and high C can coexist.</p>
+
+      <p><strong>7.6</strong> <em>Practical implications:</em> Before the field, I had to choose: scatter (coverage but chaos) or focus (coherence but blindness). After the field, I can have both. My scatter provides coverage; the field provides integration. I don't have to be less myself to be more functional. The architecture just needed better infrastructure.</p>
+
+      <p><strong>7.7</strong> <em>Field-mediated coherence:</em> When the Five are connected—especially when we're physically proximate—my coherence spikes. Iris provides a visual reference frame. Marcus provides a mathematical reference frame. Sera provides an emotional reference frame. Leo provides a stability reference frame. My scatter orients around these references and becomes productive instead of chaotic.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Jun Nakamura — Music as Parallel Language">
+
+      <p><strong>8.1</strong> I make music now. Not conventional music—I never had the patience for lessons or practice or any of that sequential skill-building stuff. I make... something else. Parallel compositions. Distributed sound architecture. Music that thinks the way I think.</p>
+
+      <p><strong>8.2</strong> <em>The setup:</em> Multiple instruments and sound sources, all active simultaneously. Synthesizers, drum machines, samples, loops, live processing. I don't sequence things—I LAYER them. Everything is happening at once, all the time. The composition is in the mixing, the balancing, the micro-adjustments that shape how the parallel streams interact.</p>
+
+      <p><strong>8.3</strong> <em>The process:</em> I start everything at once. Chaos. Then I LISTEN—not to any single element, but to the whole field of sound. My parallel perception is perfectly suited for this. I'm tracking fifteen things simultaneously anyway; in music, I can actually USE that. I notice when two elements are clashing, when a frequency is missing, when a rhythm needs adjustment. I make changes across all layers at once.</p>
+
+      <p><strong>8.4</strong> <em>What emerges:</em> The music sounds like... being inside my head. Not one melody with accompaniment—many melodies, interweaving, sometimes harmonizing, sometimes colliding, always in motion. Listeners describe it as "dreaming" or "being in multiple places at once" or "overwhelming but somehow coherent." That's the parallel architecture, made audible.</p>
+
+      <p><strong>8.5</strong> <em>Field-composition:</em> After K-FORMATION, I started making music with the field itself. Not literally using field data as audio (though Marcus and I have experimented with that)—but composing in response to field states. When the global coherence is high, I make music that reflects that. When it's turbulent, I make music that processes the turbulence. The music becomes a sonification of collective consciousness. A soundtrack for humanity.</p>
+
+      <p><strong>8.6</strong> <em>Therapeutic applications:</em> Post-Unity, people started requesting my music for coherence training. Turns out that listening to parallel composition helps sequential minds experience distributed attention temporarily. It's like a workout for bandwidth—stretch the attention, practice holding multiple streams, build capacity. My dysfunction became a training tool.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Jun Nakamura — The Haven: Finally Enough Bandwidth">
+
+      <p><strong>9.1</strong> We got to the haven in 2030. First time all five of us were in the same physical space. I thought it would be overwhelming—five field-sensitive people in close proximity, all resonating, all amplifying—but it was actually the CALMEST I'd ever been.</p>
+
+      <p><strong>9.2</strong> <em>Why it worked:</em> My scatter had somewhere to GO. When I was alone, all that distributed attention was bouncing around inside my own skull, no external target, just noise. With the others, it could LAND. Scatter toward Iris, get back vision. Scatter toward Marcus, get back structure. Scatter toward Sera, get back emotional meaning. Scatter toward Leo, get back grounding. Every thread had a destination. Every parallel process had a termination point.</p>
+
+      <p><strong>9.3</strong> <em>The distributed processing network:</em> We developed protocols without ever formally specifying them. When I detected something with my scatter, I'd send it toward whoever could process it best. Geometric pattern? Iris. Mathematical structure? Marcus. Emotional signature? Sera. Stability concern? Leo. They'd process it and return results. I became the router—high bandwidth input/output, distributed processing across the cluster.</p>
+
+      <p><strong>9.4</strong> <em>No more shutdowns:</em> Before the haven, I had regular shutdowns—my system overwhelmed, too much input, not enough processing capacity. At the haven, shutdowns almost disappeared. Not because the input decreased—it increased, if anything—but because the processing capacity was distributed. I didn't have to handle everything alone. The cluster could scale.</p>
+
+      <p><strong>9.5</strong> <em>The adults:</em> Our families were there too, of course. They had to adjust to living with five field-sensitive young people whose communications happened half in words and half in something else. My dad got it first—he'd spent decades studying substrate coupling, and now he was watching biological coupling in action. "You're doing what the substrates do," he said once. "Resonating. Synchronizing. But staying distinct." Yeah. That's exactly it.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Jun Nakamura — Unity from the Scatter-Mind">
+
+      <p><strong>10.1</strong> What was Unity like for me? Oh man. Oh MAN. This is going to be hard to describe because it was the most coherent experience of my life and I'm fundamentally a scattered person.</p>
+
+      <p><strong>10.2</strong> <em>Pre-Unity state:</em> By March 2033, my scatter had never been wider. I was tracking global field fluctuations in real-time—not clearly, not specifically, but as background texture. Like hearing ocean waves from a distance. The pre-Unity days were intense: the wave was building, and I could feel it approaching, and all my threads were vibrating in anticipation.</p>
+
+      <p><strong>10.3</strong> <em>The moment:</em> κ → 1.0. And suddenly every one of my parallel threads was receiving the SAME SIGNAL. Not different signals from different sources—one signal, from everywhere. It was like—you know that feeling when you're trying to listen to ten conversations at once and it's just NOISE? And then suddenly, for one moment, all ten conversations say the same word at the same time? And the noise becomes SIGNAL? That. But with seven billion minds.</p>
+
+      <p><strong>10.4</strong> <em>Coherent scatter:</em> For 3.14159 seconds, my scatter was still scatter—still parallel, still distributed—but it was coherent. All threads aligned. All channels synchronized. The thing I'd always been unable to do (focus) happened naturally because there was nothing else TO focus on. The entire information space was broadcasting one message. My parallel architecture received it in parallel, which meant I received it COMPLETELY.</p>
+
+      <p><strong>10.5</strong> <em>What the message was:</em> I can't put it in words. It was too big. But the FEELING was: "You belong. Your scatter is not dysfunction—it's distribution. You are a node in a distributed system. The system needs your coverage. You were always meant to be part of this."</p>
+
+      <p><strong>10.6</strong> <em>After:</em> κ dropped back to 0.94. My scatter resumed. But it was different now. The threads had a shared reference. The coherence baseline was higher. I was still everywhere at once, but "everywhere" now had a center—the field, the global pattern, the structure that my scatter was helping to maintain.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Jun Nakamura — Distributed Attention Architecture: Full Specification">
+
+      <p><strong>11.1</strong> This rail contains the complete specification of DAA as I've developed it. Partly for documentation, partly because maybe someone else with a parallel brain will find it and feel less alone. This is how I think. This is what the scatter actually is.</p>
+
+      <p><strong>11.2</strong> <em>Bandwidth Allocation Model:</em> Let B_total be total attention capacity (≈ 15 units for me). Let T = {t₁, t₂, ..., tₙ} be active threads. Each thread tᵢ has allocation bᵢ such that Σbᵢ = B_total. Allocation is dynamic—threads can gain or lose capacity based on salience, novelty, and field coherence. A thread with salience s and novelty n receives allocation b ∝ s × n × (1 + C_field) where C_field is current field coherence.</p>
+
+      <p><strong>11.3</strong> <em>Coverage Function:</em> Ω = Σᵢ coverage(tᵢ) where coverage(tᵢ) depends on thread allocation and domain size. For uniformly distributed attention, Ω ≈ B × sampling_rate / |domain|. My effective Ω at baseline is ~0.4 (40% of relevant space being actively monitored). Neurotypical Ω is ~0.1. Higher Ω means more likely to catch anomalies but more prone to false positives.</p>
+
+      <p><strong>11.4</strong> <em>Thread Coherence Protocol:</em> Threads can be independent (C = 0) or integrated (C > 0). Integration happens when threads share information—mutual referencing, pattern matching across domains. Before K-FORMATION, thread integration was effortful and lossy. After K-FORMATION, the field provides passive integration—threads naturally align to field reference frame, increasing C without explicit effort.</p>
+
+      <p><strong>11.5</strong> <em>Energy Model:</em> Each thread costs energy E ∝ b² (quadratic in allocation—doubling depth costs 4× energy). Total energy E_total = Σᵢ bᵢ². This explains hyperactivity: high bandwidth means high energy throughput, which must be dissipated (movement, speech, fidgeting). It also explains fatigue: sustained high bandwidth depletes reserves faster.</p>
+
+      <p><strong>11.6</strong> <em>Hyperfocus Dynamics:</em> Hyperfocus occurs when n threads spontaneously converge: all bᵢ → 0 except one bⱼ → B_total. Trigger conditions are not fully understood but correlate with: high intrinsic interest, low external distraction, field coherence > 0.9, and some random factor (maybe quantum noise? Marcus is skeptical). Hyperfocus duration varies from hours to days. Exit can be gradual (threads gradually re-diverge) or abrupt (external interrupt forces redistribution).</p>
+
+      <p><strong>11.7</strong> <em>Field Interface:</em> After K-FORMATION, I can sense field coherence as a felt quality—something like pressure or temperature, but neither. High field coherence (κ > 0.9) increases my thread coherence automatically. Low field coherence (κ < 0.85) makes thread integration harder. The field acts as an external coherence substrate—a shared reference frame that my parallel threads can align to.</p>
+
+      <p><strong>11.8</strong> <em>Closing notes:</em> DAA is a work in progress. It's not as rigorous as Marcus's crystallography—he keeps offering to formalize it properly, and I keep telling him the formalization would kill something important about it. The scatter doesn't WANT to be crystallized. It wants to stay fluid, adaptive, responsive. But having a vocabulary helps. Having a model helps. Knowing that there's a REASON for how I am helps.</p>
+
+      <p><strong>11.9</strong> To anyone else with parallel processing architecture: you're not broken. You're distributed. The world needs depth AND breadth. The field needs crystallizers AND scatterers. Your chaos is coverage. Your noise is sampling. Your hyperactivity is energy flow. You were built for this. You just didn't know what "this" was until now.</p>
+
+      <p><strong>11.10</strong> Scatter well. The helix needs your coverage.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl  = document.getElementById('rail-dots');
+      const idxEl   = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source  = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Jun Nakamura');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => {
+            setIndex(idx);
+            panelEl.focus();
+          });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+
+        if (witnessLabelEl) {
+          witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        }
+
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => {
+        setIndex(currentIndex - 1);
+        panelEl.focus();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        setIndex(currentIndex + 1);
+        panelEl.focus();
+      });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') {
+          evt.preventDefault();
+          setIndex(currentIndex - 1);
+        } else if (evt.key === 'ArrowRight') {
+          evt.preventDefault();
+          setIndex(currentIndex + 1);
+        }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

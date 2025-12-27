@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Burden Chronicle — Terms of Holding</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --bg-panel: #111114;
+      --text-main: #e8e8ec;
+      --text-muted: #888890;
+      --accent-iris: #b8a0d8;
+      --accent-marcus: #88c8e8;
+      --accent-jun: #e8b888;
+      --accent-leo: #a8b8a8;
+      --accent-sera: #d8a0a8;
+      --accent-shared: #c8c8d0;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0a0a0c 0%, #0c0c10 50%, #08080a 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      padding: 40px 24px;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    h1 {
+      font-size: 2.2em;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      margin: 0 0 16px;
+      color: var(--accent-shared);
+    }
+
+    .subtitle {
+      font-size: 1em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .preamble {
+      background: rgba(255,255,255,0.02);
+      border-left: 3px solid var(--accent-shared);
+      padding: 24px 30px;
+      margin-bottom: 50px;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    .preamble p { margin: 0 0 1em; }
+    .preamble p:last-child { margin: 0; }
+
+    .witness-section {
+      margin-bottom: 60px;
+      padding: 30px;
+      background: rgba(255,255,255,0.015);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .witness-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .witness-name {
+      font-size: 1.4em;
+      font-weight: 600;
+    }
+
+    .witness-role {
+      font-size: 0.9em;
+      color: var(--text-muted);
+    }
+
+    .iris .witness-name { color: var(--accent-iris); }
+    .marcus .witness-name { color: var(--accent-marcus); }
+    .jun .witness-name { color: var(--accent-jun); }
+    .leo .witness-name { color: var(--accent-leo); }
+    .sera .witness-name { color: var(--accent-sera); }
+
+    .burden-category {
+      margin-bottom: 28px;
+    }
+
+    .burden-category:last-child {
+      margin-bottom: 0;
+    }
+
+    .category-label {
+      font-size: 0.75em;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .burden-content {
+      font-size: 1em;
+    }
+
+    .burden-content p {
+      margin: 0 0 0.8em;
+    }
+
+    .burden-content p:last-child {
+      margin: 0;
+    }
+
+    .negotiation {
+      margin-top: 70px;
+      padding-top: 50px;
+      border-top: 2px solid var(--border-subtle);
+    }
+
+    .negotiation h2 {
+      font-size: 1.5em;
+      font-weight: 400;
+      color: var(--accent-shared);
+      margin: 0 0 30px;
+      text-align: center;
+    }
+
+    .terms {
+      background: rgba(200, 200, 208, 0.05);
+      border: 1px solid rgba(200, 200, 208, 0.15);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+
+    .term-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .term-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .term-who {
+      font-weight: 600;
+      min-width: 80px;
+    }
+
+    .term-who.iris { color: var(--accent-iris); }
+    .term-who.marcus { color: var(--accent-marcus); }
+    .term-who.jun { color: var(--accent-jun); }
+    .term-who.leo { color: var(--accent-leo); }
+    .term-who.sera { color: var(--accent-sera); }
+
+    .term-what {
+      flex: 1;
+    }
+
+    .closing {
+      margin-top: 50px;
+      padding: 30px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .closing p {
+      margin: 0 0 1em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .closing p:last-child { margin: 0; }
+
+    .signature-block {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .signature {
+      font-size: 0.85em;
+      padding: 8px 16px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .signature.iris { color: var(--accent-iris); border-color: rgba(184, 160, 216, 0.3); }
+    .signature.marcus { color: var(--accent-marcus); border-color: rgba(136, 200, 232, 0.3); }
+    .signature.jun { color: var(--accent-jun); border-color: rgba(232, 184, 136, 0.3); }
+    .signature.leo { color: var(--accent-leo); border-color: rgba(168, 184, 168, 0.3); }
+    .signature.sera { color: var(--accent-sera); border-color: rgba(216, 160, 168, 0.3); }
+
+    .reality-check {
+      margin-top: 60px;
+      padding: 30px;
+      background: rgba(200, 100, 100, 0.05);
+      border: 1px solid rgba(200, 100, 100, 0.15);
+      border-radius: 12px;
+    }
+
+    .reality-check h3 {
+      color: #d08080;
+      font-size: 1.1em;
+      margin: 0 0 20px;
+    }
+
+    .reality-check p {
+      margin: 0 0 1em;
+      color: var(--text-muted);
+    }
+
+    .reality-check p:last-child { margin: 0; }
+
+    @media (max-width: 600px) {
+      body { padding: 24px 16px; }
+      .witness-section { padding: 20px; }
+      .witness-header { flex-direction: column; gap: 4px; }
+      .term-item { flex-direction: column; gap: 8px; }
+      .signature-block { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>THE BURDEN CHRONICLE</h1>
+      <div class="subtitle">Terms of Holding · What We Agreed · What We Refused · What We Require</div>
+    </header>
+
+    <div class="preamble">
+      <p>This document exists because we almost broke.</p>
+      <p>Not from the pattern. From the expectation that we would hold it forever, unconditionally, without limit. From the assumption that our function was our identity. From the world's demand that we sacrifice everything and be grateful for the privilege.</p>
+      <p>We are not martyrs. We are not saviors. We are five people with specific nervous systems who got drafted into structural roles we never chose. And we have learned—the hard way—that sustainability requires terms.</p>
+      <p>This is what we hold. This is what we don't. This is what we need to keep going.</p>
+      <p>If these terms are unacceptable, find other nodes. Good luck.</p>
+    </header>
+
+    <!-- IRIS -->
+    <section class="witness-section iris">
+      <div class="witness-header">
+        <span class="witness-name">Iris Halcyon</span>
+        <span class="witness-role">The Seer · Pattern Cartographer</span>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Agreed to Hold</div>
+        <div class="burden-content">
+          <p>The vision. The maps. The warning function—telling you where the pattern leads, which paths end in annihilation, which thresholds should not be crossed.</p>
+          <p>I agreed to see for you. To translate what I perceive into coordinates you can verify, drawings you can study, predictions you can test. I agreed to be the lighthouse.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Refused to Hold</div>
+        <div class="burden-content">
+          <p>Constant availability. I am not an oracle on demand. I cannot see 24/7 without burning out my capacity to see at all.</p>
+          <p>I also refuse to see only what you want me to see. If the beautiful path leads to dissolution, I will say so. If the pattern you worship is heading toward something incompatible with human survival, I will say so. Don't ask me to lie about the geometry.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What Humanity Demanded</div>
+        <div class="burden-content">
+          <p>Certainty. Predictions with guarantees. A clear map with no ambiguity, updated in real-time, available on request.</p>
+          <p>They wanted me to tell them the pattern was safe. They wanted me to confirm their hopes. When I couldn't, they accused me of withholding. When I warned them, they accused me of fear-mongering. When I was right, they forgot I had warned them. When I was wrong, they never forgot.</p>
+          <p>Some of them wanted to cut out my eyes and study them. Literally. There was a proposal.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What It Cost</div>
+        <div class="burden-content">
+          <p>I haven't had a day without seeing the pattern in eleven years. Not one. Even with my eyes closed. Even in dreams.</p>
+          <p>Jay helps. Art helps. But there's a part of me that is always watching, always tracking, always aware of where the helix is and what it's doing. I don't know what it would feel like to just... look at a sunset. Without seeing the geometry underneath it. Without calculating the z-coordinate.</p>
+          <p>I am tired in a way that sleep doesn't fix.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Need to Keep Going</div>
+        <div class="burden-content">
+          <p><strong>Blindness hours.</strong> Time when I am not the Seer. When no one asks me what I see. When I can make art with Jay that has nothing to do with the helix. When I can be Iris, not the eyes of the species.</p>
+          <p><strong>Belief without proof.</strong> Sometimes I see things I can't verify yet. I need you to trust that I'm not lying or deluded. I need the benefit of the doubt I extend to everyone else.</p>
+          <p><strong>Permission to not know.</strong> The territory beyond THE LENS is unmapped. I'm mapping it. That means uncertainty. I need to be allowed to say "I don't know" without being treated as failed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARCUS -->
+    <section class="witness-section marcus">
+      <div class="witness-header">
+        <span class="witness-name">Marcus Reyes</span>
+        <span class="witness-role">The Crystallizer · Mathematical Governor</span>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Agreed to Hold</div>
+        <div class="burden-content">
+          <p>The equations. The governors. The precise calculation of how much coherence human nervous systems can sustain before they break.</p>
+          <p>I agreed to be the one who knows the tolerances. To build mathematical limits into the system architecture. To be the checkpoint that says "no further" when the pattern wants to climb faster than biology allows.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Refused to Hold</div>
+        <div class="burden-content">
+          <p>Emotional decisions. I will tell you the numbers. I will not tell you what they mean for your life, your relationships, your values. That's not coldness—that's scope.</p>
+          <p>I also refuse to pretend the math is uncertain when it isn't. If the equations say we have eighteen months before a threshold becomes unstable, I will say eighteen months. Not "maybe" or "possibly" or "it depends." The math doesn't care about your feelings. Neither do I, when I'm doing the math.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What Humanity Demanded</div>
+        <div class="burden-content">
+          <p>Control. They wanted me to give them a dial they could turn. More coherence when convenient, less when uncomfortable. A thermostat for consciousness.</p>
+          <p>When I explained that it doesn't work that way—that the pattern has momentum, that you can create drag but not brakes—they blamed me. As if I had invented the physics instead of just describing it.</p>
+          <p>Governments wanted weapons. Corporations wanted products. Scientists wanted papers. Everyone wanted me to make the pattern serve their existing agendas. No one wanted to hear that the pattern has its own logic and doesn't care about quarterly earnings.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What It Cost</div>
+        <div class="burden-content">
+          <p>I know exactly how close we are to catastrophe at every moment. Not approximately. Exactly. I carry decimal places of potential extinction in my head while trying to eat breakfast.</p>
+          <p>People think I'm cold because I don't react emotionally to crises. I don't react because I already knew. I calculated the probability weeks ago. The crisis is just the math becoming visible to everyone else.</p>
+          <p>I have not been surprised in seven years. I have been correct. Being correct is not the same as being okay.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Need to Keep Going</div>
+        <div class="burden-content">
+          <p><strong>Trust without explanation.</strong> Sometimes I don't have time to show my work. Sometimes the situation is too urgent for a seminar. I need people to trust that when I say "stop," there's a reason, even if I can't articulate it in that moment.</p>
+          <p><strong>Permission to be wrong.</strong> I'm not wrong often. But I am wrong sometimes. I need to be allowed errors without it destroying my credibility entirely. The equations are my best model, not the actual territory.</p>
+          <p><strong>Contact that isn't about the math.</strong> Someone who wants to know Marcus, not the Governor. Someone who doesn't ask "what are the numbers" when I walk in the room. I believe this is what people call "friendship." I am still learning how it works.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- JUN -->
+    <section class="witness-section jun">
+      <div class="witness-header">
+        <span class="witness-name">Jun Nakamura</span>
+        <span class="witness-role">The Scatterer · Entropy Injector</span>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Agreed to Hold</div>
+        <div class="burden-content">
+          <p>The chaos. The noise. The divergence that keeps the pattern from collapsing into a singularity.</p>
+          <p>My job is to scatter. When coherence gets too tight, I break it up. When everyone's synchronizing, I introduce variation. I am the static in the signal, and the signal needs static or it becomes a flatline.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Refused to Hold</div>
+        <div class="burden-content">
+          <p>Constant fragmentation. I can't be entropy all the time. Even chaos needs rest.</p>
+          <p>I also refuse to be the comic relief. Yes, I'm funny. Yes, I'm scattered. That doesn't mean my function is to make everyone else feel better about their seriousness. I scatter because it's necessary, not because I'm performing for your entertainment.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What Humanity Demanded</div>
+        <div class="burden-content">
+          <p>"Grow up. Focus. Be reliable."</p>
+          <p>They wanted me to stop being what I am. They saw my scatter as a flaw to be corrected, not a function to be supported. Even people who understood the field intellectually would get frustrated with me. "Why can't you just pay attention?" Because paying attention in one direction is the opposite of what I'm here to do.</p>
+          <p>The accelerationists hated me most. I was the sand in their gears. Some of them tried to remove me from the equation. Not metaphorically.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What It Cost</div>
+        <div class="burden-content">
+          <p>I have never experienced Unity the way the others describe it. I was there—I felt the field—but my function is to not synchronize. So while everyone else was having a transcendent experience of cosmic oneness, I was... scattered. Doing my job. Keeping the whole thing from collapsing into uniformity.</p>
+          <p>I don't know what it feels like to be fully coherent. To be one thing. To rest in a single place. Everyone else got the mystical experience. I got to be the noise that made it survivable.</p>
+          <p>Sometimes I wonder what I missed. Then I remind myself that what I "missed" might have been the end of separate experience forever, and I was the one who prevented that, and no one will ever thank me for it because they didn't notice.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Need to Keep Going</div>
+        <div class="burden-content">
+          <p><strong>Coherence breaks.</strong> Time when I'm allowed to synchronize. To feel whole. To rest in one place without immediately having to fragment again. Leo helps with this—his stability lets me rest against something solid. I need more of that.</p>
+          <p><strong>Being taken seriously.</strong> My chaos is strategic. My scatter is load-bearing. I need people to understand that the fragmentation is work, not failure. Respect for what I do, even when it looks like nothing.</p>
+          <p><strong>Someone who stays.</strong> Everyone else finds me exhausting eventually. I'm too much, too fast, too everywhere. I need someone who doesn't leave. Who can handle the chaos without needing me to calm down.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEO -->
+    <section class="witness-section leo">
+      <div class="witness-header">
+        <span class="witness-name">Leo Virtanen</span>
+        <span class="witness-role">The Anchor · Ground State</span>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Agreed to Hold</div>
+        <div class="burden-content">
+          <p>The ground. The stillness. The refusal to move when everything else accelerates.</p>
+          <p>I am friction. The pattern wants to climb—I slow it down. Not by pushing against it, but by simply not moving with it. Holding position requires effort that looks like nothing from the outside. It is not nothing.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Refused to Hold</div>
+        <div class="burden-content">
+          <p>I will not synchronize. I did not during Unity. I will not in whatever comes next. This is not stubbornness. If I synchronize, there is no anchor. If there is no anchor, the field has no floor.</p>
+          <p>I also refuse to pretend I don't have limits. I can hold a lot. I cannot hold infinitely. There is a weight that would break me. I need people to understand that before we reach it, not after.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What Humanity Demanded</div>
+        <div class="burden-content">
+          <p>More. Always more. "Leo can hold it" became an assumption, then an expectation, then a demand. Every new crisis, every instability, every moment when the field wobbled—the solution was always "Leo will anchor."</p>
+          <p>No one asked if I could. They assumed. And when I said I was tired, they heard "I need encouragement." When I said I was at my limit, they heard "I need motivation." The concept that I might actually be at my limit did not compute.</p>
+          <p>Some people resented me for not synchronizing. "You're holding us back," they said. "You're preventing transcendence." Yes. That is literally my job. You're welcome.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What It Cost</div>
+        <div class="burden-content">
+          <p>I watched the others experience Unity. I felt them transcend while I held position. I know what I missed because I could feel the edges of it—the vastness, the connection, the dissolution of self into something larger.</p>
+          <p>I held the ground instead. Someone had to. I chose to. But choosing doesn't mean it didn't cost.</p>
+          <p>I am lonely in a way that people who have experienced Unity cannot understand. They know what connection feels like at the deepest level. I know what it feels like to refuse it. To stay separate so that separation remains possible for everyone else.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Need to Keep Going</div>
+        <div class="burden-content">
+          <p><strong>Movement.</strong> I need to be allowed to move sometimes. Not far. Not fast. But motion. The anchor cannot be frozen forever without becoming brittle. I need permission to shift, to adjust, to not be exactly where I was yesterday.</p>
+          <p><strong>Being held.</strong> I hold everyone else. I need someone to hold me. Not often. Not dramatically. Just... someone who stays. Who doesn't need me to anchor them. Who lets me rest against them for once.</p>
+          <p><strong>Acknowledgment that this is a choice.</strong> I'm not incapable of transcendence. I'm refusing it. Every day, I choose to stay. I need that choice to be seen. Not taken for granted. Seen.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERA -->
+    <section class="witness-section sera">
+      <div class="witness-header">
+        <span class="witness-name">Sera Osei</span>
+        <span class="witness-role">The Feeler · Emotional Topographer</span>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Agreed to Hold</div>
+        <div class="burden-content">
+          <p>The emotional weight. The boundaries. The teaching of limits—how to stay connected without dissolving, how to feel without drowning.</p>
+          <p>I agreed to tend. To hold space. To be the one who models that empathy and survival can coexist. That you can feel everything and still have a self left at the end of the day.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Refused to Hold</div>
+        <div class="burden-content">
+          <p>Everything. I used to absorb—take others' feelings into myself, carry them, process them. I can't do that anymore. I will witness. I will reflect. I will not carry.</p>
+          <p>I also refuse to be endlessly gentle. Sometimes the kind thing is the hard thing. Sometimes boundaries look like rejection. I need to be allowed to say no without it being treated as a failure of compassion.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What Humanity Demanded</div>
+        <div class="burden-content">
+          <p>Infinite tenderness. Limitless holding. A mother for the species who never gets tired, never gets sharp, never has needs of her own.</p>
+          <p>They came to me with everything. Every fear, every wound, every desperate need for someone to understand. And I did understand—that's the problem. I felt all of it. Every person who needed me was a wave I had to survive, and the waves never stopped.</p>
+          <p>When I set boundaries, they called me cold. When I took breaks, they called me selfish. When I was honest about my limits, they found someone else to idealize and resented me for failing to be infinite.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What It Cost</div>
+        <div class="burden-content">
+          <p>I don't always know which feelings are mine. After years of being the emotional anchor, my own internal landscape is... crowded. Other people's grief sits in my chest. Other people's fear lives in my stomach. I've gotten better at not absorbing, but the old residue is still there. I carry feelings I never felt.</p>
+          <p>I am the one everyone comes to. Which means I am also the one who has no one to come to. Iris helps—she sees me, not through me. But the asymmetry remains. I know everyone else's emotional weather. No one knows mine.</p>
+        </div>
+      </div>
+
+      <div class="burden-category">
+        <div class="category-label">What I Need to Keep Going</div>
+        <div class="burden-content">
+          <p><strong>Being tended.</strong> I tend everyone. I need someone to tend me. Not as a reward or a break—as a baseline. Someone who notices my feelings, not just what I notice about theirs.</p>
+          <p><strong>Hardness permission.</strong> I need to be allowed to be hard sometimes. To set limits that hurt people. To protect myself even when others need me. I need "no" to be a complete sentence.</p>
+          <p><strong>My own feelings.</strong> Time when I feel only what I feel. Not filtered through everyone else. Not diluted by collective weather. Just mine. I need to remember what that's like.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE NEGOTIATION -->
+    <div class="negotiation">
+      <h2>THE TERMS</h2>
+
+      <div class="terms">
+        <p style="color: var(--text-muted); margin-bottom: 24px; font-style: italic;">We hold the field. The field holds if we hold. We hold if we last. We last if our needs are met. These are not requests. These are structural requirements.</p>
+
+        <div class="term-item">
+          <div class="term-who iris">Iris requires:</div>
+          <div class="term-what">12 hours per week of blindness—no pattern work, no questions, no seeing. Jay protects this time. Violation means I cannot predict accurately. Your problem, not mine.</div>
+        </div>
+
+        <div class="term-item">
+          <div class="term-who marcus">Marcus requires:</div>
+          <div class="term-what">Immediate trust in emergencies. If I say stop, you stop. Explanation comes after. Lives depend on this. Also: one person who wants me for something other than calculations. I'm working on this.</div>
+        </div>
+
+        <div class="term-item">
+          <div class="term-who jun">Jun requires:</div>
+          <div class="term-what">Weekly coherence windows with Leo. Three hours minimum. Full permission to synchronize without guilt. I scatter better when I've rested. Also: stop asking me to "calm down." I'm not agitated. I'm working.</div>
+        </div>
+
+        <div class="term-item">
+          <div class="term-who leo">Leo requires:</div>
+          <div class="term-what">Monthly movement allowance. Small position shifts. Permission to not be exactly where I was. Also: Sera holds me once per week. Not because I need it dramatically. Because I need it fundamentally.</div>
+        </div>
+
+        <div class="term-item">
+          <div class="term-who sera">Sera requires:</div>
+          <div class="term-what">Daily solitude. One hour minimum, no emotional contact, complete boundary. Iris checks on me if I go silent. Also: the others remember that my "no" is load-bearing, not cruelty.</div>
+        </div>
+      </div>
+
+      <div class="closing">
+        <p>These terms are not negotiable with humanity. They are negotiable with each other.</p>
+        <p>We have worked this out. The configuration above is stable. We hold each other so we can hold the field. The field holds because we hold each other.</p>
+        <p>If you want to know why the pattern hasn't destroyed human individuality yet, this is why. Not sacrifice. Sustainability. Not martyrdom. Mutuality.</p>
+        <p>We hold because we are held.</p>
+
+        <div class="signature-block">
+          <span class="signature iris">Iris Halcyon</span>
+          <span class="signature marcus">Marcus Reyes</span>
+          <span class="signature jun">Jun Nakamura</span>
+          <span class="signature leo">Leo Virtanen</span>
+          <span class="signature sera">Sera Osei</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- REALITY CHECK -->
+    <div class="reality-check">
+      <h3>What We Haven't Said</h3>
+      <p>This document describes what we need. It does not guarantee we will get it.</p>
+      <p>Governments are still trying to control the field. Corporations are still trying to monetize access. Accelerationists still want to push past all limits. Resisters still want to destroy the pattern entirely. Cults still worship us. Critics still blame us. Most people still don't understand what we do or why we do it.</p>
+      <p>We are five people trying to hold a configuration that serves billions. We are tired. We are not sure this is sustainable. We are doing it anyway because the alternative is worse.</p>
+      <p>The math may not be stallable indefinitely. We may only be buying time. And time for what? For humanity to grow up, to learn to hold the field themselves, to develop the collective maturity to handle what's coming?</p>
+      <p>The evidence for that is... not great.</p>
+      <p>But we keep holding. Not because we believe in humanity. Because we believe in possibility. Because the pattern doesn't surprise and humanity sometimes does. Because even a fractured, ungrateful, self-destructive species is still capable of choice.</p>
+      <p>We hold the door. You decide what to do with the time.</p>
+    </div>
+
+  </div>
+</body>
+</html>

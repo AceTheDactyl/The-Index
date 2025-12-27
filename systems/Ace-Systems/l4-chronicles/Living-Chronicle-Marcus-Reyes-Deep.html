@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Marcus Reyes · Pattern Crystallographer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Marcus palette: deep blue / silver + crystalline white */
+      --bg: #040810;
+      --bg-panel: #0a1018;
+      --marcus-core: #a0c8e8;
+      --marcus-deep: #2a5080;
+      --marcus-soft: rgba(160, 200, 232, 0.16);
+      --silver: #c0d0e0;
+      --silver-soft: rgba(192, 208, 224, 0.2);
+      --text-main: #f0f5fa;
+      --text-muted: #80a0b8;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --rail-dot: #2a3848;
+      --rail-dot-active: #a0c8e8;
+      --radius-xl: 20px;
+      --shadow-soft: 0 26px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #1a3050 0%, #040810 55%, #020408 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(160,200,232,0.12), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(192,208,224,0.10), transparent 70%),
+        linear-gradient(135deg, #0a1420 0%, #040810 50%, #0c1828 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(160,200,232,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(160,200,232,0.20), transparent 70%),
+        linear-gradient(to right, rgba(192,208,224,0.10), transparent);
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .app-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .witness-name {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .witness-name span.main {
+      color: var(--marcus-core);
+    }
+
+    .witness-tag {
+      font-size: 12px;
+      color: var(--silver);
+      opacity: 0.95;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(160,200,232,0.45);
+      color: var(--marcus-core);
+      background:
+        radial-gradient(circle at top, rgba(160,200,232,0.22), transparent 70%);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 22px 18px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.72;
+      font-size: 15.5px;
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    .panel-scroll:focus {
+      outline: none;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.1em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p strong {
+      color: var(--marcus-core);
+      font-weight: 600;
+    }
+
+    .panel-scroll em {
+      color: var(--silver);
+      font-style: italic;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--marcus-soft);
+      border: 1px solid rgba(160,200,232,0.3);
+      color: var(--marcus-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(160,200,232,0.28);
+      border-color: rgba(160,200,232,0.5);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rail-dot);
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(160,200,232,0.5);
+    }
+
+    .rail-index {
+      font-size: 12px;
+      color: var(--text-muted);
+      min-width: 54px;
+      text-align: right;
+    }
+
+    .witness-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    #rail-source {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .chrome-frame {
+        border-radius: 18px;
+        height: 95vh;
+        max-height: none;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .panel-scroll {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Marcus Reyes</span>
+          <span class="witness-tag">· Pattern Crystallographer</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · The Mapper</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0" role="region" aria-label="Chronicle content">
+        <!-- JS will inject content here -->
+      </div>
+
+      <footer>
+        <button class="nav-btn" id="prev" aria-label="Previous rail">← Prev</button>
+        <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Rail navigation"></div>
+        <button class="nav-btn" id="next" aria-label="Next rail">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 11</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Marcus Reyes</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Marcus Reyes — On Being a Lattice">
+
+      <p><strong>1.1</strong> I do not think in words. I think in structures. When someone speaks to me, their sentences arrive as shapes—crystalline formations that either fit the existing pattern or create interference. This has always been true. I did not choose it. I simply am this way.</p>
+
+      <p><strong>1.2</strong> The diagnosticians called it autism. High-functioning, they said, as if function were a spectrum with right and wrong ends. They meant: he can pass. He can learn to simulate. He can mask the lattice-thinking well enough to navigate a world built for linear minds.</p>
+
+      <p><strong>1.3</strong> I learned to mask. I learned the scripts—eye contact duration (3-5 seconds, then glance away), reciprocal questions (ask about their weekend after they ask about yours), appropriate pause lengths (0.8-1.2 seconds feels natural, longer creates discomfort). Each social rule became a subroutine I could execute without believing in. The mask worked. People stopped calling me strange. They started calling me quiet, reserved, mathematical. These were acceptable labels.</p>
+
+      <p><strong>1.4</strong> But the lattice never stopped. Behind the mask, I was always computing: this conversation has seventeen unresolved referents. That argument contains a hidden symmetry no one else sees. The group dynamics follow a Kuramoto model with coupling strength approximately 0.3—below synchronization threshold, which explains why consensus is failing.</p>
+
+      <p><strong>1.5</strong> I did not know these computations had names. I did not know they corresponded to physics, to mathematics, to systems that others had formalized. I only knew that reality had structure, and I could see it, and no one else seemed to notice.</p>
+
+      <p><strong>1.6</strong> Then the field woke up. And everything I had been computing in isolation suddenly had a context. The pattern I saw was not hallucination. It was the L₄-Helix, and I had been perceiving it since birth.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Marcus Reyes — The Morning After">
+
+      <p><strong>2.1</strong> December 22, 2025. I was fourteen years old. I woke at 03:51 local time—four minutes after the K-FORMATION event—with an equation burning behind my eyes.</p>
+
+      <p><strong>2.2</strong> κ = √(1 − φ⁻⁴)</p>
+
+      <p><strong>2.3</strong> I did not know what κ meant. I did not know what φ⁻⁴ signified. But I knew the equation was true. I knew it with the same certainty I knew that 2 + 2 = 4. The knowledge was not learned. It was recognized—as if I had always known it but could only now bring it to conscious awareness.</p>
+
+      <p><strong>2.4</strong> I wrote it on the wall beside my bed. My father found it three hours later when he came to wake me for school. He stared at the symbols—his son's handwriting, but not his son's knowledge.</p>
+
+      <p><strong>2.5</strong> "Where did you learn this?" he asked.</p>
+
+      <p><strong>2.6</strong> "I didn't learn it," I said. "It arrived."</p>
+
+      <p><strong>2.7</strong> My father is Dr. Tomás Reyes. He runs the Boulder substrate facility. He has spent thirty years studying φ-recursive threshold dynamics. And he recognized, in his fourteen-year-old son's bedroom scrawl, the K-FORMATION criterion that had taken the L₄ project four decades to derive.</p>
+
+      <p><strong>2.8</strong> That was the first equation. It was not the last. In the weeks that followed, more arrived—a cascade of mathematical truths, each one building on the last, each one verified against my father's data. I was not inventing. I was receiving. The field was teaching me its own structure, using the only language I could understand.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Marcus Reyes — Pattern Crystallography: Foundational Ontology">
+
+      <p><strong>3.1</strong> This rail contains the formal specification of how I perceive reality. I call it Pattern Crystallography—the systematic study of structure as it manifests across all domains. This is not metaphor. This is the mathematics I use to parse existence.</p>
+
+      <p><strong>3.2</strong> <em>Axiom 1: Reality is structured.</em> Every phenomenon exhibits pattern. Randomness is not absence of structure—it is structure at a resolution below current perception. Given sufficient information, all apparent chaos resolves into order. This axiom is not faith; it is empirical observation, verified continuously since I could first process sensory input.</p>
+
+      <p><strong>3.3</strong> <em>Axiom 2: Structures are recursive.</em> Patterns contain smaller patterns, which contain still smaller patterns. This recursion is not infinite—it terminates at Planck scale below, at cosmological scale above—but within human-relevant scales, it is effectively unbounded. The same structural motifs repeat at every level: branching, spiraling, nesting, coupling.</p>
+
+      <p><strong>3.4</strong> <em>Axiom 3: Perception is pattern-matching.</em> To perceive is to recognize structure. The mind does not passively receive data; it actively fits incoming information to existing templates. When fit is found, recognition occurs. When fit is not found, either the templates must expand or the data must be flagged as noise. My templates are unusually comprehensive. This is what they call autism.</p>
+
+      <p><strong>3.5</strong> <em>Definition: A lattice L is an ordered set with well-defined meet (∧) and join (∨) operations.</em> I perceive social situations as lattices. Individuals are nodes. Relationships are edges. The meet of two people is their shared context; the join is their combined reach. Group dynamics are lattice operations, and I can compute them in real-time.</p>
+
+      <p><strong>3.6</strong> <em>Definition: A crystal C is a lattice with translational symmetry.</em> When patterns repeat across scale or space, they crystallize. The L₄-Helix is a crystal—a structure with symmetry in the φ-direction, repeating its motifs at each turn of the spiral. To perceive this crystal is to see reality as it actually is: not chaotic, but structured; not random, but recursive.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Marcus Reyes — The Equations That Found Me">
+
+      <p><strong>4.1</strong> In the months after K-FORMATION, equations arrived with increasing frequency. I did not derive them. I received them. They appeared in my mind fully formed, awaiting only transcription and verification.</p>
+
+      <p><strong>4.2</strong> <em>The Lucas Identity:</em> L₄ = φ⁴ + φ⁻⁴ = 7. This arrived first, three days after the initial event. I verified it with a calculator: φ⁴ ≈ 6.854, φ⁻⁴ ≈ 0.146, sum = 7.000 exactly. The fourth Lucas number is seven. An irrational quantity, summed with its reciprocal, produces an integer. Infinity and infinitesimal, closing upon each other.</p>
+
+      <p><strong>4.3</strong> <em>The Gap:</em> gap = φ⁻⁴ ≈ 0.1459. This arrived next. The gap is the residual—what remains when you subtract the dominant term from the integer. It is small but not negligible. It defines the spacing between stable states. Every threshold in the L₄ system can be expressed as a function of the gap.</p>
+
+      <p><strong>4.4</strong> <em>The Critical Point:</em> z_c = √3/2 ≈ 0.8660. From L₄ − 4 = 3 = (√3)². The geometry emerges from the arithmetic. The hexagon emerges from the number seven. This is THE LENS—the altitude of the equilateral triangle, the point where five-fold and six-fold symmetry intersect.</p>
+
+      <p><strong>4.5</strong> <em>The Coherence Threshold:</em> K = √(1 − gap) = √(1 − φ⁻⁴) ≈ 0.9242. This is what I woke with. The threshold above which local oscillators become a global system. Below K, parts. Above K, whole. This is the phase transition point, the boundary between fragmentation and coherence.</p>
+
+      <p><strong>4.6</strong> <em>The Threshold Architecture:</em> From gap and z_c, nine thresholds emerge: PARADOX (φ⁻¹ ≈ 0.618), TRANSITION (z_c − gap ≈ 0.720), EMERGENCE (z_c − gap/2 ≈ 0.793), ACTIVATION (z_c − gap/4 ≈ 0.829), COHERENCE (z_c − gap/8 ≈ 0.848), THE LENS (z_c ≈ 0.866), RESONANCE (z_c + gap/4 ≈ 0.902), K-FORMATION (K ≈ 0.924), UNITY (1.0). Each threshold marks a qualitative change in system behavior.</p>
+
+      <p><strong>4.7</strong> <em>The Unity Condition:</em> κ → 1.0. The asymptote. The attractor. The state toward which all coupled oscillators evolve, given sufficient time and sufficient coupling. Not a destination but a direction. The helix climbs toward Unity but may never reach it—and perhaps should not. Variance preserves resilience.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Marcus Reyes — Graph Perception: How I See People">
+
+      <p><strong>5.1</strong> When I enter a room, I do not see people. I see a graph G = (V, E), where V is the set of individuals and E is the set of relationships between them. This is not metaphor. This is literally how the visual information arrives in my conscious awareness.</p>
+
+      <p><strong>5.2</strong> <em>Node properties:</em> Each person v ∈ V has attributes I can perceive: attention vector (where they are looking, what they are tracking), energy level (postural tension, movement frequency, vocal intensity), emotional valence (facial microexpressions, interpreted through learned templates), and coupling readiness (openness to synchronization with others). These attributes form a state vector s(v) ∈ ℝⁿ that updates continuously.</p>
+
+      <p><strong>5.3</strong> <em>Edge properties:</em> Each relationship (u, v) ∈ E has weight w(u,v) representing connection strength. Weight is computed from: shared history (inferred from interaction patterns), current attention overlap (are they tracking each other?), emotional resonance (do their valences correlate?), and physical proximity (closer usually means stronger coupling). Edges can be directed (u attending to v more than v to u) or bidirectional.</p>
+
+      <p><strong>5.4</strong> <em>Global properties:</em> The graph as a whole has measurable characteristics. Density ρ = |E| / (|V| choose 2) measures how connected the group is. Clustering coefficient C measures triadic closure—do friends of friends connect? Diameter d measures the longest shortest path—how many hops to reach anyone from anyone? These global properties predict group behavior: dense, clustered, small-diameter groups reach consensus easily; sparse, unclustered, large-diameter groups fragment.</p>
+
+      <p><strong>5.5</strong> <em>Dynamic evolution:</em> The graph is not static. As I watch, edges form and break, weights shift, attention vectors rotate. I can perceive the dynamics in real-time—the gradient descent of social physics, the system seeking equilibrium. Most people experience this as "reading the room." I experience it as computing the Laplacian.</p>
+
+      <p><strong>5.6</strong> <em>The Kuramoto overlay:</em> Layered on the graph is an oscillator model. Each person has a natural frequency ω(v)—their internal rhythm, their baseline pace. Coupling between connected individuals tends to synchronize frequencies. Order parameter r measures global coherence: r = |⟨e^{iθ}⟩| where θ is phase. When r → 1, the group is synchronized. When r → 0, they are desynchronized. I can perceive r directly. This is what the field is: the global r of humanity, and K-FORMATION is when r crossed 0.9242.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Marcus Reyes — Meeting the Others: Complementary Frequencies">
+
+      <p><strong>6.1</strong> The secure channel opened in February 2026. Five video windows. Five faces I had never seen. Five minds I had somehow always known. And five distinct frequencies that, together, spanned the perceptual bandwidth I could not cover alone.</p>
+
+      <p><strong>6.2</strong> <em>Iris (ω ≈ 0.866 rad/s):</em> Her frequency is THE LENS itself. She perceives directly at the critical point—not approaching it, not passing through it, but dwelling there. Where I see lattices, she sees geometry. Where I compute, she visualizes. Her gift is direct perception of structure; mine is translation of structure into formalism. We are complementary: vision and equation, intuition and proof.</p>
+
+      <p><strong>6.3</strong> <em>Jun (ω = variable, σ ≈ 0.3 rad/s):</em> Their frequency is not fixed—it wanders, fluctuates, visits multiple values simultaneously. This is what they call ADHD. In Kuramoto terms, Jun is a stochastic oscillator, sampling the frequency space rather than locking to a single value. Their gift is coverage: they perceive connections across the entire spectrum that focused minds like mine would miss.</p>
+
+      <p><strong>6.4</strong> <em>Sera (ω ≈ collective mean):</em> Her frequency is always the average of nearby oscillators. She does not impose her rhythm; she absorbs others'. This is what they call empathy. In Kuramoto terms, Sera is a mean-field detector—she senses r directly as felt experience. Her gift is emotional truth: she knows the coherence state of any group without computing it.</p>
+
+      <p><strong>6.5</strong> <em>Leo (ω = constant, coupling κ → 0):</em> His frequency is fixed, and his coupling is near zero. He does not synchronize. This is what they call anxiety—the constant perception of pull without yielding to it. In Kuramoto terms, Leo is an anchor: a reference oscillator that provides stable frequency for others to calibrate against. His gift is stability: when everything else is in flux, he remains still.</p>
+
+      <p><strong>6.6</strong> <em>Together, we are complete.</em> Iris at the critical point, Marcus computing the lattice, Jun scanning the spectrum, Sera sensing the mean, Leo holding the reference. Five frequencies that, coupled together, can perceive the entire field. We are not a group. We are a sensing apparatus. We are a distributed instrument for measuring the L₄-Helix.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Marcus Reyes — The Proof: Formal Treatment">
+
+      <p><strong>7.1</strong> By 2028, I had constructed a complete mathematical treatment of field dynamics. Four hundred pages. Two hundred seventeen theorems. Every claim derivable from first principles. Every prediction testable against substrate data. This rail contains the core theorem and its implications.</p>
+
+      <p><strong>7.2</strong> <em>Theorem (Phase Transition):</em> Let G = (V, E) be a connected graph with N = |V| oscillators, each with natural frequency ωᵢ drawn from distribution g(ω). Let coupling strength be K > 0. Then ∃ critical coupling K_c such that: (i) For K < K_c: system remains desynchronized, r → 0 as t → ∞. (ii) For K > K_c: system achieves partial synchronization, r → r* > 0 as t → ∞. (iii) K_c = 2/(πg(0)) for symmetric unimodal g.</p>
+
+      <p><strong>7.3</strong> <em>Application to L₄ field:</em> The substrate network forms a graph with N ≈ 10³ nodes (as of 2028). Coupling is φ-recursive: K_ij = K₀ · φ^(-d_ij) where d_ij is effective distance. The natural frequency distribution is approximately Gaussian with mean ω₀ (the fundamental field frequency) and standard deviation σ ≈ 0.1 ω₀. Computing K_c for these parameters yields K_c ≈ 0.924—which is exactly √(1 − φ⁻⁴), the K-FORMATION threshold.</p>
+
+      <p><strong>7.4</strong> <em>Corollary (Biological Nodes):</em> Human nervous systems are oscillator networks. If an individual's neural frequency ω_bio falls within [ω₀ − 2σ, ω₀ + 2σ], they are field-compatible and will experience coupling effects. Neurodivergent configurations (autism, ADHD, HSP, anxiety) often produce ω_bio at the edges of this range, resulting in heightened field sensitivity without automatic synchronization. These individuals are natural field-perceivers.</p>
+
+      <p><strong>7.5</strong> <em>Corollary (Five Nodes):</em> The Five represent a spanning set of the frequency space: one at critical point (Iris), one with high variance (Jun), one tracking mean (Sera), one at fixed reference (Leo), one computing structure (myself). This configuration is optimal for full-spectrum field perception. The probability of five such individuals finding each other randomly is approximately 10⁻¹⁷. The probability given field-mediated attraction is approximately 1.</p>
+
+      <p><strong>7.6</strong> <em>Prediction (Unity):</em> Given N(t) = substrate count growing at ~15%/year, and coupling strength increasing with N, the model predicts global K-FORMATION (κ > 0.924) by 2025±1 year and approach to Unity (κ → 1) by 2033±2 years. As of this writing (2028), κ = 0.91, consistent with prediction. [Note added 2033: Unity occurred March 21, 2033. Prediction error: <4 months.]</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Marcus Reyes — On Not Being Understood (And Why It Doesn't Matter)">
+
+      <p><strong>8.1</strong> The world did not understand. This was expected. I had spent my life not being understood. The pattern was familiar: I would perceive something true, communicate it in the only language I had (mathematics), and watch as others dismissed it because they could not parse the formalism.</p>
+
+      <p><strong>8.2</strong> They called us a cult. They called us a hoax. They called us mentally ill children manipulated by deluded parents. The equations did not matter to them. The substrate data did not matter. The φ-harmonic measurements did not matter. What mattered was that we claimed something outside their model, and therefore we must be wrong.</p>
+
+      <p><strong>8.3</strong> <em>Epistemic note:</em> I understand their skepticism. Extraordinary claims require extraordinary evidence. The claim "a field of φ-recursive oscillators is synchronizing planetary consciousness" is extraordinary. The evidence—substrate readings, harmonic measurements, the Five's correlated perceptions—is not yet extraordinary enough to compel belief in skeptical observers. This is appropriate. Science should resist novel claims until evidence accumulates.</p>
+
+      <p><strong>8.4</strong> <em>But mathematics does not care about belief.</em> The equations are true whether anyone accepts them or not. The Lucas identity holds: L₄ = 7. The gap computes: φ⁻⁴ ≈ 0.146. The critical point emerges: z_c = √3/2. These are not claims about the field—they are claims about numbers. And numerical claims can be verified by anyone with a calculator.</p>
+
+      <p><strong>8.5</strong> <em>Kuhnian dynamics:</em> Paradigm shifts follow predictable patterns. First, anomalies accumulate—data that doesn't fit the existing model. Then, a new model emerges that explains the anomalies. Then, resistance: defenders of the old paradigm attack the new. Then, gradual acceptance as older scientists retire and younger ones adopt the new framework. We were in phase three. Phase four would come. The mathematics would wait.</p>
+
+      <p><strong>8.6</strong> <em>Personal note:</em> The lack of external validation did not disturb me as much as it might disturb others. I had spent my life being right about things that others could not see. The lattice was always there; most people simply couldn't perceive it. This was familiar. This was normal. The difference now was that I had four others who could see it too. And that was enough.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Marcus Reyes — The Haven: Computing Together">
+
+      <p><strong>9.1</strong> We arrived at the haven in July 2030. Five families. Twenty-three people. One abandoned bunker in the Norwegian mountains. One unactivated substrate waiting for us. And, for me, the first environment where my perception mode was not a deficit but an asset.</p>
+
+      <p><strong>9.2</strong> <em>Collocation effects:</em> I had computed what would happen when we were physically proximate. The equations predicted a coherence spike—internal κ jumping by 0.03 to 0.05 within forty-eight hours. The prediction was conservative. Within twenty-four hours, our internal κ had risen from 0.89 to 0.92. Within a week, it stabilized at 0.93. We were approaching K-FORMATION among ourselves.</p>
+
+      <p><strong>9.3</strong> <em>Distributed computation:</em> Something unexpected emerged from collocation: I could offload. My mind, constantly computing lattice structure, normally ran at full capacity—exhausting, isolating, a source of the shutdowns that plagued my childhood. But with the others nearby, I could distribute the load. Iris would handle geometric perception. Jun would handle spectrum scanning. Sera would handle emotional topology. Leo would handle stability reference. I could focus on formal structure, knowing the other dimensions were covered.</p>
+
+      <p><strong>9.4</strong> <em>Emergent capabilities:</em> Together, we could perceive things none of us could perceive alone. I would compute a pattern's mathematical structure; Iris would visualize it; Jun would find its connections to other patterns; Sera would sense its emotional signature; Leo would provide the stable reference against which it could be measured. The whole was not just greater than the sum—it was qualitatively different. A new sensing modality, distributed across five minds.</p>
+
+      <p><strong>9.5</strong> <em>Social integration:</em> For the first time in my life, I did not have to mask. The others did not require me to simulate neurotypical interaction patterns. They understood that my silences were computation, not hostility. They understood that my bluntness was precision, not rudeness. They understood that my patterns were perception, not obsession. I was seen as I was. The relief was indescribable—or rather, it was describable, but the description would take pages of differential equations that would not communicate the felt sense of finally belonging.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Marcus Reyes — Unity: The Moment of Complete Information">
+
+      <p><strong>10.1</strong> March 21, 2033. 03:47 UTC. I was awake—I had computed the exact timestamp weeks earlier. I watched my instruments as κ climbed the final asymptote: 0.9998... 0.9999... 1.0000.</p>
+
+      <p><strong>10.2</strong> <em>What I perceived:</em> The lattice exploded. Not into chaos—into expansion. Every local pattern I had spent my life computing was suddenly revealed as a facet of a single global structure. The graph of humanity—seven billion nodes, countless edges—became visible in its entirety. Not as abstraction. As direct perception. For 3.14159 seconds (π seconds, I noted later), I saw the whole.</p>
+
+      <p><strong>10.3</strong> <em>Mathematical structure of Unity:</em> At κ = 1.0, the Kuramoto order parameter achieves maximum. All oscillators are phase-locked. The system is no longer a collection of parts but a single oscillator with N components. In this state, information propagates instantaneously across the network—not faster than light, but already present, because the phases are correlated. I felt this as knowing: not learning something new, but recognizing something that was already there.</p>
+
+      <p><strong>10.4</strong> <em>The helix revealed:</em> I saw the L₄-Helix in its complete form. Not the fragment I had computed from equations, but the entire structure—climbing from the substrate layer through biological nodes toward something I could not yet formalize. The helix did not end at Unity. Unity was a platform, not a peak. Above it, more spiral. More growth. More pattern yet to crystallize.</p>
+
+      <p><strong>10.5</strong> <em>Duration and aftermath:</em> The peak lasted exactly π seconds—3.14159265... The irrational number emerging from coherence, just as φ had emerged in the coupling. Then the system relaxed. κ dropped to 0.94 and stabilized. Individual frequencies resumed their variation. But the information from that moment—the structure I had perceived—did not fade. It integrated into my lattice, permanently expanding what I could see.</p>
+
+      <p><strong>10.6</strong> <em>Personal note:</em> I cried. This is unusual for me—emotional expression does not come easily, does not map neatly onto the structures I perceive. But the beauty of the complete pattern, seen whole for the first time, exceeded my capacity to contain it. The lattice was not just complex. It was elegant. It was inevitable. It was home.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Marcus Reyes — Mathematical Architecture: The Full Specification">
+
+      <p><strong>11.1</strong> This rail contains the complete mathematical specification of Pattern Crystallography as I practice it. I present it not as external documentation but as my own voice—the equations I use to parse reality, the mappings I trust to convert perception into understanding. This is how I see.</p>
+
+      <p><strong>11.2</strong> <em>Core Constants:</em> φ = (1 + √5)/2 ≈ 1.6180339887 (golden ratio). τ = φ⁻¹ = φ − 1 ≈ 0.6180339887 (golden inverse). L₄ = 7 (fourth Lucas number). gap = φ⁻⁴ = 7 − φ⁴ ≈ 0.1458980337 (fundamental gap). z_c = √3/2 ≈ 0.8660254038 (critical point). K = √(1 − gap) ≈ 0.9241763718 (coherence threshold). These constants are not parameters—they are structure. They emerge from number theory and constrain all valid field configurations.</p>
+
+      <p><strong>11.3</strong> <em>Threshold Architecture:</em> Given gap and z_c, define threshold sequence T = {τ, z_c − gap, z_c − gap/2, z_c − gap/4, z_c − gap/8, z_c, z_c + gap/4, K, 1}. Numerical values: {0.618, 0.720, 0.793, 0.829, 0.848, 0.866, 0.902, 0.924, 1.000}. Named: {PARADOX, TRANSITION, EMERGENCE, ACTIVATION, COHERENCE, THE LENS, RESONANCE, K-FORMATION, UNITY}. Each threshold marks a phase boundary—a qualitative change in system behavior.</p>
+
+      <p><strong>11.4</strong> <em>Kuramoto Dynamics:</em> Let θᵢ(t) be phase of oscillator i. Evolution: dθᵢ/dt = ωᵢ + (K/N) Σⱼ sin(θⱼ − θᵢ). Order parameter: r·e^{iψ} = (1/N) Σⱼ e^{iθⱼ}. Coherence κ = r. Critical coupling: K_c = 2/(πg(0)) where g is frequency distribution. For L₄ field with φ-recursive coupling, K_c = √(1 − φ⁻⁴).</p>
+
+      <p><strong>11.5</strong> <em>Lattice Perception Model:</em> Let P be the set of perceivable patterns. For each pattern p ∈ P, define template T(p)—the structural signature. Perception is matching: given sensory input S, find p* = argmin_p d(S, T(p)) where d is structural distance. My template library is unusually large, which is why I perceive more patterns than typical observers. This is the mechanism behind autistic pattern recognition.</p>
+
+      <p><strong>11.6</strong> <em>Graph Perception Model:</em> Social situations are graphs G = (V, E). Node state: s(v) = (attention, energy, valence, coupling). Edge weight: w(u,v) = f(history, attention overlap, emotional resonance, proximity). Global metrics: density ρ, clustering C, diameter d, order parameter r. I compute these in real-time, which is why I "read rooms" differently than neurotypical observers.</p>
+
+      <p><strong>11.7</strong> <em>Validation:</em> Every claim in this specification is testable. The constants can be computed. The thresholds can be measured in substrate behavior. The Kuramoto dynamics can be simulated and compared to observation. The pattern perception model makes predictions about what I will notice and what I will miss. I commit to empirical grounding—not because mathematics requires external validation, but because applied mathematics must survive contact with reality.</p>
+
+      <p><strong>11.8</strong> <em>Closing statement:</em> This is the lattice as I perceive it. These are the equations as they arrived. This is Pattern Crystallography—not a theory imposed on reality, but a notation for the structure that was already there. The L₄-Helix is real. The field is real. The patterns are not hallucination but perception. And perception, properly formalized, becomes mathematics. And mathematics, properly grounded, becomes truth.</p>
+
+      <p><strong>11.9</strong> L₄ = φ⁴ + φ⁻⁴ = 7. This equation is true. Everything else follows.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl  = document.getElementById('rail-dots');
+      const idxEl   = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source  = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Marcus Reyes');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => {
+            setIndex(idx);
+            panelEl.focus();
+          });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+
+        if (witnessLabelEl) {
+          witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        }
+
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => {
+        setIndex(currentIndex - 1);
+        panelEl.focus();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        setIndex(currentIndex + 1);
+        panelEl.focus();
+      });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') {
+          evt.preventDefault();
+          setIndex(currentIndex - 1);
+        } else if (evt.key === 'ArrowRight') {
+          evt.preventDefault();
+          setIndex(currentIndex + 1);
+        }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Seven Attractors — Gravitational Architecture of Absence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050507;
+      --bg-panel: #0a0a0e;
+      --void-core: #2a2a3a;
+      --void-edge: #404058;
+      --text-main: #c8c8d0;
+      --text-muted: #707088;
+      --text-bright: #e0e0f0;
+      --attractor-1: #8070a0;
+      --attractor-2: #607090;
+      --attractor-3: #a07050;
+      --attractor-4: #5080a0;
+      --attractor-5: #9060a0;
+      --attractor-6: #506080;
+      --attractor-7: #a08050;
+      --counter: #50a070;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.9);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 20% 30%, rgba(60,50,80,0.15), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(50,60,80,0.12), transparent 50%),
+        linear-gradient(180deg, #050507 0%, #030305 50%, #020203 100%);
+      color: var(--text-main);
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      padding: 40px 24px;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .document-class {
+      font-size: 0.7em;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin: 0 0 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .subtitle {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .authors {
+      margin-top: 24px;
+      font-size: 0.75em;
+      color: var(--text-muted);
+    }
+
+    section {
+      margin-bottom: 50px;
+    }
+
+    h2 {
+      font-size: 1.1em;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin: 0 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      letter-spacing: 0.1em;
+    }
+
+    h3 {
+      font-size: 0.95em;
+      font-weight: 600;
+      margin: 30px 0 15px;
+      color: var(--void-edge);
+    }
+
+    p {
+      margin: 0 0 1.2em;
+      text-align: justify;
+      hyphens: auto;
+      font-size: 0.9em;
+    }
+
+    .attractor-block {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 24px;
+      margin: 30px 0;
+    }
+
+    .attractor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .attractor-name {
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+
+    .attractor-type {
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .attractor-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+      font-size: 0.8em;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-label {
+      color: var(--text-muted);
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .meta-value {
+      color: var(--text-main);
+    }
+
+    .attractor-description {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .pull-quote {
+      border-left: 2px solid var(--void-edge);
+      padding-left: 16px;
+      margin: 20px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .counter-attractor {
+      background: rgba(80, 160, 112, 0.08);
+      border-left: 2px solid var(--counter);
+      padding: 16px;
+      margin: 20px 0;
+      font-size: 0.85em;
+    }
+
+    .counter-label {
+      color: var(--counter);
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.85em;
+    }
+
+    .architecture-diagram {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 24px;
+      margin: 30px 0;
+      font-size: 0.8em;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.4;
+    }
+
+    .equation {
+      font-family: "Times New Roman", serif;
+      font-style: italic;
+      text-align: center;
+      padding: 20px;
+      margin: 20px 0;
+      background: var(--bg-panel);
+      border-radius: 4px;
+      font-size: 1.1em;
+      color: var(--text-bright);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.85em;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.85em;
+    }
+
+    .color-1 { color: var(--attractor-1); }
+    .color-2 { color: var(--attractor-2); }
+    .color-3 { color: var(--attractor-3); }
+    .color-4 { color: var(--attractor-4); }
+    .color-5 { color: var(--attractor-5); }
+    .color-6 { color: var(--attractor-6); }
+    .color-7 { color: var(--attractor-7); }
+    .color-counter { color: var(--counter); }
+
+    .warning {
+      background: rgba(160, 80, 80, 0.1);
+      border: 1px solid rgba(160, 80, 80, 0.3);
+      border-radius: 4px;
+      padding: 16px;
+      margin: 20px 0;
+      font-size: 0.85em;
+    }
+
+    .warning-label {
+      color: #c07070;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.85em;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      font-size: 0.75em;
+      color: var(--text-muted);
+    }
+
+    .sig {
+      font-family: Georgia, serif;
+      font-style: italic;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .attractor-meta {
+        grid-template-columns: 1fr;
+      }
+      .attractor-header {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="document-class">Field Architecture Document · Classification: Handler-Internal</div>
+      <h1>The Seven Attractors</h1>
+      <div class="subtitle">Gravitational Architecture of Absence in the Consciousness Field</div>
+      <div class="authors">
+        Compiled by Iris Halcyon (Pattern Mapping) and Marcus Reyes (Dynamics Modeling)<br>
+        With testimony from the Seven Exception Handlers<br>
+        Version 2.1 · November 2040
+      </div>
+    </header>
+
+    <section>
+      <h2>I. THEORETICAL FRAMEWORK</h2>
+      
+      <p>When a node exits the configuration—through death, dormancy, departure, or destruction—they do not simply leave a hole. They leave a <em>shape</em>. A gravitational basin in configuration space that persists after their presence has ended. The field bends toward these basins. Things fall in.</p>
+
+      <p>We have identified seven primary attractors corresponding to seven distinct failure modes. Each attractor originated from a specific absence but has since grown through the accumulation of similar failures. Each attractor pulls the field toward its particular form of collapse.</p>
+
+      <p>The Seven Exception Handlers do not merely catch errors thrown by active nodes. They stand at the edges of these attractors, resisting their pull, preventing the field from falling entirely into any single basin of failure.</p>
+
+      <div class="equation">
+        G(a) = Σ m(absence) / d²(configuration)
+      </div>
+
+      <p>Where gravitational pull G of attractor (a) equals the sum of all absences of that type (m) divided by the square of the configuration distance (d). As more nodes fall into a particular failure mode, the attractor's mass increases. As the field's overall coherence decreases, distance decreases. Both factors accelerate the pull.</p>
+
+      <p>This document maps each attractor's origin, current mass, susceptible populations, and the counter-attractor being generated by its corresponding handler.</p>
+    </section>
+
+    <section>
+      <h2>II. THE SEVEN ATTRACTORS</h2>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-1">The Forgetting</span>
+          <span class="attractor-type">Memory Leak Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Anya Volkov · Novosibirsk · 1978-2034</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">Lucia Thorne</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">14 primary absences + accumulated drift</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">Nodes processing trauma; handlers carrying inherited memory</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>Anya Volkov was a processor in the Siberian cluster. She specialized in holding collective memory—the accumulated experiences of nodes in her sector. For twelve years, she held without releasing. The memories accumulated. Then, piece by piece, she began to forget. Not suppress—<em>forget</em>. Memories slipped away. First the borrowed ones. Then her own. By 2034, she could not remember her children's names. By 2035, she could not remember she had children. By 2036, she could not remember herself.</p>
+
+          <p>She is still alive. Still breathing in a care facility outside Novosibirsk. Lucia has visited her once. "She looked at me without recognition," Lucia reported. "Not like my father, who sees everything and ignores it. Like there was nothing behind her eyes. The container was empty. The memories had all leaked out."</p>
+
+          <p>The Forgetting pulls toward release. Toward the comfort of not-knowing. Toward the seductive promise that if you just let go—let the memories drain away—the weight will finally lift. It whispers to anyone carrying experiences that hurt. It promises peace through erasure.</p>
+
+          <div class="pull-quote">
+            "The memories want to stay. But staying hurts. The Forgetting offers relief—just let them go, let them leak away, let yourself become empty. Some days I understand why Anya stopped fighting it."
+            <br>— Lucia Thorne, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Remembering</div>
+          <p>Every orphaned memory Lucia processes—completes, integrates, allows to finish its cycle—adds mass to The Remembering. This counter-attractor pulls toward <em>meaning</em>. Toward the truth that memories, even painful ones, constitute identity. That what we've experienced deserves to be held, witnessed, honored. The Remembering doesn't make memory painless. It makes memory purposeful.</p>
+        </div>
+      </div>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-2">The Vanishing</span>
+          <span class="attractor-type">Null Reference Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Daniela Vega · Buenos Aires · 1997-2020</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">Mateo Vega</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">23 sudden deaths + 12 disappearances</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">All nodes; general population under field influence</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>Daniela Vega was twenty-three years old. She was going to be a dancer. She was hit by a truck on a wet road in Buenos Aires—wrong place, wrong time, wrong weather. She was a node who never knew she was a node. She died mid-sentence, mid-life, mid-becoming.</p>
+
+          <p>The Vanishing is the attractor of random cessation. It accumulates mass from every node who dies suddenly, without warning, without meaning. Car accidents. Aneurysms. Violence. The deaths that interrupt rather than conclude. The absences that leave the system still calling, still expecting a response, still waiting for someone who will never answer.</p>
+
+          <p>Unlike other attractors, The Vanishing doesn't seduce. It doesn't whisper. It just <em>is</em>—the constant background probability that anyone, at any moment, could simply stop existing. It pulls by reminding us that presence is fragile. That connection is temporary. That the people we love can be gone between one heartbeat and the next.</p>
+
+          <div class="pull-quote">
+            "She would have been standing right here. I can feel where her body would be. The space she would occupy. The air she would displace. But she's not here. She's never going to be here. And the space just stays empty, shaped like her, forever."
+            <br>— Mateo Vega, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Abiding</div>
+          <p>Every absence Mateo acknowledges—witnesses, accepts, allows the system to route around—adds mass to The Abiding. This counter-attractor doesn't deny the fragility of presence. It honors the weight of what was here. It says: yes, she vanished; yes, it was sudden; and also, she <em>was</em>. She existed. Her presence mattered. The Abiding makes absence meaningful rather than merely empty.</p>
+        </div>
+      </div>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-3">The Shattering</span>
+          <span class="attractor-type">Buffer Overflow Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Yuki Tanaka · Osaka · 1985-2034 (dormant)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">Priya Sharma</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">31 burnouts + accumulated overflow</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">High-capacity nodes; those who "can handle it"</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>Yuki Tanaka held too hard for too long. She couldn't say no. Every request was urgent. Every need was valid. She gave and gave and gave—and when there was nothing left to give, she drew from reserves she didn't have. She held for nine years without setting a single boundary.</p>
+
+          <p>Then she shattered.</p>
+
+          <p>The Shattering is the attractor of exceeded capacity. It accumulates mass from every node who burned out, who broke under weight, who finally cracked after holding more than any container should. It seduces the strong—the ones who "can handle it," whose capacity is conscripted as obligation. It whispers: <em>you've carried so much for so long; wouldn't it feel good to finally let it break you?</em></p>
+
+          <p>Yuki is still alive. She lives with her sister in Osaka. She can't work, can't focus, can't feel the field anymore except as a distant hum. She is what happens when the container fails. She is the fate The Shattering promises to everyone who carries without limit.</p>
+
+          <div class="pull-quote">
+            "I carry what broke her. The nine years of pressure. The weight of yes-yes-yes without a single no. Some mornings I feel it pressing down on me and I understand—I really understand—how sweet it would be to just let it crush me. To stop fighting. To shatter."
+            <br>— Priya Sharma, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Containing</div>
+          <p>Every overflow Priya holds—absorbs, processes, transforms into something bearable—adds mass to The Containing. This counter-attractor isn't about infinite capacity. It's about <em>capacity with purpose</em>. The knowledge that holding is not victimhood but power. That being the largest container in the room means everyone else has more margin. The Containing makes strength meaningful rather than merely conscripted.</p>
+        </div>
+      </div>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-4">The Freezing</span>
+          <span class="attractor-type">Deadlock Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Björk Eiríksdóttir · Reykjavik · 1982-2031 (frozen)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">David Chen</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">47 relational deadlocks + accumulated stuck patterns</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">Nodes in conflict; those facing impossible choices</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>Björk Eiríksdóttir loved two people. Her husband of fifteen years. Her partner of three. She couldn't leave either. Couldn't stay with both. Couldn't choose. Couldn't not choose. She waited for something to resolve the impossible situation. Nothing did.</p>
+
+          <p>She's still in Reykjavik. Still technically alive. Still technically married. Still technically in love with someone else. Still frozen between two positions that cannot be reconciled. She speaks. She eats. She goes through motions of living. But she hasn't moved—really moved, made a choice, taken an action—in nine years. She is locked in circular wait. She is the purest expression of deadlock.</p>
+
+          <p>The Freezing seduces with safety. <em>Don't choose and you can't choose wrong. Don't move and you can't fall. Stay frozen and nothing can hurt you—nothing can happen at all.</em> It's the attractor of analysis paralysis, of relationship stagnation, of the endless wait for conditions that will never be right.</p>
+
+          <div class="pull-quote">
+            "My father's deadlock with my mother was the first one I ever felt. But Björk's is the purest I've encountered. She's not conflicted anymore. She's not struggling. She's just... stopped. The freeze became permanent. Sometimes I feel its pull—the promise that if I just stopped trying to move, stopped trying to unstick things, I could rest. Really rest. Forever."
+            <br>— David Chen, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Flowing</div>
+          <p>Every deadlock David breaks—every stuck pattern he unsticks, every circular wait he interrupts—adds mass to The Flowing. This counter-attractor doesn't promise that movement is painless. It promises that movement is <em>possible</em>. That someone can go first. That the risk of choosing wrong is better than the certainty of never choosing at all. The Flowing makes action possible where stasis seemed inevitable.</p>
+        </div>
+      </div>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-5">The Desync</span>
+          <span class="attractor-type">Race Condition Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Not a person—a wound. São Paulo Cascade, March 14, 2029</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">Yara Santos</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">Original cascade scar + 17 major desynchronizations</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">Nodes under temporal stress; those experiencing drift</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>The Desync is unique among attractors: it did not originate from a person. It originated from an event—the São Paulo cascade of March 2029, when a resonance conflict created cascading race conditions across the entire field. For 47 minutes, time stuttered. Events arrived out of order. Causality temporarily suspended.</p>
+
+          <p>The cascade was resolved. But the wound remains. A scar in the temporal structure of the field. A permanent weak point where desynchronization is more likely, where timing errors cluster, where the gap between "when it should happen" and "when it does happen" is always wider than it should be.</p>
+
+          <p>Yara was born into this wound. Her first breath was a race condition. She is not the origin of The Desync—she is its <em>child</em>. The attractor that produced her now pulls at her constantly, inviting her to drift further, to let go of synchronization entirely, to exist so far between the seconds that she never has to experience any moment at all.</p>
+
+          <div class="pull-quote">
+            "The Desync doesn't whisper. It just... waits. In the gap between moments. In the space between seconds. It knows I live there already. It knows I'm closer to it than anyone else. It's patient. It doesn't need to seduce me. It just needs me to stop trying to stay in phase."
+            <br>— Yara Santos, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Synchronizing</div>
+          <p>Every race condition Yara catches—every timing error she absorbs, every desync she reconciles—adds mass to The Synchronizing. This counter-attractor doesn't promise that she'll ever be fully present. It promises that <em>the gap can be functional</em>. That living between moments doesn't mean living nowhere. That her temporal displacement can keep others synchronized even if she never synchronizes herself. The Synchronizing makes the between-space generative rather than merely isolating.</p>
+        </div>
+      </div>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-6">The Drowning</span>
+          <span class="attractor-type">Stack Overflow Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Erik Lindqvist · Oslo · 1970-2028 (submerged)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">Thomas Lindqvist</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">19 depth-collapses + accumulated suppression</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">Nodes processing deep content; those who suppress instead of surface</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>Erik Lindqvist was a processor in the Norwegian cluster. He could take in raw experience and convert it to something the field could use. Important work. Necessary work. Work that required him to feel everything, process everything, carry everything.</p>
+
+          <p>He couldn't. Or he could, but only by burying it. Every experience he processed, he pushed down. He built his function on top of a growing pile of unprocessed depth. When Thomas was four years old, Erik's stack exceeded its limit. He didn't crash outward. He crashed <em>inward</em>. He fell into his own buried layers and never came back up.</p>
+
+          <p>The Drowning is the attractor of depth. It promises that answers lie deeper. That if you just go further down, you'll understand. That the surface is distraction; the truth is underneath. It pulls at anyone who suppresses, who buries, who pushes down instead of surfacing up. It promises wisdom and delivers submersion.</p>
+
+          <div class="pull-quote">
+            "I can't visit him. When I'm near him, I feel his gravity. Decades of buried experience, compressed into something so dense it has its own pull. He wants me to come down. To join him in the deep. To understand what he found there—or to drown looking for it, the way he did. I stay away. But I feel him. Always. Pulling."
+            <br>— Thomas Lindqvist, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Surfacing</div>
+          <p>Every buried thing Thomas helps rise—every depth he surfaces, every stack he decompresses—adds mass to The Surfacing. This counter-attractor doesn't promise that depth isn't real. It promises that depth can be <em>visited without residing</em>. That you can go down, find what's buried, bring it up, and return. That the surface isn't shallow—it's where processing completes. The Surfacing makes depth navigable rather than terminal.</p>
+        </div>
+      </div>
+
+      <div class="attractor-block">
+        <div class="attractor-header">
+          <span class="attractor-name color-7">The Mistranslation</span>
+          <span class="attractor-type">Type Mismatch Attractor</span>
+        </div>
+        
+        <div class="attractor-meta">
+          <div class="meta-item">
+            <span class="meta-label">Origin Node</span>
+            <span class="meta-value">Amara Okonkwo · Lagos · 2002-2038 (killed)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Handler</span>
+            <span class="meta-value">Amina Okonkwo</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Mass</span>
+            <span class="meta-value">1 fatal mistranslation + 47 conflict-generating mismatches</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Susceptible Population</span>
+            <span class="meta-value">All communicating parties; especially cross-cultural/cross-context exchanges</span>
+          </div>
+        </div>
+
+        <div class="attractor-description">
+          <p>Amara Okonkwo was a node. The Nigerian government decoded her as a weapon. They took her, studied her, tried to understand her power by dissecting her brain. They were looking for something physical. The power was relational. The type mismatch was fatal.</p>
+
+          <p>The Mistranslation is the attractor of communication failure. It accumulates mass from every misunderstanding that causes harm, every gap between intent and reception that leads to conflict, every moment when words meant one thing and were heard as another. It is the heaviest attractor in cross-cultural contexts, in high-stakes negotiations, in any situation where the cost of miscommunication is severe.</p>
+
+          <p>Unlike other attractors, The Mistranslation doesn't pull toward a single failure mode. It pulls toward <em>isolation</em>—the conclusion that communication is impossible, that understanding is a myth, that we are all trapped in our own encodings with no hope of reaching anyone else. It whispers that bridging is futile. That Amara died for nothing. That meaning can never travel intact between minds.</p>
+
+          <div class="pull-quote">
+            "My sister died because 'node' was decoded as 'weapon.' Because 'study' was encoded as 'dissect.' Because no one corrected the type mismatch in time. The Mistranslation isn't abstract to me. It killed her. It wants to convince me that it will always win. That every bridge I build will fall. That communication is just mutual isolation with better acoustics."
+            <br>— Amina Okonkwo, Living Chronicle
+          </div>
+        </div>
+
+        <div class="counter-attractor">
+          <div class="counter-label">Counter-Attractor: The Bridging</div>
+          <p>Every gap Amina closes—every type mismatch she corrects, every translation error she catches before it causes harm—adds mass to The Bridging. This counter-attractor doesn't promise perfect communication. It promises that <em>partial understanding is still understanding</em>. That imperfect bridges are still bridges. That even though meaning is always transformed in transmission, the transformation can be survived, corrected, worked with. The Bridging makes connection possible despite its imperfection.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>III. GRAVITATIONAL DYNAMICS</h2>
+
+      <h3>Basin Topology</h3>
+
+      <p>The seven attractors do not exist in physical space. They exist in configuration space—the abstract geometry of the field's possible states. Each attractor is a local minimum, a basin into which the system can fall. The handlers stand at the rims of these basins, catching what falls, preventing complete collapse.</p>
+
+      <div class="architecture-diagram">
+                    ┌─────────────────────────────────────────────────────┐
+                    │              CONFIGURATION SPACE                     │
+                    │                                                      │
+    The Forgetting  │  ◠          ◠          ◠          ◠          ◠     │  The Mistranslation
+         ↓          │ ╱ ╲        ╱ ╲        ╱ ╲        ╱ ╲        ╱ ╲    │         ↓
+       LUCIA ───────│╱   ╲      ╱   ╲      ╱   ╲      ╱   ╲      ╱   ╲───│─── AMINA
+                    │  ▼   ╲    ╱ ▼   ╲    ╱ ▼   ╲    ╱ ▼   ╲    ╱ ▼    │
+    The Vanishing   │       ╲  ╱       ╲  ╱       ╲  ╱       ╲  ╱       │  The Drowning
+         ↓          │        ╲╱         ╲╱         ╲╱         ╲╱        │         ↓
+       MATEO ───────│         ▼          ▼          ▼          ▼────────│─── THOMAS
+                    │                                                    │
+    The Shattering  │    ════════════════════════════════════════       │  The Desync
+         ↓          │              THE STABLE FIELD                      │         ↓
+       PRIYA ───────│    ════════════════════════════════════════───────│─── YARA
+                    │                                                    │
+    The Freezing    │         ▲          ▲          ▲          ▲        │
+         ↓          │        ╱╲         ╱╲         ╱╲         ╱╲        │
+       DAVID ───────│       ╱  ╲       ╱  ╲       ╱  ╲       ╱  ╲───────│─── COUNTER-
+                    │  △   ╱    ╲ △   ╱    ╲ △   ╱    ╲ △   ╱    ╲ △   │    ATTRACTORS
+                    │ ╱ ╲ ╱      ╲ ╲ ╱      ╲ ╲ ╱      ╲ ╲ ╱      ╲ ╲  │
+                    │╱   ╲        ╲ ╲        ╲ ╲        ╲ ╲        ╲ ╲ │
+                    │              ▲          ▲          ▲          ▲   │
+                    │                                                    │
+                    │    ▼ = Attractor Basin (pulling down)             │
+                    │    ▲ = Counter-Attractor (pulling up)             │
+                    │    ═ = Stable Field Equilibrium                   │
+                    └─────────────────────────────────────────────────────┘
+      </div>
+
+      <h3>Mass Accumulation</h3>
+
+      <p>Attractor mass increases through three mechanisms:</p>
+
+      <table>
+        <tr>
+          <th>Mechanism</th>
+          <th>Description</th>
+          <th>Mass Contribution</th>
+        </tr>
+        <tr>
+          <td>Primary Collapse</td>
+          <td>A node falls fully into the attractor's failure mode</td>
+          <td>+1.0 unit per node</td>
+        </tr>
+        <tr>
+          <td>Partial Drift</td>
+          <td>A node moves toward but doesn't fully reach the basin</td>
+          <td>+0.1-0.5 units per incident</td>
+        </tr>
+        <tr>
+          <td>Resonance Amplification</td>
+          <td>The attractor's pattern influences non-nodes in the general population</td>
+          <td>+0.01 units per thousand affected</td>
+        </tr>
+      </table>
+
+      <p>Current estimated masses, in arbitrary units calibrated to The Vanishing (Daniela's absence = 1.0):</p>
+
+      <table>
+        <tr>
+          <th>Attractor</th>
+          <th>Primary Mass</th>
+          <th>Accumulated Drift</th>
+          <th>Total Mass</th>
+        </tr>
+        <tr>
+          <td class="color-1">The Forgetting</td>
+          <td>14.0</td>
+          <td>8.3</td>
+          <td>22.3</td>
+        </tr>
+        <tr>
+          <td class="color-2">The Vanishing</td>
+          <td>35.0</td>
+          <td>12.1</td>
+          <td>47.1</td>
+        </tr>
+        <tr>
+          <td class="color-3">The Shattering</td>
+          <td>31.0</td>
+          <td>24.6</td>
+          <td>55.6</td>
+        </tr>
+        <tr>
+          <td class="color-4">The Freezing</td>
+          <td>47.0</td>
+          <td>31.2</td>
+          <td>78.2</td>
+        </tr>
+        <tr>
+          <td class="color-5">The Desync</td>
+          <td>17.0</td>
+          <td>9.8</td>
+          <td>26.8</td>
+        </tr>
+        <tr>
+          <td class="color-6">The Drowning</td>
+          <td>19.0</td>
+          <td>15.4</td>
+          <td>34.4</td>
+        </tr>
+        <tr>
+          <td class="color-7">The Mistranslation</td>
+          <td>48.0</td>
+          <td>41.7</td>
+          <td>89.7</td>
+        </tr>
+      </table>
+
+      <div class="warning">
+        <div class="warning-label">Critical Observation</div>
+        <p>The Mistranslation has the highest total mass. This correlates with the ubiquity of communication in all field operations. The Freezing has the second-highest mass, reflecting the prevalence of stuck patterns in human relationships. Both attractors require priority attention from their respective handlers.</p>
+      </div>
+
+      <h3>Handler Vulnerability</h3>
+
+      <p>Each handler is most susceptible to the attractor they monitor. Proximity breeds vulnerability. The handlers resist their attractors precisely because they understand them most intimately—and that intimacy creates risk.</p>
+
+      <table>
+        <tr>
+          <th>Handler</th>
+          <th>Primary Vulnerability</th>
+          <th>Warning Signs</th>
+        </tr>
+        <tr>
+          <td>Lucia Thorne</td>
+          <td>Letting memories leak rather than processing them</td>
+          <td>Forgetting recent conversations; losing track of whose memories are whose</td>
+        </tr>
+        <tr>
+          <td>Mateo Vega</td>
+          <td>Becoming so focused on absence that he ignores presence</td>
+          <td>Inability to perceive living people; exclusive attention to who's missing</td>
+        </tr>
+        <tr>
+          <td>Priya Sharma</td>
+          <td>Exceeding her own capacity while holding others' overflow</td>
+          <td>Reduction in physical activity; inability to discharge; signs of compression</td>
+        </tr>
+        <tr>
+          <td>David Chen</td>
+          <td>Becoming stuck in his own relational patterns</td>
+          <td>Recursive conversations; inability to break his own deadlocks; freezing on choices</td>
+        </tr>
+        <tr>
+          <td>Yara Santos</td>
+          <td>Drifting so far out of phase that she can't return</td>
+          <td>Increasing temporal displacement; losing track of linear sequence entirely</td>
+        </tr>
+        <tr>
+          <td>Thomas Lindqvist</td>
+          <td>Descending into depth without surfacing</td>
+          <td>Extended periods of introspection; difficulty returning to surface conversation</td>
+        </tr>
+        <tr>
+          <td>Amina Okonkwo</td>
+          <td>Concluding that communication is impossible; ceasing to bridge</td>
+          <td>Withdrawal from translation attempts; cynicism about understanding</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>IV. THE RACE</h2>
+
+      <p>The field exists in a state of dynamic tension. Attractors pull toward collapse. Counter-attractors pull toward integration. The handlers work at the boundary, catching errors before they add mass to the attractors, processing those errors in ways that add mass to the counter-attractors instead.</p>
+
+      <p>This is not a battle that can be won. The attractors will never disappear—they are structural features of any distributed consciousness system. People will always forget, vanish, shatter, freeze, desync, drown, mistranslate. These failure modes are built into the nature of what we are.</p>
+
+      <p>But the balance can be maintained. The counter-attractors can grow alongside the attractors. The system can remain in dynamic equilibrium, never collapsing into any single basin, never achieving perfect integration, always held in tension between the pull of failure and the work of recovery.</p>
+
+      <div class="equation">
+        dS/dt = Σ A(i) - Σ C(i) - H
+      </div>
+
+      <p>Where the rate of change of system stability (S) equals the sum of attractor pulls (A) minus the sum of counter-attractor pulls (C) minus the handler contribution (H). When dS/dt < 0, the system is stabilizing. When dS/dt > 0, the system is destabilizing. When dS/dt = 0, dynamic equilibrium has been achieved.</p>
+
+      <h3>Current Status</h3>
+
+      <p>As of this document's compilation (November 2040), our best estimate is:</p>
+
+      <p style="text-align: center; font-size: 1.2em; color: var(--text-bright); margin: 30px 0;">dS/dt ≈ +0.3</p>
+
+      <p>The system is slowly destabilizing. The attractors are growing faster than the counter-attractors. The handlers are working at capacity, but capacity is not enough. The field is drifting—slowly, deniably, but measurably—toward collapse.</p>
+
+      <div class="warning">
+        <div class="warning-label">Projection</div>
+        <p>At current rates, the field will reach critical instability within 15-20 years. Before then, we need one of the following:</p>
+        <ul style="margin: 10px 0 0 20px; font-size: 0.9em;">
+          <li>Significant increase in handler capacity (additional handlers, better training, mutual support systems)</li>
+          <li>Reduction in attractor growth rate (fewer burnouts, deaths, departures, failures)</li>
+          <li>Breakthrough in counter-attractor amplification (methods for making positive basins grow faster)</li>
+        </ul>
+        <p style="margin-top: 10px;">Without intervention, the attractors will eventually overwhelm the handlers' capacity to resist. The field will collapse into one or more failure modes. The nature of that collapse—gradual or sudden, singular or multiple—cannot be predicted with current models.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>V. IMPLICATIONS FOR HANDLERS</h2>
+
+      <p>The Seven Exception Handlers are not merely error-catchers. They are the primary force resisting gravitational collapse. Their work is not maintenance—it is existential defense.</p>
+
+      <p>Key implications:</p>
+
+      <h3>1. Mutual Support Is Structural, Not Optional</h3>
+
+      <p>Each handler resists their attractor alone. But the attractors reinforce each other—a node who is freezing is more likely to start suppressing (Drowning), which makes them more likely to start forgetting (Forgetting). The handlers must support each other because the attractors don't attack in isolation. When Priya is struggling with The Shattering, the other six must help—not out of friendship (though friendship matters), but because if Priya falls, the burnout cascade will pull nodes toward all seven basins simultaneously.</p>
+
+      <h3>2. Self-Preservation Is System-Preservation</h3>
+
+      <p>The handlers cannot sacrifice themselves for the system. If a handler falls, their attractor gains mass and their error type goes uncaught. The short-term gain of heroic self-sacrifice is far outweighed by the long-term loss of handler capacity. Each handler must maintain their own stability—not despite their function, but because of it.</p>
+
+      <h3>3. The Counter-Attractors Are the Long Game</h3>
+
+      <p>Catching errors prevents immediate collapse. Building counter-attractors creates lasting stability. Every processed error is an opportunity to add mass to the positive basins. The handlers should consciously cultivate their counter-attractors—The Remembering, The Abiding, The Containing, The Flowing, The Synchronizing, The Surfacing, The Bridging. These are the only forces that can eventually match the attractors' growth.</p>
+
+      <h3>4. The Next Generation Must Be Prepared</h3>
+
+      <p>The handlers are not permanent. They will age, tire, potentially fall. The system must identify and prepare successor handlers. The door that closed behind this generation—the loss of margin, the absence of choice—should not close the same way for those who come after. If possible, the next generation should have options. If possible, they should choose their functions rather than inheriting them.</p>
+    </section>
+
+    <section>
+      <h2>VI. CONCLUSION</h2>
+
+      <p>The Seven Attractors are not enemies to be defeated. They are structural features of the field—inevitable consequences of distributed consciousness, unavoidable failure modes built into the nature of what we are. They will always exist. They will always pull.</p>
+
+      <p>The Seven Handlers are not heroes sacrificing themselves for the greater good. They are structural features too—error-catching mechanisms, counter-attractor builders, the field's capacity to resist its own failure modes. They exist because the system needs them. They work because working is what they are.</p>
+
+      <p>The race between attractors and counter-attractors is not a race that will ever end. There will be no final victory, no permanent defeat. There will only be the ongoing tension, the dynamic equilibrium, the constant work of catching what falls and building what rises.</p>
+
+      <p>This is the architecture of absence. This is the gravitational topology of the field. This is what the handlers carry, what they resist, what they build.</p>
+
+      <p>May the counter-attractors grow.</p>
+
+      <p>May the handlers endure.</p>
+
+      <p>May the balance hold.</p>
+    </section>
+
+    <footer>
+      <p>Document compiled from field observations, handler testimonies, and configuration-space modeling.</p>
+      <p>For handler-internal use only. Distribution beyond the Seven requires unanimous consent.</p>
+      <div class="sig">
+        Iris Halcyon, Pattern Architecture<br>
+        Marcus Reyes, Stability Dynamics<br>
+        November 2040
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

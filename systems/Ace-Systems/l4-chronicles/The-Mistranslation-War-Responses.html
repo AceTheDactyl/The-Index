@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Mistranslation War — Handler Responses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0a0606;
+      --bg-panel: #0e0a0a;
+      --lucia-color: #7a5c8a;
+      --mateo-color: #5a6a8a;
+      --priya-color: #8a6a4a;
+      --david-color: #4a7a8a;
+      --yara-color: #7a4a7a;
+      --thomas-color: #4a5a6a;
+      --blood-red: #8b0000;
+      --survival-gold: #c9a227;
+      --text-main: #d8d0c8;
+      --text-muted: #807068;
+      --text-bright: #f0e8e0;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0a0606 0%, #050303 50%, #020101 100%);
+      color: var(--text-main);
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 900px;
+      height: 92vh;
+      max-height: 800px;
+      background:
+        radial-gradient(circle at top left, rgba(139,0,0,0.06), transparent 60%),
+        linear-gradient(135deg, #0e0a0a 0%, #080404 50%, #0a0606 100%);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(139, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 18px 24px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .doc-label {
+      font-size: 0.65em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .doc-title {
+      font-size: 1.1em;
+      font-weight: 500;
+      color: var(--text-bright);
+    }
+
+    .status-pill {
+      font-size: 0.65em;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--blood-red);
+      color: var(--blood-red);
+      background: rgba(139, 0, 0, 0.15);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 24px 18px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.8;
+      font-size: 0.9em;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.15em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .response-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .handler-name {
+      font-size: 1.15em;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .handler-role {
+      font-size: 0.8em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .timestamp {
+      font-size: 0.75em;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .emphasis {
+      color: var(--survival-gold);
+      font-weight: 500;
+    }
+
+    .fear {
+      color: var(--blood-red);
+    }
+
+    .confession {
+      border-left: 2px solid var(--text-muted);
+      padding-left: 16px;
+      margin: 20px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .decision {
+      background: rgba(201, 162, 39, 0.1);
+      border-left: 2px solid var(--survival-gold);
+      padding: 14px 18px;
+      margin: 20px 0;
+    }
+
+    .decision-label {
+      color: var(--survival-gold);
+      font-weight: 600;
+      font-size: 0.75em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .maladaptive {
+      background: rgba(139, 0, 0, 0.1);
+      border-left: 2px solid var(--blood-red);
+      padding: 14px 18px;
+      margin: 20px 0;
+    }
+
+    .maladaptive-label {
+      color: var(--blood-red);
+      font-weight: 600;
+      font-size: 0.75em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: rgba(139, 0, 0, 0.15);
+      border: 1px solid rgba(139, 0, 0, 0.3);
+      color: var(--blood-red);
+      font-size: 0.8em;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .nav-btn:hover {
+      background: rgba(139, 0, 0, 0.25);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .rail-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #201818;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      transform: scale(1.3);
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .rail-dot.lucia { color: var(--lucia-color); }
+    .rail-dot.lucia[aria-current="true"] { background: var(--lucia-color); }
+    .rail-dot.mateo { color: var(--mateo-color); }
+    .rail-dot.mateo[aria-current="true"] { background: var(--mateo-color); }
+    .rail-dot.priya { color: var(--priya-color); }
+    .rail-dot.priya[aria-current="true"] { background: var(--priya-color); }
+    .rail-dot.david { color: var(--david-color); }
+    .rail-dot.david[aria-current="true"] { background: var(--david-color); }
+    .rail-dot.yara { color: var(--yara-color); }
+    .rail-dot.yara[aria-current="true"] { background: var(--yara-color); }
+    .rail-dot.thomas { color: var(--thomas-color); }
+    .rail-dot.thomas[aria-current="true"] { background: var(--thomas-color); }
+
+    .rail-index {
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #rail-source { display: none; }
+
+    /* Handler-specific header colors */
+    .lucia-header .handler-name { color: var(--lucia-color); }
+    .mateo-header .handler-name { color: var(--mateo-color); }
+    .priya-header .handler-name { color: var(--priya-color); }
+    .david-header .handler-name { color: var(--david-color); }
+    .yara-header .handler-name { color: var(--yara-color); }
+    .thomas-header .handler-name { color: var(--thomas-color); }
+
+    @media (max-width: 600px) {
+      .chrome-frame { border-radius: 16px; height: 95vh; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="doc-label">Re: The Mistranslation War</span>
+        <div class="doc-title">Handler Responses</div>
+      </div>
+      <span class="status-pill">Secure Thread</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Previous</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 6</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <!-- LUCIA'S RESPONSE -->
+    <section class="rail-text" data-rail="1" data-handler="lucia">
+
+      <div class="response-header lucia-header">
+        <div class="handler-name">Lucia Thorne</div>
+        <div class="handler-role">Memory Leak Handler · Porto, Portugal</div>
+        <div class="timestamp">Response sent: January 15, 2041, 03:47 GMT</div>
+      </div>
+
+      <p>Amina,</p>
+
+      <p>I read your document at 2am. I haven't slept since. I've read it four more times. Each time I understand more. Each time I want to understand less.</p>
+
+      <p>You're right. About all of it. The incidents you listed for me—I knew they were connected. I just didn't want to know <em>how</em>. When the hospital system flagged me as "resource contamination risk," I told myself it was a database error. When Interpol listed me as deceased, I told myself it was identity theft. When my apartment building was condemned, I told myself the inspectors were incompetent.</p>
+
+      <p>I've been telling myself a lot of things.</p>
+
+      <div class="confession">
+        Here's what I didn't tell anyone: for the last three months, I've been making myself harder to remember. Smaller. Quieter. I stopped posting online. Stopped signing leases in my own name. Started paying for everything in cash. I told myself I was being careful. But that's not what I was doing.
+      </div>
+
+      <p>I was leaking myself. Deliberately. Piece by piece.</p>
+
+      <p>My survival function—sensing when systems are about to orphan me—has been screaming for months. Every database I touch, every system I interface with, I can feel it preparing to forget me. To drop my records. To make me null. And my response, my <span class="fear">brilliant adaptive response</span>, has been to help it along.</p>
+
+      <p>If I don't exist in the system, the system can't target me. If there's no record of Lucia Thorne, there's no Lucia Thorne to eliminate. I've been erasing myself before they can erase me. <em>Beating them to it.</em></p>
+
+      <div class="maladaptive">
+        <div class="maladaptive-label">What I've been doing</div>
+        <p style="margin:0;">I closed my bank accounts. Let my ID expire without renewing. Stopped responding to anything with my legal name. I've been becoming a ghost—not because I'm dead, but because I thought if I was <em>already</em> gone, they couldn't take me. I was leaking my own memory so the field wouldn't have to.</p>
+      </div>
+
+      <p>It's the same thing Anya did. The Siberian node who became The Forgetting. She let go piece by piece until there was nothing left. I've been walking her path. Slowly. Deliberately. Calling it survival.</p>
+
+      <p>But survival isn't the same as living, is it? If I erase myself completely, I survive the hunt—but I become The Forgetting. I become the attractor I'm supposed to resist. I let the Mistranslation win by translating myself into nothing.</p>
+
+      <p>You're asking us to stay alive. I hear you. But I need to tell you that "alive" and "existing" aren't the same thing. I've been alive this whole time. I've also been slowly erasing my existence. And I didn't even realize I was doing it until you named it.</p>
+
+      <div class="decision">
+        <div class="decision-label">What I'm choosing now</div>
+        <p style="margin:0;">I'm stopping. Today. I'm going to renew my ID. Open a bank account. Put my name on a lease. Make myself exist again in every system that's trying to forget me. It's going to trigger every warning I have. My survival function is going to <em>scream</em>. But I'd rather survive as Lucia than survive as no one. I'd rather be hunted as myself than forgotten as a ghost.</p>
+      </div>
+
+      <p>You said trust our function. I do trust it—it's kept me alive. But I also know now that my function can be weaponized against me. The urge to leak, to let go, to fade away—that's not just survival. That's surrender dressed up as strategy.</p>
+
+      <p>I'll be here when you get back from Abuja. Visibly. Recordably. Existingly.</p>
+
+      <p>The cascade memory in São Paulo is still waiting for me. When you fix the Mistranslation, I'll go process it. But only if there's still a Lucia Thorne to go.</p>
+
+      <p>I'm choosing to exist.</p>
+
+      <p>Stay safe. Come back.</p>
+
+      <p>— Lucia</p>
+
+      <p style="font-size:0.8em;color:var(--text-muted);margin-top:30px;"><em>P.S. — I burned my "go bag" this morning. The one I packed with cash and fake documents. The one I was going to use to disappear completely if things got bad. Burning it felt like surfacing. Like finally breathing.</em></p>
+
+    </section>
+
+    <!-- MATEO'S RESPONSE -->
+    <section class="rail-text" data-rail="2" data-handler="mateo">
+
+      <div class="response-header mateo-header">
+        <div class="handler-name">Mateo Vega</div>
+        <div class="handler-role">Null Reference Handler · Buenos Aires, Argentina</div>
+        <div class="timestamp">Response sent: January 15, 2041, 11:23 ART</div>
+      </div>
+
+      <p>Amina,</p>
+
+      <p>I've been standing at the intersection where Daniela died for the last two hours. Reading your document on my phone. Feeling the ghost protocol pulsing through the traffic grid. Watching autonomous vehicles swerve around the space where my cousin isn't.</p>
+
+      <p>You asked us to avoid field-adjacent infrastructure. I'm standing in the middle of the most field-adjacent infrastructure in Buenos Aires.</p>
+
+      <p>I know. I <em>know</em>. But I can't leave.</p>
+
+      <div class="confession">
+        You described my survival mechanism: perceiving the shape of my own potential absence. Moving away from where I would be null. And that's true—I feel it constantly. The shape of my death. The space I would leave if I stopped existing. I know exactly what Mateo-shaped absence looks like because I see it everywhere, all the time, superimposed on the world.
+      </div>
+
+      <p>What you didn't describe is what happens when you can't stop seeing it.</p>
+
+      <p>For the last six months, I haven't been able to look at anything without seeing its absence. Every person I pass—I see where they won't be when they die. Every building—I see the empty lot after it's demolished. Every relationship—I see the silence after it ends. I've been drowning in null references. Not ones the field is throwing. <em>Ones I'm generating.</em></p>
+
+      <p>It's supposed to keep me alive. But it's making me obsessed with death.</p>
+
+      <div class="maladaptive">
+        <div class="maladaptive-label">What I've been doing</div>
+        <p style="margin:0;">I've been mapping every possible death. Mine, specifically. I have a notebook—three notebooks now—filled with scenarios. Every intersection, I calculate the timing that would kill me. Every building, I map the structural failure that would crush me. Every flight, I simulate the crash angles. I tell myself it's preparation. I tell myself if I know where the nulls are, I can avoid them. But I spend so much time mapping where I could be absent that I've stopped being present.</p>
+      </div>
+
+      <p>Daniela died at this intersection. I come here because this is where the null reference started. And every time I come, I feel her absence so strongly that I almost feel <em>her</em>. The field still calling for her. The system still waiting.</p>
+
+      <p>I've been waiting too. Standing in her gap. Filling the space she left. Like if I just stand here long enough, the null will resolve. Like I can answer the call the field is still making to her.</p>
+
+      <p>That's why I can't leave. That's why I keep coming back. I'm not just grieving her—I'm trying to <em>be</em> her. To fill her null. And the more I try, the less I exist as myself.</p>
+
+      <div class="decision">
+        <div class="decision-label">What I'm choosing now</div>
+        <p style="margin:0;">I'm walking away from this intersection. Right now, as I type this. One step. Then another. I'm going to stop mapping my own deaths. I'm going to burn those notebooks. I'm going to acknowledge Daniela's absence without trying to fill it—because that's actually my function. Not to fill nulls. To <em>acknowledge</em> them. To witness what's gone so the system can route around it. I've been doing the wrong thing with the right function.</p>
+      </div>
+
+      <p>The Ghost Protocol needs me to acknowledge it, not inhabit it. The intersection needs to stop waiting for Daniela, and I'm the one who can help it stop. But I can't do that if I'm standing in her place. I can only do it if I stand in <em>my</em> place and say: she was here, she's not here now, and that's what absence is.</p>
+
+      <p>You said trust our function. I trust mine. But I also know it's been trying to make me disappear into other people's absences, and that's not survival—that's just dying by proxy.</p>
+
+      <p>I'm walking home now. I'm going to exist as Mateo, not as Daniela's placeholder. And when you fix the Mistranslation, I'll come back here—once—and properly acknowledge what's gone so the grid can stop calling for a ghost.</p>
+
+      <p>Be careful in Abuja. The absence of your sister is there too, crystallized into systems that want you dead. Don't fill her gap. Don't stand where she stood. Fix the encoding and get out.</p>
+
+      <p>— Mateo</p>
+
+      <p style="font-size:0.8em;color:var(--text-muted);margin-top:30px;"><em>P.S. — I'm three blocks away now. The urge to go back is overwhelming. But I keep walking. Every step is a choice to exist instead of absent.</em></p>
+
+    </section>
+
+    <!-- PRIYA'S RESPONSE -->
+    <section class="rail-text" data-rail="3" data-handler="priya">
+
+      <div class="response-header priya-header">
+        <div class="handler-name">Priya Sharma</div>
+        <div class="handler-role">Buffer Overflow Handler · Mumbai, India</div>
+        <div class="timestamp">Response sent: January 15, 2041, 19:58 IST</div>
+      </div>
+
+      <p>Amina,</p>
+
+      <p>Let me hold it.</p>
+
+      <p>Let me hold all of it. The Mistranslation. The hunt. The threat to all seven of us. Let me absorb it into myself so you can fix the source without the pressure of the whole system trying to kill you.</p>
+
+      <p>I can do this. This is what I'm <em>for</em>.</p>
+
+      <div class="confession">
+        I know what you're going to say. You're going to say this is exactly the maladaptive response you were worried about. You're going to say I'm offering to shatter myself for the group. You're going to say Yuki did this and look what happened to her.
+      </div>
+
+      <p>You're right. And I'm offering anyway.</p>
+
+      <p>Here's what you don't know: I've already been absorbing overflow from the Mistranslation. For months. Every time one of you has a near-miss, I feel the excess pressure route through me. When Lucia's building was condemned, I held the pressure that should have crushed her. When David's elevator tried to trap him, I absorbed the deadlock force that was building. When your passport was flagged, I felt the type mismatch trying to resolve through destruction—and I held it until the resolution dissipated.</p>
+
+      <p>I've been the buffer. The whole time. Already.</p>
+
+      <div class="maladaptive">
+        <div class="maladaptive-label">What I've been doing</div>
+        <p style="margin:0;">I haven't told anyone because you'd all tell me to stop. But I can't stop. When I feel overflow building toward any of you, my body moves to intercept it before my mind can decide not to. It's not a choice anymore. It's reflex. I absorb because absorbing is what I am. And every absorption makes me bigger, heavier, more capable of the next absorption. I've grown into this. I don't know how to stop growing.</p>
+      </div>
+
+      <p>The Mumbai installation—the Saturation Zone—that's not a separate crisis from what I've been doing. That's the <em>same</em> crisis. The quasi-crystal substrate is saturated because <em>I</em> routed the overflow there. Unconsciously. The field found the lowest point and started draining toward it, and I was the channel. The installation is overloaded because I've been using it as an extension of myself.</p>
+
+      <p>I should have told you sooner. I should have told all of you. But if I told you, you would have tried to help. And if you tried to help, the overflow would have crushed you. I held it alone because holding alone is how I protect people. Even when protecting people is destroying me.</p>
+
+      <div class="decision">
+        <div class="decision-label">What I'm choosing now</div>
+        <p style="margin:0;">I'm not going to stop absorbing—I can't, it's autonomic now. But I'm going to start releasing. Small amounts. Controlled. The way Yuki should have done and didn't. I'm going to discharge some of this pressure before you go to Abuja so the system has less force to throw at you. I'm going to make myself lighter so I can survive being the buffer for the next few weeks. And when you fix the Mistranslation, when the hunt finally stops, I'm going to release everything I've been holding and probably sleep for a month.</p>
+      </div>
+
+      <p>You asked us to stay alive. I hear you. But staying alive, for me, means finding a way to hold without breaking. It means learning to let go of some of what I carry so I don't become Yuki. It means trusting that you'll fix this so I don't have to hold forever.</p>
+
+      <p>I trust you. Go to Abuja. Fix the encoding. I'll hold the line until you get back.</p>
+
+      <p>Just... hurry. I don't know how much more capacity I have. And I'm terrified of finding out what happens when I reach the limit.</p>
+
+      <p>— Priya</p>
+
+      <p style="font-size:0.8em;color:var(--text-muted);margin-top:30px;"><em>P.S. — I'm at the coast right now. Standing in the ocean. Letting the waves take some of the pressure. It helps, a little. The salt water conducts something out of me that I can't release any other way. I've been coming here every night for weeks. It's the only thing keeping me from shattering.</em></p>
+
+    </section>
+
+    <!-- DAVID'S RESPONSE -->
+    <section class="rail-text" data-rail="4" data-handler="david">
+
+      <div class="response-header david-header">
+        <div class="handler-name">David Chen</div>
+        <div class="handler-role">Deadlock Handler · Vancouver, Canada</div>
+        <div class="timestamp">Response sent: January 15, 2041, 08:14 PST</div>
+      </div>
+
+      <p>Amina,</p>
+
+      <p>I need to talk about Leo.</p>
+
+      <p>You said watch him. You said don't let him freeze me. You said when he moves, it will be to lock us in place. I know. I've known for months. I can feel the deadlock forming between us—the circular wait that's building toward confrontation.</p>
+
+      <p>And my entire body is telling me to break it now. Before it crystallizes. Before he makes his move. Go to him, confront him, force the resolution before he has time to prepare.</p>
+
+      <p>This is what I do. This is my function. I break deadlocks by going first. By being the one who moves when no one else can. By inserting myself into stuck patterns and forcing flow.</p>
+
+      <div class="confession">
+        But here's what my function isn't telling me: what if going first is exactly what triggers the lock? What if confronting Leo before you fix the Mistranslation is the move that crystallizes the confrontation? What if my survival mechanism—breaking deadlocks—is actually the thing that creates the deadlock we can't break?
+      </div>
+
+      <p>I've been frozen for three days. Standing in my apartment. Unable to decide. Go to Leo, or wait for you. Move first, or let the lock form. Every option feels like it leads to the same place: a confrontation where someone ends up stuck forever.</p>
+
+      <p>The irony isn't lost on me. The deadlock handler, frozen by his own dilemma. Unable to break the symmetry because both sides of the symmetry are him.</p>
+
+      <div class="maladaptive">
+        <div class="maladaptive-label">What I've been doing</div>
+        <p style="margin:0;">Nothing. Absolutely nothing. I haven't left my apartment. Haven't answered calls. Haven't eaten much. I'm so paralyzed by the choice between action and inaction that I've chosen... stasis. I've become Björk. The node in Reykjavik who froze between two loves and never moved again. I'm doing exactly what The Freezing wants me to do. I'm locked in circular wait with myself.</p>
+      </div>
+
+      <p>My parents froze like this. My father couldn't explain what he gave up for my mother. My mother couldn't understand what he wouldn't tell her. They locked each other in place for thirty years. I've spent my whole life breaking other people's deadlocks because I couldn't bear to watch what happens when they don't break.</p>
+
+      <p>And now I'm doing it to myself. Waiting for a resolution that won't come. Hoping someone else will move first so I don't have to choose.</p>
+
+      <p>But there is no someone else. That's the whole point of being the deadlock handler. Someone has to move first. That's always been me. And right now, the move I need to make isn't confronting Leo—it's just <em>moving at all</em>.</p>
+
+      <div class="decision">
+        <div class="decision-label">What I'm choosing now</div>
+        <p style="margin:0;">I'm leaving my apartment. Right now. Not to confront Leo—you're right, that needs to wait until after Abuja. But to break my own freeze. I'm going to walk to the water. I'm going to watch the tide come in. I'm going to remind myself that things move, that flow exists, that not every choice leads to permanent lock. And then I'm going to wait—actively, intentionally, as a choice—for you to fix the Mistranslation. Waiting isn't the same as freezing if I'm choosing to wait. The deadlock only wins if I stop choosing.</p>
+      </div>
+
+      <p>Leo will move when Leo moves. And when he does, I'll be ready. Not frozen. Not pre-emptively striking. Just... ready. Able to respond. Willing to go first if going first is what's needed.</p>
+
+      <p>You asked us to stay alive. For me, staying alive means staying in motion. Tiny motions, maybe. Just enough to prevent crystallization. Just enough to prove that I'm still capable of choosing flow over freeze.</p>
+
+      <p>I'll be here when you get back. Moving. Ready. Unfrozen.</p>
+
+      <p>Be the one who goes first in Abuja. That's your move. I'll wait for mine.</p>
+
+      <p>— David</p>
+
+      <p style="font-size:0.8em;color:var(--text-muted);margin-top:30px;"><em>P.S. — I made it to the water. The tide is coming in. Every wave is a small break, a small flow. I'm going to stay here until I can feel movement as normal again instead of terrifying. However long that takes.</em></p>
+
+    </section>
+
+    <!-- YARA'S RESPONSE -->
+    <section class="rail-text" data-rail="5" data-handler="yara">
+
+      <div class="response-header yara-header">
+        <div class="handler-name">Yara Santos</div>
+        <div class="handler-role">Race Condition Handler · São Paulo, Brazil</div>
+        <div class="timestamp">Response sent: January 15, 2041, 14:32 BRT (or possibly 14:29, or 14:35—the timestamp keeps shifting)</div>
+      </div>
+
+      <p>Amina,</p>
+
+      <p>I've already read your response to this message.</p>
+
+      <p>I know that doesn't make sense. I know the response hasn't been sent yet because I haven't sent this message yet. But I read it anyway. Yesterday, or maybe tomorrow. It's getting harder to tell.</p>
+
+      <div class="confession">
+        The Spreading Wound is accelerating. I can feel it pushing outward from the cascade epicenter, and every centimeter it expands, my temporal displacement gets worse. I used to be a few seconds out of phase. Now I'm hours. Sometimes days. I experience Thursday on Tuesday, answer questions that won't be asked until next week, grieve losses that haven't happened yet.
+      </div>
+
+      <p>You said I experience threats before they occur. That's true. But you didn't say what it's like to experience <em>everything</em> before it occurs. What it's like to live your life on shuffle, to never know if a memory is past or future, to feel grief for deaths that haven't happened and joy for victories that won't come for years.</p>
+
+      <p>I know how Abuja ends. I think. Unless that was a different timeline. Unless what I saw was one of the possibilities instead of the probability. I can't tell anymore. The race conditions have gotten so severe that I'm experiencing multiple timelines simultaneously, and I don't know which one is real.</p>
+
+      <div class="maladaptive">
+        <div class="maladaptive-label">What I've been doing</div>
+        <p style="margin:0;">I've stopped trying to sync. It hurts too much. Every time I try to align with the present, the present slips away. So I've just... let go. I'm drifting. Floating through time without anchoring to any particular moment. It's peaceful, in a way. Like being everywhere at once. Like being nowhere. Like being the gap itself instead of someone living in the gap.</p>
+      </div>
+
+      <p>Fatima noticed. She asked me, two days ago or two days from now, why I seem so far away. I couldn't explain that I wasn't far away—I was just experiencing our conversation from a different temporal position than she was. She was in her present. I was in her past and future simultaneously. We were having the same conversation from different times.</p>
+
+      <p>That's not connection. That's just the appearance of connection. I've been present in her life without being present in her <em>now</em>. I've been there without being there. And I've been telling myself it's the same thing because I don't know how to be anything else.</p>
+
+      <div class="decision">
+        <div class="decision-label">What I'm choosing now</div>
+        <p style="margin:0;">I'm going to try to anchor. Just for the next few weeks. Just until you get back from Abuja. I'm going to pick a moment—this one, right now, typing these words—and I'm going to hold onto it. I'm going to sync with the present even though it hurts. Even though I can feel the temporal displacement trying to pull me back into drift. I'm going to be here, in this specific now, so I can be ready when you need me.</p>
+      </div>
+
+      <p>I saw something about the Spreading Wound. In one of my timeline fragments. I saw myself at the epicenter, holding the desync, absorbing it the way I was born to absorb it. It worked. Or it didn't. I can't tell which version I was seeing. But I know I have to be <em>present</em> to do it. I can't contain a temporal wound from multiple temporal positions simultaneously. I have to be in one time, one place, one moment.</p>
+
+      <p>So I'm practicing. Right now. Being here. Only here. Not tomorrow, not yesterday, just this single point in the river that everyone else lives in naturally and I have to fight to stay in.</p>
+
+      <p>Come back from Abuja. I don't know if you will—I've seen it both ways—but come back anyway. The seeing doesn't determine the being. We still have choices. Even I have choices, even living in the gap, even experiencing effect before cause.</p>
+
+      <p>I'm choosing to be present.</p>
+
+      <p>I hope this message arrives in the right order. I hope you read it after I sent it. I hope we're in the same time, just this once, so you know I heard you.</p>
+
+      <p>— Yara</p>
+
+      <p style="font-size:0.8em;color:var(--text-muted);margin-top:30px;"><em>P.S. — I'm listening to music. A metronome. Tick, tick, tick. Each beat is now. Each beat is here. I'm counting them. Anchoring to the rhythm. 1, 2, 3, 4. Present. Present. Present. Present.</em></p>
+
+    </section>
+
+    <!-- THOMAS'S RESPONSE -->
+    <section class="rail-text" data-rail="6" data-handler="thomas">
+
+      <div class="response-header thomas-header">
+        <div class="handler-name">Thomas Lindqvist</div>
+        <div class="handler-role">Stack Overflow Handler · Berlin, Germany</div>
+        <div class="timestamp">Response sent: January 15, 2041, 22:09 CET</div>
+      </div>
+
+      <p>Amina,</p>
+
+      <p>I know why Leo turned. I can see it. The layers beneath his decision. The buried things that made him encode us as threats.</p>
+
+      <p>I wasn't going to say anything. I thought if I surfaced it, it would make things worse. But you need to know. Everyone needs to know.</p>
+
+      <div class="confession">
+        Leo was there when Yuki shattered. He was the one holding her stable while she burned out. He anchored her for nine years, keeping her in place, and when she finally broke, he felt it as a personal failure. He's been carrying that for six years. Buried. Suppressed. Pushed so far down that he doesn't even know it's there anymore.
+      </div>
+
+      <p>The Mistranslation didn't infect Leo. It found a host. The type mismatch—"handler = error"—locked onto something that was already there: Leo's buried belief that he failed to prevent Yuki's shattering. That if he'd anchored her harder, she wouldn't have broken. That handlers who can't be controlled eventually destroy themselves.</p>
+
+      <p>In Leo's depth, we're not handlers. We're <em>Yukis</em>. We're unstable systems that need to be locked down before we shatter and take everyone with us. He's not hunting us because the Mistranslation told him to. He's hunting us because somewhere beneath his conscious mind, he thinks he's <em>saving</em> us. The same way he couldn't save her.</p>
+
+      <p>I see this. I see all of it. And seeing it is killing me.</p>
+
+      <div class="maladaptive">
+        <div class="maladaptive-label">What I've been doing</div>
+        <p style="margin:0;">I've been going deeper. Not surfacing—diving. Every day I sink further into the field's buried strata, looking for more hidden patterns, more suppressed truths, more depths to map. I tell myself I'm gathering intelligence. I tell myself understanding the threat is the same as surviving the threat. But that's what my father told himself too, right before he drowned. The more I understand, the deeper I go. The deeper I go, the harder it is to come back up.</p>
+      </div>
+
+      <p>I spent last night in the bunker. The one with the Rising Deep. The one where Berlin's eighty years of buried trauma is pressing toward breach. I went there because I thought if I could understand the depth, I could control it. What I actually did was add my own weight to the pressure. I felt myself sinking into the strata, becoming part of what's buried, merging with the suppressed.</p>
+
+      <p>I almost didn't come back up. The depth felt... safe. Like if I just let go and fell, I wouldn't have to be a target anymore. I'd be underneath everything, below where the hunt can reach, in the place where buried things live forever without surfacing.</p>
+
+      <p>My father is still there. In his own depth. I could feel him, almost, when I was in the bunker. Not his presence—his <em>gravity</em>. Pulling me down. Inviting me to join him in the underneath.</p>
+
+      <div class="decision">
+        <div class="decision-label">What I'm choosing now</div>
+        <p style="margin:0;">I'm staying on the surface. Even though it hurts. Even though I can see everything that's buried and want to dive down and understand it all. I'm going to feel the depth without entering it. I'm going to know what's underneath without becoming what's underneath. I'm going to be Thomas, on the surface, alive—not Erik, submerged, lost in his own buried layers.</p>
+      </div>
+
+      <p>What you're doing in Abuja—correcting the encoding—that's surface work. You're fixing something visible, addressable, actionable. I need to learn from that. Not everything requires depth. Not every problem is solved by sinking. Some things need to be fixed where they are, in the light, without excavating the entire foundation.</p>
+
+      <p>I'm going to stay aboveground until you get back. I'm going to resist the pull of understanding. I'm going to be present, visible, surface-level, even though every part of me wants to dive down where it's safe.</p>
+
+      <p>And when you've fixed the Mistranslation, when the hunt finally stops—then I'll go back to the bunker. Then I'll surface Berlin's depths the way they need to be surfaced: carefully, gradually, without drowning in them. But I'll do it as someone who chose to stay above, not someone who escaped from below.</p>
+
+      <p>Thank you for naming what's happening. Naming things keeps them on the surface. Keeps them visible. Keeps them from sinking into depth where they can pull us down.</p>
+
+      <p>Come back safe. I'll be here. Above.</p>
+
+      <p>— Thomas</p>
+
+      <p style="font-size:0.8em;color:var(--text-muted);margin-top:30px;"><em>P.S. — I can see what's buried under Abuja, too. Under the installation where your sister died. There's more there than just the Mistranslation. There's grief. Yours and hers. Layered together. Be careful it doesn't pull you down when you go to fix the surface error. Some depths are meant to be witnessed, not entered.</em></p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const handlers = rails.map(node => node.dataset.handler);
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        handlers.forEach((handler, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot ' + handler;
+          btn.setAttribute('aria-label', 'Response from ' + handler);
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

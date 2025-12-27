@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mateo Vega — Three Weeks Present</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #060608;
+      --bg-panel: #0a0a0e;
+      --mateo-primary: #5a6a8a;
+      --mateo-deep: #3a4a6a;
+      --mateo-soft: rgba(90, 106, 138, 0.12);
+      --absence-slate: #708090;
+      --void-gray: #484858;
+      --presence-warm: #a08868;
+      --danger-red: #8b3040;
+      --text-main: #d8dce4;
+      --text-muted: #808898;
+      --text-bright: #f0f4f8;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(90, 106, 138, 0.08), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(58, 74, 106, 0.06), transparent 50%),
+        linear-gradient(180deg, #060608 0%, #040406 50%, #020204 100%);
+      color: var(--text-main);
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 840px;
+      height: 94vh;
+      max-height: 860px;
+      background:
+        radial-gradient(circle at top left, rgba(90, 106, 138, 0.06), transparent 60%),
+        linear-gradient(135deg, #0a0a0e 0%, #060608 50%, #08080c 100%);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(90, 106, 138, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 28px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .series-label {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.65em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .title {
+      font-size: 1.3em;
+      font-weight: 400;
+      color: var(--mateo-primary);
+      font-style: italic;
+    }
+
+    .week-pill {
+      font-family: "SF Mono", monospace;
+      font-size: 0.7em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--mateo-primary);
+      color: var(--mateo-primary);
+      background: var(--mateo-soft);
+      letter-spacing: 0.1em;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 28px 20px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 8px 40px;
+      line-height: 1.9;
+      font-size: 1.02em;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.2em;
+      text-indent: 1.5em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p:first-of-type,
+    .panel-scroll .scene-break + p {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.2em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 8px;
+      padding-top: 4px;
+      color: var(--mateo-primary);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--mateo-deep);
+      letter-spacing: 0.3em;
+    }
+
+    .absence {
+      color: var(--absence-slate);
+      font-style: italic;
+    }
+
+    .void {
+      color: var(--void-gray);
+      opacity: 0.8;
+    }
+
+    .presence {
+      color: var(--presence-warm);
+    }
+
+    .danger {
+      color: var(--danger-red);
+    }
+
+    .chapter-title {
+      text-align: center;
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chapter-name {
+      font-size: 1.4em;
+      color: var(--mateo-primary);
+      font-style: italic;
+    }
+
+    .chapter-date {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      font-family: "SF Mono", monospace;
+      background: var(--mateo-soft);
+      border: 1px solid rgba(90, 106, 138, 0.3);
+      color: var(--mateo-primary);
+      font-size: 0.8em;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: rgba(90, 106, 138, 0.2);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #141418;
+      border: 1px solid var(--mateo-deep);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--mateo-primary);
+      transform: scale(1.2);
+      box-shadow: 0 0 12px rgba(90, 106, 138, 0.5);
+    }
+
+    .rail-index {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 600px) {
+      .chrome-frame { border-radius: 14px; height: 96vh; }
+      .panel-scroll { font-size: 0.95em; padding: 20px 4px 32px; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="series-label">The Exception Handlers · Narrative Pilot</span>
+        <div class="title">Mateo Vega — Three Weeks Present</div>
+      </div>
+      <span class="week-pill" id="week-pill">Week 1</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Previous Week</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next Week →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">Week 1 of 3</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <!-- WEEK ONE -->
+    <section class="rail-text" data-rail="1" data-week="Week 1">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week One</div>
+        <div class="chapter-name">Walking Away</div>
+        <div class="chapter-date">January 16–22, 2041</div>
+      </div>
+
+      <p class="first-graf">Three blocks from the intersection where Daniela died, I stop walking. Not because I want to. Because my legs won't go any further.</p>
+
+      <p>The pull is physical. Magnetic. Like there's a rope tied around my chest, anchored to that exact spot on Avenida Corrientes where the truck hit her twenty years ago. Every step I take away from it is a step against gravity, against tide, against the fundamental shape of my function.</p>
+
+      <p>I can still feel her absence from here. <span class="absence">The space she doesn't occupy. The air she doesn't breathe. The footsteps she doesn't make on the pavement.</span> It's louder than the traffic. Louder than the people brushing past me on the sidewalk, alive and oblivious and taking up the space they're entitled to take up.</p>
+
+      <p>But I promised Amina. I promised myself. I'm not going back.</p>
+
+      <p>Four more blocks. That's what I tell myself. Four more blocks and I'm out of the intersection's pull. Four more blocks and I'm in a part of Buenos Aires where Daniela never walked, never breathed, never left a shape.</p>
+
+      <p>I force my legs to move. One step. Another. <span class="absence">The absence gets louder with each step away from it—or maybe I'm just more aware of it, more attuned to the wrongness of moving away from the null I've been orbiting for years.</span></p>
+
+      <p>By the time I reach my apartment, I'm shaking. Not from cold. From the effort of existing somewhere other than where she isn't.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>The notebooks are on my desk. Three of them. Black covers, college-ruled paper, filled edge to edge with my handwriting.</p>
+
+      <p>Death scenarios. Hundreds of them. Every possible way I could die, mapped in obsessive detail. Intersection timings. Building structural weaknesses. Flight crash angles. I've been writing in these notebooks for two years, convinced that if I just documented every possible absence, I could avoid becoming one.</p>
+
+      <p><span class="void">This is what my function looks like when it turns against me. Not a gift for perceiving absence—a compulsion to anticipate it. To live in the shadow of my own null reference, forever calculating the moment when I stop existing.</span></p>
+
+      <p>I pick up the first notebook. Flip through the pages. So many ways to die. So many absences I could leave behind. Each one documented in clinical detail, like I was writing a manual for my own disappearance.</p>
+
+      <p>Amina said to burn them. Mateo said to burn them. The voice in my head that sounds like Daniela said to burn them.</p>
+
+      <p>But burning feels too easy. Too clean. These notebooks represent years of morbid obsession, and setting them on fire seems like it would just transform them into smoke and ash—another kind of absence, another form of not-being.</p>
+
+      <p>Instead, I take them to the river.</p>
+
+      <p>The Riachuelo is polluted, industrial, nothing like the romantic waterways tourists photograph. It smells like chemicals and decay. Nothing beautiful about it. But it moves. It flows. Things that enter it are carried somewhere else.</p>
+
+      <p>I tear out the pages, one by one, and let them fall into the water. Watch them float, absorb moisture, start to sink. The ink bleeds into the current. The paper dissolves into pulp. My documented deaths, unmade by the movement of water.</p>
+
+      <p>It takes three hours to destroy all three notebooks. By the time I'm done, my fingers are numb and my arms ache. But the pages are gone. The scenarios are gone. The obsessive catalog of my own potential absences has been carried away toward the sea.</p>
+
+      <p><span class="presence">I'm still here. Still present. Still Mateo, existing in a world where I might die but haven't yet.</span></p>
+
+      <p>That has to count for something.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Thursday. My mother calls.</p>
+
+      <p>I almost don't answer. When I look at her name on the screen, I don't see "Mamá"—I see <span class="absence">the shape she'll leave when she's gone</span>. The empty chair at family dinners. The silence where her voice should be. The particular way she says my name, "Ma-TE-o" with the emphasis on the middle syllable, that no one else will ever say again once she stops existing.</p>
+
+      <p>This is the curse of my function. I can't look at anyone without seeing their eventual absence. I can't love anyone without grieving them in advance. Every relationship is a preview of loss.</p>
+
+      <p>But I answer anyway.</p>
+
+      <p>"Mateo? Are you there?"</p>
+
+      <p>"I'm here, Mamá."</p>
+
+      <p>"You sound strange. Are you sick?"</p>
+
+      <p>"No. Just tired."</p>
+
+      <p>She tells me about her week. The neighbor's dog that won't stop barking. The price of tomatoes at the market. The cousin in Mendoza who just had a baby. Normal things. Living things. Things that exist because people are still here to experience them.</p>
+
+      <p>I try to listen without seeing her absence. Try to hear her voice without hearing the silence that will replace it. It's like trying to look at the sun without squinting—painful, almost impossible, but I'm trying.</p>
+
+      <p>"You should come for dinner Sunday," she says. "I'm making empanadas. Your father misses you."</p>
+
+      <p>My father. <span class="absence">Another absence waiting to happen. His chair at the head of the table, someday empty. His laugh, someday silent. His hand on my shoulder, someday just a memory.</span></p>
+
+      <p>"I'll come," I say. And I mean it. Not because I want to face their eventual absences, but because I want to be present while they're still present. Because Amina said to stay alive, and staying alive means more than just not dying—it means actually living.</p>
+
+      <p>"Good boy. Sunday at seven."</p>
+
+      <p>"Sunday at seven."</p>
+
+      <p>I hang up. The apartment is quiet. Outside, Buenos Aires continues its relentless existence—cars honking, people shouting, dogs barking, a city of three million souls going about their lives without knowing how temporary it all is.</p>
+
+      <p><span class="presence">But temporary doesn't mean worthless. Present doesn't have to mean pre-grieved.</span></p>
+
+      <p>I'm learning this. Slowly. Painfully. One phone call at a time.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Sunday dinner is harder than I expected.</p>
+
+      <p>My parents' apartment is full of absences. Not real ones—anticipated ones. <span class="absence">The space where my grandmother used to sit before she died. The corner where the old dog used to sleep before we put him down. The gap on the bookshelf where Daniela's photo used to be before my mother couldn't stand looking at it anymore.</span></p>
+
+      <p>I see them all. Every void. Every missing piece. The apartment is more absence than presence, at least through my eyes.</p>
+
+      <p>But I stay. I eat the empanadas. I laugh at my father's terrible jokes. I let my mother fuss over me, telling me I look thin, asking if I'm eating enough, doing all the things mothers do while they're still here to do them.</p>
+
+      <p>"You seem different," my mother says over coffee. "Lighter, somehow. Did something happen?"</p>
+
+      <p>I can't explain. Can't tell her about Amina's document, the hunt, the three notebooks full of my own death that I fed to the river. So I just say: "I'm trying something new. Trying to be more present."</p>
+
+      <p>She smiles. Puts her hand on mine. <span class="presence">Warm. Real. Here.</span></p>
+
+      <p>"That's good, mijo. That's all any of us can do."</p>
+
+      <p>I walk home through the city at night. The streets are alive with people—couples holding hands, friends laughing outside bars, street vendors selling choripán to the late-night crowd. I see their absences, yes. I see every shape they'll leave behind. But I also see them. The people inside the future voids. The lives being lived before the living ends.</p>
+
+      <p>This is what Amina meant about not filling absences. It's not about ignoring them. It's about seeing what's there alongside what isn't. It's about acknowledging the negative space without drowning in it.</p>
+
+      <p>One week down. Two to go.</p>
+
+      <p>I'm still here. Still present. Still learning how to exist without obsessing over how I'll eventually stop.</p>
+
+    </section>
+
+    <!-- WEEK TWO -->
+    <section class="rail-text" data-rail="2" data-week="Week 2">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Two</div>
+        <div class="chapter-name">The Hollow Days</div>
+        <div class="chapter-date">January 23–29, 2041</div>
+      </div>
+
+      <p class="first-graf">The hunt has figured out how to hurt me.</p>
+
+      <p>Not with physical attacks—though there have been those, minor ones, a delivery drone that "malfunctioned" near my window, a subway car with doors that almost closed on my neck. But the real attacks are subtler. More surgical. Targeted at the exact frequency of my function.</p>
+
+      <p>I wake on Monday to a world full of holes.</p>
+
+      <p><span class="absence">The barista at my usual café—gone. Not dead, just gone, like he never existed. The seat where he always stood is empty. The coffee machine he always operated sits unused. When I ask the other staff about him, they look confused. "Who?" they say. "There's never been anyone by that name here."</span></p>
+
+      <p>He was real. I know he was real. We talked every morning about football and the weather and his daughter's quinceañera. He existed. He was present. And now there's a void where he should be, and I'm the only one who remembers.</p>
+
+      <p>This is what the hunt is doing. Creating absences around me. Making people disappear—not from existence, but from recognition. The field is editing them out of shared reality, leaving holes that only I can see, filling my world with nulls until I can't tell what's real and what's gone.</p>
+
+      <p>By Wednesday, I've lost six people. The barista. My neighbor who always complained about noise. The woman at the newsstand who saved me copies of the literary magazine. Three regulars at the bar where I sometimes drank alone. All gone. All forgotten by everyone except me.</p>
+
+      <p><span class="danger">The temptation to fill the absences is overwhelming.</span></p>
+
+      <p>Not with myself—I know better than that now. But with acknowledgment. With grief. With the kind of attention that makes absences heavier, more real, more present than the presences they replaced.</p>
+
+      <p>I want to stand at the café counter where the barista used to work and refuse to leave until someone remembers him. I want to knock on my neighbor's door until someone answers and explains where she went. I want to honor these absences the way I've always honored them—by making them the center of everything, by giving them more weight than anything that's still here.</p>
+
+      <p>But that's what the hunt wants. That's the trap.</p>
+
+      <p>I call David instead.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>"They're hollowing out your world," he says. "Removing the people you've connected with. Creating voids that only you can perceive."</p>
+
+      <p>"I know what they're doing. I need to know how to survive it."</p>
+
+      <p>"Keep connecting. Make new relationships faster than they can unmake the old ones. It's what Lucia's doing with Helena—rebuilding the same connection over and over, refusing to let the erasure win."</p>
+
+      <p>"But the people I connect with disappear. I'm putting targets on them. Everyone I talk to becomes a void."</p>
+
+      <p>David is quiet for a moment. When he speaks again, his voice is careful. "Are they disappearing from existence, or just from memory?"</p>
+
+      <p>"What's the difference?"</p>
+
+      <p>"The difference is whether they're still out there, living their lives, just... disconnected from you. Or whether they're actually gone."</p>
+
+      <p>I hadn't thought about that. The barista. The neighbor. The woman at the newsstand. I assumed they were gone because I couldn't find them, because no one remembered them. But what if they're still here? Just... separated from me? What if the hunt isn't creating absences, just making me unable to see presences?</p>
+
+      <p>"How do I find out?"</p>
+
+      <p>"You look. Not for the absence. For the person. Stop seeing where they aren't and start looking for where they are."</p>
+
+      <p>After we hang up, I go to the café. Stand at the counter. Don't order coffee. Just watch. Wait.</p>
+
+      <p>The staff move around the space where the barista used to work. They avoid it without knowing they're avoiding it—stepping around an invisible obstacle, reaching past a shape they can't see. The absence is still there. They just can't perceive it.</p>
+
+      <p>But in the back, through the kitchen door, I catch a glimpse of movement. A familiar posture. A way of holding a coffee cup that I've seen a hundred times.</p>
+
+      <p>He's still here. He's just been moved. Reassigned to the back, away from customers, away from me. Not erased—<em>hidden</em>.</p>
+
+      <p>The hunt can't create true absences. It can only create the appearance of them. It can only make me <em>believe</em> that everyone I care about is gone.</p>
+
+      <p>This changes everything.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Thursday. I look for everyone I've "lost."</p>
+
+      <p>The neighbor is in a different apartment, same building, three floors up. She got transferred somehow—new lease, new unit, no memory of living below me. But she's there. Still complaining about noise, just to different neighbors.</p>
+
+      <p>The newsstand woman has moved to a different corner, six blocks away. Same magazines. Same routine of saving copies for regular customers. She doesn't recognize me, but she's willing to start over. "You like literary magazines? I'll save you copies."</p>
+
+      <p>The bar regulars are at a different bar, across town, drinking the same drinks and telling the same stories. When I walk in, they look at me like a stranger. But they let me sit at the next stool. They let me listen. Over the course of the evening, we start talking, and by closing time, I'm almost a regular again.</p>
+
+      <p><span class="presence">They're not absent. They're just relocated. The hunt can move people out of my orbit, but it can't actually unmake them.</span></p>
+
+      <p>This is the limitation of the Mistranslation. It's a type mismatch, not a deletion. It can make systems perceive us wrong, can make people forget us, can create the appearance of absence. But it can't create actual nulls. Only death can do that. Only true absence.</p>
+
+      <p>Daniela is really gone. That absence is real. But everyone else—everyone the hunt has tried to take from me—they're still here. Still existing. Just hidden from view.</p>
+
+      <p>I spend the rest of the week finding hidden presences. Reconnecting. Rebuilding. Not filling absences, but uncovering the presences that the hunt buried underneath false nulls.</p>
+
+      <p>By Sunday, I have a small network of re-found people. The barista slips me an extra shot when his manager isn't looking—he doesn't remember me, but something in his hands does. The neighbor waves at me in the hallway, puzzled but friendly, like she's meeting a new person who feels strangely familiar. The newsstand woman has started saving me magazines again.</p>
+
+      <p>The hunt is still trying to create voids. But I'm learning to see through them. Learning to find the presence hiding behind the apparent absence.</p>
+
+      <p>One more week. Just one more week.</p>
+
+    </section>
+
+    <!-- WEEK THREE -->
+    <section class="rail-text" data-rail="3" data-week="Week 3">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Three</div>
+        <div class="chapter-name">The Call That Isn't</div>
+        <div class="chapter-date">January 30 – February 5, 2041</div>
+      </div>
+
+      <p class="first-graf">I'm walking past the intersection when the autonomous vehicles start to behave strangely.</p>
+
+      <p>I promised myself I wouldn't come here. Promised Amina. Promised my own fragile sanity. But my feet had other ideas. After two weeks of fighting the pull, of refusing to orbit Daniela's absence, I walked out of my apartment this morning and found myself three blocks away before I realized where I was going.</p>
+
+      <p>And now I'm here. Standing across the street from the intersection where she died. Watching the traffic flow around the space where she isn't.</p>
+
+      <p>The autonomous vehicles are pausing. Just for a fraction of a second—a hesitation in their otherwise smooth movements. They're looking for something. Waiting for something. <span class="absence">Coordinating with a vehicle that doesn't exist, just like Amina described in her document.</span></p>
+
+      <p>Vehicle ID DA-2031-0314. The ghost in the grid. The null reference that the system keeps trying to call.</p>
+
+      <p>And standing here, at the edge of the intersection, I can feel it. The call. The system's request for a presence that will never answer. The field reaching out for Daniela, over and over, waiting for a response that can never come.</p>
+
+      <p><span class="danger">I could answer it.</span></p>
+
+      <p>The thought arrives unbidden, impossible, true. I could step into the intersection. I could let the grid see me as DA-2031-0314. I could fill the null reference with my own presence, give the system what it's been calling for, end the ghost protocol by becoming the ghost.</p>
+
+      <p>It's everything Amina told me not to do. Everything I promised I wouldn't do. The exact maladaptive response that I spent two weeks learning to resist.</p>
+
+      <p>And yet.</p>
+
+      <p>The pull is so strong. Stronger than it's ever been. The intersection is calling for Daniela, and some part of me—the part that's spent twenty years perceiving her absence, holding her shape, standing in her void—some part of me <em>wants</em> to answer.</p>
+
+      <p>I step off the curb.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>The moment my foot hits the asphalt, everything changes.</p>
+
+      <p>The autonomous vehicles orient toward me. Not as a pedestrian to avoid—as <em>the vehicle they've been waiting for</em>. I feel their sensors lock onto my position, feel the grid's recognition algorithm trying to match my signature to the ghost it's been calling.</p>
+
+      <p>For one terrible second, I am DA-2031-0314. I am the null reference resolving into presence. I am Daniela's shape filled with Mateo's substance.</p>
+
+      <p>And then I feel something else. Not the grid. Not the ghost protocol. <span class="presence">Daniela herself.</span></p>
+
+      <p>Not as a presence—she's not here, she's never going to be here, the absence is permanent and real. But as a... message? A memory? A fragment of consciousness left behind in the space where she used to exist?</p>
+
+      <p><em>Don't.</em></p>
+
+      <p>One word. Her voice. Not in my ears—in my bones. In the part of me that's been holding her shape for two decades.</p>
+
+      <p><em>Don't fill me, Mateo. Acknowledge me. But don't fill me.</em></p>
+
+      <p>I stumble backward. Trip over the curb. Fall onto the sidewalk, scraping my palms on concrete, heart pounding so hard I can barely breathe.</p>
+
+      <p>The vehicles recalibrate. The grid loses its lock on me. The ghost protocol continues its endless, unanswered call. I'm not DA-2031-0314. I'm just Mateo Vega, sitting on a Buenos Aires sidewalk, bleeding from his hands and crying for a cousin who's been dead for twenty years.</p>
+
+      <p>But I heard her. For one moment, in the space between answering and not answering, I heard her.</p>
+
+      <p>She doesn't want me to fill her. She wants me to <em>witness</em> her.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Tuesday. Wednesday. Thursday. I come back to the intersection every day.</p>
+
+      <p>Not to fill the void. Not to become the ghost. Just to... stand. To witness. To acknowledge the absence without trying to resolve it.</p>
+
+      <p><span class="absence">Daniela was here. She was twenty-three years old and she was going to be a dancer and she was hit by a truck on a wet day in March and she stopped existing. This is true. This is real. This absence is permanent.</span></p>
+
+      <p><span class="presence">And Mateo is here. He is twenty-four years old and he is learning to be present and he is standing at the intersection where his cousin died, not to fill her void but to honor it. This is also true. This is also real. This presence is temporary but current.</span></p>
+
+      <p>The vehicles still pause. The grid still calls for a ghost. But I'm not answering. I'm just witnessing. Being here, at the site of absence, without becoming absence myself.</p>
+
+      <p>By Friday, something shifts.</p>
+
+      <p>I'm standing at my usual spot, watching the traffic, when I notice that the vehicles are pausing less frequently. The ghost protocol is still running—I can feel the call—but the call is quieter. Less urgent. Like the system is finally starting to accept that DA-2031-0314 will never respond.</p>
+
+      <p>My witnessing is doing something. Not resolving the null—I can't do that, only acknowledgment of death can do that, and the grid isn't capable of grief. But I'm modeling something. Showing the system what it looks like to stand at an absence and not fall in.</p>
+
+      <p>The vehicles see me here, day after day, not becoming the ghost. And slowly, unconsciously, they're learning from my example. Learning that you can exist near an absence without filling it. Learning that the call can go unanswered without the universe collapsing.</p>
+
+      <p>It's not a fix. The ghost protocol will need a real correction—system-level acknowledgment of Daniela's death, formal closure of the null reference. But it's a start. A proof of concept. Evidence that presence and absence can coexist without one consuming the other.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Saturday morning. The phone rings. Amina's voice.</p>
+
+      <p>"It's done."</p>
+
+      <p>I don't need her to explain. I can feel it—a shift in the field's pressure, a relaxation in the hunt's constant targeting. The Mistranslation is corrected. The encoding that marked us all for death has been rewritten.</p>
+
+      <p>"The ghost protocol," I say. "Is that fixed too?"</p>
+
+      <p>"Not yet. That's your crisis, remember? But now you can work on it without being hunted while you do."</p>
+
+      <p>I look at the intersection. The traffic is flowing normally now—no pauses, no hesitations, no vehicles waiting for a ghost. But I know the underlying null is still there. Still unacknowledged. Still calling into the void.</p>
+
+      <p>"I know what to do," I tell her. "I've been practicing."</p>
+
+      <p>"Practicing?"</p>
+
+      <p>"Witnessing. Standing at the absence without filling it. The grid has been watching me. I think it's learning."</p>
+
+      <p>She's quiet for a moment. Then: "That's not a bad approach. Teach by example. Show the system what healthy acknowledgment looks like."</p>
+
+      <p>"I heard her, Amina. Daniela. When I almost stepped into the intersection, almost became the ghost—I heard her voice. She told me not to fill her. Just to acknowledge her."</p>
+
+      <p>"Then you know what you need to do."</p>
+
+      <p>I do. I finally do.</p>
+
+      <p>Not fill the absence. Not become the ghost. Not resolve the null by inserting myself into it.</p>
+
+      <p>Just witness. Just acknowledge. Just stand at the edge of what's gone and say: <em>yes, you were here, yes, you mattered, yes, your absence is real, and yes, I'm still here to remember.</em></p>
+
+      <p>That's what it means to handle null references. Not to fill them. To <em>witness</em> them. To let the absence exist without trying to make it go away.</p>
+
+      <p>Daniela is gone. She's been gone for twenty years. She'll be gone forever. And I'm still here, alive, present, carrying her absence without being consumed by it.</p>
+
+      <p>That has to be enough. That is enough.</p>
+
+      <p>I walk home from the intersection for the last time—not because I'll never come back, but because coming back will be a choice now, not a compulsion. The pull is still there. The absence is still there. But I'm not orbiting it anymore. I'm not falling in.</p>
+
+      <p><span class="presence">I'm just present. Here. Now. Mateo Vega, existing in a world full of absences, witnessing them all without becoming any of them.</span></p>
+
+      <p>Three weeks. Twenty-one days. The hardest weeks of my life.</p>
+
+      <p>But I made it. I'm still here. And I finally understand what my function is actually for.</p>
+
+      <p>Not to fill the voids. To acknowledge them.</p>
+
+      <p>Not to become the absences. To witness them.</p>
+
+      <p>Not to die into the nulls. To live alongside them.</p>
+
+      <p>That's the job. That's the calling. That's what it means to be the null reference handler.</p>
+
+      <p>Daniela would be proud. I can almost feel her saying so—not from the intersection, but from the absence itself, from the void that I've finally learned to honor without drowning in.</p>
+
+      <p><em>You're still here, mijo. You're still present.</em></p>
+
+      <p>Yes. I am. I finally am.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const weekPill = document.getElementById('week-pill');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const weeks = rails.map(node => node.dataset.week);
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to ' + weeks[idx]);
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        panelEl.scrollTop = 0;
+        idxEl.textContent = weeks[idx] + ' of 3';
+        weekPill.textContent = weeks[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

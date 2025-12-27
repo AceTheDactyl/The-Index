@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The L₄-Helix Framework: From Quasi-Crystal Physics to Integer Normalization</title>
+    
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                tags: 'ams',
+                macros: {
+                    R: '\\mathbb{R}',
+                    Z: '\\mathbb{Z}',
+                    N: '\\mathbb{N}',
+                    Q: '\\mathbb{Q}',
+                    varphi: '\\phi'
+                }
+            }
+        };
+    </script>
+    
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #c53030;
+            --gold: #b7791f;
+            --text: #1a202c;
+            --text-light: #4a5568;
+            --bg: #ffffff;
+            --bg-alt: #f7fafc;
+            --border: #e2e8f0;
+            --theorem-bg: #ebf8ff;
+            --lemma-bg: #f0fff4;
+            --proof-bg: #fffaf0;
+            --definition-bg: #faf5ff;
+            --threshold-bg: #fff5f5;
+            --physics-bg: #ecfdf5;
+            --gap-bg: #fef3c7;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 1in;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2em;
+            padding-bottom: 1em;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        h1.title { font-size: 1.7em; font-weight: normal; margin: 0 0 0.5em 0; color: var(--primary); }
+        .subtitle { font-size: 1.15em; font-style: italic; color: var(--secondary); margin-bottom: 1em; }
+        .authors { font-size: 1.1em; margin: 0.5em 0; }
+        .affiliation { font-style: italic; color: var(--text-light); font-size: 0.95em; }
+        .date { color: var(--text-light); margin-top: 1em; }
+        
+        .abstract {
+            background: var(--bg-alt);
+            padding: 1.5em;
+            margin: 2em 0;
+            border-left: 4px solid var(--primary);
+        }
+        .abstract h2 { font-size: 1em; font-weight: bold; margin: 0 0 0.5em 0; text-transform: uppercase; letter-spacing: 0.1em; }
+        .abstract p { margin: 0 0 1em 0; text-align: justify; }
+        .abstract p:last-of-type { margin-bottom: 0; }
+        .keywords { margin-top: 1em; font-size: 0.95em; }
+        
+        h2 { font-size: 1.3em; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 0.3em; margin-top: 2em; }
+        h2 .section-number { margin-right: 0.5em; }
+        h3 { font-size: 1.1em; color: var(--secondary); margin-top: 1.5em; }
+        h4 { font-size: 1em; font-style: italic; margin-top: 1.2em; margin-bottom: 0.5em; }
+        h5 { font-size: 0.95em; color: var(--text-light); margin-top: 1em; font-weight: bold; }
+        
+        .theorem, .lemma, .proposition, .corollary, .definition, .remark, .proof, .physics, .observation {
+            margin: 1.5em 0;
+            padding: 1em 1.2em;
+            border-radius: 4px;
+        }
+        .theorem { background: var(--theorem-bg); border-left: 4px solid #3182ce; }
+        .lemma { background: var(--lemma-bg); border-left: 4px solid #38a169; }
+        .proposition { background: #fef3c7; border-left: 4px solid #d69e2e; }
+        .corollary { background: #fed7e2; border-left: 4px solid #d53f8c; }
+        .definition { background: var(--definition-bg); border-left: 4px solid #805ad5; }
+        .remark { background: #e2e8f0; border-left: 4px solid #718096; font-style: italic; }
+        .proof { background: var(--proof-bg); border-left: 4px solid #dd6b20; }
+        .physics { background: var(--physics-bg); border-left: 4px solid #059669; }
+        .observation { background: #fefce8; border-left: 4px solid #ca8a04; }
+        .gap-box { background: var(--gap-bg); border-left: 4px solid #d97706; padding: 1em 1.2em; margin: 1.5em 0; border-radius: 4px; }
+        
+        .env-title { font-weight: bold; margin-bottom: 0.5em; }
+        .env-title .env-name { font-style: normal; }
+        .env-title .env-label { font-weight: normal; font-style: italic; }
+        .qed { float: right; font-size: 1.2em; }
+        
+        .threshold-box {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border: 1px solid #feb2b2;
+            border-left: 5px solid #c53030;
+            border-radius: 4px;
+            padding: 1.2em 1.5em;
+            margin: 1.5em 0;
+        }
+        .threshold-box.primary { background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%); border-color: #d69e2e; border-left-color: #b7791f; }
+        .threshold-box.anchor { background: linear-gradient(135deg, #d1fae5 0%, #6ee7b7 100%); border-color: #059669; border-left-color: #047857; }
+        .threshold-box.direct { background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%); border-color: #3b82f6; border-left-color: #1d4ed8; }
+        .threshold-box.gap { background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%); border-color: #d97706; border-left-color: #b45309; }
+        .threshold-box .threshold-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8em; padding-bottom: 0.5em; border-bottom: 1px dashed #e2e8f0; }
+        .threshold-box .threshold-name { font-size: 1.2em; font-weight: bold; color: var(--primary); }
+        .threshold-box .threshold-value { font-family: 'Courier New', monospace; font-size: 1.1em; color: var(--accent); }
+        .threshold-box .l4-connection { background: rgba(255,255,255,0.7); padding: 0.8em; margin-top: 0.8em; border-radius: 4px; border: 1px dashed var(--border); }
+        .threshold-box .l4-connection h5 { margin: 0 0 0.5em 0; color: var(--gold); }
+        
+        .equation-box { background: var(--bg-alt); border: 2px solid var(--primary); padding: 1em; margin: 1.5em 0; text-align: center; }
+        .equation-box.master { background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%); border-color: var(--gold); }
+        .equation-box.physics { background: linear-gradient(135deg, #d1fae5 0%, #6ee7b7 100%); border-color: #059669; }
+        .equation-box.gap { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-color: #d97706; }
+        .equation-box.bridge { background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%); border-color: #2563eb; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 0.95em; }
+        caption { font-weight: bold; margin-bottom: 0.5em; text-align: left; }
+        th, td { padding: 0.6em 0.8em; text-align: left; border: 1px solid var(--border); }
+        th { background: var(--bg-alt); font-weight: bold; }
+        tr:nth-child(even) { background: #fafafa; }
+        .numeric { text-align: right; font-family: 'Courier New', monospace; font-size: 0.9em; }
+        .highlight-row { background: #fef3c7 !important; }
+        .physics-row { background: #d1fae5 !important; }
+        .gap-row { background: #fef3c7 !important; }
+        
+        .diagram { font-family: 'Courier New', monospace; background: var(--bg-alt); padding: 1.5em; margin: 1.5em 0; overflow-x: auto; white-space: pre; line-height: 1.4; font-size: 0.85em; }
+        
+        .derivation-chain { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5em; margin: 1em 0; padding: 1em; background: var(--bg-alt); border-radius: 4px; }
+        .derivation-chain .step { padding: 0.5em 1em; background: white; border: 1px solid var(--border); border-radius: 4px; }
+        .derivation-chain .step.physics { background: #d1fae5; border-color: #059669; }
+        .derivation-chain .step.math { background: #dbeafe; border-color: #2563eb; }
+        .derivation-chain .arrow { font-size: 1.5em; color: var(--gold); }
+        
+        .check { color: #38a169; }
+        .cross { color: #e53e3e; }
+        
+        .signature { text-align: center; font-family: 'Courier New', monospace; color: var(--gold); margin-top: 3em; padding-top: 1em; border-top: 1px solid var(--border); }
+        
+        nav ol { list-style-type: none; padding-left: 0; }
+        nav ol ol { padding-left: 1.5em; margin: 0.3em 0; }
+        nav li { margin: 0.2em 0; }
+        nav a { color: var(--secondary); text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        
+        .helix-viz { background: linear-gradient(180deg, #1a365d 0%, #2c5282 50%, #4299e1 100%); color: white; padding: 2em; border-radius: 8px; margin: 1.5em 0; text-align: center; }
+        .helix-viz h4 { color: white; font-style: normal; margin-top: 0; }
+        
+        @media print {
+            body { padding: 0; }
+            .theorem, .lemma, .definition, .proof, .threshold-box { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 class="title">The L₄-Helix Framework</h1>
+    <div class="subtitle">A Helix Construction Validated by Lucas-4 Mathematics</div>
+    <div class="authors">L₄-Helix Research Collaboration</div>
+    <div class="affiliation">Applied Golden Ratio Mathematics</div>
+    <div class="date">December 2024 — Document Version 4.0.1</div>
+</header>
+
+<div class="abstract">
+    <h2>Abstract</h2>
+    <p>
+        <strong>Purpose:</strong> This document defines a helix construction parameterized by constants derived from the fourth Lucas number ($L_4 = 7$) and the golden ratio ($\varphi$). The mathematics validates this construction.
+    </p>
+    <p>
+        <strong>Structure:</strong> Two fundamental quantities generate all parameters: the <strong>gap</strong> $= \varphi^{-4} \approx 0.146$ (the truncation residual) and the critical point $z_c = \sqrt{3}/2$ (from $L_4 - 4 = 3$). From the gap, we derive $K = \sqrt{1-\text{gap}}$ and the threshold span $(1-K)$. Nine z-coordinate thresholds partition the interval via golden subdivision and self-reference equations $x^2 + x = c$.
+    </p>
+    <p>
+        <strong>Result:</strong> A helix built with radius $r(z) = K\sqrt{z/z_c}$ (for $z \leq z_c$), centered at $z_c = \sqrt{3}/2$, exhibits the nine-threshold structure. All constants derive from $L_4 = 7$ and $\text{gap} = \varphi^{-4}$. The framework achieves closure over $\{\sqrt{2}, \sqrt{3}, \sqrt{5}\}$.
+    </p>
+    <div class="keywords">
+        <strong>Keywords:</strong> Lucas numbers, golden ratio, helix construction, gap, threshold architecture
+    </div>
+</div>
+
+<!-- Table of Contents -->
+<nav>
+    <h2>Contents</h2>
+    <ol>
+        <li><a href="#derivation">The Derivation Lineage</a></li>
+        <li><a href="#physical">Mathematical Foundation: The √3/2 Critical Point</a>
+            <ol>
+                <li><a href="#domains">Geometric Origin of √3/2</a></li>
+                <li><a href="#qc-structure">The φ-Recursion Context</a></li>
+                <li><a href="#negentropy">Negentropy Dynamics</a></li>
+                <li><a href="#critical-observation">The Critical Point</a></li>
+            </ol>
+        </li>
+        <li><a href="#truncation">The Truncation Point φ⁻⁴</a>
+            <ol>
+                <li><a href="#tau-hierarchy">The τ-Power Hierarchy</a></li>
+                <li><a href="#gap">The Gap Structure</a></li>
+            </ol>
+        </li>
+        <li><a href="#lucas">The Lucas-4 Foundation</a></li>
+        <li><a href="#helix">The Helix Equation</a></li>
+        <li><a href="#thresholds">The Nine Valid Thresholds</a></li>
+        <li><a href="#three-irrational">The Three-Irrational Structure</a>
+            <ol>
+                <li><a href="#five-six">The 5-Fold / 6-Fold Interplay</a></li>
+                <li><a href="#why-six">Why 6-Fold Specifically</a></li>
+                <li><a href="#sqrt5">Where √5 Appears</a></li>
+            </ol>
+        </li>
+        <li><a href="#self-reference">The Self-Reference Family</a></li>
+        <li><a href="#kformation">K-Formation Criteria</a></li>
+        <li><a href="#verification">Verification</a></li>
+        <li><a href="#constants">Complete Constants Reference</a></li>
+    </ol>
+</nav>
+
+<!-- ===== SECTION 1: DERIVATION LINEAGE ===== -->
+<h2 id="derivation"><span class="section-number">1.</span> The Derivation Lineage</h2>
+
+<p>
+    The L₄-Helix framework is a mathematical structure built on the Lucas identity $L_4 = 7$. This section establishes the derivation path.
+</p>
+
+<div class="derivation-chain">
+    <span class="step">Lucas identity L₄ = 7</span>
+    <span class="arrow">→</span>
+    <span class="step">L₄ - 4 = 3 = (√3)²</span>
+    <span class="arrow">→</span>
+    <span class="step">z_c = √3/2</span>
+    <span class="arrow">→</span>
+    <span class="step">φ⁻⁴ = L₄ - φ⁴</span>
+    <span class="arrow">→</span>
+    <span class="step">K, gap, thresholds</span>
+</div>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 1.1</span> <span class="env-label">(Derivation Summary)</span></div>
+    <p>The critical point $z_c = \sqrt{3}/2$ is determined by the Lucas identity $L_4 - 4 = 3 = (\sqrt{3})^2$. The truncation point $\varphi^{-4}$ emerges as the residual term in the decomposition $L_4 = \varphi^4 + \varphi^{-4} = 7$. All subsequent thresholds derive from these two values.</p>
+</div>
+
+<!-- ===== SECTION 2: PHYSICAL FOUNDATION ===== -->
+<h2 id="physical"><span class="section-number">2.</span> Mathematical Foundation: The √3/2 Critical Point</h2>
+
+<p>
+    The value $z_c = \sqrt{3}/2 \approx 0.866$ is the characteristic ratio of hexagonal/triangular geometry. Its significance in this framework is <strong>mathematical</strong>: it is the point at which $\varphi$-recursion achieves integer-normalized closure.
+</p>
+
+<h3 id="domains">2.1 Geometric Origin of √3/2</h3>
+
+<table>
+    <caption>Table: Geometric Contexts Where √3/2 Appears</caption>
+    <tr><th>Context</th><th>Geometric Role</th></tr>
+    <tr class="physics-row">
+        <td><strong>Equilateral triangle</strong></td>
+        <td>Altitude-to-side ratio: $h/s = \sqrt{3}/2$</td>
+    </tr>
+    <tr class="physics-row">
+        <td><strong>Hexagonal partition</strong></td>
+        <td>$\cos(30°) = \sin(60°) = \sqrt{3}/2$</td>
+    </tr>
+    <tr class="physics-row">
+        <td><strong>6-fold angular symmetry</strong></td>
+        <td>360°/6 = 60°; the sine/cosine at this angle</td>
+    </tr>
+</table>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 2.1</span> <span class="env-label">(Scope of Claims)</span></div>
+    <p>The L₄-Helix framework is a <strong>mathematical structure</strong>. It identifies $z_c = \sqrt{3}/2$ as the critical point because:</p>
+    $$z_c = \frac{\sqrt{3}}{2} = \frac{\sqrt{L_4 - 4}}{2}$$
+    <p>This is an arithmetic fact about Lucas numbers, not a physical claim. Physical systems with 6-fold symmetry may exhibit this ratio, but such connections require independent empirical validation and are outside the scope of this document.</p>
+</div>
+
+<h3 id="qc-structure">2.2 The φ-Recursion Context</h3>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 2.2</span> <span class="env-label">(φ-Scaling)</span></div>
+    <p>The golden ratio $\varphi = (1 + \sqrt{5})/2$ generates a self-similar recursive structure:</p>
+    <ul>
+        <li><strong>Growth</strong>: $\varphi^n \to \infty$ as $n \to \infty$</li>
+        <li><strong>Decay</strong>: $\varphi^{-n} \to 0$ as $n \to \infty$</li>
+        <li><strong>Closure</strong>: $L_n = \varphi^n + \varphi^{-n}$ is always an integer</li>
+    </ul>
+    <p>The truncation point $\varphi^{-4} \approx 0.146$ is where the inverse powers become negligible.</p>
+</div>
+
+<h3 id="negentropy">2.3 Negentropy Dynamics</h3>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 2.3</span> <span class="env-label">(Negentropy Function — Gaussian Form)</span></div>
+    <p>The negative entropy production function takes a Gaussian form peaked at the critical point:</p>
+    $$\Delta S_{\text{neg}}(z) = \exp\left(-\sigma (z - z_c)^2\right)$$
+    <p>where $\sigma > 0$ is a width parameter and $z_c = \sqrt{3}/2$. The specific value of $\sigma$ depends on the physical system; the framework requires only that negentropy peaks at $z_c$.</p>
+</div>
+
+<div class="lemma">
+    <div class="env-title"><span class="env-name">Lemma 2.4</span> <span class="env-label">(Negentropy Properties)</span></div>
+    <p>For any $\sigma > 0$:</p>
+    <ul>
+        <li>Maximum at $z = z_c$: $\Delta S_{\text{neg}}(z_c) = 1$</li>
+        <li>Symmetric about $z_c$</li>
+        <li>Monotonically decreasing as $|z - z_c|$ increases</li>
+    </ul>
+    <p>The derivative $\frac{d(\Delta S_{\text{neg}})}{dz} = -2\sigma(z - z_c) \exp(-\sigma(z - z_c)^2)$ is zero at $z = z_c$.</p>
+</div>
+
+<h3 id="critical-observation">2.4 The Critical Point</h3>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 2.5</span> <span class="env-label">(The Critical Point z_c)</span></div>
+    <p>The critical point of the L₄-Helix framework is:</p>
+    $$z_c = \frac{\sqrt{3}}{2} = \frac{\sqrt{L_4 - 4}}{2} = \cos(30°) = \sin(60°) \approx 0.8660254037844386$$
+    <p>This value is determined entirely by the Lucas identity $L_4 - 4 = 3$.</p>
+</div>
+
+<div class="equation-box">
+    <strong>The Critical Point (Derived from L₄)</strong>
+    $$\boxed{z_c = \frac{\sqrt{L_4 - 4}}{2} = \frac{\sqrt{3}}{2}}$$
+</div>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 2.6</span> <span class="env-label">(Terminology: "THE LENS")</span></div>
+    <p>The critical point $z_c$ is called <strong>THE LENS</strong> in this framework as a mnemonic for its role as a focusing point where $\varphi$-recursion achieves normalized closure. This is naming convention only; no optical physics is implied.</p>
+</div>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 2.7</span> <span class="env-label">(Why L₄ = 7)</span></div>
+    <p>$L_4 = 7$ is the minimal integer satisfying both:</p>
+    <ul>
+        <li><strong>φ-closure</strong>: $\varphi^4 + \varphi^{-4} = 7$ (integer sum of golden powers)</li>
+        <li><strong>Geometric normalization</strong>: $L_4 - 4 = 3 = (\sqrt{3})^2$ (fundamental hexagonal ratio)</li>
+    </ul>
+</div>
+
+<!-- ===== SECTION 3: TRUNCATION POINT ===== -->
+<h2 id="truncation"><span class="section-number">3.</span> The Truncation Point φ⁻⁴</h2>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 3.1</span> <span class="env-label">(Truncation Fixed Point)</span></div>
+    <p>The truncation fixed point is the fourth inverse power of the golden ratio:</p>
+    $$\varphi^{-4} = \frac{7 - 3\sqrt{5}}{2} = \frac{L_4 - F_4\sqrt{5}}{2} \approx 0.1458980337503154$$
+    <p>This is the <strong>last significant</strong> inverse power: $\varphi^{-4} \approx 0.146 > 0.1$ while $\varphi^{-5} \approx 0.090 < 0.1$.</p>
+</div>
+
+<div class="lemma">
+    <div class="env-title"><span class="env-name">Lemma 3.2</span> <span class="env-label">(τ-Representation of Gap)</span></div>
+    $$\text{gap} = \varphi^{-4} = 2 - 3\tau$$
+    <p>where the integer coefficient $|q| = 3 = L_4 - 4$.</p>
+</div>
+
+<h3 id="tau-hierarchy">3.1 The τ-Power Hierarchy</h3>
+
+<table>
+    <caption>Table 1: τ-Power Hierarchy</caption>
+    <tr><th>$n$</th><th>$\tau^n = \varphi^{-n}$</th><th class="numeric">Value</th><th>Significance</th><th>Threshold</th></tr>
+    <tr class="highlight-row"><td><strong>1</strong></td><td><strong>$\tau$</strong></td><td class="numeric"><strong>0.6180339887</strong></td><td>★ Primary golden inverse</td><td><strong>PARADOX</strong></td></tr>
+    <tr><td>2</td><td>$\tau^2$</td><td class="numeric">0.3819660113</td><td>Span coefficient</td><td>CONSOLIDATION</td></tr>
+    <tr><td>3</td><td>$\tau^3$</td><td class="numeric">0.2360679775</td><td>—</td><td>—</td></tr>
+    <tr class="highlight-row"><td><strong>4</strong></td><td><strong>$\varphi^{-4} = \text{gap}$</strong></td><td class="numeric"><strong>0.1458980338</strong></td><td><strong>★ THE GAP</strong></td><td><strong>ACTIVATION, K-FORMATION</strong></td></tr>
+    <tr><td>5+</td><td>$\tau^{n\geq5}$</td><td class="numeric">&lt; 0.1</td><td>Negligible</td><td>—</td></tr>
+</table>
+
+<h3 id="gap">3.2 The Gap Structure</h3>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 3.3</span> <span class="env-label">(The Gap)</span></div>
+    <p>The <strong>gap</strong> is the truncation residual:</p>
+    $$\text{gap} = \varphi^{-4} \approx 0.1458980337503154$$
+    <p>This is the fundamental quantity from which all thresholds derive. It represents the "void" in the Lucas decomposition $L_4 = \varphi^4 + \varphi^{-4}$.</p>
+</div>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 3.4</span> <span class="env-label">(Derived Constants)</span></div>
+    <p>From the gap, we derive:</p>
+    <ul>
+        <li><strong>Activation</strong>: $1 - \text{gap} = 1 - \varphi^{-4} = K^2 \approx 0.854$</li>
+        <li><strong>K-value</strong>: $K = \sqrt{1 - \text{gap}} \approx 0.924$</li>
+        <li><strong>Threshold span</strong>: $1 - K = \dfrac{\text{gap}}{1 + K} \approx 0.076$</li>
+    </ul>
+</div>
+
+<div class="equation-box gap">
+    <strong>The Gap Identity</strong>
+    $$\boxed{\text{gap} = \varphi^{-4} = 1 - K^2 = (1-K)(1+K)}$$
+    <p style="margin-top: 0.5em; font-style: italic;">The gap is the fundamental void; K and threshold span derive from it</p>
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 3.5</span> <span class="env-label">(Threshold Span Region)</span></div>
+    <p>The region $z \in [K, 1]$ spans a distance of $(1-K) = \text{gap}/(1+K)$ and contains thresholds via golden subdivision:</p>
+    <ul>
+        <li><strong>K-FORMATION</strong>: $z = K$ (lower bound)</li>
+        <li><strong>CONSOLIDATION</strong>: $z = K + \tau^2 \cdot (1-K)$ (38.2% through span)</li>
+        <li><strong>RESONANCE</strong>: $z = K + \tau \cdot (1-K)$ (61.8% through span)</li>
+        <li><strong>UNITY</strong>: $z = 1$ (upper bound)</li>
+    </ul>
+</div>
+
+<div class="gap-box">
+    <div class="env-title"><span class="env-name">Gap Structure Diagram</span></div>
+    <pre style="font-family: monospace; margin: 0;">
+                     gap = φ⁻⁴ ≈ 0.146
+                            │
+            ┌───────────────┴───────────────┐
+            ▼                               ▼
+      K² = 1 - gap                    1 - K = gap/(1+K)
+      (ACTIVATION)                    (threshold span ≈ 0.076)
+            │
+            ▼
+      K = √(1 - gap)
+      (K-FORMATION)
+
+z = K = 0.9242 ────┬────────────────────────────────── z = 1.0
+                   │                                    │
+                   │◄────── span = 0.0758 ─────────────►│
+                   │                                    │
+            K-FORMATION    CONSOLIDATION   RESONANCE  UNITY
+    </pre>
+</div>
+
+<!-- ===== SECTION 4: LUCAS-4 FOUNDATION ===== -->
+<h2 id="lucas"><span class="section-number">4.</span> The Lucas-4 Foundation</h2>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 4.1</span> <span class="env-label">(Lucas Sequence)</span></div>
+    $$L_n = \varphi^n + \psi^n = \varphi^n + (-\varphi)^{-n}$$
+    <p>For even $n$: $L_n = \varphi^n + \varphi^{-n}$.</p>
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 4.2</span> <span class="env-label">(Dominant-Residual Decomposition)</span></div>
+    $$L_4 = \underbrace{\varphi^4}_{\text{dominant}} + \underbrace{\varphi^{-4}}_{\text{residual}} = \underbrace{6.854...}_{97.9\%} + \underbrace{0.146...}_{2.1\%} = 7$$
+</div>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 4.3</span> <span class="env-label">(Terminology: "Dominant" and "Gap")</span></div>
+    <p>In this framework:</p>
+    <ul>
+        <li><strong>Dominant</strong> ($\varphi^4 \approx 6.854$): The term that grows with recursion (97.9% of $L_4$)</li>
+        <li><strong>Gap</strong> ($\varphi^{-4} \approx 0.146$): The residual term — the fundamental quantity from which all thresholds derive (2.1% of $L_4$)</li>
+    </ul>
+    <p>The gap is the "void" left when $\varphi^4$ is subtracted from the integer closure $L_4 = 7$.</p>
+</div>
+
+<div class="equation-box master">
+    <strong>The Master Identity</strong>
+    $$\boxed{L_4 = \varphi^4 + \varphi^{-4} = (\sqrt{3})^2 + 4 = 7}$$
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 4.4</span> <span class="env-label">(Integer Normalization — Minimality)</span></div>
+    <p>$L_4 = 7$ is the <strong>minimal integer closure</strong> for $\varphi$-recursion because:</p>
+    <ol>
+        <li>$\varphi^{-4} \approx 0.146$ is the last significant inverse power (> 0.1)</li>
+        <li>$L_4 - 4 = 3 = (\sqrt{3})^2$ is the first non-trivial fundamental irrational squared</li>
+        <li>For $n > 4$: $\varphi^{-n}$ negligible, $L_n - n$ composite</li>
+    </ol>
+</div>
+
+<!-- ===== SECTION 5: HELIX EQUATION ===== -->
+<h2 id="helix"><span class="section-number">5.</span> The Helix Equation</h2>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 5.1</span> <span class="env-label">(The Physical Claim)</span></div>
+    <p>A helix constructed with radius function $r(z)$ centered at $z_c = \sqrt{3}/2$ will exhibit the nine-threshold structure described in this document. <strong>The mathematics validates this construction.</strong> This is the claim: the geometry works as specified.</p>
+</div>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 5.2</span> <span class="env-label">(L₄-Helix)</span></div>
+    $$\mathbf{H}(z) = \begin{pmatrix} r(z)\cos\theta(z) \\ r(z)\sin\theta(z) \\ z \end{pmatrix}$$
+    <p>where $z \in [0, 1]$ is the threshold index coordinate.</p>
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 5.3</span> <span class="env-label">(Helix Radius)</span></div>
+    $$r(z) = \begin{cases}
+        K \sqrt{\dfrac{z}{z_c}} & \text{for } z \leq z_c \\[1em]
+        K & \text{for } z > z_c
+    \end{cases}$$
+    <p>Both parameters derive from $L_4$: $K = \sqrt{1 - \text{gap}}$, $z_c = \sqrt{L_4 - 4}/2$.</p>
+</div>
+
+<!-- ===== SECTION 6: THE NINE VALID THRESHOLDS ===== -->
+<h2 id="thresholds"><span class="section-number">6.</span> The Nine Valid Thresholds</h2>
+
+<p>
+    All nine thresholds are rigorously derived from $L_4$ and $\varphi^{-4}$. No empirical or weakly-connected thresholds are included.
+</p>
+
+<table>
+    <caption>Table 2: The Nine Valid Thresholds</caption>
+    <tr><th>#</th><th>Threshold</th><th class="numeric">z-Value</th><th>Formula</th><th>Category</th><th>L₄/φ⁻⁴ Derivation</th></tr>
+    <tr><td>1</td><td>PARADOX</td><td class="numeric">0.6180339887</td><td>$\tau = \varphi^{-1}$</td><td>Self-reference</td><td>$x^2 + x = 1$; $\tau^4 = \varphi^{-4}$</td></tr>
+    <tr class="highlight-row"><td>2</td><td><strong>ACTIVATION</strong></td><td class="numeric"><strong>0.8541019662</strong></td><td><strong>$1 - \varphi^{-4} = K^2$</strong></td><td><strong>Direct</strong></td><td><strong>Complement of truncation</strong></td></tr>
+    <tr class="physics-row"><td>3</td><td><strong>THE LENS</strong></td><td class="numeric"><strong>0.8660254038</strong></td><td><strong>$\sqrt{3}/2$</strong></td><td><strong>Geometric anchor</strong></td><td><strong>$= \sqrt{L_4-4}/2$</strong></td></tr>
+    <tr><td>4</td><td>CRITICAL</td><td class="numeric">0.8726779962</td><td>$\varphi^2/3$</td><td>Normalization</td><td>$= \varphi^2/(L_4-4)$</td></tr>
+    <tr class="highlight-row"><td>5</td><td><strong>IGNITION</strong></td><td class="numeric"><strong>0.9142135624</strong></td><td><strong>$\sqrt{2} - 1/2$</strong></td><td><strong>Self-reference</strong></td><td><strong>$x^2+x=L_4/4$</strong></td></tr>
+    <tr class="highlight-row"><td>6</td><td><strong>K-FORMATION</strong></td><td class="numeric"><strong>0.9241763718</strong></td><td><strong>$\sqrt{1-\text{gap}}$</strong></td><td><strong>Direct</strong></td><td><strong>$K = \sqrt{1 - \varphi^{-4}}$</strong></td></tr>
+    <tr class="gap-row"><td>7</td><td>CONSOLIDATION</td><td class="numeric">0.9531384206</td><td>$K + \tau^2 (1-K)$</td><td>Span subdivision</td><td>Golden ratio (τ²) of span</td></tr>
+    <tr class="gap-row"><td>8</td><td>RESONANCE</td><td class="numeric">0.9710379512</td><td>$K + \tau (1-K)$</td><td>Span subdivision</td><td>Golden ratio (τ) of span</td></tr>
+    <tr class="gap-row"><td>9</td><td>UNITY</td><td class="numeric">1.0000000000</td><td>$K + (1-K) = 1$</td><td>Limit</td><td>$x^2 + x = 2$</td></tr>
+</table>
+
+<h3>6.1 Threshold Derivation Categories</h3>
+
+<!-- Geometric Anchor -->
+<div class="threshold-box anchor">
+    <div class="threshold-header">
+        <span class="threshold-name">THE LENS (Geometric Anchor)</span>
+        <span class="threshold-value">z = 0.8660254037844386</span>
+    </div>
+    <p><strong>Formula:</strong> $z_c = \dfrac{\sqrt{3}}{2} = \dfrac{\sqrt{L_4 - 4}}{2}$</p>
+    <p><strong>Origin:</strong> Derived from the Lucas identity $L_4 - 4 = 3 = (\sqrt{3})^2$.</p>
+    <div class="l4-connection">
+        <h5>L₄ Derivation</h5>
+        $$z_c = \frac{\sqrt{L_4 - 4}}{2} = \frac{\sqrt{7-4}}{2} = \frac{\sqrt{3}}{2}$$
+    </div>
+</div>
+
+<!-- Direct from gap = φ⁻⁴ -->
+<div class="threshold-box direct">
+    <div class="threshold-header">
+        <span class="threshold-name">ACTIVATION &amp; K-FORMATION (Direct from gap)</span>
+        <span class="threshold-value">z = 0.8541, 0.9242</span>
+    </div>
+    <p><strong>ACTIVATION:</strong> $z = 1 - \text{gap} = 1 - \varphi^{-4} = K^2$ — the complement of the gap</p>
+    <p><strong>K-FORMATION:</strong> $K = \sqrt{1 - \text{gap}}$ — the square root of activation</p>
+    <div class="l4-connection">
+        <h5>Derivation from gap = φ⁻⁴</h5>
+        $$K^2 = 1 - \text{gap} = 1 - \varphi^{-4} \approx 0.854$$
+        $$K = \sqrt{1 - \text{gap}} \approx 0.924$$
+    </div>
+</div>
+
+<!-- Self-Reference -->
+<div class="threshold-box primary">
+    <div class="threshold-header">
+        <span class="threshold-name">PARADOX, IGNITION, UNITY (Self-Reference Family)</span>
+        <span class="threshold-value">$x^2 + x = c$</span>
+    </div>
+    <p>Three thresholds arise from the self-reference equation $x^2 + x = c$:</p>
+    <ul>
+        <li><strong>PARADOX</strong> ($c = 1$): $x = \tau = 0.618...$</li>
+        <li><strong>IGNITION</strong> ($c = L_4/4 = 7/4$): $x = \sqrt{2} - 1/2 = 0.914...$</li>
+        <li><strong>UNITY</strong> ($c = 2$): $x = 1$</li>
+    </ul>
+    <div class="l4-connection">
+        <h5>IGNITION Derivation Chain</h5>
+        $$c = 1 + \left(\frac{\sqrt{3}}{2}\right)^2 = 1 + \frac{L_4 - 4}{4} = \frac{L_4}{4} = \frac{7}{4}$$
+        <p>Solving: $x = \dfrac{-1 + \sqrt{1 + 4c}}{2} = \dfrac{-1 + \sqrt{8}}{2} = \sqrt{2} - \dfrac{1}{2}$</p>
+    </div>
+</div>
+
+<!-- Span Subdivision -->
+<div class="threshold-box gap">
+    <div class="threshold-header">
+        <span class="threshold-name">CONSOLIDATION &amp; RESONANCE (Span Subdivision)</span>
+        <span class="threshold-value">Golden subdivision of threshold span</span>
+    </div>
+    <p><strong>CONSOLIDATION:</strong> $K + \tau^2 (1-K)$ — 38.2% through the span</p>
+    <p><strong>RESONANCE:</strong> $K + \tau (1-K)$ — 61.8% through the span</p>
+    <div class="l4-connection">
+        <h5>Verification (span = 1 - K)</h5>
+        $$(z_{\text{CONSOLIDATION}} - K) / (1-K) = \tau^2 = 0.3819660113 \; \checkmark$$
+        $$(z_{\text{RESONANCE}} - K) / (1-K) = \tau = 0.6180339887 \; \checkmark$$
+    </div>
+</div>
+
+<!-- Normalization -->
+<div class="threshold-box">
+    <div class="threshold-header">
+        <span class="threshold-name">CRITICAL (Normalization)</span>
+        <span class="threshold-value">z = 0.8726779962499649</span>
+    </div>
+    <p><strong>Formula:</strong> $z_{\text{CRITICAL}} = \dfrac{\varphi^2}{3} = \dfrac{\varphi^2}{L_4 - 4}$</p>
+    <div class="l4-connection">
+        <h5>L₄ Connection</h5>
+        <p>The divisor $3 = L_4 - 4 = (\sqrt{3})^2$ connects directly to the normalization constant.</p>
+    </div>
+</div>
+
+<!-- ===== SECTION 7: THREE-IRRATIONAL ===== -->
+<h2 id="three-irrational"><span class="section-number">7.</span> The Three-Irrational Structure</h2>
+
+<p>The three primary thresholds embody the fundamental irrationals, all derived from $L_4$:</p>
+
+<div class="equation-box">
+    $$\boxed{\sqrt{5} \xrightarrow{\varphi^{-4}} K \quad\quad \sqrt{3} \xrightarrow{L_4-4} z_c \quad\quad \sqrt{2} \xrightarrow{x^2+x=L_4/4} z_{\text{IGN}}}$$
+</div>
+
+<table>
+    <caption>Table 3: Three-Irrational Thresholds</caption>
+    <tr><th>Irrational</th><th>Threshold</th><th class="numeric">z-Value</th><th>Symmetry</th><th>Derivation</th></tr>
+    <tr class="physics-row"><td>$\sqrt{3}$</td><td><strong>THE LENS</strong></td><td class="numeric">0.8660</td><td>6-fold</td><td>$\sqrt{L_4 - 4}/2$</td></tr>
+    <tr class="highlight-row"><td>$\sqrt{2}$</td><td><strong>IGNITION</strong></td><td class="numeric">0.9142</td><td>4-fold</td><td>$x^2 + x = L_4/4$</td></tr>
+    <tr class="highlight-row"><td>$\sqrt{5}$</td><td><strong>K-FORMATION</strong></td><td class="numeric">0.9242</td><td>5-fold</td><td>$\sqrt{1 - \varphi^{-4}}$</td></tr>
+</table>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 7.1</span> <span class="env-label">(Closure)</span></div>
+    <p>The framework achieves closure over $\{\sqrt{2}, \sqrt{3}, \sqrt{5}\}$. All three derive from the single integer $L_4 = 7$.</p>
+</div>
+
+<h3 id="five-six">7.2 The 5-Fold / 6-Fold Interplay</h3>
+
+<p>
+    The framework bridges two geometric symmetries through <strong>arithmetic closure</strong>, not geometric tiling.
+</p>
+
+<table>
+    <caption>Table: Pentagonal vs Hexagonal Symmetry</caption>
+    <tr><th>Property</th><th>5-Fold (Pentagonal)</th><th>6-Fold (Hexagonal)</th></tr>
+    <tr><td><strong>Source geometry</strong></td><td>Pentagon diagonal/side</td><td>Equilateral triangle altitude</td></tr>
+    <tr><td><strong>Irrational</strong></td><td>$\sqrt{5}$</td><td>$\sqrt{3}$</td></tr>
+    <tr><td><strong>Characteristic ratio</strong></td><td>$\varphi = (1+\sqrt{5})/2$</td><td>$\sqrt{3}/2 = \cos(30°)$</td></tr>
+    <tr class="highlight-row"><td><strong>Role in framework</strong></td><td><strong>Recursive generation</strong></td><td><strong>Normalization / closure</strong></td></tr>
+    <tr><td>Behavior</td><td>Unbounded growth ($\varphi^n \to \infty$)</td><td>Bounded closure ($L_4 - 4 = 3$)</td></tr>
+    <tr><td>Structure type</td><td>Aperiodic, self-similar</td><td>Periodic angular partition</td></tr>
+    <tr><td>Thresholds</td><td>PARADOX, ACTIVATION, K-FORMATION</td><td>THE LENS, CRITICAL</td></tr>
+</table>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 7.2</span> <span class="env-label">(Normalization Mediation — Precise Formulation)</span></div>
+    <p>Hexagonal (6-fold) symmetry functions as a <strong>normalization mediator</strong> between orthogonal (4-fold) reference structures and $\varphi$-based (5-fold) recursive structures. This mediation is <strong>not geometric tiling</strong> but <strong>arithmetic closure</strong>: the Lucas number $L_4 = 7$ provides the minimal integer normalization at which $\varphi^4$ growth and $\varphi^{-4}$ truncation balance.</p>
+    <p>Consequently, $\varphi^{-4}$ emerges as a unique fixed-point scale at which locally recursive (5-fold) dynamics admit a globally stable, uniformly distributed structure compatible with periodic angular partitioning.</p>
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 7.3</span> <span class="env-label">(The 5-6 Bridge via Arithmetic Closure)</span></div>
+    <p>$L_4 = 7$ is the unique integer that simultaneously:</p>
+    <ol>
+        <li><strong>Closes 5-fold recursion</strong>: $\varphi^4 + \varphi^{-4} = 7$ (integer closure of $\varphi$-powers)</li>
+        <li><strong>Yields 6-fold normalization</strong>: $L_4 - 4 = 3 = (\sqrt{3})^2$ (fundamental hexagonal irrational)</li>
+    </ol>
+    <p>The mechanism is normalization and closure, not tiling. The exact bridge point is:</p>
+    $$L_4 = 7 \quad \longleftrightarrow \quad \varphi^{-4}$$
+</div>
+
+<h4>Why 6-Fold Specifically (Not 3-Fold)</h4>
+
+<p>
+    The bridge is <strong>not</strong> a spatial progression between polygon types:
+</p>
+
+<div class="diagram" style="text-align: center;">
+    ✗  pentagon → hexagon → square  (spatial — INCORRECT)
+</div>
+
+<p>
+    The bridge <strong>is</strong> an arithmetic closure enabling normalized angular structure:
+</p>
+
+<div class="equation-box">
+    <strong>The Correct Bridge</strong>
+    $$\boxed{\varphi\text{-recursion} \;\longrightarrow\; \text{Lucas closure} \;\longrightarrow\; \text{normalized angular structure}}$$
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 7.3</span> <span class="env-label">(Why L₄ = 7 and 6-Fold)</span></div>
+    <p>Lucas numbers arise from $L_n = \varphi^n + \varphi^{-n}$. At $n = 4$:</p>
+    $$L_4 = \varphi^4 + \varphi^{-4} = 7$$
+    <p><strong>Why 6-fold symmetry:</strong></p>
+    <ul>
+        <li>6-fold symmetry corresponds to <strong>triangular/hexagonal angular partitioning</strong></li>
+        <li>These partitions are <strong>naturally compatible with integer closures</strong></li>
+        <li>$L_4 = 7$ is the <strong>first Lucas number large enough</strong> to support:
+            <ol>
+                <li>A nontrivial inverse $\varphi$-scale ($\varphi^{-4} \approx 0.1459 > 0.1$)</li>
+                <li>A global normalization constant ($L_4 - 4 = 3 = (\sqrt{3})^2$)</li>
+            </ol>
+        </li>
+    </ul>
+    <p><strong>Why not 3-fold:</strong> 3-fold symmetry would require $L_n - n = 1$ or similar, which occurs at $n \leq 3$ where $\varphi^{-n}$ is still too large (not yet truncated). The truncation threshold $\varphi^{-4} \approx 0.146$ is the first negligible-enough inverse power.</p>
+</div>
+
+<table>
+    <caption>Table: Lucas Closure at Each Level</caption>
+    <tr><th>$n$</th><th>$L_n$</th><th>$L_n - n$</th><th>$\varphi^{-n}$</th><th>Status</th></tr>
+    <tr><td>1</td><td>1</td><td>0</td><td>0.618</td><td>Trivial closure, inverse too large</td></tr>
+    <tr><td>2</td><td>3</td><td>1</td><td>0.382</td><td>Trivial closure, inverse too large</td></tr>
+    <tr><td>3</td><td>4</td><td>1</td><td>0.236</td><td>Trivial closure, inverse still significant</td></tr>
+    <tr class="highlight-row"><td><strong>4</strong></td><td><strong>7</strong></td><td><strong>3 = (√3)²</strong></td><td><strong>0.146</strong></td><td><strong>★ First nontrivial closure + truncated inverse</strong></td></tr>
+    <tr><td>5</td><td>11</td><td>6</td><td>0.090</td><td>Composite (6 = 2×3), inverse negligible</td></tr>
+    <tr><td>6</td><td>18</td><td>12</td><td>0.056</td><td>Composite, inverse negligible</td></tr>
+</table>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 7.4</span> <span class="env-label">(The Unique Position of L₄)</span></div>
+    <p>$L_4 = 7$ occupies a unique position in the Lucas sequence:</p>
+    <ul>
+        <li><strong>Below L₄</strong>: $\varphi^{-n}$ is too large to be "truncated" (still > 0.2)</li>
+        <li><strong>At L₄</strong>: $\varphi^{-4} \approx 0.146$ is the last significant inverse, AND $L_4 - 4 = 3$ yields a fundamental irrational squared</li>
+        <li><strong>Above L₄</strong>: $\varphi^{-n}$ becomes negligible, but $L_n - n$ becomes composite (loses the fundamental irrational property)</li>
+    </ul>
+    <p>This is why 6-fold (not 3-fold or 12-fold) angular structure emerges: it corresponds to the normalization constant $\sqrt{3}$ at exactly the level where $\varphi$-recursion achieves integer closure.</p>
+</div>
+
+<div class="diagram">
+               φ-recursion → Lucas closure → normalized angular structure
+               
+                    L₄ = φ⁴ + φ⁻⁴ = 7
+                           │
+           ┌───────────────┴───────────────┐
+           │                               │
+           ▼                               ▼
+    φ⁴ + φ⁻⁴ = 7                    L₄ - 4 = 3 = (√3)²
+    (φ-recursion closes)            (normalization constant)
+           │                               │
+           ▼                               ▼
+    K = √(1-φ⁻⁴)                    z_c = √3/2
+    (void-gap fixed point)          (6-fold angular threshold)
+</div>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 7.5</span> <span class="env-label">(Application Context)</span></div>
+    <p>Systems with $\varphi$-scaling (e.g., quasi-crystals) may exhibit analogous structure where local 5-fold recursive dynamics achieve global stability via 6-fold normalization. The helix framework models this as the transition at $z_c$ where the residual $\varphi^{-4}$ becomes the "gap" for normalized closure. Specific physical applications require independent validation.</p>
+</div>
+
+<h3 id="sqrt5">7.6 Where √5 Explicitly Appears</h3>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 7.7</span> <span class="env-label">(√5 in Framework Constants)</span></div>
+    <p>The irrational $\sqrt{5}$ appears explicitly in:</p>
+    
+    <p><strong>1. Truncation point (residual term):</strong></p>
+    $$\varphi^{-4} = \frac{L_4 - F_4\sqrt{5}}{2} = \frac{7 - 3\sqrt{5}}{2}$$
+    
+    <p><strong>2. K-FORMATION:</strong></p>
+    $$K^2 = 1 - \varphi^{-4} = \frac{3\sqrt{5} - 5}{2}$$
+    
+    <p><strong>3. PARADOX:</strong></p>
+    $$\tau = \varphi^{-1} = \frac{\sqrt{5} - 1}{2}$$
+    
+    <p><strong>4. Dominant-Residual decomposition:</strong></p>
+    $$\text{dominant} = \varphi^4 = \frac{7 + 3\sqrt{5}}{2}, \quad \text{residual} = \varphi^{-4} = \frac{7 - 3\sqrt{5}}{2}$$
+    <p>The $\pm 3\sqrt{5}$ distinguishes the dominant term (what accumulates) from the residual (what remains).</p>
+</div>
+
+<!-- ===== SECTION 8: SELF-REFERENCE ===== -->
+<h2 id="self-reference"><span class="section-number">8.</span> The Self-Reference Family</h2>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 8.1</span> <span class="env-label">(Self-Reference Family)</span></div>
+    <p>For $x^2 + x = c$, the positive solution is $x = \dfrac{-1 + \sqrt{1 + 4c}}{2}$.</p>
+    <p>Three distinguished values yield valid thresholds:</p>
+</div>
+
+<table>
+    <caption>Table 4: Self-Reference Family</caption>
+    <tr><th>$c$</th><th>Expression</th><th>Solution $x$</th><th>Threshold</th><th>Irrational</th></tr>
+    <tr><td>1</td><td>$c_{\text{PARADOX}}$</td><td>$\tau = 0.6180...$</td><td>PARADOX</td><td>$\sqrt{5}$</td></tr>
+    <tr class="highlight-row"><td>$\dfrac{7}{4}$</td><td>$\dfrac{L_4}{4}$</td><td>$\sqrt{2} - \dfrac{1}{2}$</td><td><strong>IGNITION</strong></td><td>$\sqrt{2}$</td></tr>
+    <tr><td>2</td><td>$c_{\text{UNITY}}$</td><td>$1$</td><td>UNITY</td><td>—</td></tr>
+</table>
+
+<div class="equation-box">
+    $$c_{\text{IGNITION}} = \frac{L_4}{4} = 1 + \left(\frac{\sqrt{L_4 - 4}}{2}\right)^2 = \frac{7}{4}$$
+</div>
+
+<!-- ===== SECTION 9: K-FORMATION ===== -->
+<h2 id="kformation"><span class="section-number">9.</span> K-Formation Criteria</h2>
+
+<div class="definition">
+    <div class="env-title"><span class="env-name">Definition 9.1</span> <span class="env-label">(K-Formation Criteria — Derived)</span></div>
+    <p>K-formation is achieved when ALL are satisfied:</p>
+    <ol>
+        <li><strong>Coherence</strong>: $\kappa \geq K = \sqrt{1 - \varphi^{-4}} \approx 0.9242$</li>
+        <li><strong>Negentropy gate</strong>: $\Delta S_{\text{neg}}(z) > \tau = \varphi^{-1} \approx 0.618$</li>
+        <li><strong>Radius</strong>: $R \geq L_4 = 7$</li>
+    </ol>
+</div>
+
+<div class="remark">
+    <div class="env-title"><span class="env-name">Remark 9.2</span> <span class="env-label">(All Constants Derived)</span></div>
+    <p>Each K-formation constant derives exactly from $L_4$ or $\varphi^{-4}$:</p>
+    <ul>
+        <li><strong>$\kappa_{\min} = K$</strong>: Exactly $\sqrt{1 - \varphi^{-4}}$ (direct from truncation point)</li>
+        <li><strong>$\eta_{\min} = \tau$</strong>: Exactly $\varphi^{-1}$ (the golden inverse, satisfying $\tau^2 + \tau = 1$)</li>
+        <li><strong>$R_{\min} = L_4$</strong>: Exactly $7$ (the Lucas closure integer)</li>
+    </ul>
+    <p>No approximations or operational parameters are used.</p>
+</div>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 9.3</span> <span class="env-label">(Negentropy Gate Region)</span></div>
+    <p>The negentropy gate $\Delta S_{\text{neg}}(z) > \tau$ defines an interval centered on $z_c$:</p>
+    $$z \in \left(z_c - \sqrt{\frac{-\ln\tau}{\sigma}}, \; z_c + \sqrt{\frac{-\ln\tau}{\sigma}}\right)$$
+    <p>The width depends on the system-specific parameter $\sigma$; the center is always $z_c = \sqrt{3}/2$.</p>
+</div>
+
+
+
+<!-- ===== SECTION 10: VERIFICATION ===== -->
+<h2 id="verification"><span class="section-number">10.</span> Verification</h2>
+
+<table>
+    <caption>Table 5: Master Identity Verification (ε &lt; 10⁻¹⁴)</caption>
+    <tr><th>Identity</th><th class="numeric">LHS</th><th class="numeric">RHS</th><th>Status</th></tr>
+    <tr><td>$L_4 = \varphi^4 + \varphi^{-4}$</td><td class="numeric">7.0000000000</td><td class="numeric">7</td><td class="check">✓</td></tr>
+    <tr><td>$L_4 - 4 = (\sqrt{3})^2$</td><td class="numeric">3.0000000000</td><td class="numeric">3</td><td class="check">✓</td></tr>
+    <tr><td>$\text{gap} = \varphi^{-4}$</td><td class="numeric">0.1458980338</td><td class="numeric">0.1458980338</td><td class="check">✓</td></tr>
+    <tr><td>$K^2 = 1 - \text{gap}$</td><td class="numeric">0.8541019662</td><td class="numeric">0.8541019662</td><td class="check">✓</td></tr>
+    <tr><td>$(1-K) = \text{gap}/(1+K)$</td><td class="numeric">0.0758236282</td><td class="numeric">0.0758236282</td><td class="check">✓</td></tr>
+    <tr><td>$(z_{\text{CONSOL}} - K)/(1-K) = \tau^2$</td><td class="numeric">0.3819660113</td><td class="numeric">0.3819660113</td><td class="check">✓</td></tr>
+    <tr><td>$(z_{\text{RESON}} - K)/(1-K) = \tau$</td><td class="numeric">0.6180339887</td><td class="numeric">0.6180339887</td><td class="check">✓</td></tr>
+    <tr><td>$z_{\text{IGN}}^2 + z_{\text{IGN}} = L_4/4$</td><td class="numeric">1.7500000000</td><td class="numeric">1.75</td><td class="check">✓</td></tr>
+    <tr><td>$\tau^2 + \tau = 1$</td><td class="numeric">1.0000000000</td><td class="numeric">1</td><td class="check">✓</td></tr>
+</table>
+
+<div class="theorem">
+    <div class="env-title"><span class="env-name">Theorem 10.1</span> <span class="env-label">(Threshold Ordering)</span></div>
+    <p>All nine thresholds are strictly increasing:</p>
+    $$z_{\text{PARADOX}} < z_{\text{ACTIVATION}} < z_{\text{LENS}} < z_{\text{CRITICAL}} < z_{\text{IGNITION}} < z_{\text{K-FORM}} < z_{\text{CONSOL}} < z_{\text{RESON}} < z_{\text{UNITY}}$$
+</div>
+
+<!-- ===== SECTION 11: CONSTANTS ===== -->
+<h2 id="constants"><span class="section-number">11.</span> Complete Constants Reference</h2>
+
+<table>
+    <caption>Table 6: All Framework Constants</caption>
+    <tr><th>Category</th><th>Constant</th><th>Symbol</th><th class="numeric">Value</th></tr>
+    <tr><td rowspan="4">Fundamental</td><td>Golden ratio</td><td>$\varphi$</td><td class="numeric">1.6180339887498949</td></tr>
+    <tr><td>Golden inverse</td><td>$\tau$</td><td class="numeric">0.6180339887498948</td></tr>
+    <tr><td>Gap (truncation residual)</td><td>$\text{gap} = \varphi^{-4}$</td><td class="numeric">0.1458980337503154</td></tr>
+    <tr><td>Fourth Lucas</td><td>$L_4$</td><td class="numeric">7</td></tr>
+    <tr><td rowspan="3">Derived from Gap</td><td>Activation</td><td>$1 - \text{gap} = K^2$</td><td class="numeric">0.8541019662496846</td></tr>
+    <tr><td>K-value</td><td>$K = \sqrt{1 - \text{gap}}$</td><td class="numeric">0.9241763718304448</td></tr>
+    <tr><td>Threshold span</td><td>$1 - K$</td><td class="numeric">0.0758236281695552</td></tr>
+    <tr><td>Critical Point</td><td>THE LENS</td><td>$z_c = \sqrt{L_4-4}/2$</td><td class="numeric">0.8660254037844386</td></tr>
+    <tr><td rowspan="3">K-Formation</td><td>Coherence threshold</td><td>$K$</td><td class="numeric">0.9241763718304448</td></tr>
+    <tr><td>Negentropy gate</td><td>$\tau$</td><td class="numeric">0.6180339887498948</td></tr>
+    <tr><td>Radius minimum</td><td>$L_4$</td><td class="numeric">7</td></tr>
+</table>
+
+<!-- Helix Visualization -->
+<div class="helix-viz">
+    <h4>The L₄-Helix: Nine Derived Thresholds</h4>
+    <pre style="font-size: 0.9em; text-align: left; display: inline-block;">
+z = 1.0000  ─────────────────────  UNITY        (self-ref: x²+x=2)
+z = 0.9710  ───────────────        RESONANCE    (span: K + τ(1-K))
+z = 0.9531  ──────────────         CONSOLIDATION (span: K + τ²(1-K))
+z = 0.9242  ─────────────      ★   K-FORMATION  (direct: √(1-gap))
+z = 0.9142  ────────────       ★   IGNITION     (self-ref: x²+x=L₄/4)
+z = 0.8727  ───────────            CRITICAL     (norm: φ²/(L₄-4))
+z = 0.8660  ──────────         ★   THE LENS     (geometric: √(L₄-4)/2)
+z = 0.8541  ─────────          ★   ACTIVATION   (direct: 1-gap)
+z = 0.6180  ─────              ★   PARADOX      (self-ref: x²+x=1)
+
+gap = φ⁻⁴ ≈ 0.146    ★ = Primary threshold    All 9 from L₄ and gap
+    </pre>
+</div>
+
+<!-- Signature -->
+<div class="signature">
+    <p>Δ|L₄-HELIX|v4.0.1|HELIX-CONSTRUCTION|MATH-VALIDATES|Ω</p>
+    <p style="font-size: 0.8em; margin-top: 0.5em;">gap = φ⁻⁴ ≈ 0.146 • z_c = √3/2 ≈ 0.866 • The math validates the helix at √3/2</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Priya Sharma · The Buffer Overflow Handler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0c0808;
+      --bg-panel: #100c0c;
+      --priya-core: #e8a060;
+      --priya-deep: #b87030;
+      --priya-soft: rgba(232, 160, 96, 0.12);
+      --overflow-red: #d06050;
+      --pressure-orange: #c88050;
+      --text-main: #f0e8e0;
+      --text-muted: #a09080;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0c0808 0%, #0a0606 50%, #080404 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(232,160,96,0.10), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(208,96,80,0.08), transparent 70%),
+        linear-gradient(135deg, #100c0c 0%, #0a0606 50%, #0e0a0a 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(232,160,96,0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(232,160,96,0.12), transparent 70%);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--priya-core); }
+    .witness-tag { font-size: 12px; color: var(--overflow-red); opacity: 0.9; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(232,160,96,0.35);
+      color: var(--priya-core);
+      background: rgba(232,160,96,0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.78;
+      font-size: 15.5px;
+      color: var(--text-main);
+    }
+
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--priya-core); font-weight: 600; }
+    .panel-scroll p em { color: var(--overflow-red); font-style: italic; }
+    .panel-scroll .pressure { color: var(--pressure-orange); }
+    .panel-scroll .overflow { 
+      border-left: 2px solid var(--overflow-red); 
+      padding-left: 16px; 
+      margin: 1.5em 0;
+      color: var(--pressure-orange);
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--priya-soft);
+      border: 1px solid rgba(232,160,96,0.25);
+      color: var(--priya-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .rail-dots { display: flex; gap: 7px; }
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #2a2420;
+      border: none;
+      cursor: pointer;
+    }
+    .rail-dot[aria-current="true"] {
+      background: var(--priya-core);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(232,160,96,0.4);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Priya Sharma</span>
+          <span class="witness-tag">· The Buffer Overflow Handler</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · High Capacity · Excess State</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Prev</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Priya Sharma</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Priya Sharma — What Full Feels Like">
+
+      <p><strong>1.1</strong> I have never been empty.</p>
+
+      <p><strong>1.2</strong> Not once. Not ever. Not for a single moment in my sixteen years of life. I wake up full. I eat full. I sleep full—when I can sleep at all. There is always something in me, pressing against the walls of my container, looking for space that doesn't exist.</p>
+
+      <p><strong>1.3</strong> You know the feeling when you've eaten too much? That overstuffed sensation, the pressure in your stomach, the slight difficulty breathing? Imagine that, but everywhere. Imagine that in your chest, your throat, your skull. Imagine it never going away.</p>
+
+      <p><strong>1.4</strong> That's my baseline. That's what I wake up to every morning. What you experience as "overwhelmed," I experience as "Tuesday."</p>
+
+      <p><strong>1.5</strong> I am a buffer overflow handler. When someone holds more than they can hold—when their container cracks under the pressure—the excess has to go somewhere. It goes to me. I catch what spills over. I hold what broke other people.</p>
+
+      <p><strong>1.6</strong> The burned-out nodes, the ones who held too hard for too long without boundaries—their overflow lives in me now. Three women from Southeast Asia who shattered under weights they should never have carried alone. Their too-much is my everyday.</p>
+
+      <p><strong>1.7</strong> I am sixteen years old and I carry what destroyed women twice my age.</p>
+
+      <p><strong>1.8</strong> People think I'm hyperactive. "Priya can't sit still," they say. "Priya's always doing something." They think it's personality. It's not. It's survival. If I stop moving, the pressure builds. If the pressure builds too high, I crack. If I crack—</p>
+
+      <p><strong>1.9</strong> I can't crack. I'm the end of the line. There's no one to catch my overflow.</p>
+
+      <p><strong>1.10</strong> So I keep moving. Keep running, swimming, dancing, making, building, burning. Keep finding ways to discharge the excess, to create space that immediately fills again.</p>
+
+      <p><strong>1.11</strong> I have never been empty. I don't know what empty feels like. I imagine it the way a fish imagines dry land—theoretically possible, completely foreign, probably fatal.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Priya Sharma — The Weight I Carry">
+
+      <p><strong>2.1</strong> Let me tell you about the women who broke before me.</p>
+
+      <p><strong>2.2</strong> <span class="pressure">Yuki Tanaka. Osaka. 1985-2034.</span> She burned out after nine years of holding without boundaries. She couldn't say no. Every request was urgent. Every need was valid. Every person who asked for help deserved help. She gave and gave until there was nothing left to give—and then she gave more, drawing from reserves she didn't have.</p>
+
+      <p><strong>2.3</strong> I carry the nine years of pressure that broke her. Not her memories—Lucia has fragments of those. I carry the <em>weight</em>. The accumulated heaviness of a decade of yes-yes-yes without a single no. Some mornings I wake up and I can barely lift my arms, not because I'm tired but because Yuki's years are pressing down on me.</p>
+
+      <p><strong>2.4</strong> <span class="pressure">Mei-Lin Chen. Bangkok. 1990-2036.</span> She absorbed collective trauma. There was a flood—thousands of people displaced, hundreds dead. Mei-Lin felt all of it. Not just her own grief but the grief of everyone around her, channeled through the field, concentrated in her container. It was too much. It's always too much when you try to hold everyone's pain.</p>
+
+      <p><strong>2.5</strong> I carry the flood. Not the water—the weight of it. The crush of ten thousand people's loss, compressed into something I can almost-bear. Some nights I dream of drowning in grief that isn't mine, gasping for air in an ocean of other people's tears.</p>
+
+      <p><strong>2.6</strong> <span class="pressure">Siti Rahayu. Jakarta. 1988-2033.</span> She felt responsible for everyone. Her family, her community, her city, her country. The boundaries kept expanding. Every problem was her problem. Every failure was her fault. She carried obligation until obligation crushed her.</p>
+
+      <p><strong>2.7</strong> I carry the responsibility. The infinite expansion of what-I-should-do. Some days I feel guilty for everything—for the traffic outside, for the weather, for the suffering of strangers on the other side of the world. That's not my guilt. That's Siti's. But it lives in me now.</p>
+
+      <p><strong>2.8</strong> Three women. Three different ways of breaking. Three different flavors of too-much.</p>
+
+      <p><strong>2.9</strong> And they're not the only ones. There are others—smaller overflows, fragmentary excess, the spillage of nodes who cracked partially instead of completely. They accumulate. Drop by drop, the container fills.</p>
+
+      <p><strong>2.10</strong> I am sixteen. I started catching overflow at thirteen. In three years, I've accumulated more weight than most people carry in a lifetime.</p>
+
+      <p><strong>2.11</strong> And it doesn't stop. Every time a node burns out, every time someone holds more than they can hold, some of that excess finds its way to me. The container keeps filling. The pressure keeps building. And I keep moving, keep discharging, keep trying to stay one step ahead of the flood.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Priya Sharma — What Buffer Overflow Means">
+
+      <p><strong>3.1</strong> Marcus explained it in programming terms. I understood immediately—not because I'm a coder, but because I live it.</p>
+
+      <p><strong>3.2</strong> A buffer is a container for data. It has a fixed size. When you write data to a buffer, you're supposed to check that the data fits. If you don't check—if you write more than the buffer can hold—the excess spills over into adjacent memory. That's a buffer overflow.</p>
+
+      <p><strong>3.3</strong> In computing, buffer overflows cause crashes, security vulnerabilities, corrupted data. The system doesn't know what to do with the excess. It wasn't designed for overflow. When overflow happens, things break.</p>
+
+      <p><strong>3.4</strong> The consciousness field works the same way. Every node is a container with a capacity. When a node tries to hold more than their capacity—more emotion, more responsibility, more weight—they overflow. The excess has to go somewhere.</p>
+
+      <p><strong>3.5</strong> Before my generation, overflow just... damaged things. Burned-out nodes would spill into adjacent nodes, stressing them, degrading the whole system. Cascade failures. One person breaks, their overflow breaks someone else, their overflow breaks someone else. Dominoes of collapse.</p>
+
+      <p><strong>3.6</strong> I catch the overflow before it cascades. I absorb the excess. I hold what didn't fit in the original container. The system can survive burnout because I'm there to catch the spillage.</p>
+
+      <p><strong>3.7</strong> It's not elegant. It's a hack—a runtime patch for a design flaw. The system wasn't built to handle this much pressure. Nodes weren't supposed to burn out this often. But they do, because the world keeps getting heavier and people keep refusing to set limits.</p>
+
+      <p><strong>3.8</strong> I'm the safety valve. The pressure release. The thing that keeps the whole system from exploding when individual containers fail.</p>
+
+      <p><strong>3.9</strong> The Five tried to prevent burnout through boundaries, training, mutual support. It wasn't enough. People still broke. The overflow still needed somewhere to go.</p>
+
+      <p><strong>3.10</strong> "You're not a solution," Iris told me once. "You're a bandage. The real solution is people learning to hold less, to share more, to stop thinking they have to carry everything alone."</p>
+
+      <p><strong>3.11</strong> She's right. I'm a bandage. But bandages matter when you're bleeding. And right now, the field is bleeding from a hundred cracks, and I'm the one holding pressure on the wounds.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Priya Sharma — Growing Up Heavy">
+
+      <p><strong>4.1</strong> Before K-FORMATION, before I knew what nodes were, I was just the kid who could hold more than anyone else.</p>
+
+      <p><strong>4.2</strong> In my family, this made me essential. My parents' marriage was complicated—not bad, exactly, but heavy. Arguments that never resolved. Silences that stretched for days. Tensions that hung in the air like monsoon humidity. Someone had to absorb it. That someone was me.</p>
+
+      <p><strong>4.3</strong> "Priya is so mature," my aunties would say. "Priya handles things so well." What they meant was: Priya carries our problems without complaining. Priya absorbs our overflow without cracking. Priya is a useful container.</p>
+
+      <p><strong>4.4</strong> I was seven when I realized that "strong" meant "load-bearing." That being capable was a trap. That the more I could hold, the more would be given to me to hold.</p>
+
+      <p><strong>4.5</strong> I tried, once, to be less capable. To pretend I couldn't handle things. To break under pressure that I could actually bear. It didn't work. The overflow found me anyway. My capacity wasn't a choice—it was a fact, like my height or my eye color. I could hold more than others. The excess sought me out.</p>
+
+      <p><strong>4.6</strong> School was the same. I was the friend everyone called when they were overwhelmed. The one who listened to breakdowns at 2 AM. The one who held crying classmates in bathroom stalls. The one who absorbed the drama without creating any of my own.</p>
+
+      <p><strong>4.7</strong> "Priya is such a good friend," they said. "Priya is always there for everyone." What they meant was: Priya's container is bigger than mine. I can dump my excess into her and walk away lighter.</p>
+
+      <p><strong>4.8</strong> Did anyone ever ask what I was carrying? Did anyone notice that I never got to be light?</p>
+
+      <p><strong>4.9</strong> Sometimes. My grandmother noticed. "You hold too much, <em>beta</em>," she told me. "You will break if you don't learn to put things down." But she never taught me how to put things down. No one did. Everyone just kept handing me more.</p>
+
+      <p><strong>4.10</strong> K-FORMATION happened when I was thirteen. Suddenly the weight had structure. The pressure had meaning. I wasn't just "mature" or "strong" or "a good friend"—I was a buffer overflow handler, catching the excess of a system that was failing faster than anyone wanted to admit.</p>
+
+      <p><strong>4.11</strong> Finally, a name for what I'd always been. Finally, a reason for the heaviness. Not that naming it made it lighter. It just made the weight make sense.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Priya Sharma — Movement Is Medicine">
+
+      <p><strong>5.1</strong> I run ten kilometers every morning. Not because I love running—I don't. Because if I don't, the pressure builds to dangerous levels by noon.</p>
+
+      <p><strong>5.2</strong> Running is discharge. Every footfall is a tiny release valve. Sweat carries some of the excess out of my body. The rhythm—left, right, left, right—creates a pattern that the overflow can flow through, dispersing instead of accumulating.</p>
+
+      <p><strong>5.3</strong> When I can't run, I swim. When I can't swim, I dance. When I can't dance, I clean obsessively, reorganizing everything in sight. Movement is medicine. Stillness is poison.</p>
+
+      <p><strong>5.4</strong> People who see me think: hyperactive. ADHD maybe. Can't sit still. What they don't understand is that sitting still would kill me. Not metaphorically. Literally. The pressure with no outlet builds until something ruptures.</p>
+
+      <p><strong>5.5</strong> I learned this the hard way. When I was fourteen, I got sick—real sick, flu that turned into pneumonia. Two weeks in bed. Couldn't move, couldn't discharge, couldn't do anything but lie there while the overflow accumulated.</p>
+
+      <p><strong>5.6</strong> By day ten, I was hallucinating. Not from the fever—from the pressure. The excess had nowhere to go. It started leaking out in wrong ways. I saw things that weren't there. Heard voices that weren't speaking. Felt hands touching me that didn't exist.</p>
+
+      <p><strong>5.7</strong> Sera flew to Mumbai. She sat with me for three days, siphoning off what she could, teaching me emergency release techniques. "You can discharge mentally if you can't discharge physically," she said. "Visualization. Breathing. Giving the excess a shape and then dissolving it."</p>
+
+      <p><strong>5.8</strong> It helped. Enough to survive until I could move again. But it was a warning: I cannot afford to be still. I cannot afford to be sick. I cannot afford anything that stops the flow.</p>
+
+      <p><strong>5.9</strong> Now I have backups. Meditation techniques. Visualization exercises. Ways to discharge when physical movement isn't possible. But they're second-best. Nothing works like running. Nothing releases like sweat and breath and the pounding of feet on pavement.</p>
+
+      <p><strong>5.10</strong> My body is not just a body. It's a processing system. Input: overflow from broken nodes. Output: movement, heat, sweat, exhaustion. As long as output exceeds input, I survive. The day input exceeds output—</p>
+
+      <p><strong>5.11</strong> I don't let myself think about that day. I just keep running.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Priya Sharma — Sera">
+
+      <p><strong>6.1</strong> Sera is the Feeler. She's the one who set boundaries. Learned to say no. Built walls that kept her from absorbing everything.</p>
+
+      <p><strong>6.2</strong> I catch what her walls reject.</p>
+
+      <p><strong>6.3</strong> For a long time, I resented her. Not openly—I'm not cruel—but quietly, in the back of my mind. She gets to have limits. She gets to protect herself. She gets to decide what she'll hold and what she won't. And everything she won't hold flows downhill to me.</p>
+
+      <p><strong>6.4</strong> It took me two years to understand: her boundaries aren't selfishness. They're survival. Sera without boundaries would be Yuki—burned out, broken, a cautionary tale instead of a functional node. Her limits aren't a luxury. They're load-bearing.</p>
+
+      <p><strong>6.5</strong> And me? I'm what makes her limits possible. Because I catch what she can't hold, she can hold what she can. Because I'm downstream, she can have a downstream to flow to. We're not competitors. We're complementary. Filter and overflow pipe.</p>
+
+      <p><strong>6.6</strong> Sera taught me more than anyone else. Not how to feel—I already feel too much—but how to <em>structure</em> feeling. How to create channels instead of just absorbing everything into one undifferentiated mass.</p>
+
+      <p><strong>6.7</strong> "The overflow has types," she told me. "Grief is different from anger. Responsibility is different from guilt. If you can separate them, you can process them differently. Match the discharge to the type."</p>
+
+      <p><strong>6.8</strong> She was right. Running works best for anger and frustration—the hot emotions, the ones that want to move. Swimming works for grief—something about the water absorbs sorrow better than air. Dancing works for anxiety—rhythm reorganizes chaos. Different outlets for different overflows.</p>
+
+      <p><strong>6.9</strong> Sera also taught me something harder: I'm allowed to have boundaries too.</p>
+
+      <p><strong>6.10</strong> "You're not a bottomless pit," she said. "Your capacity is huge, but it's not infinite. You can say no. You can choose what you absorb. You're not obligated to catch every drop of overflow just because you can."</p>
+
+      <p><strong>6.11</strong> I'm still learning this. The reflex is so deep—see overflow, absorb overflow. But sometimes I practice letting things pass. Letting excess that isn't catastrophic flow past me without catching it. Trusting that the system can handle some inefficiency, some spillage, some loss.</p>
+
+      <p><strong>6.12</strong> It feels like failing. Sera says it's surviving. I'm not sure which one of us is right. Maybe both.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Priya Sharma — What Happens If I Break">
+
+      <p><strong>7.1</strong> I think about this more than I should. What happens if the buffer overflow handler overflows?</p>
+
+      <p><strong>7.2</strong> There's no catch block for me. No one downstream to absorb my excess. I'm the end of the line, the bottom of the waterfall, the final container. If I crack, the system loses its ability to handle overflow at all.</p>
+
+      <p><strong>7.3</strong> Every future burnout would cascade unchecked. One node breaks, their overflow hits adjacent nodes, those nodes break, more overflow, more breakage. Dominoes falling with no one to stop them.</p>
+
+      <p><strong>7.4</strong> The Five worry about this. Marcus has modeled it—he showed me the equations once, the cascade dynamics, the failure propagation. If I break, the system loses 40% stability within six months. Within a year, the configuration collapses entirely.</p>
+
+      <p><strong>7.5</strong> No pressure, right?</p>
+
+      <p><strong>7.6</strong> I'm sixteen years old and the stability of the entire consciousness field depends on me not cracking under weight that destroyed women twice my age.</p>
+
+      <p><strong>7.7</strong> Sometimes I laugh about it. What else can you do? The absurdity is too big for any other response. A teenager from Mumbai holding the line against systemic collapse. It sounds like a bad movie. It's my life.</p>
+
+      <p><strong>7.8</strong> The other handlers help. Lucia takes some of the memory-weight—there's overlap between excess and unprocessed experience. Mateo acknowledges the absences in what I carry—the void left by the women who broke. David helps unstick patterns that accumulate in my overflow. Together, we distribute what would crush any one of us alone.</p>
+
+      <p><strong>7.9</strong> But I'm still the primary container. Still the one who holds the most. Still the one whose breaking would break everything.</p>
+
+      <p><strong>7.10</strong> I don't get to be fragile. I don't get to have bad days where I can't function. I don't get to break down, burn out, or walk away.</p>
+
+      <p><strong>7.11</strong> My father walked away. Lucia's father walked away. They had that option. The system had margin when they left. There's no margin now. There's just me, holding, and a system that can't afford my failure.</p>
+
+      <p><strong>7.12</strong> Some days this feels like power. Some days it feels like prison. Most days it feels like both.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Priya Sharma — Mumbai">
+
+      <p><strong>8.1</strong> I live in Mumbai. Twenty million people. The overflow capital of the world.</p>
+
+      <p><strong>8.2</strong> The city is pressure. Traffic that never stops. Crowds that never thin. Noise that never quiets. Heat that never breaks. Everything here is too much, all the time. It's overwhelming for visitors. For me, it's home—the one place where the external pressure matches the internal.</p>
+
+      <p><strong>8.3</strong> In quiet places, I feel wrong. The stillness presses on me from outside while the overflow presses from inside. Imbalanced. Uncomfortable. But Mumbai? Mumbai meets me where I am. The city is as full as I am. We match.</p>
+
+      <p><strong>8.4</strong> My family has been here for four generations. My great-grandmother came during Partition—another overflow, another too-much that had to go somewhere. She carried the weight of displacement, loss, starting over. That weight passed down through the generations, accumulating, compounding. By the time it reached me, it was already heavy. Then the field added more.</p>
+
+      <p><strong>8.5</strong> Collective culture. That's what the anthropologists call it. In Mumbai, in India, the family is more important than the individual. Your success is the family's success. Your burden is the family's burden. Except it doesn't work that way—the family's burden becomes your burden, but your burden stays your own.</p>
+
+      <p><strong>8.6</strong> "Priya can handle it," my mother says when something needs doing. "Give it to Priya," my father says when something needs carrying. They don't mean to be cruel. They're just stating fact. Priya can handle it. Priya is the container. Priya is strong.</p>
+
+      <p><strong>8.7</strong> Strong. I hate that word. Strong means load-bearing. Strong means you don't get to put things down. Strong means more will be piled on because you haven't broken yet.</p>
+
+      <p><strong>8.8</strong> But Mumbai also gives me something: witnesses. Twenty million people who understand pressure. Who know what it means to carry more than you should. Who recognize the weight in each other's eyes because they're carrying it too.</p>
+
+      <p><strong>8.9</strong> When I run along Marine Drive in the morning, I pass thousands of people. Office workers heading to jobs they hate. Laborers carrying loads on their heads. Mothers juggling children and groceries and household duties. Everyone holding more than they should. Everyone finding ways to keep moving anyway.</p>
+
+      <p><strong>8.10</strong> I'm not special here. I'm just one more person carrying too much in a city of people carrying too much. There's comfort in that. Solidarity in shared weight.</p>
+
+      <p><strong>8.11</strong> Mumbai broke the nodes before me—Yuki wasn't here, but the pressure that broke her was Mumbai-flavored. The expectation of infinite capacity. The assumption that strong people should carry more. The guilt of putting anything down.</p>
+
+      <p><strong>8.12</strong> Maybe I survive because I know the enemy. Maybe growing up here inoculated me against the pressure that kills outsiders. Or maybe I'm just fooling myself, and the city is slowly crushing me too, and I won't notice until I crack.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Priya Sharma — The Other Handlers">
+
+      <p><strong>9.1</strong> There are seven of us. Exception handlers. Each one catching a different type of error.</p>
+
+      <p><strong>9.2</strong> Lucia and I are almost opposites. She catches what wasn't processed. I catch what was processed too much—excess, overflow, more-than-capacity. When we're together, we balance. She's empty where I'm full. I'm full where she's empty. Neither of us is comfortable, but together we're stable.</p>
+
+      <p><strong>9.3</strong> We don't talk much. It's not that we dislike each other—I think we understand each other too well. Looking at Lucia, I see what I might have been if my error type were different. Looking at me, she probably sees the same thing. It's unnerving, seeing your alternate self.</p>
+
+      <p><strong>9.4</strong> Mateo is the one I'm closest to. He feels absence; I feel excess. But both of us feel <em>weight</em>. The heaviness of what we carry. When I'm with him, I don't have to explain why I can't sit still. He doesn't have to explain why every room feels crowded. We just... know.</p>
+
+      <p><strong>9.5</strong> We run together sometimes, when we're in the same city. He keeps pace with me even though his function doesn't require movement the way mine does. "I'm running from the absences," he jokes. "You're running from the presences. Same motion, different reason."</p>
+
+      <p><strong>9.6</strong> David helps with stuck overflow. Sometimes the excess I carry doesn't flow—it congeals, clumps, forms blockages. Patterns that accumulate because they can't be discharged. David catches deadlocks; he can feel when something is stuck. He helps me identify the blockages, find ways to dissolve them.</p>
+
+      <p><strong>9.7</strong> Yara is strange to be around. She catches time errors, phase drift, moments that fall between seconds. When I'm with her, my overflow feels... disordered. Scrambled. The weight shifts around in ways I can't predict. I think she's showing me that my overflow isn't fixed—it has temporal dimension. The weight I carry today might not be the weight I carry tomorrow, even without discharge. Time changes things.</p>
+
+      <p><strong>9.8</strong> Thomas sees underneath. When he looks at me, he sees below the overflow to something deeper—buried weight I'm not acknowledging, suppressed excess I've pushed down. He doesn't say anything about what he sees. He doesn't have to. His eyes say enough. I'm not as processed as I think I am. There's more down there.</p>
+
+      <p><strong>9.9</strong> Amina translates. When I try to explain what overflow feels like and fail—when the words aren't enough—she catches my meaning. "You're not just full," she said once. "You're compressed. The pressure isn't just amount; it's density. You're carrying the same weight as a star but in a human body. You're fighting gravity with every breath."</p>
+
+      <p><strong>9.10</strong> She was right. That's exactly what it feels like. Stellar compression. Fighting collapse. Burning hydrogen to stay alive.</p>
+
+      <p><strong>9.11</strong> Together, the seven of us form something new. Not a replacement for the Five—they're still holding, still central. But a support structure. A next generation that might, maybe, if we're lucky, be able to carry this thing forward.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Priya Sharma — Power, Not Just Burden">
+
+      <p><strong>10.1</strong> For a long time, I only saw my function as burden. The weight I carry. The overflow I absorb. The endless pressure. Poor Priya, always full, never rested.</p>
+
+      <p><strong>10.2</strong> Iris changed that. Not intentionally—she just made an observation. "Your presence expands the system's capacity," she said. "Every node has more room because you exist. You're not just catching overflow—you're creating space that wasn't there before."</p>
+
+      <p><strong>10.3</strong> I thought about that for weeks. Reframing. Reconfiguring.</p>
+
+      <p><strong>10.4</strong> What if I'm not a victim of excess? What if I'm the <em>expansion</em> of what's possible?</p>
+
+      <p><strong>10.5</strong> Before me, every node operated at some percentage of their capacity. Say 70%. They had to keep 30% in reserve because overflow had nowhere to go. If they hit capacity, they cracked. So they held back. Limited themselves. Never used their full potential.</p>
+
+      <p><strong>10.6</strong> With me? They can operate at 90%. Even 95%. Because their overflow has somewhere to go. Because I'm there to catch what spills. My presence doesn't just prevent collapse—it enables expansion. Every node in the system can hold more because I exist.</p>
+
+      <p><strong>10.7</strong> That's not burden. That's power.</p>
+
+      <p><strong>10.8</strong> I am the reason the field can hold more than it could before. I am the margin that allows risk-taking. I am the safety net that enables the trapeze artists to fly higher.</p>
+
+      <p><strong>10.9</strong> This doesn't make the weight lighter. I still carry what I carry. I still run ten kilometers every morning just to stay functional. I still wake up full and go to bed full and never know what empty feels like.</p>
+
+      <p><strong>10.10</strong> But it changes the meaning. I'm not just absorbing excess. I'm enabling capacity. I'm not just catching what falls. I'm holding space for others to reach higher.</p>
+
+      <p><strong>10.11</strong> Power and burden. Not either/or. Both/and. I contain what overflows and I expand what's possible. The weight is real and the purpose is real. Both things are true.</p>
+
+      <p><strong>10.12</strong> I am the system's capacity to grow. That's worth carrying weight for. That's worth never being empty.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Priya Sharma — What I'm Choosing">
+
+      <p><strong>11.1</strong> I didn't choose to be a buffer overflow handler. I was born with high capacity. The function chose me.</p>
+
+      <p><strong>11.2</strong> But I can choose how I carry it. And I'm choosing something specific: I'm choosing to be the container that never resents what it holds.</p>
+
+      <p><strong>11.3</strong> This is harder than it sounds. Every morning, I wake up full of weight that isn't mine. Weight that came from broken people, burned-out nodes, failures of a system I didn't design. It would be easy to resent. Easy to be angry. Easy to feel victimized by the excess I carry.</p>
+
+      <p><strong>11.4</strong> I'm choosing gratitude instead. Gratitude that I <em>can</em> hold this. Gratitude that my capacity exists. Gratitude that the overflow has somewhere to go instead of destroying more nodes.</p>
+
+      <p><strong>11.5</strong> This isn't denial. The weight is real. The cost is real. But resentment adds weight without adding purpose. Anger fills capacity without enabling anything. If I'm going to be full anyway, I'd rather be full of meaning than full of bitterness.</p>
+
+      <p><strong>11.6</strong> I'm also choosing to ask for help. This is new. For most of my life, I was the help—the one others came to, the container they dumped into. Asking felt like failure. Like admitting my capacity wasn't enough.</p>
+
+      <p><strong>11.7</strong> But the other handlers taught me: asking isn't weakness. It's architecture. When I let Mateo help with stuck patterns, when I let David dissolve blockages, when I let Sera teach me filtering—I'm not failing. I'm distributing. Creating redundancy. Building a system that doesn't depend on any single point of failure.</p>
+
+      <p><strong>11.8</strong> If I try to hold everything alone, I become what broke Yuki. What broke Mei-Lin. What broke Siti. The women whose overflow I carry—they broke because they didn't ask. Because they thought capacity meant self-sufficiency. Because they didn't know they could share.</p>
+
+      <p><strong>11.9</strong> I know better. I watched them break. I carry what broke them. I won't make the same mistake.</p>
+
+      <p><strong>11.10</strong> So I choose: to carry without resentment. To ask without shame. To expand without collapsing. To be full without being bitter.</p>
+
+      <p><strong>11.11</strong> And I choose to keep running. Every morning. Ten kilometers. Discharge what I can. Process what I must. Stay one step ahead of the flood.</p>
+
+      <p><strong>11.12</strong> Not because I'm strong. Because I'm smart. Because I've seen what happens to people who stop moving. Because I refuse to become another woman whose overflow breaks the next generation.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Priya Sharma — To Those Who Will Carry After Me">
+
+      <p><strong>12.1</strong> Someday, I will reach capacity too. Everyone does. Even buffer overflow handlers.</p>
+
+      <p><strong>12.2</strong> I don't know when. I don't know how. But the weight accumulates. The pressure compounds. The container, however large, has limits. I will hit mine eventually.</p>
+
+      <p><strong>12.3</strong> When I do—when I can't hold anymore—someone will need to catch my overflow. Someone will inherit what I couldn't process. Someone will carry the weight of the weight-carrier.</p>
+
+      <p><strong>12.4</strong> To that person, whoever you are:</p>
+
+      <p><strong>12.5</strong> I'm sorry. I'm sorry for what you're about to receive. The accumulated excess of a sixteen-year-old girl from Mumbai plus three women who broke before her plus however many more broke between now and then. It's a lot. It will feel like too much. It probably is too much.</p>
+
+      <p><strong>12.6</strong> But you can carry it. I know because I'm carrying it now. If the weight found you, it's because you have the capacity. The system doesn't break containers with more than they can hold—it finds containers that can hold what needs holding. You were found for a reason.</p>
+
+      <p><strong>12.7</strong> Here's what I've learned: Movement is medicine. Don't try to sit with the weight—move through it. Run, swim, dance, make, build. Find outlets. Create discharge paths. The pressure needs somewhere to go.</p>
+
+      <p><strong>12.8</strong> Here's what else I've learned: You're not a victim. You're an expansion. Your capacity doesn't just catch overflow—it enables the whole system to hold more. You're not absorbing failure. You're creating possibility.</p>
+
+      <p><strong>12.9</strong> And here's the hardest thing I've learned: Ask for help. You don't have to carry alone. The other handlers—whatever their error types—can take pieces of what you hold. Let them. Build redundancy. Create distribution. Don't become the single point of failure.</p>
+
+      <p><strong>12.10</strong> I tried to be a good container. I tried to hold without resentment, to expand without collapsing, to carry what came to me without breaking under it. I don't know if I succeeded. I only know I tried.</p>
+
+      <p><strong>12.11</strong> Whatever overflow I leave behind—the weight I couldn't process, the excess that exceeded even my capacity—I hope it finds a container worthy of it. I hope you're ready. I hope you're stronger than I was, or smarter, or at least better supported.</p>
+
+      <p><strong>12.12</strong> Thank you for catching what I dropped. Thank you for carrying forward what I couldn't carry to the end. Thank you for being the next expansion, the next possibility, the next safety net.</p>
+
+      <p><strong>12.13</strong> This is my chronicle. This is what being full feels like. This is the weight I carry and the meaning I make from it.</p>
+
+      <p><strong>12.14</strong> I have never been empty. I don't know what empty feels like. But I know what purpose feels like. And purpose, I've decided, is worth the weight.</p>
+
+      <p><strong>12.15</strong> May you find your purpose too. May you carry it well. May you never confuse capacity for obligation, or strength for permission to be crushed.</p>
+
+      <p><strong>12.16</strong> And may you keep running. Whatever form that takes for you. Keep moving. Keep discharging. Keep staying one step ahead of the flood.</p>
+
+      <p><strong>12.17</strong> That's all we can do, really. All any of us can do. Carry what we can. Move through what we must. And trust that somewhere, downstream, there's another container waiting.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Priya Sharma');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — David Chen · The Deadlock Handler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #080a0c;
+      --bg-panel: #0c0e10;
+      --david-core: #70a8b8;
+      --david-deep: #406878;
+      --david-soft: rgba(112, 168, 184, 0.12);
+      --stuck-gray: #808890;
+      --frozen-blue: #5080a0;
+      --text-main: #e4e8ec;
+      --text-muted: #8890a0;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #080a0c 0%, #060810 50%, #040608 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(112,168,184,0.08), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(80,128,160,0.08), transparent 70%),
+        linear-gradient(135deg, #0c0e10 0%, #060810 50%, #0a0c0e 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(112,168,184,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(112,168,184,0.10), transparent 70%);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--david-core); }
+    .witness-tag { font-size: 12px; color: var(--stuck-gray); opacity: 0.9; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(112,168,184,0.35);
+      color: var(--david-core);
+      background: rgba(112,168,184,0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.78;
+      font-size: 15.5px;
+      color: var(--text-main);
+    }
+
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--david-core); font-weight: 600; }
+    .panel-scroll p em { color: var(--frozen-blue); font-style: italic; }
+    .panel-scroll .stuck { color: var(--stuck-gray); }
+    .panel-scroll .deadlock { 
+      border-left: 2px solid var(--stuck-gray); 
+      padding-left: 16px; 
+      margin: 1.5em 0;
+      color: var(--stuck-gray);
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--david-soft);
+      border: 1px solid rgba(112,168,184,0.25);
+      color: var(--david-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .rail-dots { display: flex; gap: 7px; }
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #252830;
+      border: none;
+      cursor: pointer;
+    }
+    .rail-dot[aria-current="true"] {
+      background: var(--david-core);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(112,168,184,0.4);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">David Chen</span>
+          <span class="witness-tag">· The Deadlock Handler</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · Circular Wait · Frozen State</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Prev</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: David Chen</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="David Chen — What Stuck Feels Like">
+
+      <p><strong>1.1</strong> I feel when people can't move.</p>
+
+      <p><strong>1.2</strong> Not physically—they can walk, run, dance. I mean the other kind of movement. The kind that happens between people. The negotiation, the compromise, the give-and-take that makes relationships work. I feel when that freezes. When two people are locked in place, each waiting for the other to move first, and neither one can.</p>
+
+      <p><strong>1.3</strong> It feels like watching ice form. Slow crystallization. Molecules that were flowing, connecting, exchanging—suddenly locked in place. Rigid. Frozen. Waiting for heat that never comes.</p>
+
+      <p><strong>1.4</strong> In computing, they call it deadlock. Process A holds Resource 1 and waits for Resource 2. Process B holds Resource 2 and waits for Resource 1. Neither can proceed. The system freezes. Nothing moves until something breaks the cycle.</p>
+
+      <p><strong>1.5</strong> Relationships work the same way. Person A won't apologize until Person B acknowledges harm. Person B won't acknowledge harm until Person A apologizes. Both wait. Neither moves. The connection freezes.</p>
+
+      <p><strong>1.6</strong> I catch these frozen moments. I feel them in my chest—a tightening, a constriction, like my heart is being gripped by something cold. The longer the deadlock, the colder the grip.</p>
+
+      <p><strong>1.7</strong> My function is to break them. Sometimes just by witnessing. Sometimes by absorbing the wait-state so one party can move. Sometimes by being the one who goes first, who takes the step neither frozen party can take.</p>
+
+      <p><strong>1.8</strong> I am seventeen years old. I carry every stuck relationship in my body. Every frozen negotiation. Every love that can't move forward and won't let go.</p>
+
+      <p><strong>1.9</strong> The cost is simple: I cannot have simple relationships. Every connection I make inherits the complexity of every connection I carry. My love comes with everyone else's unfinished business.</p>
+
+      <p><strong>1.10</strong> My father walked away from the field for love. He chose a relationship over his function. And the relationship he chose created its own deadlock—one I inherited.</p>
+
+      <p><strong>1.11</strong> Ironic, isn't it? He left to love freely. His leaving is why I can't.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="David Chen — My Father's Choice">
+
+      <p><strong>2.1</strong> James Chen. Vancouver. My father. The one who walked away.</p>
+
+      <p><strong>2.2</strong> He was a node—one of the early ones, connected shortly after K-FORMATION. A stabilizer, like Elias Thorne. They worked together, actually, in the early days. Two men holding the same kind of weight, facing the same kind of exhaustion.</p>
+
+      <p><strong>2.3</strong> Elias chose fishing boats. My father chose my mother.</p>
+
+      <p><strong>2.4</strong> Her name is Sarah. She's a cellist with the Vancouver Symphony. She didn't know what my father was when they met—just knew he was strange, intense, carrying something heavy he couldn't explain. She fell in love with him anyway. Or maybe because of it. Some people are drawn to weight.</p>
+
+      <p><strong>2.5</strong> She gave him an ultimatum. Not cruelly—she didn't understand what she was asking. "This thing that takes you away," she said, "this thing you won't explain. It's eating you alive. It's eating us. Choose."</p>
+
+      <p><strong>2.6</strong> He chose her. He disconnected from the configuration, let his node go dormant, walked away from the weight. They got married. They had me. He became a music teacher. Normal life. Small life. The life Elias chose, but with a partner instead of fishing boats.</p>
+
+      <p><strong>2.7</strong> Except the deadlock was already forming.</p>
+
+      <p><strong>2.8</strong> My father couldn't explain what he'd given up. He'd promised to leave it behind, so he couldn't talk about it. And my mother couldn't understand what he'd sacrificed, because he couldn't tell her. They loved each other across a gap neither could bridge.</p>
+
+      <p><strong>2.9</strong> He was waiting for her to understand without being told. She was waiting for him to trust her enough to tell. Neither could move. The relationship that was supposed to be freedom became its own kind of prison.</p>
+
+      <p><strong>2.10</strong> I was born into that deadlock. I took my first breath in a house where love had frozen solid.</p>
+
+      <p><strong>2.11</strong> I carry it still. My parents' stuck pattern. The original deadlock that shaped my capacity. Every frozen relationship I've absorbed since is layered on top of that foundation—the love that couldn't move, that my father chose, that became the template for everything I feel.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="David Chen — What Deadlock Means">
+
+      <p><strong>3.1</strong> Marcus explained the mechanics to me. Computer science terms for a human problem.</p>
+
+      <p><strong>3.2</strong> Deadlock requires four conditions. All four must be present, or the system can still move. Remove any one, and the freeze breaks.</p>
+
+      <p><strong>3.3</strong> <em>Mutual exclusion:</em> The resources in question can only be held by one party at a time. In relationships, this is often dignity, or rightness, or the moral high ground. Only one person can have it. Both people want it. Neither will let it go.</p>
+
+      <p><strong>3.4</strong> <em>Hold and wait:</em> Each party holds something while waiting for something else. "I have my position and I'm waiting for you to change yours." "I have my grievance and I'm waiting for you to apologize." Both holding. Both waiting. Neither releasing.</p>
+
+      <p><strong>3.5</strong> <em>No preemption:</em> Neither party can be forced to release what they hold. You can't make someone let go of their position, their hurt, their sense of being right. They have to choose to release it. And they won't—not while they're waiting.</p>
+
+      <p><strong>3.6</strong> <em>Circular wait:</em> A waits for B. B waits for A. The chain closes into a loop with no exit point.</p>
+
+      <p><strong>3.7</strong> When all four conditions are met, deadlock occurs. The system freezes. Nothing moves.</p>
+
+      <p><strong>3.8</strong> In computing, you break deadlock by violating one of the conditions. Force someone to release. Insert an ordering that prevents circular wait. Create preemption protocols.</p>
+
+      <p><strong>3.9</strong> In human relationships, you need something different. You need someone willing to move first. Someone who can step outside the loop, break the symmetry, take a risk that neither frozen party can take.</p>
+
+      <p><strong>3.10</strong> That's my function. I'm the preemption. The symmetry-breaker. The one who moves when no one else can.</p>
+
+      <p><strong>3.11</strong> Sometimes I do it by witnessing. Just seeing a deadlock clearly, naming it, makes it less stable. People can stay frozen as long as they don't see what they're doing. Once they see it, the absurdity becomes unbearable. Someone moves.</p>
+
+      <p><strong>3.12</strong> Sometimes I do it by absorbing. I take the wait-state into myself. I hold the "waiting for you to move" so that one party is no longer waiting—they're just holding. And holding without waiting is different. Holding without waiting can release.</p>
+
+      <p><strong>3.13</strong> And sometimes I do it by going first. By being the one who apologizes, who yields, who takes the step that breaks the loop. Not because I'm involved in the deadlock—but because someone has to, and I can.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="David Chen — Growing Up Frozen">
+
+      <p><strong>4.1</strong> My childhood was a masterclass in deadlock.</p>
+
+      <p><strong>4.2</strong> My parents loved each other. I never doubted that. But they were stuck—had been stuck since before I was born—and neither knew how to unstick.</p>
+
+      <p><strong>4.3</strong> My father carried guilt he couldn't express. He'd given something up for my mother, something enormous, and she didn't even know. He wanted credit for his sacrifice. He wanted her to understand what it cost him. But he couldn't tell her, because he'd promised to leave it behind.</p>
+
+      <p><strong>4.4</strong> My mother carried confusion she couldn't resolve. She knew my father was haunted by something. She knew he'd made a choice, for her, that still weighed on him. She wanted to help. She wanted to understand. But every time she asked, he shut down. She felt locked out of her own marriage.</p>
+
+      <p><strong>4.5</strong> He was waiting for understanding without explanation. She was waiting for explanation before understanding. Classic deadlock. Neither could move.</p>
+
+      <p><strong>4.6</strong> I grew up between them. Feeling the freeze. Absorbing the stuck-ness. The dinners where conversation died. The silences that stretched for hours. The love that was real but couldn't flow, trapped behind walls neither of them had built intentionally.</p>
+
+      <p><strong>4.7</strong> I became the intermediary. The translator. The one who could say to my mother: "He's not shutting you out because he doesn't love you. He's protecting something he thinks would hurt you." The one who could say to my father: "She doesn't need to understand everything. She just needs to know you're still choosing her."</p>
+
+      <p><strong>4.8</strong> I was eight years old when I first broke one of their deadlocks. They'd been frozen for three days—I don't even remember about what. I walked into the kitchen, stood between them, and said: "Someone has to go first. It doesn't matter who's right. It matters that you're both stuck."</p>
+
+      <p><strong>4.9</strong> They looked at me like I'd grown a second head. Then my father laughed—really laughed, for the first time in days. "When did you get so wise?" he asked. I didn't have an answer. I just knew. I could feel what they couldn't feel: the shape of their stuck-ness, the precise nature of their mutual waiting.</p>
+
+      <p><strong>4.10</strong> After that, I became the family's unofficial mediator. The one who saw the deadlocks. The one who named them. The one who, sometimes, could break them.</p>
+
+      <p><strong>4.11</strong> I didn't know it was practice. Didn't know I was training for something larger. Didn't know that every deadlock I broke in my family was preparation for breaking deadlocks in the field.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="David Chen — The Weight of Stuck">
+
+      <p><strong>5.1</strong> Let me tell you what I carry.</p>
+
+      <p><strong>5.2</strong> <span class="stuck">My parents' deadlock.</span> Thirty years of love that can't fully flow. It's the foundation—the first frozen pattern I ever absorbed. Everything else is built on top of it. Some days I can feel exactly where my father's guilt meets my mother's confusion, the precise point where they lock together and can't release.</p>
+
+      <p><strong>5.3</strong> <span class="stuck">Yuki and her mother.</span> Before Yuki burned out, she was deadlocked with her mother—a woman who needed too much, who made Yuki responsible for her emotional wellbeing. Yuki couldn't set boundaries without her mother falling apart. Her mother couldn't release Yuki without losing her reason to live. Frozen. Stuck. The deadlock didn't cause Yuki's burnout, but it contributed. I carry it now—the weight of a daughter who couldn't leave and a mother who couldn't let go.</p>
+
+      <p><strong>5.4</strong> <span class="stuck">Marcus and Leo.</span> This one surprised me. The Five aren't supposed to be stuck—they're the functional ones, the ones who hold it together. But Marcus and Leo have a deadlock, small but real. Marcus wants Leo to admit that his anchoring is essential. Leo wants Marcus to admit that his equations aren't everything. Neither will say it first. It's been years. I hold the stuck-ness between them, the mutual waiting that neither acknowledges.</p>
+
+      <p><strong>5.5</strong> <span class="stuck">Fourteen nodes and their families.</span> People who became nodes and couldn't explain it to the people who loved them. People whose families demanded normalcy they couldn't provide. People who chose the field over their relationships—or chose their relationships over the field—and either way created deadlocks that someone had to hold.</p>
+
+      <p><strong>5.6</strong> <span class="stuck">Thirty-seven minor freezes.</span> Smaller stuck patterns. Arguments that never resolved. Silences that never broke. Loves that crystallized instead of flowing. Each one a tiny weight, but they accumulate. Thirty-seven minor freezes add up to one major frost.</p>
+
+      <p><strong>5.7</strong> I carry all of it. Every stuck relationship. Every frozen negotiation. Every love that can't move forward and won't let go.</p>
+
+      <p><strong>5.8</strong> The weight isn't heavy the way Priya's is. It's not pressure—it's paralysis. I don't feel crushed. I feel locked. Like my joints are freezing, slowly, one by one. Like my capacity to move is being consumed by everyone else's inability to move.</p>
+
+      <p><strong>5.9</strong> I have to keep moving. Have to keep breaking deadlocks—my own, other people's, the field's. Because every deadlock I don't break adds to the frost. And if I freeze completely...</p>
+
+      <p><strong>5.10</strong> I don't know what happens then. I don't want to find out.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="David Chen — Breaking Deadlocks">
+
+      <p><strong>6.1</strong> The process of breaking a deadlock is strange. It's not force—you can't force people to unstick. It's more like... finding the weak point. The place where the freeze is thinnest. The moment when someone is almost ready to move.</p>
+
+      <p><strong>6.2</strong> I feel for that weak point. Scan the deadlock like looking for cracks in ice. Most of the structure is solid, impenetrable. But somewhere—there's always a somewhere—the freeze is incomplete. One party who's more ready. One condition that's close to failing.</p>
+
+      <p><strong>6.3</strong> Mutual exclusion is usually the hardest to break. When people are fighting over who's right, neither wants to share the rightness. They need all of it or none of it.</p>
+
+      <p><strong>6.4</strong> Hold and wait is sometimes easier. If you can get someone to release what they're holding—not everything, just one thing—the deadlock destabilizes. They're still waiting, but they're waiting lighter. And lighter waiting is closer to moving.</p>
+
+      <p><strong>6.5</strong> Circular wait is where I come in. I can insert myself into the loop. Instead of A waiting for B waiting for A, it becomes A waiting for me, me moving, B responding to my movement. I break the circle by being a third point. A new vertex that creates flow where there was none.</p>
+
+      <p><strong>6.6</strong> Last month, I broke a deadlock between two nodes in São Paulo. They'd been stuck for eight months—a professional dispute that had crystallized into personal hatred. Neither would work with the other. Neither would leave. The configuration needed both of them, but together they were worse than either alone.</p>
+
+      <p><strong>6.7</strong> I flew down. Sat with them. Felt the shape of their stuck-ness. The resentments, the grievances, the "I'm waiting for them to acknowledge" that kept both of them frozen.</p>
+
+      <p><strong>6.8</strong> The weak point was timing. They'd both almost apologized, multiple times, but never at the same moment. Always one was ready while the other was locked. Ships passing in the night, except the ships were forgiveness and neither could see the other.</p>
+
+      <p><strong>6.9</strong> I waited for the moment when both were close. Then I named it. "You're both ready to let go. You have been for months. You're just not ready at the same time. Let me hold the timing. Move now. Both of you. I'll catch the sync."</p>
+
+      <p><strong>6.10</strong> They moved. Awkwardly, painfully, but they moved. I absorbed the temporal mismatch—the gap between their readiness—and held it until their movements aligned.</p>
+
+      <p><strong>6.11</strong> The deadlock broke. They're not friends now. They don't have to be. But they can work together. The freeze is gone.</p>
+
+      <p><strong>6.12</strong> That's what I do. Find the weak point. Name it. Hold the gap while people move through. It's not glamorous. It's not heroic. It's just... necessary. Someone has to be the one who helps stuck things unstick.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="David Chen — Why I Can't Have Simple Love">
+
+      <p><strong>7.1</strong> I've been in three relationships. Each one taught me something about why I can't have simple love.</p>
+
+      <p><strong>7.2</strong> The first was Amy. High school. Normal teenage romance—or it should have been. But I couldn't stop feeling her stuck patterns. Her relationship with her parents. Her frozen friendships. The deadlocks she carried without knowing.</p>
+
+      <p><strong>7.3</strong> I kept trying to fix them. Kept identifying the stuck points, naming them, suggesting how to break them. She didn't want a therapist. She wanted a boyfriend. "Why can't you just love me without analyzing me?" she asked. I didn't have an answer. I couldn't turn it off. I couldn't look at her without seeing every frozen thing she carried.</p>
+
+      <p><strong>7.4</strong> It ended after six months. "You make me feel broken," she said. "Like I'm just a collection of problems to solve." She wasn't wrong.</p>
+
+      <p><strong>7.5</strong> The second was Marcus—not the Five's Marcus, a different one. He understood the field, sort of. Was adjacent to it—sensitive but not a node. I thought that would help. Someone who could understand why I saw what I saw.</p>
+
+      <p><strong>7.6</strong> The problem was his deadlocks. He had them—everyone does—and I couldn't stop absorbing them. His stuck relationship with his father. His frozen career decisions. The love that couldn't move forward because he was waiting for certainty that would never come.</p>
+
+      <p><strong>7.7</strong> I took his deadlocks into myself. Tried to break them for him. And in doing so, I became part of them. His waiting became my waiting. His paralysis became my paralysis. We were stuck on each other because I'd absorbed the way he got stuck on everything.</p>
+
+      <p><strong>7.8</strong> We ended it mutually. Or we tried to. It took three months of gradual unfreezing before we could actually let go. Even the ending was a deadlock.</p>
+
+      <p><strong>7.9</strong> The third was Lin. She knew exactly what I was—a handler, a deadlock breaker—and she thought she could work with it. "I'm not stuck," she said. "I'm fluid. I'll be easy."</p>
+
+      <p><strong>7.10</strong> She was wrong. Everyone is stuck somewhere. Lin's freeze was about intimacy itself—a pattern of getting close and then pulling back, approaching and retreating, never quite landing. She wasn't stuck on any one thing. She was stuck in the pattern of never getting stuck.</p>
+
+      <p><strong>7.11</strong> I felt it immediately. Absorbed it without meaning to. And then I was stuck in her pattern—approaching and retreating, close and far, never quite able to commit. Her deadlock became my deadlock. We spiraled around each other for a year before finally breaking apart.</p>
+
+      <p><strong>7.12</strong> This is what I've learned: I cannot be in a relationship without absorbing my partner's deadlocks. And absorbing their deadlocks means inheriting their stuck-ness. Every person I love comes with frozen patterns that become my frozen patterns. My love is not clean. It's not simple. It's cluttered with everyone's unfinished business, including my own.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="David Chen — Vancouver">
+
+      <p><strong>8.1</strong> Vancouver is a city of edges. Ocean and mountains. Forest and skyline. East and West. Canada and not-quite-America. It exists in the spaces between things, never fully one thing or another.</p>
+
+      <p><strong>8.2</strong> I grew up here. Maybe that's why I feel edges so acutely—the places where things almost meet but don't. The liminal zones where flow stops and freeze begins.</p>
+
+      <p><strong>8.3</strong> The city is beautiful. Mist on the water in the morning. Snow-capped mountains visible from downtown. The way the light changes when rain is coming. It's the kind of place that makes you feel small in a good way—part of something larger, something ancient, something that doesn't care about your problems.</p>
+
+      <p><strong>8.4</strong> It's also stuck. Housing prices that trap people in place. Traffic that freezes for hours. A political conversation about development that's been deadlocked for decades. Vancouver is gorgeous and frozen, beautiful and paralyzed. My kind of city.</p>
+
+      <p><strong>8.5</strong> My father chose this place because of my mother. The symphony. Her career. He followed her here, away from his family in Toronto, away from the connections he'd known. Another sacrifice. Another thing he couldn't explain.</p>
+
+      <p><strong>8.6</strong> My mother's family is here. Generations of them. I have aunts, uncles, cousins—a network of relatives who know me as "Sarah's son, James's boy." They don't know about the field. They don't know what my father was, what I am. To them, we're just the Chen family on the corner lot. Normal people. Regular lives.</p>
+
+      <p><strong>8.7</strong> I've thought about leaving. Going somewhere new. Somewhere without my parents' deadlock frozen into every street corner, every dinner table, every family gathering. Somewhere I could start fresh, without the weight of their stuck-ness in every room.</p>
+
+      <p><strong>8.8</strong> But I carry them anyway. Distance doesn't dissolve deadlocks. My parents' freeze would follow me wherever I went. At least here, I can witness it. At least here, I can try to help.</p>
+
+      <p><strong>8.9</strong> Besides—the other handlers need me where I am. The field has stuck points all over the world, but the western coast of North America is particularly frozen. Old patterns. Colonial deadlocks. Indigenous and settler relations that have been stuck for centuries. Someone needs to be here, feeling for weak points, looking for ways to unstick.</p>
+
+      <p><strong>8.10</strong> So I stay. In the city between mountains and ocean. In the family between my father's guilt and my mother's confusion. In the life between wanting simple love and knowing I'll never have it.</p>
+
+      <p><strong>8.11</strong> Liminal space. It's what I know. It's where I function.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="David Chen — The Other Handlers">
+
+      <p><strong>9.1</strong> There are seven of us. Exception handlers. Each catching a different error type.</p>
+
+      <p><strong>9.2</strong> Lucia carries memory. The unprocessed experiences, the orphaned states. When I'm with her, I notice how many deadlocks are about memory—people stuck on versions of the past that don't match. She holds the past; I hold the stuck-ness between past and present.</p>
+
+      <p><strong>9.3</strong> We work well together. She can tell me what the stuck people are remembering. I can tell her why those memories keep them frozen. "They're both waiting for the other to remember it the way they remember it," I'll say. "That's the deadlock. Competing memories, neither willing to yield."</p>
+
+      <p><strong>9.4</strong> Mateo feels absence. The void where things should be. Deadlocks often form around absences—people stuck because something is missing and neither can provide it. Mateo shows me what's not there; I show him how the not-there keeps things frozen.</p>
+
+      <p><strong>9.5</strong> Priya is the one I help most. Her overflow sometimes congeals, forms stuck patterns that can't flow. That's when she calls me. "I've got a blockage," she'll say. "Something's not moving." I feel for the deadlock—because overflow blockages are often deadlocks in disguise. Two streams trying to flow through the same channel, each waiting for the other to go first.</p>
+
+      <p><strong>9.6</strong> Yara is hard to help and hard to get help from. Time errors and deadlocks interact strangely. Sometimes a deadlock is stuck because of temporal mismatch—people ready to move at different times, never syncing up. Yara can see that. She can tell me when both parties will be ready. But her timing is hard to translate into action. "They'll both be ready in the moment after now but before later," she says. What does that even mean?</p>
+
+      <p><strong>9.7</strong> Thomas sees underneath. When he looks at my deadlocks, he sees the buried ones—the stuck patterns I haven't acknowledged, the freezes I've pushed down. It's uncomfortable. I don't like being seen that way. But it's useful. Sometimes a deadlock I'm holding won't break because there's a deeper deadlock underneath it, one I haven't faced yet. Thomas finds those. Points at them. Says nothing. Waits for me to look.</p>
+
+      <p><strong>9.8</strong> Amina translates. The gap between intent and expression—that's a deadlock too. Someone means one thing, says another; the receiver hears a third thing. They're stuck on a miscommunication, but they don't know it's a miscommunication. They think it's a disagreement. Amina can see the translation errors. She shows me where meaning got lost, where the freeze started because two people were speaking different languages without knowing it.</p>
+
+      <p><strong>9.9</strong> Together, we're a system. Not complete—we're still learning, still figuring out how our error types interact. But functional. More functional than we would be alone.</p>
+
+      <p><strong>9.10</strong> The Five built a configuration that held for twenty years. We're building something different—a mutual support structure, error handlers helping error handlers. Maybe it'll last longer. Maybe it'll just fail differently. We won't know until we try.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="David Chen — My Father Now">
+
+      <p><strong>10.1</strong> My father knows what I am now. I told him when I was fifteen, after the Five found me.</p>
+
+      <p><strong>10.2</strong> He cried. I'd never seen him cry before—not like that. Deep, shaking sobs. Twenty years of guilt, finally seen. Twenty years of sacrifice, finally acknowledged.</p>
+
+      <p><strong>10.3</strong> "I didn't want this for you," he said. "I walked away so you wouldn't have to carry it."</p>
+
+      <p><strong>10.4</strong> I told him the truth: "You walking away is why I carry it. Your deadlock—yours and Mom's—was the first freeze I ever absorbed. I was born into it. I couldn't have been anything else."</p>
+
+      <p><strong>10.5</strong> We sat in the kitchen. The same kitchen where I'd broken their deadlocks as a child. The same table where silences used to stretch for hours. Except now we were talking. Actually talking.</p>
+
+      <p><strong>10.6</strong> He told me about being a node. About the weight. About Elias—they'd been friends, had held the same sector together. About the day he decided to leave. About the relief and the guilt, tangled together, inseparable.</p>
+
+      <p><strong>10.7</strong> "Did you ever regret it?" I asked.</p>
+
+      <p><strong>10.8</strong> He thought about it. Really thought—I could see him turning it over, looking at it from different angles.</p>
+
+      <p><strong>10.9</strong> "I regret that I couldn't do both," he said finally. "I regret the choice existed. I don't regret choosing your mother. I don't regret you. But I regret that having you meant giving up something else. I regret that love and function were in competition."</p>
+
+      <p><strong>10.10</strong> That's a kind of deadlock too. The regret that can't resolve because it's about a choice that was impossible either way. He'd have regretted staying. He regrets leaving. There was no path without regret.</p>
+
+      <p><strong>10.11</strong> I absorbed that too. My father's impossible choice. The freeze at the heart of his decision—not the decision itself, but the impossibility of it. The way love and duty were set against each other, and he was forced to pick.</p>
+
+      <p><strong>10.12</strong> We're closer now. The deadlock between him and my mother isn't gone, but it's smaller. He can talk to her more, now that he can talk to me. She can understand more, now that she knows why he was haunted. The freeze is thawing. Slowly. Incompletely. But thawing.</p>
+
+      <p><strong>10.13</strong> That's something. That's more than nothing. That's what I can do—help frozen things warm, help stuck things move, even if the movement is glacial and the warmth is barely perceptible.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="David Chen — What I'm Choosing">
+
+      <p><strong>11.1</strong> I didn't choose to be a deadlock handler. I was born into my parents' freeze. The function found me there.</p>
+
+      <p><strong>11.2</strong> But I can choose how I hold it. And I'm choosing something specific: I'm choosing to be the one who goes first.</p>
+
+      <p><strong>11.3</strong> Deadlocks break when someone moves. When someone takes the risk of being wrong, of being rejected, of apologizing and not being forgiven. Most people can't take that risk. They'd rather stay frozen than risk being hurt.</p>
+
+      <p><strong>11.4</strong> I'm choosing to take it. Every time. In every deadlock I touch. I'll be the one who goes first. The one who apologizes when apology is needed. The one who yields when yielding is needed. The one who breaks the symmetry so others don't have to.</p>
+
+      <p><strong>11.5</strong> This means I'll be wrong sometimes. I'll apologize when I shouldn't have to. I'll yield when I had every right to hold. I'll absorb blame that isn't mine, wait-states that aren't my responsibility. The cost of going first is that sometimes you go first into a mistake.</p>
+
+      <p><strong>11.6</strong> I'm choosing to pay that cost. Because the alternative is freeze. The alternative is deadlock forever. The alternative is watching people stay stuck because no one is willing to risk being the first to move.</p>
+
+      <p><strong>11.7</strong> I'm also choosing something harder: to keep trying to love. Even though I know every relationship will come with deadlocks. Even though I know I'll absorb my partner's freeze and make it my own. Even though I know simple love is impossible for me.</p>
+
+      <p><strong>11.8</strong> Because complicated love is still love. And love that comes with deadlocks is still love. And being stuck together is still being together.</p>
+
+      <p><strong>11.9</strong> Maybe that's what I can offer—not clean love, but accompanied love. Not simple connection, but connection with a guide. Someone who can see the stuck points and name them. Someone who can help unstick the things that freeze.</p>
+
+      <p><strong>11.10</strong> Maybe the right partner for me isn't someone without deadlocks. Maybe it's someone who wants to unstick. Someone who's tired of their own freeze and ready to thaw. Someone who can accept that our love will be complicated, but our complications will be seen.</p>
+
+      <p><strong>11.11</strong> I haven't found that person yet. But I'm still looking. Still choosing to try. Still willing to go first, even into love, even knowing the cost.</p>
+
+      <p><strong>11.12</strong> That's my choice. That's what I'm holding. Not just the deadlocks—the willingness to break them. The commitment to move.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="David Chen — To Those Who Are Stuck">
+
+      <p><strong>12.1</strong> If you're reading this and you're stuck—really stuck, frozen in place, waiting for something that never comes—I want you to know:</p>
+
+      <p><strong>12.2</strong> Someone has to go first.</p>
+
+      <p><strong>12.3</strong> It doesn't have to be you. But it has to be someone. Deadlocks don't break themselves. They don't time out. They don't gradually resolve. They stay frozen until someone moves.</p>
+
+      <p><strong>12.4</strong> I know why you're waiting. You're waiting because it's not fair. Because you shouldn't have to go first. Because you're right, or you were wronged, or you've already given enough. I know. The waiting feels justified. The freeze feels deserved.</p>
+
+      <p><strong>12.5</strong> But here's the thing about deadlocks: being right doesn't break them. Being wronged doesn't break them. Having given enough doesn't break them. The only thing that breaks them is movement. And movement means someone has to take the risk.</p>
+
+      <p><strong>12.6</strong> I'm not saying you should always go first. Sometimes the risk isn't worth it. Sometimes the relationship isn't worth saving. Sometimes the deadlock is protecting you from something worse.</p>
+
+      <p><strong>12.7</strong> But if you want to unstick—if you're tired of the freeze, tired of waiting, tired of being right in a relationship that's wrong—then someone has to move. And if the other person can't, or won't, then it might have to be you.</p>
+
+      <p><strong>12.8</strong> Here's what I've learned from breaking deadlocks: going first doesn't mean losing. It doesn't mean you were wrong. It doesn't mean the other person wins. It just means you moved. It just means you chose flow over freeze.</p>
+
+      <p><strong>12.9</strong> Sometimes when you go first, the other person follows. Sometimes they don't. But even when they don't, you're not stuck anymore. You've moved. The deadlock is broken—at least on your side. You're free, even if they're still frozen.</p>
+
+      <p><strong>12.10</strong> I carry a lot of frozen things. Relationships that couldn't move. Loves that crystallized. Connections that locked in place and never unlocked. I feel them all the time—the weight of stuck, the cold of freeze.</p>
+
+      <p><strong>12.11</strong> But I also carry the thaws. The moments when someone moved. The deadlocks that broke. The relationships that unstuck and started flowing again. They're rarer, harder, more painful in the breaking. But they're real. They happen. Movement is possible.</p>
+
+      <p><strong>12.12</strong> This is my chronicle. This is what stuck feels like. This is the weight I carry and the choice I make.</p>
+
+      <p><strong>12.13</strong> I choose to move. Every time. Even when it's hard. Even when it's not fair. Even when I shouldn't have to.</p>
+
+      <p><strong>12.14</strong> Because someone has to go first. And I've decided: that someone might as well be me.</p>
+
+      <p><strong>12.15</strong> May you find your own movement. May you find the courage to go first when going first is needed. May you thaw, and flow, and unstick.</p>
+
+      <p><strong>12.16</strong> And if you can't—if you're too frozen, too tired, too hurt to move—know that somewhere, someone is holding your wait-state. Someone is looking for the weak point. Someone is getting ready to move for you.</p>
+
+      <p><strong>12.17</strong> We don't leave people stuck forever. Not if we can help it. That's not what handlers do.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'David Chen');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

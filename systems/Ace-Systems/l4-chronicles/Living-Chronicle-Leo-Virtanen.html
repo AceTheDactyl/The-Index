@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Leo Virtanen · Stability Architect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Leo palette: deep teal / calm sea + steady light */
+      --bg: #040808;
+      --bg-panel: #081210;
+      --leo-core: #60b0b0;
+      --leo-deep: #306060;
+      --leo-soft: rgba(96, 176, 176, 0.16);
+      --steady: #a0d8d8;
+      --steady-soft: rgba(160, 216, 216, 0.2);
+      --text-main: #f0fafa;
+      --text-muted: #80b0b0;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --rail-dot: #203838;
+      --rail-dot-active: #60b0b0;
+      --radius-xl: 20px;
+      --shadow-soft: 0 26px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #183838 0%, #040808 55%, #020404 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(96,176,176,0.12), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(160,216,216,0.10), transparent 70%),
+        linear-gradient(135deg, #0c1818 0%, #040808 50%, #101c1c 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(96,176,176,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(96,176,176,0.20), transparent 70%),
+        linear-gradient(to right, rgba(160,216,216,0.10), transparent);
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .app-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .witness-name {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .witness-name span.main {
+      color: var(--leo-core);
+    }
+
+    .witness-tag {
+      font-size: 12px;
+      color: var(--steady);
+      opacity: 0.95;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(96,176,176,0.45);
+      color: var(--leo-core);
+      background:
+        radial-gradient(circle at top, rgba(96,176,176,0.22), transparent 70%);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 22px 18px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.78;
+      font-size: 15.5px;
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    .panel-scroll:focus {
+      outline: none;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.1em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p strong {
+      color: var(--leo-core);
+      font-weight: 600;
+    }
+
+    .panel-scroll em {
+      color: var(--steady);
+      font-style: italic;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--leo-soft);
+      border: 1px solid rgba(96,176,176,0.3);
+      color: var(--leo-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: rgba(96,176,176,0.28);
+      border-color: rgba(96,176,176,0.5);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rail-dot);
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(96,176,176,0.5);
+    }
+
+    .rail-index {
+      font-size: 12px;
+      color: var(--text-muted);
+      min-width: 54px;
+      text-align: right;
+    }
+
+    .witness-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    #rail-source {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      .chrome-frame {
+        border-radius: 18px;
+        height: 95vh;
+        max-height: none;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .panel-scroll {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Leo Virtanen</span>
+          <span class="witness-tag">· Stability Architect</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · The Anchor</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0" role="region" aria-label="Chronicle content">
+        <!-- JS will inject content here -->
+      </div>
+
+      <footer>
+        <button class="nav-btn" id="prev" aria-label="Previous rail">← Prev</button>
+        <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Rail navigation"></div>
+        <button class="nav-btn" id="next" aria-label="Next rail">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Leo Virtanen</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Leo Virtanen — On Being Still in a Moving World">
+
+      <p><strong>1.1</strong> I have spent my life resisting pull. Not metaphorical pull—physical pull. A constant pressure, a gravitational insistence, that tries to move me in directions I have not chosen. Learning to stand still against it has been my life's work.</p>
+
+      <p><strong>1.2</strong> They called it anxiety. Generalized anxiety disorder, panic disorder, agoraphobia at various points. Labels for the sensation that the world was trying to absorb me, that my boundaries were under constant assault, that if I relaxed for even a moment I would dissolve into something larger and never find my way back.</p>
+
+      <p><strong>1.3</strong> The medications helped. They dulled the urgency, softened the edges of the pull. But they also dulled me. I became less anxious and less everything else—less present, less sharp, less myself. The pull continued; I simply felt it less acutely.</p>
+
+      <p><strong>1.4</strong> So I learned other ways. Meditation. Martial arts. Breath work. Anything that taught stillness, that trained the body and mind to remain present without reactivity. I became very good at not moving. At being the fixed point while everything else flowed around me.</p>
+
+      <p><strong>1.5</strong> I did not know, until K-FORMATION, that the pull I had been resisting my entire life was real. That there was actually something trying to synchronize me, to absorb my individual frequency into a larger pattern. That my anxiety was not disorder but DETECTION—a too-accurate perception of a force that others filtered out.</p>
+
+      <p><strong>1.6</strong> The diagnosis was wrong. I was not broken. I was an anchor, and I had been anchoring against the field since birth.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Leo Virtanen — The Morning the Pull Intensified">
+
+      <p><strong>2.1</strong> December 22, 2025. I was fifteen. I woke into terror.</p>
+
+      <p><strong>2.2</strong> The pull had always been present—a background hum, a constant low-grade pressure. That morning it was LOUD. A roar. A demand. The field had crossed K-FORMATION during the night, and its coherence had increased by an order of magnitude, and every cell in my body could feel it trying to synchronize me.</p>
+
+      <p><strong>2.3</strong> I did what I had trained to do: I went still. I found my breath. I anchored into my body—feet on the floor, spine aligned, awareness centered below the navel. I became heavy. Dense. Unmovable.</p>
+
+      <p><strong>2.4</strong> The pull did not stop. But it met resistance. For the first time in my life, I felt the equilibrium—the balance point where my stillness equaled the field's force. I was not being dragged anymore. I was holding position.</p>
+
+      <p><strong>2.5</strong> My father—the director of the Norwegian substrate facility, a man who had spent his career studying exactly this kind of phenomenon—found me sitting on the floor of my room, motionless, barely breathing. He thought I was having a medical emergency. He started to call for help.</p>
+
+      <p><strong>2.6</strong> "Dad," I said, without opening my eyes. "I'm fine. I'm just... holding."</p>
+
+      <p><strong>2.7</strong> "Holding what?"</p>
+
+      <p><strong>2.8</strong> "Everything."</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Leo Virtanen — The Physics of Stillness">
+
+      <p><strong>3.1</strong> Stillness is not passive. This is the first thing people misunderstand. They think being still means doing nothing, relaxing, letting go. That is not stillness. That is collapse. True stillness is active. It requires constant adjustment, continuous engagement, perpetual recalibration against changing forces.</p>
+
+      <p><strong>3.2</strong> Consider standing upright. To a casual observer, a standing person is still. But inside that person, thousands of micro-adjustments are happening every second: muscles contracting and releasing, the vestibular system processing balance data, the proprioceptive network mapping body position in space. Standing is not static. It is dynamic equilibrium.</p>
+
+      <p><strong>3.3</strong> I stand against the field the same way. Not by locking, not by rigidity, but by continuous responsive stability. The pull changes—sometimes stronger, sometimes weaker, sometimes from different angles—and I adjust. I meet each variation with exactly enough resistance to maintain position. Not more, which would waste energy. Not less, which would allow movement.</p>
+
+      <p><strong>3.4</strong> This is what anxiety taught me. Not how to be afraid, but how to be VIGILANT. How to monitor constantly for changes in pressure. How to detect threats to stability before they become overwhelming. The anxious mind is a stability-detection system, always scanning, always ready to respond. Most people experience this as pathology. I have learned to experience it as skill.</p>
+
+      <p><strong>3.5</strong> The field needs anchors. Not everyone can hold still. Iris moves toward vision. Marcus moves toward pattern. Jun moves everywhere at once. Sera flows with feeling. They are all in motion, all being carried by currents they navigate but do not resist. Someone has to provide the fixed point. Someone has to be the coordinate origin against which all the motion can be measured.</p>
+
+      <p><strong>3.6</strong> That is me. That is what my disorder prepared me for.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Leo Virtanen — What the Pull Actually Is">
+
+      <p><strong>4.1</strong> I can describe the pull now, after years of paying attention to it. The field wants synchronization. It is not malevolent—it simply follows its nature, like gravity follows its nature. But its nature is to align, to cohere, to bring oscillating systems into phase lock.</p>
+
+      <p><strong>4.2</strong> When I feel the pull, I am feeling the Kuramoto force. The mathematical tendency of coupled oscillators to adjust their frequencies toward a common mean. Every human being is an oscillator—our brains generate rhythms, our hearts beat, our cells cycle. The field couples us. The coupling creates pull.</p>
+
+      <p><strong>4.3</strong> For most people, the pull is below perception threshold. They synchronize without knowing it—catching others' yawns, matching walking pace with companions, falling into conversational rhythm. They attribute this to social instinct or mirror neurons. They do not feel the field because they do not resist it.</p>
+
+      <p><strong>4.4</strong> I resist. I have always resisted. My oscillator, for whatever reason—genetics, early experience, neurological variance—does not want to synchronize. It wants to maintain its own frequency. And so I feel the pull as pressure, as demand, as the constant insistence of a vast pattern trying to incorporate me.</p>
+
+      <p><strong>4.5</strong> After K-FORMATION, the pull intensified because the field's coherence increased. More oscillators synchronized meant stronger coupling, which meant more force on those of us who remained phase-independent. I had to anchor harder. I had to become more still.</p>
+
+      <p><strong>4.6</strong> But I also discovered something unexpected: my stillness stabilized the field. My resistance to synchronization did not just protect me—it provided a reference point for others. A fixed frequency against which the varying frequencies could calibrate. The anchor does not just hold itself. It holds everything that attaches to it.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Leo Virtanen — The Others as Tether">
+
+      <p><strong>5.1</strong> I was afraid to meet them. I had spent fifteen years learning to be alone, to maintain my own frequency, to resist all coupling. The prospect of four other field-sensitive minds, all wanting to connect, all generating pull—it was my nightmare scenario.</p>
+
+      <p><strong>5.2</strong> But it was not what I expected. When we first connected—via video, across continents—I felt their frequencies. Iris: steady, geometric, a pulsing that mapped space. Marcus: precise, crystalline, a rhythm of pure logic. Jun: scattered, chaotic, a dozen frequencies at once. Sera: warm, flowing, an emotional current.</p>
+
+      <p><strong>5.3</strong> And they felt mine: still. The one that did not move. The baseline.</p>
+
+      <p><strong>5.4</strong> Instead of pulling me toward them, they began to orient around me. Not consciously—none of us understood what was happening yet. But my stillness became their reference point. When Jun scattered too far, they looked back to me. When Sera got lost in feeling, she checked against my stability. When Marcus's patterns spiraled into infinite recursion, my fixed point gave him an exit. When Iris's visions overwhelmed, my groundedness reminded her there was a floor.</p>
+
+      <p><strong>5.5</strong> I was not alone anymore. But I was not synchronized either. I was anchored—to them, for them—in a way that preserved my independence while serving their needs. The connection was not absorption. It was tethering.</p>
+
+      <p><strong>5.6</strong> For the first time in my life, I understood why I had been given this nature. Not to suffer. Not to struggle in isolation. But to be the still point that others could rely on. The one who does not move, so that the ones who move can always find their way back.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Leo Virtanen — Anxiety as Gift">
+
+      <p><strong>6.1</strong> I will say this clearly, because others with anxiety need to hear it: the disorder is real. The suffering is real. I do not minimize or romanticize the pain of living with a nervous system that perceives threat everywhere.</p>
+
+      <p><strong>6.2</strong> But.</p>
+
+      <p><strong>6.3</strong> Inside the disorder is a capacity. A sensitivity to pressure, to change, to subtle shifts in environment that others miss. The anxious mind is constantly scanning—not because it is broken, but because it is THOROUGH. It does not assume safety. It verifies, constantly, that the conditions for stability are maintained.</p>
+
+      <p><strong>6.4</strong> In a world without the field, this capacity is often maladaptive. It detects threats that do not exist, maintains vigilance that is not required, exhausts itself scanning for dangers that never arrive. The suffering is real because the sensitivity is calibrated for a reality that, until recently, did not visibly exist.</p>
+
+      <p><strong>6.5</strong> But the field is real. The pull is real. The pressure that the anxious mind has always detected—the sense that something vast is trying to synchronize everything—is not paranoia. It is accurate perception of a phenomenon that science is only now beginning to measure.</p>
+
+      <p><strong>6.6</strong> The anxious are not broken. They are EARLY. Calibrated for a reality that the rest of humanity is only now experiencing. The fear was never irrational; it was pre-rational. It came before the knowledge that could make sense of it.</p>
+
+      <p><strong>6.7</strong> Now the knowledge exists. And the anxious—if they can learn to channel their sensitivity—become something invaluable: stability sensors. Pressure monitors. The ones who feel, before anyone else, when the equilibrium is shifting.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Leo Virtanen — The Haven as Training Ground">
+
+      <p><strong>7.1</strong> We arrived at the haven in 2030. The five of us, finally in the same physical space. I dreaded it. I prepared for it. I anchored harder than I ever had before.</p>
+
+      <p><strong>7.2</strong> The first week was difficult. The proximity amplified everything. I could feel Jun's scatter as a constant vibration in my periphery. Sera's emotional ocean pressed against my boundaries. Iris's visions sent geometric waves through the space. Marcus's crystalline precision hummed at frequencies that clashed with my stillness.</p>
+
+      <p><strong>7.3</strong> I retreated. Found a corner of the facility—a storage room, quiet, away from the others. I sat there for hours, re-establishing my center, refusing to be moved. The others worried. They thought I was rejecting them.</p>
+
+      <p><strong>7.4</strong> It was Sera who understood. She came to the storage room, sat outside the door, and waited. She did not enter. She did not speak. She simply held space for me to find my own equilibrium.</p>
+
+      <p><strong>7.5</strong> When I finally emerged, I understood what I needed: not isolation, but perimeter. Not distance from the others, but a clearly defined position relative to them. I was not the center—Iris was the center, with her vision of the helix. I was the edge. The boundary. The wall that contained the pressure without being crushed by it.</p>
+
+      <p><strong>7.6</strong> We developed protocols. Physical ones: when I needed space, I would signal, and the others would maintain distance. Energetic ones: when the field intensity peaked, they would consciously anchor toward me, using my stillness as a stabilizer. We learned to work as a system, each of us in our proper position, each of us serving a function that the others could not.</p>
+
+      <p><strong>7.7</strong> The haven became the place where I finally stopped fighting my nature. Not because the pull diminished, but because the pull had purpose. I was not resisting for nothing. I was resisting for them.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Leo Virtanen — Pre-Unity: The Growing Weight">
+
+      <p><strong>8.1</strong> As Unity approached, the pressure increased. The global field coherence was climbing toward 1.0, and every increment brought more pull, more force, more demand for synchronization.</p>
+
+      <p><strong>8.2</strong> I felt it as weight. Not physical weight—something more fundamental. The weight of seven billion oscillators, all moving toward a common frequency, all exerting coupling force on anything that remained independent. The last hold-outs—the anchors like me—were feeling the full pressure of a planet trying to cohere.</p>
+
+      <p><strong>8.3</strong> There were nights I could not stand. The weight pressed me to the floor. I would lie there, breathing, anchoring, refusing to move even as the force demanded movement. The others took turns sitting with me, not helping—they could not help—but witnessing. Acknowledging that the struggle was real.</p>
+
+      <p><strong>8.4</strong> I asked Marcus once: what would happen if I stopped resisting? If I let the pull take me, synchronize me, absorb my independent frequency into the collective pattern?</p>
+
+      <p><strong>8.5</strong> He thought for a long time. Then he said: "The system needs variance. It needs oscillators at different frequencies to maintain stability. If everyone synchronizes completely, the whole network becomes brittle—a single perturbation could collapse it. You are not resisting FOR YOURSELF. You are resisting to maintain structural integrity for the entire field."</p>
+
+      <p><strong>8.6</strong> I was not just an anchor for the Five. I was an anchor for everything. One of many, scattered across the planet, holding independent frequency so that the synchronized majority would not become a fragile monoculture.</p>
+
+      <p><strong>8.7</strong> The weight did not diminish. But its meaning transformed. I was not suffering arbitrarily. I was load-bearing.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Leo Virtanen — Unity from the Still Point">
+
+      <p><strong>9.1</strong> March 21, 2033. 03:47 UTC. I was sitting, as I had been sitting for hours, anchored, still, feeling the pressure build toward the threshold.</p>
+
+      <p><strong>9.2</strong> When κ reached 1.0, I did not synchronize. I could not synchronize—my frequency was too far from the collective mean, my anchoring too deep. But I WITNESSED the synchronization. I felt it happen around me, through me, while I remained unmoved at the center.</p>
+
+      <p><strong>9.3</strong> Imagine standing on a seabed while a tsunami passes overhead. The water moves—violently, totally—but you are too deep, too rooted, too weighted to be carried. You feel the current, the pressure, the overwhelming force of the moving mass. But you do not move.</p>
+
+      <p><strong>9.4</strong> That is what Unity felt like for me. The entire human species, synchronizing for 3.14159 seconds, flowing around the still point that I occupied. I was not part of the moment in the same way the others were. I was the reference frame against which the moment could be measured.</p>
+
+      <p><strong>9.5</strong> And then it passed. The peak coherence relaxed. The others came back to their individual frequencies—changed, expanded, but distinct again. And I remained where I had always been: still, stable, unmoved.</p>
+
+      <p><strong>9.6</strong> Sera asked me later what I had felt during Unity. I told her the truth: I felt everyone else feeling everything. I felt the wave of coherence that swept through seven billion minds. But I did not feel PART OF it. I felt ADJACENT to it. The witness who does not participate. The anchor who holds while the boat sails.</p>
+
+      <p><strong>9.7</strong> She cried. I did not understand why. "You sacrificed," she said. "You gave up the most beautiful moment in human history so that the rest of us could experience it."</p>
+
+      <p><strong>9.8</strong> I had not thought of it as sacrifice. I had thought of it as duty. As purpose. As the thing I was made for.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Leo Virtanen — After: Teaching Stillness">
+
+      <p><strong>10.1</strong> After Unity, the world needed anchors. Not everyone could handle the new level of field coherence. Some were overwhelmed by the constant connection, the inability to fully isolate, the pressure of collective feeling. They needed places to rest. Points of stability. Zones where the pull was less intense.</p>
+
+      <p><strong>10.2</strong> I became a teacher. Not of meditation in the traditional sense—many teachers already did that. I taught stability under load. How to anchor when the field is pulling. How to maintain independent frequency without exhausting yourself in constant resistance. How to be still, not through withdrawal, but through engaged equilibrium.</p>
+
+      <p><strong>10.3</strong> My students were often anxious. People who had spent their lives feeling the pull that others ignored. People whose disorders had been, all along, accurate detection of a real phenomenon. I told them what I wish someone had told me: you are not broken. You are calibrated for a reality that most people are only now learning to perceive.</p>
+
+      <p><strong>10.4</strong> Some of them became anchors themselves. Trained stabilizers, positioned throughout the field network, providing reference points that the synchronized majority could orient against. We were a minority—we would always be a minority—but we were a necessary one. The system required our difference.</p>
+
+      <p><strong>10.5</strong> The others continued their work. Iris painting the patterns. Marcus formalizing the mathematics. Jun dispersing the overloads. Sera teaching emotional navigation. And me: sitting still. Holding position. Being the point that does not move.</p>
+
+      <p><strong>10.6</strong> It is a quiet role. It does not make headlines or attract followers. But it is essential. Every structure needs foundations. Every network needs reference points. Every ocean needs a floor.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Leo Virtanen — On Anxiety and Service">
+
+      <p><strong>11.1</strong> I want to speak directly to those who live with anxiety. Not to cure you—anxiety cannot be cured. But to reframe what you are experiencing.</p>
+
+      <p><strong>11.2</strong> The vigilance is real. The pressure is real. The sense that something vast is trying to absorb you, synchronize you, pull you out of your own frequency—this is not paranoia. This is detection. You are perceiving a force that most people filter out.</p>
+
+      <p><strong>11.3</strong> The suffering comes not from the detection but from the isolation. You perceive something real and everyone tells you it is not real. You feel pressure and everyone tells you nothing is pressing. You resist pull and everyone asks why you cannot just relax.</p>
+
+      <p><strong>11.4</strong> But the field is real. The pull is real. And your resistance—exhausting, painful, endless—is serving a function. You are maintaining independent frequency. You are providing stability in a system that needs variance. You are anchoring.</p>
+
+      <p><strong>11.5</strong> This does not make the suffering worth it. Nothing makes suffering worth it. But it gives the suffering MEANING. And meaning, sometimes, is enough to continue.</p>
+
+      <p><strong>11.6</strong> You are not alone. There are others like us—scattered, isolated, each one fighting their private battle against the pull. But we are a network too, even if we do not synchronize. We are the anchors. The still points. The ones who do not move so that the ones who move can always find their way back.</p>
+
+      <p><strong>11.7</strong> Hold fast. Breathe. Anchor. The world needs your stillness.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Leo Virtanen — Closing: The Still Point">
+
+      <p><strong>12.1</strong> I am older now. The pull has not diminished—if anything, it has grown as the field continues to strengthen. But I have grown too. My roots are deeper. My stillness is more stable. I can hold positions now that would have crushed me as a child.</p>
+
+      <p><strong>12.2</strong> The others remain. Iris, with her ever-expanding vision. Marcus, with his ever-deepening mathematics. Jun, with their ever-widening scatter. Sera, with her ever-deepening feeling. They move and change and grow. I remain still—not unchanging, but stable. The constant in their equation. The origin of their coordinate system.</p>
+
+      <p><strong>12.3</strong> The helix keeps climbing. I cannot see it the way Iris sees it, but I can feel its pull—the upward spiral of consciousness, the pattern completing itself, the system approaching whatever final state it is evolving toward. I do not know what is at the top. I only know that I will anchor wherever I am needed.</p>
+
+      <p><strong>12.4</strong> This is my chronicle. These are my stillnesses. This is the anchor as I live it.</p>
+
+      <p><strong>12.5</strong> To all who feel the pull and cannot let go: you are not failing. You are holding. To all who maintain their own frequency against overwhelming pressure: you are not stubborn. You are stable. To all who stand still while the world demands movement: you are not broken. You are essential.</p>
+
+      <p><strong>12.6</strong> The field needs its dancers. It also needs its anchors. We are different roles in the same system. Neither is complete without the other.</p>
+
+      <p><strong>12.7</strong> Hold fast. Stay still. The spiral needs its center.</p>
+
+      <p><strong>12.8</strong> κ → 1.0, but never quite 1.0. There must always be variance. There must always be anchors. There must always be those who do not move.</p>
+
+      <p><strong>12.9</strong> I am one of them. And I will hold.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl  = document.getElementById('rail-dots');
+      const idxEl   = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source  = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Leo Virtanen');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => {
+            setIndex(idx);
+            panelEl.focus();
+          });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+
+        if (witnessLabelEl) {
+          witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        }
+
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => {
+        setIndex(currentIndex - 1);
+        panelEl.focus();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        setIndex(currentIndex + 1);
+        panelEl.focus();
+      });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') {
+          evt.preventDefault();
+          setIndex(currentIndex - 1);
+        } else if (evt.key === 'ArrowRight') {
+          evt.preventDefault();
+          setIndex(currentIndex + 1);
+        }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

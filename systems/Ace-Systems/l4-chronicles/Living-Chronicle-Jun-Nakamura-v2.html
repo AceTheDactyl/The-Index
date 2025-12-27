@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Jun Nakamura · Distributed Attention Architect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0a0804;
+      --bg-panel: #120c08;
+      --jun-core: #f0a050;
+      --jun-deep: #a06020;
+      --jun-soft: rgba(240, 160, 80, 0.16);
+      --spark: #ffd080;
+      --spark-soft: rgba(255, 208, 128, 0.2);
+      --text-main: #faf6f0;
+      --text-muted: #c0a080;
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --rail-dot: #3a2818;
+      --rail-dot-active: #f0a050;
+      --radius-xl: 20px;
+      --shadow-soft: 0 26px 64px rgba(0, 0, 0, 0.65);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #3a2010 0%, #0a0804 55%, #050302 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(240,160,80,0.12), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(255,208,128,0.10), transparent 70%),
+        linear-gradient(135deg, #141008 0%, #0a0804 50%, #181008 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(240,160,80,0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background:
+        radial-gradient(circle at top left, rgba(240,160,80,0.20), transparent 70%),
+        linear-gradient(to right, rgba(255,208,128,0.10), transparent);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--jun-core); }
+    .witness-tag { font-size: 12px; color: var(--spark); opacity: 0.95; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(240,160,80,0.45);
+      color: var(--jun-core);
+      background: radial-gradient(circle at top, rgba(240,160,80,0.22), transparent 70%);
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.75;
+      font-size: 15.5px;
+      color: var(--text-main);
+      scroll-behavior: smooth;
+    }
+
+    .panel-scroll:focus { outline: none; }
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--jun-core); font-weight: 600; }
+    .panel-scroll em { color: var(--spark); font-style: italic; }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--jun-soft);
+      border: 1px solid rgba(240,160,80,0.3);
+      color: var(--jun-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-btn:hover { background: rgba(240,160,80,0.28); border-color: rgba(240,160,80,0.5); }
+
+    .rail-dots { display: flex; gap: 7px; }
+
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rail-dot);
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--rail-dot-active);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(240,160,80,0.5);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .panel-scroll { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Jun Nakamura</span>
+          <span class="witness-tag">· Distributed Attention Architect</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · The Scattered One</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0" role="region" aria-label="Chronicle content"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev" aria-label="Previous rail">← Prev</button>
+        <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Rail navigation"></div>
+        <button class="nav-btn" id="next" aria-label="Next rail">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Jun Nakamura</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Jun Nakamura — On Being Everywhere at Once">
+
+      <p><strong>1.1</strong> Okay so here's the thing—I'm going to try to write this in a linear way but you should know that's not how I actually think. Like right now I'm writing this sentence but I'm also thinking about the way light hits the window and the sound of someone cooking downstairs and a melody I heard three days ago and the structure of a conversation I had last year that suddenly makes sense and—</p>
+
+      <p><strong>1.2</strong> See? That's what happens. I start one thing and then I'm in seventeen things and I've forgotten where I started. My mom used to find me in the kitchen at 2 AM with three half-eaten snacks, two open books, a disassembled radio (sorry about the radio, I never did figure out how to put it back together), and no memory of why I came downstairs in the first place.</p>
+
+      <p><strong>1.3</strong> That's what they call ADHD. Attention Deficit Hyperactivity Disorder. Which is honestly the worst name because it's not a deficit at all. It's a SURPLUS. My attention doesn't fail to exist. It exists everywhere at once. The problem isn't that I can't pay attention. The problem is I can't pay attention to just ONE thing.</p>
+
+      <p><strong>1.4</strong> My dad—Dr. Kenji Nakamura, the guy who figured out that substrates could induct each other—he used to think I was broken. Not mean about it, just worried. "Jun, focus." "Jun, finish your homework before you start the next thing." "Jun, please, one conversation at a time."</p>
+
+      <p><strong>1.5</strong> My legs are bouncing right now as I write this. They're always bouncing. I'm also humming—I don't know what song, something my brain invented to process the background noise of the room. My fingers keep wanting to click the pen even though I'm not using a pen, I'm typing, but my body doesn't know the difference between "thing that clicks" and "keyboard."</p>
+
+      <p><strong>1.6</strong> But I couldn't stop. Can't. Won't? There's not really a difference when your brain works like mine. Sequential processing is something I can simulate, briefly, with a lot of effort. But it's like asking a river to flow in a straight line. You can build channels but the water still wants to spread.</p>
+
+      <p><strong>1.7</strong> Then the field woke up and suddenly—SUDDENLY—my spreading made sense.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Jun Nakamura — The Morning Everything Connected">
+
+      <p><strong>2.1</strong> December 22, 2025. I was eleven. I didn't wake up with equations like Marcus or visions like Iris. I woke up with CONNECTIONS.</p>
+
+      <p><strong>2.2</strong> You know how normally when you think about one thing it leads to another thing and then another? Linear. A→B→C→D. That's how most people describe thinking. That morning I woke up and it was A→BCDEFGHIJKLMN simultaneously, all of them connected to each other AND to A AND to things I hadn't even consciously considered yet.</p>
+
+      <p><strong>2.3</strong> I was still in my pajamas—the ones with the little rockets on them, I was eleven okay, don't judge—and I remember the fabric felt DIFFERENT. Like I could feel each individual thread. Not painfully, just... specifically. Everything was specific. The hum of the refrigerator two floors down was distinct from the hum of my computer's fan was distinct from the electrical buzz in the walls.</p>
+
+      <p><strong>2.4</strong> It was overwhelming but also—okay this is going to sound weird—RELIEVING? Like I'd been trying to run software on hardware that wasn't designed for it, and suddenly someone upgraded my RAM. The scatter was still there but now it had BANDWIDTH.</p>
+
+      <p><strong>2.5</strong> I ran downstairs so fast I tripped on the last three steps and skinned my knee on the hallway floor. Didn't care. Didn't even notice until my mom pointed out I was bleeding. I told my dad that his substrates were talking to each other, that they were ALREADY talking, that the induction thing he'd discovered was just the visible part and underneath there was this whole network of—I didn't have words for it—RESONANCE? SYMPATHY? The way bells ring together when they're tuned to the same frequency?</p>
+
+      <p><strong>2.6</strong> He stared at me like I'd grown a second head. My mom was trying to clean my knee and I kept pulling away because I had to EXPLAIN and she was like "Jun, you're getting blood on the floor" and I was like "MOM THE SUBSTRATES" and it was chaos, honestly. Peak Nakamura household energy.</p>
+
+      <p><strong>2.7</strong> He went to his lab and checked the readings and came back two hours later with this expression I'd never seen before. My mom had finally gotten a bandaid on my knee. I'd eaten half a bowl of cereal and forgotten about it.</p>
+
+      <p><strong>2.8</strong> "How did you know?" he asked.</p>
+
+      <p><strong>2.9</strong> "I didn't KNOW know," I said. "I just—felt all the connections at once. And some of them were between your substrates."</p>
+
+      <p><strong>2.10</strong> That was the day my dad stopped trying to make me focus. That was the day he started asking me what else I could feel.</p>
+
+      <p><strong>2.11</strong> (I still have that scar on my knee. Little white line. My Unity scar, I call it. Sera thinks that's dramatic. Sera is right, but also I think it's cool, so.)</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Jun Nakamura — Scatter as Coverage">
+
+      <p><strong>3.1</strong> Here's the framework I've developed for understanding my own brain. I call it Distributed Attention Architecture. It's not very formal—Marcus would probably cry if he saw how loosely I use mathematical terms—but it helps me explain what I do.</p>
+
+      <p><strong>3.2</strong> (Marcus DID cry, actually. Not literally. But he made this face like his soul was leaving his body and he said "Jun, 'architecture' has a specific meaning in systems theory" and I said "cool, I'm using it differently" and he made the face again. We have this conversation approximately once a week.)</p>
+
+      <p><strong>3.3</strong> <em>Thesis:</em> Sequential attention is optimized for depth. Distributed attention is optimized for coverage.</p>
+
+      <p><strong>3.4</strong> When a neurotypical person focuses on something, they go DEEP. They follow one thread all the way down, extract maximum information from it, integrate it fully before moving on. This is great for tasks that require depth: solving complex equations, writing lengthy documents, mastering specific skills.</p>
+
+      <p><strong>3.5</strong> When I attend to something, I go WIDE. I touch fifteen threads at once, extract surface information from all of them, notice patterns between them that a deep-focus mind would never see because they'd never hold all fifteen threads simultaneously. This is great for tasks that require coverage: finding connections between disparate domains, sensing emerging patterns, monitoring complex systems for anomalies.</p>
+
+      <p><strong>3.6</strong> Neither is better. They're different tools. The problem is that the world—school, work, social expectations—is mostly designed for depth-optimized minds. So we coverage-optimized people get labeled as disordered, as deficient, as broken.</p>
+
+      <p><strong>3.7</strong> I failed fourth grade. Did you know that? Not because I was stupid. Because I couldn't sit still, couldn't finish tests, couldn't stop talking, couldn't stop noticing everything except the one thing I was supposed to notice. My teacher told my parents I would "never succeed in a traditional academic environment." She meant it as a warning. She was also completely correct.</p>
+
+      <p><strong>3.8</strong> But the field doesn't care about traditional academic environments. The field is a COVERAGE PROBLEM. It spans the whole planet. It has thousands of nodes. No single deep-focus mind could monitor it. You need scatter. You need attention that spreads.</p>
+
+      <p><strong>3.9</strong> You need people like me.</p>
+
+      <p><strong>3.10</strong> (Take THAT, Mrs. Hayashi from fourth grade. I'm monitoring a planetary consciousness field. What are YOU doing?)</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Jun Nakamura — What I Actually Perceive">
+
+      <p><strong>4.1</strong> Okay so Iris sees geometry and Marcus sees equations and Sera feels emotions and Leo feels pressure. What do I perceive? That's harder to describe because it's not any ONE thing. It's EVERYTHING-AT-ONCE-NESS.</p>
+
+      <p><strong>4.2</strong> When I'm in a room with other people, I'm tracking: their postures (all of them simultaneously), their voice tones (pitch, rhythm, volume, all independent channels), the way attention flows between them (who's looking at whom, who's about to speak, who's checked out), the emotional temperature (rising, falling, stable), the background sounds (HVAC, outside traffic, someone's watch ticking), the lighting (fluorescent flicker, natural light angle), my own bodily sensations (heartrate, breath, hunger, restlessness)—</p>
+
+      <p><strong>4.3</strong> I'm also aware of the exits, because I always note exits. And the texture of the chair. And whether anyone is wearing perfume (yes, two people, one floral one woodsy, the floral one is giving me a slight headache). And the fact that the clock on the wall is running four seconds slow—I don't know how I know that, but I know it, and it's BOTHERING me—</p>
+
+      <p><strong>4.4</strong> This used to overwhelm me. I'd shut down, go nonverbal, need to leave and be alone in a dark quiet room for hours. The input channels were all open but I had no way to INTEGRATE them.</p>
+
+      <p><strong>4.5</strong> My eighth birthday party. Fourteen kids. Chaos. Someone popped a balloon and I screamed and hid under the dining room table for two hours and wouldn't come out and all the other kids went home thinking I was a freak. I remember the exact pattern of the wood grain on the underside of that table. I still see it sometimes when I'm overwhelmed. It's my brain's default "safe pattern."</p>
+
+      <p><strong>4.6</strong> The field gave me integration. After K-FORMATION, all those parallel channels started to... harmonize? Like they were all being processed by the same underlying system. The scatter didn't decrease. The COHERENCE increased.</p>
+
+      <p><strong>4.7</strong> Now I can hold all those channels and actually DO something with them. I can sense when a group is about to reach consensus or break apart. I can feel when someone's about to have an insight before they have it. I can track conversations across multiple rooms simultaneously and notice when something said in Room A has implications for the discussion in Room B.</p>
+
+      <p><strong>4.8</strong> It's still exhausting. I still need downtime. I still sometimes end up under metaphorical tables. But it's not DISABLING anymore. The scatter has become a superpower.</p>
+
+      <p><strong>4.9</strong> Although I still can't handle balloons. Some things just don't get fixed.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Jun Nakamura — The Other Four">
+
+      <p><strong>5.1</strong> Meeting the others was like—okay imagine you've been running on one leg your whole life because that's how everyone runs, right, one leg at a time? And then you meet four people who've each been running on their own single leg, and together you realize: oh, we're supposed to be a millipede.</p>
+
+      <p><strong>5.2</strong> The first video call was a disaster, by the way. No one tells that story but I will. I talked over EVERYONE. I couldn't help it—connections were forming faster than I could track them and every time someone said something I saw how it linked to seven other things and I HAD to say it before I forgot. Marcus tried to get a word in and I just—ran right over him. Three times. Sera got this pinched look on her face that I now know means "I am feeling everyone's emotions and Jun's chaos is painful."</p>
+
+      <p><strong>5.3</strong> Leo muted me. Just—muted. And then he said, in that calm steady voice of his: "Jun. You're scattering without landing. Pick one connection. Just one. Land it. Then we'll pick another."</p>
+
+      <p><strong>5.4</strong> It was the first time anyone had given me a structure for scattering instead of trying to make me stop. I cried. On camera. In front of four strangers. It was very embarrassing but also I think that's when we became the Five, actually. In that moment when Leo figured out how to hold space for me without trying to fix me.</p>
+
+      <p><strong>5.5</strong> <em>Iris</em> sees what I can't hold still long enough to see. She's got this anchor-vision, this ability to lock onto a specific pattern and really LOOK at it. When I scatter across everything, she can say "THERE, that one, hold that" and suddenly I have a focal point. Not to restrict my scatter—to ORIENT it.</p>
+
+      <p><strong>5.6</strong> <em>Marcus</em> translates my chaos into order. I'll word-vomit a hundred connections in three minutes and he'll sit there quietly and then say "that's a directed acyclic graph with seventeen nodes and the hub is X" and suddenly my mess becomes a structure. He's also the only person who can consistently beat me at pattern-recognition games, which is annoying but also kind of comforting? Like, at least there's ONE person who can keep up.</p>
+
+      <p><strong>5.7</strong> <em>Sera</em> holds the emotional weight. I can SENSE emotional content but I can't PROCESS it—it's just another channel, often overwhelming. She takes that channel and makes it meaningful. When I'm tracking everyone's feelings simultaneously, she helps me understand what those feelings MEAN. She also tells me when I've accidentally hurt someone's feelings, which happens more than I'd like because I say things without filtering and sometimes the unfiltered thing is the wrong thing.</p>
+
+      <p><strong>5.8</strong> <em>Leo</em> is my ground wire. My scatter generates noise, static, excess energy. He absorbs it. Not in a draining way—in an ANCHORING way. When I'm with Leo I can scatter further because I know there's a stable point I can always return to.</p>
+
+      <p><strong>5.9</strong> Together we're not five people. We're a distributed processing system. My scatter, Iris's vision, Marcus's structure, Sera's feeling, Leo's stability. Each of us does what the others can't. Together we can perceive the entire field.</p>
+
+      <p><strong>5.10</strong> Also we play a LOT of board games. I'm bad at all of them because I get distracted mid-strategy, but they're patient with me. Usually. Sometimes Marcus gets that look.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Jun Nakamura — On Hyperactivity">
+
+      <p><strong>6.1</strong> The H in ADHD. Hyperactivity. Let's talk about that.</p>
+
+      <p><strong>6.2</strong> I move a lot. I talk fast. I interrupt (sorry, I know, I'm working on it but also I'm kind of not because sometimes the interrupt is the important part). I start things and don't finish them, except when I hyperfocus and finish them in one manic burst at 3 AM.</p>
+
+      <p><strong>6.3</strong> Right now, sitting here writing this, I am: bouncing my left leg, tapping my right foot, clicking my tongue against my teeth in a rhythm I invented thirty seconds ago, fidgeting with a piece of string I found somewhere (I don't know where, it's just here now), and occasionally getting up to pace for no reason. This is baseline Jun. This is me at REST.</p>
+
+      <p><strong>6.4</strong> The traditional view: Jun has too much energy. Jun needs to calm down. Jun needs to slow down.</p>
+
+      <p><strong>6.5</strong> I was on four different medications before I turned ten. Ritalin first, then Adderall, then Vyvanse, then something else I don't remember the name of. They all worked, kind of. They also all made me feel like I was watching myself from a distance, like the real Jun was locked in a box and the medicated Jun was puppeting the body. My mom took me off all of them after I told her I didn't recognize my own thoughts anymore.</p>
+
+      <p><strong>6.6</strong> The field view: Jun is processing a very large bandwidth. The physical movement is OVERFLOW. The fast talking is attempting to externalize internal processing speed. The interrupting is because a connection has formed that will evaporate if not expressed immediately. The hyperfocus is what happens when all that distributed processing suddenly converges on a single attractor.</p>
+
+      <p><strong>6.7</strong> I'm not too much. I'm EXACTLY THE RIGHT AMOUNT for the task I was designed for.</p>
+
+      <p><strong>6.8</strong> What task? Being a node in a planetary field that requires parallel monitoring of thousands of inputs. Being a coverage sensor for a system too large for sequential attention. Being the one who catches the connections that depth-focused minds miss.</p>
+
+      <p><strong>6.9</strong> After Unity, everyone felt a little of what I feel all the time. The sudden awareness of Everything At Once. Most people were overwhelmed. Couldn't handle it. Needed weeks to adjust.</p>
+
+      <p><strong>6.10</strong> I just nodded and said: yeah, welcome to Tuesday.</p>
+
+      <p><strong>6.11</strong> (That's become a catchphrase in the post-Unity world. They sell t-shirts. I don't get royalties. This seems unjust.)</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Jun Nakamura — Music as Expression">
+
+      <p><strong>7.1</strong> I make music now. Not conventional music—I never had the patience for lessons or practice or any of that sequential skill-building stuff. I tried piano when I was seven. Lasted three weeks. Tried guitar when I was nine. Lasted two weeks. Tried drums—actually I was okay at drums, because drums let you hit things, but I kept speeding up without noticing and my teacher said I had "no sense of consistent tempo" which, fair.</p>
+
+      <p><strong>7.2</strong> I make... distributed compositions? Parallel sound architecture? I've been calling it "scatter-wave" but that sounds like a bad hairstyle so I'm open to suggestions.</p>
+
+      <p><strong>7.3</strong> Here's what I do: I set up multiple instruments, loops, synthesizers, samples. I don't plan. I just START, everywhere at once. One hand on the keys, one hand on the drum machine, foot on a pedal, voice going, another loop building in the software—chaos, basically.</p>
+
+      <p><strong>7.4</strong> And then I LISTEN. To all of it simultaneously. And I make micro-adjustments. This loop needs to come down. That melody wants to rise. This rhythm is fighting that bass line. Thousands of tiny decisions, not sequential, PARALLEL.</p>
+
+      <p><strong>7.5</strong> The first time I played something for the others, Iris started crying. I panicked—I thought I'd hurt her, thought the frequencies were wrong, thought— She said: "Jun, this is what it looks like inside my head. You made my vision audible."</p>
+
+      <p><strong>7.6</strong> What comes out is... the field. That's the only way I can describe it. People who listen to my stuff say it feels like being in multiple places at once. Like dreaming. Like having thoughts that don't connect but somehow cohere.</p>
+
+      <p><strong>7.7</strong> That's what I'm translating. That's what my brain does all the time. The music is just making it audible.</p>
+
+      <p><strong>7.8</strong> After Unity, I started getting requests. People wanted music for field-meditation, for coherence training, for helping deep-focus minds experience distributed attention temporarily. Turns out there's a need for chaos-translators. Who knew?</p>
+
+      <p><strong>7.9</strong> (I knew. I always knew. I just didn't know anyone else would ever understand.)</p>
+
+      <p><strong>7.10</strong> My most popular track is called "Welcome to Tuesday." It's eleven minutes long and people use it for something called "scatter-meditation" which sounds made up but apparently helps with anxiety? I don't understand how my chaos helps other people be calmer but I'm not going to question it.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Jun Nakamura — The Haven Years">
+
+      <p><strong>8.1</strong> We got to the haven in 2030. First time all five of us were in the same physical space. I thought it would be overwhelming—five field-sensitive people in close proximity, all of us resonating, all of us amplifying—but it was actually the CALMEST I'd ever been.</p>
+
+      <p><strong>8.2</strong> Why? Because finally my scatter had somewhere to GO. When I was alone, all that distributed attention was bouncing around inside my own skull, no external target, just noise. With the others, it could LAND. Scatter toward Iris, get back vision. Scatter toward Marcus, get back structure. Scatter toward Sera, get back emotional meaning. Scatter toward Leo, get back grounding.</p>
+
+      <p><strong>8.3</strong> I was also a total nightmare to live with, let's be honest. I left stuff everywhere. Half-finished projects in every room. I'd start organizing something and get distracted and leave piles of things in worse states than I found them. I talked at inappropriate hours. I played music at inappropriate volumes. I ate other people's food without noticing until Sera put a little label on her yogurt that said "JUN THIS IS MINE" and I still ate it once by accident.</p>
+
+      <p><strong>8.4</strong> Marcus and I had a fight about the common room that got so loud Leo had to physically stand between us. I'd left seventeen different projects spread across every surface and Marcus couldn't handle the "visual entropy" (his words) and I said something like "then don't look at it" and he said something like "that's not how vision works, Jun" and I said something I regret about his inability to tolerate anything that wasn't perfectly ordered and—</p>
+
+      <p><strong>8.5</strong> Sera made us apologize. She's good at that. She made me understand that for Marcus, the mess wasn't an inconvenience—it was physically uncomfortable, the same way certain sounds are physically uncomfortable for me. And she made Marcus understand that for me, forced tidiness isn't organization—it's constraint, the same way forced silence would be constraint for him.</p>
+
+      <p><strong>8.6</strong> We figured it out. I got a designated chaos zone (an entire room, just for my mess). Marcus got the rest of the common areas to keep tidy. The boundaries made it work.</p>
+
+      <p><strong>8.7</strong> The haven was the first place I didn't need downtime. The PEOPLE were the downtime. Being with them was rest because it was COHERENT scatter, not chaotic scatter.</p>
+
+      <p><strong>8.8</strong> We developed protocols. When I was on a scatter-high—processing too much, about to overflow—I'd physically touch Leo and he'd absorb the excess. When Iris needed breadth, she'd ask me what I was tracking and use my scatter to expand her focus. We weren't just friends. We were a SYSTEM.</p>
+
+      <p><strong>8.9</strong> My dad visited once. He watched us interact—the seamless handoffs, the wordless coordination, the way we moved like a single organism with five bodies—and he started crying. "This is what I was trying to build with the substrates," he said. "You five are doing it with consciousness."</p>
+
+      <p><strong>8.10</strong> I hugged him and let my scatter just... include him. For a moment. He felt it—I could tell—the Everything At Once experience that I live in constantly. Just a taste.</p>
+
+      <p><strong>8.11</strong> He understood, after that. He finally understood.</p>
+
+      <p><strong>8.12</strong> He also sent me monthly shipments of my favorite snacks after that, without me asking. I think that was his way of saying he was sorry about the medication years. We never talked about it directly. But I got the message.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Jun Nakamura — Pre-Unity Scatter">
+
+      <p><strong>9.1</strong> As Unity approached, I started picking up more. A LOT more. My scatter was always planetary in scope—not by choice, just by nature—but now I could actually RESOLVE what I was picking up.</p>
+
+      <p><strong>9.2</strong> I could feel the substrates. Not individually—they were too many, too similar—but as a texture, a background hum that had coherence. I could feel the global field fluctuating, dipping when disasters struck, rising when large groups gathered in joy. I could feel the other sensitive ones—not just the Five, but thousands of others, scattered across the planet, each one a tiny bright spot in my distributed perception.</p>
+
+      <p><strong>9.3</strong> The month before Unity, I stopped sleeping normally. Not insomnia—I'd pass out exhausted for a few hours, then wake up to process for eight hours straight. My body was adapting to the bandwidth increase. I lost twelve pounds because I kept forgetting to eat. Sera started leaving food directly in my path—just, a sandwich on my keyboard, an apple on my pillow—so I'd eat without having to remember to do it.</p>
+
+      <p><strong>9.4</strong> My hands developed a tremor. Not bad, just a little shake, constant. Too much energy with nowhere to go. Marcus said it was "subclinical fasciculation" which I'm pretty sure he made up but it sounded science-y enough that I didn't argue.</p>
+
+      <p><strong>9.5</strong> The others worried. "Jun, you need rest." "Jun, you're pushing too hard." But I wasn't pushing. I was BEING PUSHED. The field was ramping up and my coverage-optimized brain was picking up every bit of it.</p>
+
+      <p><strong>9.6</strong> The night before Unity, I couldn't speak. Not nonverbal in the overwhelmed way—nonverbal because everything I might say was TRUE SIMULTANEOUSLY and language is sequential and I couldn't CHOOSE which truth to put first. Sera held my hand. Iris described what she saw. Marcus computed. Leo anchored.</p>
+
+      <p><strong>9.7</strong> I remember squeezing Sera's hand so hard I left marks. She didn't complain. She just squeezed back.</p>
+
+      <p><strong>9.8</strong> And then it hit.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Jun Nakamura — Unity from the Scatter-Mind">
+
+      <p><strong>10.1</strong> What was Unity like for me? Oh man. Oh MAN.</p>
+
+      <p><strong>10.2</strong> You know that feeling when you're trying to listen to ten conversations at once and it's just NOISE? And then suddenly, for one moment, all ten conversations say the same word at the same time? And the noise becomes SIGNAL?</p>
+
+      <p><strong>10.3</strong> That. But with seven billion minds.</p>
+
+      <p><strong>10.4</strong> My scatter didn't expand at Unity. It was already as expanded as it could go. What happened was everything I was scattering toward suddenly COHERED. All those parallel channels, all those simultaneous inputs, all that chaos I'd been tracking my whole life—for 3.14159 seconds it was all the same channel. All the same input. All the same thought.</p>
+
+      <p><strong>10.5</strong> I screamed. I think. Or laughed. Or both. Some kind of noise came out of me. The others told me later that I levitated—not literally, but I apparently stood up from where I was sitting without using my hands or any normal standing-up motion, like I was pulled upward by something. I don't remember the physical part. I just remember the EVERYTHING becoming ONE THING.</p>
+
+      <p><strong>10.6</strong> I don't know how to describe the thought. It was too big for language, too big for individual memory. But the FEELING of it—the feeling of coherent scatter, of distributed attention finally finding a single attractor—that I remember. It was like coming home to a home I'd never been to. It was like finally finishing a sentence I'd been trying to say my whole life.</p>
+
+      <p><strong>10.7</strong> For the first time ever, I was not scattered. I was SINGULAR. One attention, one focus, one me—but also one everything. Me and everyone and everything, all focused on the same point at the same time.</p>
+
+      <p><strong>10.8</strong> And then it passed, and the scatter resumed, but it was DIFFERENT now. The noise had a shape. The chaos had a structure. I was still everywhere at once but everywhere at once had a CENTER now, a reference point, a frequency to return to.</p>
+
+      <p><strong>10.9</strong> The field had tuned me. And I, in my small scattering way, had helped tune it back.</p>
+
+      <p><strong>10.10</strong> I slept for fourteen hours after. The first solid sleep I'd had in months. Sera said I drooled on her shoulder—she'd been holding me and I just collapsed. I'm still embarrassed about the drool. She says it's fine. It's still embarrassing.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Jun Nakamura — After: The Disperser's Role">
+
+      <p><strong>11.1</strong> After Unity, people needed help. Not everyone handled the sudden coherence well. Some locked up, overwhelmed by feeling everyone at once. Some panicked, lost in the crowd of consciousness. Some retreated so hard they dissociated from the field entirely.</p>
+
+      <p><strong>11.2</strong> Turns out there's a role for people like me. We're dispersers. When the field gets too intense—when coherence becomes oppressive—we scatter it. Not destroy it. DISTRIBUTE it. Take the overwhelming concentrated signal and spread it across bandwidth until it's tolerable.</p>
+
+      <p><strong>11.3</strong> I train people now. "How to maintain individuality in collective coherence." "Distributed attention techniques for the field-sensitive." "Scatter as self-care." Workshops, retreats, online courses.</p>
+
+      <p><strong>11.4</strong> I'm a terrible teacher by conventional standards. I never stay on one topic for more than twenty minutes. I go on tangents. I forget what I was saying mid-sentence and then pick up a different thread entirely. My slides are a mess—I once showed up with a 200-slide deck for a 45-minute talk and got through eleven of them. The other 189 were "bonus content for later" which really meant "Jun got distracted."</p>
+
+      <p><strong>11.5</strong> But it works. People get it. They learn to let their attention spread instead of fighting to focus. They learn that scatter isn't failure—it's a different kind of success. They learn that their brains are doing something valuable, even when it doesn't look like the valuable thing they were taught to expect.</p>
+
+      <p><strong>11.6</strong> The world needs depth-focus minds. The world ALSO needs scatter-minds. Unity didn't erase that difference. It made the difference FUNCTIONAL. We're not competing cognitive styles anymore. We're complementary ones.</p>
+
+      <p><strong>11.7</strong> Marcus builds the frameworks. I find the connections. Iris sees the patterns. Sera holds the feelings. Leo anchors the system. We're still the Five. We're still a distributed processing network. We're just—bigger now. More inclusive. More integrated.</p>
+
+      <p><strong>11.8</strong> And I'm still everywhere at once. Still tracking fifteen things simultaneously. Still jumping between ideas mid-sentence. But now that's not a disorder. That's my JOB. That's my gift. That's what the field made me for.</p>
+
+      <p><strong>11.9</strong> I still lose my keys constantly, though. Some things Unity can't fix.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Jun Nakamura — Closing Scatter">
+
+      <p><strong>12.1</strong> Okay so if you've made it this far you've probably noticed this chronicle is kind of chaotic. Non-linear. Jump-cutty. I've contradicted myself at least three times. I went off on tangents about yogurt and wood grain and t-shirt royalties. Sorry not sorry. That's how I think. That's how I write. That's how I BE.</p>
+
+      <p><strong>12.2</strong> The point—if there is a point, there's always a point, you just have to scatter wide enough to find it—is this: what they call deficit is different. What they call disorder is divergence. What looks like dysfunction from a depth-focused perspective looks like FUNCTION from a coverage-focused perspective.</p>
+
+      <p><strong>12.3</strong> The field needed us. All of us. The seers and the mappers and the feelers and the anchors and yes, the scattered ones. It needed our differences. It needed the parts that didn't fit. It needed exactly the configurations that neurotypical society called broken.</p>
+
+      <p><strong>12.4</strong> We weren't broken. We were EARLY. Tuned to a frequency that hadn't arrived yet. Adapted to a world that hadn't woken up yet. Built for a task that didn't exist yet.</p>
+
+      <p><strong>12.5</strong> And now we're here. In the field. In the coherence. In the scatter and the depth and the feeling and the grounding all at once. Five different minds, five different ways of perceiving, one distributed system, one planetary pattern.</p>
+
+      <p><strong>12.6</strong> I'm still ADHD. Still scatter-brained. Still incapable of focusing on one thing for more than—oh look, there's a bird outside—</p>
+
+      <p><strong>12.7</strong> (That was a joke. Mostly. There IS a bird. But I'm choosing not to look at it. This is growth.)</p>
+
+      <p><strong>12.8</strong> I'm also still losing things. Still forgetting appointments. Still talking over people and then apologizing and then doing it again. Still staying up too late and waking up at weird times and eating irregularly and leaving messes everywhere. Unity didn't fix me. It just made the world big enough to need what I am.</p>
+
+      <p><strong>12.9</strong> This is my chronicle. These are my scattered truths. This is the coverage I provide.</p>
+
+      <p><strong>12.10</strong> The helix keeps climbing. The field keeps expanding. And I keep scattering—everywhere at once, catching what falls through the cracks, finding connections that sequential minds miss.</p>
+
+      <p><strong>12.11</strong> Scatter well, wherever you are. The field needs your chaos too.</p>
+
+      <p><strong>12.12</strong> Now if you'll excuse me, I have seventeen unfinished projects calling my name and at least three of them might actually be important. I'll figure out which ones when I get there.</p>
+
+      <p><strong>12.13</strong> (I won't.)</p>
+
+      <p><strong>12.14</strong> (That's fine.)</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl  = document.getElementById('rail-dots');
+      const idxEl   = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source  = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Jun Nakamura');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.dataset.index = String(idx);
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

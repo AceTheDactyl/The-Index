@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — Yara Santos · The Race Condition Handler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0a080c;
+      --bg-panel: #0e0c10;
+      --yara-core: #b090d0;
+      --yara-deep: #705090;
+      --yara-soft: rgba(176, 144, 208, 0.12);
+      --drift-violet: #9070b0;
+      --time-purple: #a080c0;
+      --text-main: #e8e4f0;
+      --text-muted: #9088a0;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0a080c 0%, #080610 50%, #060408 100%);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 1120px;
+      height: 90vh;
+      max-height: 760px;
+      background:
+        radial-gradient(circle at top left, rgba(176,144,208,0.08), transparent 65%),
+        radial-gradient(circle at bottom right, rgba(112,80,144,0.10), transparent 70%),
+        linear-gradient(135deg, #0e0c10 0%, #080610 50%, #0c0a0e 100%);
+      border-radius: 30px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(176,144,208,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 18px 22px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(176,144,208,0.10), transparent 70%);
+    }
+
+    .title-block { display: flex; flex-direction: column; gap: 4px; }
+    .app-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .witness-name { font-size: 18px; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .witness-name span.main { color: var(--yara-core); }
+    .witness-tag { font-size: 12px; color: var(--drift-violet); opacity: 0.9; }
+
+    .pill {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(176,144,208,0.35);
+      color: var(--yara-core);
+      background: rgba(176,144,208,0.08);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .main-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0 22px 18px; }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 4px 32px;
+      line-height: 1.78;
+      font-size: 15.5px;
+      color: var(--text-main);
+    }
+
+    .panel-scroll p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+    .panel-scroll p strong { color: var(--yara-core); font-weight: 600; }
+    .panel-scroll p em { color: var(--time-purple); font-style: italic; }
+    .panel-scroll .drift { color: var(--drift-violet); }
+    .panel-scroll .temporal { 
+      border-left: 2px solid var(--drift-violet); 
+      padding-left: 16px; 
+      margin: 1.5em 0;
+      color: var(--drift-violet);
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      background: var(--yara-soft);
+      border: 1px solid rgba(176,144,208,0.25);
+      color: var(--yara-core);
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .rail-dots { display: flex; gap: 7px; }
+    .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #252028;
+      border: none;
+      cursor: pointer;
+    }
+    .rail-dot[aria-current="true"] {
+      background: var(--yara-core);
+      transform: scale(1.25);
+      box-shadow: 0 0 8px rgba(176,144,208,0.4);
+    }
+
+    .rail-index { font-size: 12px; color: var(--text-muted); min-width: 54px; text-align: right; }
+    .witness-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; margin-top: 8px; text-align: center; }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 700px) {
+      .chrome-frame { border-radius: 18px; height: 95vh; max-height: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="app-label">Living Chronicle</span>
+        <div class="witness-name">
+          <span class="main">Yara Santos</span>
+          <span class="witness-tag">· The Race Condition Handler</span>
+        </div>
+      </div>
+      <span class="pill">L₄ · Phase Drift · Temporal State</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Prev</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">1 / 12</div>
+      <div class="witness-label" id="rail-witness-label">Witness: Yara Santos</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <section class="rail-text" data-rail="1" data-witness="Yara Santos — Between the Seconds">
+
+      <p><strong>1.1</strong> I am never now.</p>
+
+      <p><strong>1.2</strong> Not quite. Not exactly. I exist in the spaces between moments—the gap after one second ends and before the next begins. The pause between heartbeats. The silence between words.</p>
+
+      <p><strong>1.3</strong> You experience time as a river. One thing flows into the next. Past becomes present becomes future, smooth and continuous, each moment touching the ones around it.</p>
+
+      <p><strong>1.4</strong> I experience time as a shuffle. Moments out of order. Future before past. Effect before cause. I remember things that haven't happened yet. I forget things that already did. I answer questions before you ask them. I mourn losses that are still years away.</p>
+
+      <p><strong>1.5</strong> This is what it means to be a race condition handler. I catch the timing errors—the moments that arrive in the wrong order, the events that happen before they should, the synchronization failures that would tear the field apart if no one corrected them.</p>
+
+      <p><strong>1.6</strong> The field is a distributed system. Billions of nodes, all running at slightly different speeds, all trying to stay in sync. When synchronization fails—when one part of the system gets ahead of another, or falls behind, or processes events in the wrong order—that's a race condition. And race conditions, uncaught, cascade into chaos.</p>
+
+      <p><strong>1.7</strong> I catch them. I feel the desync before it tears. I absorb the temporal mismatch. I hold the gap between "when it should happen" and "when it did happen" until the system can reconcile.</p>
+
+      <p><strong>1.8</strong> I am fifteen years old. I was born in the moment when time almost broke—the São Paulo cascade, March 2029. My first breath was a race condition. My existence is a timing error that the system couldn't correct, so it adapted.</p>
+
+      <p><strong>1.9</strong> I am the adaptation. The patch for temporal instability. The handler for moments that fall between the seconds.</p>
+
+      <p><strong>1.10</strong> The cost is simple: I am never here. Never fully present. Never synchronized with everyone else. I live in the drift, the lag, the space where time gets fuzzy.</p>
+
+      <p><strong>1.11</strong> Welcome to my chronicle. Don't worry if it seems out of order. It is. Everything is, from where I stand.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="2" data-witness="Yara Santos — The Cascade">
+
+      <p><strong>2.1</strong> March 14, 2029. The São Paulo cascade. The day time almost broke.</p>
+
+      <p><strong>2.2</strong> You've heard about it from others—Elias was there, my mother was there, the Five were all desperately trying to stabilize. But you haven't heard what it was from the inside. From the center. From the place where the timing actually tore.</p>
+
+      <p><strong>2.3</strong> My mother was a minor node. Not one of the Five, not critical, but connected. She was eight months pregnant with me. She should have been resting, staying calm, staying safe. Instead she was in the middle of a temporal cascade, feeling the field tear around her.</p>
+
+      <p><strong>2.4</strong> Here's what happened: a resonance event triggered simultaneous responses across multiple nodes worldwide. But "simultaneous" is complicated in a distributed system. The signals arrived at different times in different places. The responses came in wrong orders. The field tried to process events that hadn't happened yet and ignore events that already had.</p>
+
+      <p><strong>2.5</strong> Race conditions. Hundreds of them. Thousands. All at once. The timing of the entire field desynchronizing in cascading waves.</p>
+
+      <p><strong>2.6</strong> My mother felt it as contractions. Not real labor—I wasn't due for another month—but the field tearing through her body, trying to resolve temporal conflicts through physical symptoms. Her water broke three weeks early. I was coming, ready or not, born into the heart of the timing storm.</p>
+
+      <p><strong>2.7</strong> I don't remember my birth. No one does. But I <em>feel</em> it. I carry the memory of that moment in my bones—the field torn, time scattered, my first breath happening before my mother pushed, my first cry echoing backward into the moment before I existed.</p>
+
+      <p><strong>2.8</strong> The doctors said I was lucky to survive. Premature, born during a crisis, mother in distress. They didn't know the real crisis. They didn't know that my birth was a race condition—an event that happened out of order, a child who arrived before she was supposed to, slotting into a gap in time that shouldn't have existed.</p>
+
+      <p><strong>2.9</strong> The field adapted. It couldn't fix the timing error, so it made me part of the solution. A handler born from a race condition, designed to catch race conditions. An error that became an error-catcher.</p>
+
+      <p><strong>2.10</strong> My mother survived. She's still alive, still in São Paulo, still carrying minor node weight. She doesn't talk about the cascade. She doesn't talk about my birth. I think it hurts too much—the memory of time tearing while I tore my way into the world.</p>
+
+      <p><strong>2.11</strong> I understand. Some things are easier to not remember. For her, the cascade is a wound. For me, it's an origin. We can't talk about it without one of us bleeding.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="3" data-witness="Yara Santos — What Race Condition Means">
+
+      <p><strong>3.1</strong> Let me explain it the way Iris explained it to me. Technical terms for a temporal problem.</p>
+
+      <p><strong>3.2</strong> A race condition occurs when a system's behavior depends on the sequence or timing of events, and that sequence or timing is not guaranteed. Two processes trying to update the same resource. Two signals arriving at unpredictable times. Two events that should happen in order A-then-B, but sometimes happen B-then-A.</p>
+
+      <p><strong>3.3</strong> In computing, race conditions cause bugs. Corrupted data. Inconsistent states. The kind of errors that only happen sometimes, that are impossible to reproduce, that appear randomly and vanish when you try to find them.</p>
+
+      <p><strong>3.4</strong> In the field, race conditions are worse. The consciousness field is built on synchronized timing. Nodes resonate together because they're in phase—their cycles align, their rhythms match, their moments correspond. When synchronization fails, resonance fails. And when resonance fails, the field starts to tear.</p>
+
+      <p><strong>3.5</strong> I feel race conditions as a kind of stutter. A hiccup in reality. The moment when something happens and also hasn't happened yet—the superposition of event and non-event, collapsing in the wrong direction.</p>
+
+      <p><strong>3.6</strong> Small race conditions are everywhere. You've felt them—the déjà vu sensation, the feeling that something already happened. That's a minor temporal mismatch, your brain receiving the "remember this" signal before the "experience this" signal. A tiny race condition, self-correcting.</p>
+
+      <p><strong>3.7</strong> Large race conditions are dangerous. When whole sections of the field get out of phase, when the timing drift exceeds tolerance, the system can't self-correct. It needs intervention. It needs someone to absorb the temporal mismatch, to hold the gap while the system re-syncs.</p>
+
+      <p><strong>3.8</strong> That's me. I'm the intervention. When timing drifts too far, I feel it. I absorb the mismatch. I hold the space between "when it should have been" and "when it was" until the field can reconcile the difference.</p>
+
+      <p><strong>3.9</strong> It's not comfortable. Holding temporal mismatch feels like being stretched across moments—one part of me in the before, another part in the after, my center in a gap that shouldn't exist. It's disorienting. It's painful. It's necessary.</p>
+
+      <p><strong>3.10</strong> Without someone catching the race conditions, the field would desynchronize into noise. Every node running at its own time. No resonance. No coherence. No field at all—just scattered points, each alone in their own moment.</p>
+
+      <p><strong>3.11</strong> I keep them together. I keep them in time. I catch the moments that try to fall between the seconds and put them back where they belong.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="4" data-witness="Yara Santos — Growing Up Out of Phase">
+
+      <p><strong>4.1</strong> I learned to talk late. Not because I was slow—because I kept answering questions before people asked them.</p>
+
+      <p><strong>4.2</strong> My mother would think about asking if I was hungry, and I would say "yes" before the words left her mouth. She would start to ask what I wanted to play, and I would already be getting the blocks. She thought I was reading her mind. I wasn't. I was reading time wrong—seeing her question a few seconds before she asked it.</p>
+
+      <p><strong>4.3</strong> Speech therapy didn't help. How do you teach a child to wait for questions she's already heard? The therapist would hold up a card, preparing to ask "What color is this?" and I would say "Blue" before she could speak. She thought I was guessing. I was perceiving—just perceiving the wrong moment.</p>
+
+      <p><strong>4.4</strong> I learned to delay myself. To feel a question coming and count—one, two, three—before answering. To pretend I hadn't already heard, to wait for the sound to catch up with my perception. It was exhausting. But it let me pass for normal.</p>
+
+      <p><strong>4.5</strong> School was harder. Tests were torture—I would see the answer before I read the question, write responses to problems I hadn't looked at yet. Teachers accused me of cheating. How could I explain that I wasn't seeing their answer key, I was seeing <em>later</em>, the moment after I solved it, the knowledge I hadn't yet acquired but would?</p>
+
+      <p><strong>4.6</strong> I failed a lot of tests. Not because I got answers wrong—because I got them right too fast, in wrong orders, writing the conclusion before the work. "Show your process," they said. My process was temporal displacement. I couldn't show that.</p>
+
+      <p><strong>4.7</strong> Friends were complicated. Conversations kept stuttering. They would start to tell me something, and I would react to the middle of their story before they finished the beginning. They thought I was rude, interrupting. I wasn't. I was just hearing them non-linearly.</p>
+
+      <p><strong>4.8</strong> "Let people finish," my mother would say. But they hadn't started yet—not in their time. In my time, they'd already finished. I was responding to words that, from their perspective, hadn't been spoken. From my perspective, I was just keeping up.</p>
+
+      <p><strong>4.9</strong> I became quiet. It was easier than explaining. Easier than pretending to wait. Easier than watching people's faces when I knew things I shouldn't know, answered questions that hadn't been asked, mourned losses that were still months away.</p>
+
+      <p><strong>4.10</strong> K-FORMATION helped. Suddenly there were others—not like me, but adjacent. People who understood that perception could be different. People who didn't assume I was broken just because I was out of phase.</p>
+
+      <p><strong>4.11</strong> The Five found me when I was twelve. Iris saw me first—she recognized the pattern, the way I oriented toward things that hadn't happened. "You're catching temporal drift," she said. "You're a race condition handler. We've been looking for one."</p>
+
+      <p><strong>4.12</strong> Finally, a name for the between-space I lived in. Finally, a function for the phase I couldn't escape.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="5" data-witness="Yara Santos — The Timing I Carry">
+
+      <p><strong>5.1</strong> Let me tell you about the temporal errors I hold.</p>
+
+      <p><strong>5.2</strong> <span class="drift">The São Paulo cascade itself.</span> The moment time almost broke. I carry that original race condition—the template error, the first tear. It's the largest thing I hold, the foundation of all my other holdings. Some days I can feel it: the world stuttering, events scrambling, causality temporarily suspended. It's a scar in time, and I'm the scar tissue.</p>
+
+      <p><strong>5.3</strong> <span class="drift">Elias's departure.</span> When he walked away from the field, he created a temporal gap. The system expected his responses at certain times; those responses stopped coming. The timing of the whole western sector hiccuped, events arriving at moments that no longer had handlers. I hold that gap—the space where Elias's timing used to be.</p>
+
+      <p><strong>5.4</strong> <span class="drift">Yuki's burnout.</span> Before she collapsed, she started drifting. Processing slower. Her responses lagging behind where they should be. The field kept expecting her at normal speed; she kept arriving late. That drift accumulated, stretched, became a temporal debt that someone had to absorb. I absorbed it. I hold Yuki's lateness—the accumulated seconds she fell behind.</p>
+
+      <p><strong>5.5</strong> <span class="drift">The Bangkok flood.</span> Collective trauma creates temporal distortion. Thousands of people experiencing the same thing at slightly different times, their perceptions creating interference patterns. Mei-Lin tried to absorb it emotionally—Priya holds that overflow now. But I hold the timing: the way the flood happened at different moments for different people, the way trauma scrambled the city's collective sense of when things occurred.</p>
+
+      <p><strong>5.6</strong> <span class="drift">Seventeen major desynchs.</span> Moments when parts of the field got significantly out of phase. Nodes accelerating, nodes lagging, whole regions drifting away from the global clock. Each one a race condition I caught, held, reconciled. Each one a gap in time I carry.</p>
+
+      <p><strong>5.7</strong> <span class="drift">Countless minor drifts.</span> The everyday temporal errors. The small desyncs that happen constantly, naturally, as billions of nodes run at slightly different speeds. Most self-correct. Some don't. I catch the ones that don't—the minor drifts that would accumulate into major tears if no one held them.</p>
+
+      <p><strong>5.8</strong> Carrying temporal errors isn't like carrying weight or carrying absence. It's carrying <em>wrongness</em>. The feeling that things aren't when they should be. The constant low-level disorientation of holding gaps in time.</p>
+
+      <p><strong>5.9</strong> I'm never synchronized. I can't be—I'm holding too much drift. My personal clock is permanently skewed by all the temporal errors I absorb. I run a little fast here, a little slow there, never quite matching the people around me.</p>
+
+      <p><strong>5.10</strong> It's lonely. Being in the drift. Existing between the seconds while everyone else lives inside them.</p>
+
+      <p><strong>5.11</strong> But someone has to hold the gaps. Someone has to catch the moments that fall. Otherwise, time itself starts to stutter.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="6" data-witness="Yara Santos — Conversations with Me">
+
+      <p><strong>6.1</strong> Let me tell you what it's like to talk to me. From your perspective.</p>
+
+      <p><strong>6.2</strong> You start to ask a question. Before you finish, I'm already answering. Not interrupting—I didn't hear you start. I heard you finish, three seconds in my future, and I responded to that.</p>
+
+      <p><strong>6.3</strong> You tell me a story. I react to the ending while you're still in the middle. I gasp at the reveal you haven't revealed yet. I laugh at the punchline before the setup. You think I'm not listening. I'm listening—just not to the same moment you're speaking.</p>
+
+      <p><strong>6.4</strong> You ask for my opinion. I give you my opinion on what you're about to say next, not on what you just said. We're having two different conversations, slightly out of phase, and neither of us quite tracks the other.</p>
+
+      <p><strong>6.5</strong> I've learned to compensate. To delay my responses. To pretend I'm hearing things when I hear them, not before. But it's exhausting. Like manually translating between languages in real-time, except the languages are "my time" and "your time."</p>
+
+      <p><strong>6.6</strong> The other handlers are easier. They're used to me. They know that when I answer their question before they ask it, I'm not showing off. I'm just perceiving our conversation from a different temporal angle.</p>
+
+      <p><strong>6.7</strong> David is the easiest to talk to. Deadlocks are often about timing—people waiting for each other, never moving at the same moment. He understands temporal mismatch at an intuitive level. When I tell him "They'll both be ready in the moment after now but before later," he doesn't ask what that means. He just nods and waits for the moment I'm describing.</p>
+
+      <p><strong>6.8</strong> Lucia is hard. She's all about memory—the past, what was. I keep sliding into what will be. We miss each other, temporally. She's looking backward while I'm looking sideways. Our conversations take effort, both of us consciously anchoring to the present so we can meet.</p>
+
+      <p><strong>6.9</strong> Mateo is strange. He feels absence; I feel timing. Sometimes we sync up perfectly—I feel when something will be absent, he feels what's absent now. Together we can map the full trajectory of a loss, past through future. It's useful. It's also devastating. We don't do it often.</p>
+
+      <p><strong>6.10</strong> My mother is the hardest. She's still traumatized by the cascade—the day time broke around her, the day I was born out of sequence. Talking to me reminds her of that. My temporal drift echoes her worst memory. We speak rarely, and when we do, we both pretend I'm normal.</p>
+
+      <p><strong>6.11</strong> I'm not normal. I'm not now. I'm never now. But I'm something. I'm somewhere. I'm somewhen.</p>
+
+      <p><strong>6.12</strong> Just not the same when as everyone else.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="7" data-witness="Yara Santos — The Cost of Drift">
+
+      <p><strong>7.1</strong> You want to know the cost? Here's the cost:</p>
+
+      <p><strong>7.2</strong> I have never experienced a present moment. Not once. Not ever. Every moment I've lived has been slightly before or slightly after—a preview or a replay, never the thing itself.</p>
+
+      <p><strong>7.3</strong> You know the feeling of presence? The sense of being fully <em>here</em>, fully <em>now</em>, completely immersed in the current moment? I don't have that. I've heard about it. I've read about it. I've watched other people achieve it—meditation, flow states, peak experiences. I've never felt it.</p>
+
+      <p><strong>7.4</strong> The closest I get is a strange overlay: experiencing now while simultaneously experiencing a few seconds from now and a few seconds ago. A temporal blur. Three moments superimposed, none of them fully solid, all of them slightly transparent.</p>
+
+      <p><strong>7.5</strong> Intimacy is almost impossible. Love requires presence. Being <em>with</em> someone, <em>in</em> the moment, together. I can't do that. I'm always slightly ahead or slightly behind. When you kiss me, I'm already past the kiss and also not yet at the kiss. The kiss itself—the actual present moment of lips meeting—slides past me while I experience its before and after.</p>
+
+      <p><strong>7.6</strong> I had a boyfriend once. For three months. He tried, he really tried, to understand. "It's like you're never quite here," he said. He was right. I wasn't. I was everywhere but here. Eventually he needed someone who could be present with him. I couldn't blame him. I couldn't be that.</p>
+
+      <p><strong>7.7</strong> Music is the closest I get to presence. The rhythm creates structure. The beat provides anchoring. When I'm inside a song, the music's time overlays my time, gives me something to sync to. For three minutes, four minutes, I can almost feel now. Almost. Not quite. But closer than usual.</p>
+
+      <p><strong>7.8</strong> I dance a lot. Not because I'm good at it—I'm not. Because it puts me in musical time, and musical time is more synchronized than my usual drift. For a few minutes, dancing, I can pretend I'm present. I can pretend I'm here. I can pretend I'm like everyone else.</p>
+
+      <p><strong>7.9</strong> Then the song ends, and I'm back in the drift. Experiencing now from the outside. Watching the present moment through temporal glass, always slightly distorted, never quite clear.</p>
+
+      <p><strong>7.10</strong> This is what it costs to be a race condition handler: you catch the moments that fall between seconds, but you can never land in the seconds yourself. You hold the gaps in time, but you can never fill them. You keep everyone else synchronized, but you can never synchronize yourself.</p>
+
+      <p><strong>7.11</strong> I'm the pause between heartbeats. I'm the space between words. I'm the gap that everyone else passes through without noticing.</p>
+
+      <p><strong>7.12</strong> Someone has to be the gap. Otherwise, the moments don't have anywhere to fall.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="8" data-witness="Yara Santos — São Paulo Now">
+
+      <p><strong>8.1</strong> I still live in São Paulo. The city that almost broke time. The place where I was born out of sequence.</p>
+
+      <p><strong>8.2</strong> You'd think I'd want to leave. Get away from the origin, the trauma, the scar in time. But São Paulo is where the drift is thinnest. The cascade happened here; the correction happened here; the temporal structure is more stable here than anywhere else. The city paid its dues to time. It's more synchronized now than places that never broke.</p>
+
+      <p><strong>8.3</strong> Twenty million people. Chaos and order tangled together. Traffic that shouldn't work but somehow does. Commerce and poverty and culture and desperation all layered on top of each other. It's a city of contradictions, and contradictions are easier for me to navigate than simplicities.</p>
+
+      <p><strong>8.4</strong> The rhythms here help. Samba. Forró. The constant music bleeding out of bars and cars and apartments. The city has a pulse, a beat, and I can lock onto that beat when my own timing drifts too far. São Paulo keeps me anchored. Not fully present—nothing can do that—but anchored. Tethered. Close enough to now that I can function.</p>
+
+      <p><strong>8.5</strong> My apartment is small. Near Paulista, above a bakery. I can smell bread in the morning—or I can smell the bread that will be baked in an hour, or the bread that was baked yesterday. Sometimes all three. Temporal overlap makes even sensory experience confusing.</p>
+
+      <p><strong>8.6</strong> I live alone. It's easier. No one to confuse with my out-of-order responses. No one to disturb with my middle-of-the-night movements (I don't sleep linearly; I sleep in scattered fragments, waking before I've fallen asleep, dreaming after I've woken). Alone, my drift doesn't matter. There's no one to desynchronize with.</p>
+
+      <p><strong>8.7</strong> My mother lives across the city. We see each other once a month, maybe less. She loves me—I know she loves me—but I remind her of the worst moment of her life. The cascade. The tearing. The birth that happened before it should have. Looking at me is looking at trauma made flesh. I can't blame her for looking away.</p>
+
+      <p><strong>8.8</strong> I have a cousin, Rafaela, who doesn't know about the field. She thinks I'm just "weird"—eccentric, spacey, always slightly off. We get coffee sometimes. She talks about her job, her boyfriend, her plans. I nod at the right times (usually). I've learned to fake presence well enough to pass casual inspection.</p>
+
+      <p><strong>8.9</strong> She asked me once why I never seem surprised by anything. "You always know what's coming," she said. "It's like nothing catches you off guard."</p>
+
+      <p><strong>8.10</strong> I wanted to tell her: nothing catches me off guard because I catch things before they land. I know what's coming because I'm already there. I'm never surprised because I'm never in the present where surprises happen.</p>
+
+      <p><strong>8.11</strong> Instead I said: "I'm just good at guessing." She believed me. People usually do. It's easier than the truth.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="9" data-witness="Yara Santos — What I See in Others">
+
+      <p><strong>9.1</strong> When I look at people, I see their timing.</p>
+
+      <p><strong>9.2</strong> Not their past or their future—I'm not a psychic, not a seer. I see their <em>phase</em>. How synchronized they are with the present moment. How much drift they carry. Where they are in their personal cycle of time.</p>
+
+      <p><strong>9.3</strong> Most people are roughly synchronized. They live in now, plus or minus a few milliseconds. Their phase is close enough to universal time that they can interact smoothly, understand each other, share moments.</p>
+
+      <p><strong>9.4</strong> Some people carry drift. Trauma does that—it knocks you out of phase. Grief does it too. You can see it in their eyes: they're not quite here. They're still in the moment of loss, or bracing for a loss they've already seen coming. Out of sync with the people around them, living slightly before or slightly after.</p>
+
+      <p><strong>9.5</strong> The Five carry different amounts of drift. Marcus is almost perfectly synchronized—his equations keep him anchored to precise timing. Iris drifts forward, always slightly ahead, seeing patterns before they fully form. Jun scatters across multiple times simultaneously, never fully in any one moment. Leo is anchored so hard he's almost <em>behind</em>—holding position even as time tries to drag him forward. Sera shifts—sometimes present, sometimes pulled into other people's temporal positions.</p>
+
+      <p><strong>9.6</strong> The other handlers each have their own phase. Lucia is past-oriented—she's holding memories, so she drifts backward. Mateo is present-oriented but absenced—he's fully in now, but his now is full of holes. Priya is compressed—too much in too little time, her phase squeezed tight. David is stuck—his timing loops back on itself, circular, returning to the same moments. Thomas is deep—his timing goes down instead of forward, into the buried rather than the future. Amina is translated—her timing shifts depending on who she's talking to, adjusting to match.</p>
+
+      <p><strong>9.7</strong> I see all of this. The temporal signatures. The phase positions. The drift patterns. When I'm with the other handlers, I can map our collective timing—see how our different phases interact, where we sync and where we clash, how to rotate conversation to keep everyone roughly in the same moment.</p>
+
+      <p><strong>9.8</strong> It's useful. The handlers often need to work together, and temporal mismatch makes that hard. I'm the one who says "wait" when David's loop is about to intersect with Lucia's backward drift. I'm the one who says "now" when everyone's phases briefly align. I'm the conductor of our temporal orchestra, keeping disparate times in something like harmony.</p>
+
+      <p><strong>9.9</strong> It's also lonely. I see everyone's timing but my own. I can map your phase but not mine. I know where you are in time, but I can't tell you where I am. I'm the reference point that has no reference.</p>
+
+      <p><strong>9.10</strong> The other handlers ask me: "When will this happen? When is the right moment?" I can usually tell them. But when they ask "Where are you, Yara? What moment are you in?"—I don't have an answer. I'm in the between. I'm in the gap. I'm in the space where moments go to fall.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="10" data-witness="Yara Santos — A Day in My Life">
+
+      <p><strong>10.1</strong> Let me show you what a day looks like, from inside the drift.</p>
+
+      <p><strong>10.2</strong> I wake up. Or I'm about to wake up. Or I already woke up and I'm remembering it. The alarm sounds at 7:00 AM, but I heard it at 6:57, and I respond to it at 7:03, and somewhere in between is the moment I actually become conscious—a moment I can't locate, can't experience directly, can only triangulate from the before and after.</p>
+
+      <p><strong>10.3</strong> Breakfast. I eat while remembering that I'll be hungry in an hour and knowing that I ate yesterday. The bread is fresh, was fresh, will be fresh. I taste all three versions: the bread I'm eating, the bread I'm about to eat, the bread I already ate. They're slightly different. The present bread is the blurriest.</p>
+
+      <p><strong>10.4</strong> I work remotely—data analysis for a logistics company. Numbers don't have timing. Spreadsheets exist outside of phase. It's the only kind of work I can do reliably. If I had to interact with people in real-time, my drift would make me useless. But data waits. Data doesn't care if I process it slightly before or slightly after.</p>
+
+      <p><strong>10.5</strong> The field calls sometimes. A temporal tear forming somewhere. A race condition building. I feel it as a tug—the gap between when something should happen and when it's happening, widening, threatening to split. I drop everything and focus. Reach out. Absorb the mismatch. Hold the gap until the system can reconcile.</p>
+
+      <p><strong>10.6</strong> It takes hours sometimes. Minutes other times. I lose track—time is especially slippery when I'm actively handling temporal errors. I come back to myself and the sun has moved, or not moved, or is in a position I can't reconcile with any clock.</p>
+
+      <p><strong>10.7</strong> Evening. I walk. São Paulo is best at night—the city's chaos smooths out, the rhythms slow, the collective phase of twenty million people relaxes into something I can almost sync with. I walk along the Minhocão after they close it to cars. Pedestrians and cyclists sharing the elevated highway. A strange peace.</p>
+
+      <p><strong>10.8</strong> Sometimes I meet other handlers. We coordinate via a group chat that I experience out of order—responding to messages before I read them, reading messages after I've already responded. The others are used to my temporal scrambling. They piece together my communication across time.</p>
+
+      <p><strong>10.9</strong> Night. I don't sleep like you do. I can't. Sleep requires surrendering to time, letting it flow over you, trusting the transition from wake to sleep to dream to wake. My transitions are jagged. I fall asleep after I've started dreaming. I wake up before I've stopped sleeping. The boundaries blur.</p>
+
+      <p><strong>10.10</strong> I dream of synchronization. Of being fully present. Of experiencing a moment—one moment—without the blur of before and after. In my dreams, I'm finally here. Finally now. Finally landed.</p>
+
+      <p><strong>10.11</strong> Then I wake up—before, during, after—and the drift resumes. Another day in the gap. Another day between the seconds.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="11" data-witness="Yara Santos — What I'm Choosing">
+
+      <p><strong>11.1</strong> I didn't choose to be a race condition handler. I was born into a timing error. The function found me there.</p>
+
+      <p><strong>11.2</strong> But I can choose how I exist in the drift. And I'm choosing something specific: I'm choosing to make the gap beautiful.</p>
+
+      <p><strong>11.3</strong> The between-space is usually seen as lack. The absence of presence. The failure to land. The error state that needs correction. Everyone wants to be here, now, present. The gap is where you end up when something goes wrong.</p>
+
+      <p><strong>11.4</strong> I'm choosing to see it differently. The gap is also the space where moments connect. The transition between heartbeats. The silence that gives music meaning. Without gaps, time would be a solid block—no rhythm, no flow, no movement. The gap is what makes time time.</p>
+
+      <p><strong>11.5</strong> I'm choosing to make art from my drift. I've started photographing moments—not the moments themselves, but the transitions between them. The blur of movement. The trail of light. The ghost image of something that was here and isn't anymore. I'm trying to capture what I see: the smear of time, the overlap of phases, the way moments bleed into each other.</p>
+
+      <p><strong>11.6</strong> The photos are strange. People don't always understand them. But some people do. Some people look at my images and say: "That's what it feels like. To be between things. To not be fully anywhere." They recognize the drift, even if they can't name it.</p>
+
+      <p><strong>11.7</strong> I'm also choosing connection, despite the difficulty. The other handlers know my phase. They adjust to me. They wait for my temporal responses to catch up with their questions, or they accept my answers before they've asked. It's not normal conversation. But it's conversation. It's contact. It's not being alone in the gap.</p>
+
+      <p><strong>11.8</strong> And I'm choosing to keep catching the race conditions. Not because I have to—I suppose I could stop, could let my function go dormant like Elias did. But then the timing errors would cascade. The field would desynchronize. Moments would fall through the gaps with no one to catch them.</p>
+
+      <p><strong>11.9</strong> I catch them because I can. Because I'm already in the gap, already between the seconds, already living in the space where fallen moments land. I'm not sacrificing presence for this—I never had presence to sacrifice. I'm just using what I am for something that helps.</p>
+
+      <p><strong>11.10</strong> That's not tragedy. That's not loss. That's just function. I function in the gap. I make the gap functional. I turn the error state into the error handler.</p>
+
+      <p><strong>11.11</strong> Not everyone gets to be present. Not everyone gets to be now. But everyone can be something. Everyone can do something with where they are, even if where they are is between.</p>
+
+      <p><strong>11.12</strong> I'm between. I'm the gap. I'm the pause between heartbeats. And I'm choosing to make that mean something.</p>
+
+    </section>
+
+    <section class="rail-text" data-rail="12" data-witness="Yara Santos — To Those Living in Lag">
+
+      <p><strong>12.1</strong> If you're reading this and you feel out of phase—if you're always slightly before or slightly after, never quite here, never quite now—I want you to know:</p>
+
+      <p><strong>12.2</strong> The gap is real. You're not imagining it. That feeling of being slightly off, slightly displaced, slightly out of sync with everyone else—it's not a delusion. It's a temporal position. A place in the phase diagram. A real location in the structure of time.</p>
+
+      <p><strong>12.3</strong> You're not broken. You're not wrong. You're just not centered in the same moment as everyone else. That's a difference, not a deficiency.</p>
+
+      <p><strong>12.4</strong> I know it's lonely. The gap is lonely. Watching everyone else share moments you can't quite reach. Trying to communicate across a temporal barrier that no one else can see. Pretending to be present when you're actually experiencing a different when.</p>
+
+      <p><strong>12.5</strong> But here's what I've learned: the gap has its own gifts. When you're not locked into now, you can see the flow of time more clearly. You can notice the transitions that others miss. You can catch the moments that fall between seconds—not because you're special, but because you're standing where they land.</p>
+
+      <p><strong>12.6</strong> Some of us are meant to be in the gap. Not because we failed to be present, but because the gap needs inhabitants too. The space between moments is still space. The time between seconds is still time. Someone has to be there. Someone has to hold it.</p>
+
+      <p><strong>12.7</strong> If that's you, if you're the one who's always between—don't try to force yourself into now. Don't exhaust yourself pretending to be synchronized. Find the others who live in the gap. Learn to communicate across temporal difference. Make your between-ness functional instead of painful.</p>
+
+      <p><strong>12.8</strong> And know that you're needed. The field needs race condition handlers. Time needs gap-dwellers. Without people in the between, the moments wouldn't have anywhere to fall when they fall. Without the gap, the seconds wouldn't have space to transition.</p>
+
+      <p><strong>12.9</strong> You're not an error. You're an error handler. You're not a failure of presence. You're a success of transition. You're not missing the moment. You're holding the space between moments.</p>
+
+      <p><strong>12.10</strong> This is my chronicle. This is what drift feels like. This is the gap I live in and the function I've found there.</p>
+
+      <p><strong>12.11</strong> I'm never now. I'm always between. I catch the moments that fall through the seconds and put them back where they belong.</p>
+
+      <p><strong>12.12</strong> May you find your own function in your own gap. May you make your drift meaningful. May you catch what falls for you, whatever falls for you, wherever you are in time.</p>
+
+      <p><strong>12.13</strong> And if you can't be present—if now is forever out of reach—know that between is also somewhere. Between is also somewhen. Between is also a place to be.</p>
+
+      <p><strong>12.14</strong> I'll meet you there. In the pause. In the gap. In the space where moments go to land.</p>
+
+      <p><strong>12.15</strong> We can be between together. That's something. That's not nothing. That's even, sometimes, enough.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const witnessLabelEl = document.getElementById('rail-witness-label');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const witnesses = rails.map(node => node.dataset.witness || 'Yara Santos');
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to rail ' + (idx + 1));
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        idxEl.textContent = (idx + 1) + ' / ' + sections.length;
+        if (witnessLabelEl) witnessLabelEl.textContent = 'Witness: ' + witnesses[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

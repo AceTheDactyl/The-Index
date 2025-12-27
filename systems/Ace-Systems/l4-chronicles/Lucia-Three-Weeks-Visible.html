@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lucia Thorne — Three Weeks Visible</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #080608;
+      --bg-panel: #0c0a0e;
+      --lucia-primary: #7a5c8a;
+      --lucia-deep: #5a3c6a;
+      --lucia-soft: rgba(122, 92, 138, 0.12);
+      --memory-violet: #9070a0;
+      --leak-gray: #606068;
+      --danger-red: #8b3040;
+      --text-main: #e0d8e4;
+      --text-muted: #908898;
+      --text-bright: #f4f0f8;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(122, 92, 138, 0.08), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(90, 60, 106, 0.06), transparent 50%),
+        linear-gradient(180deg, #080608 0%, #040306 50%, #020204 100%);
+      color: var(--text-main);
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .chrome-frame {
+      width: 100%;
+      max-width: 840px;
+      height: 94vh;
+      max-height: 860px;
+      background:
+        radial-gradient(circle at top left, rgba(122, 92, 138, 0.06), transparent 60%),
+        linear-gradient(135deg, #0c0a0e 0%, #080608 50%, #0a080c 100%);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(122, 92, 138, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 28px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .series-label {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.65em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .title {
+      font-size: 1.3em;
+      font-weight: 400;
+      color: var(--lucia-primary);
+      font-style: italic;
+    }
+
+    .week-pill {
+      font-family: "SF Mono", monospace;
+      font-size: 0.7em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--lucia-primary);
+      color: var(--lucia-primary);
+      background: var(--lucia-soft);
+      letter-spacing: 0.1em;
+    }
+
+    .main-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 28px 20px;
+    }
+
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 8px 40px;
+      line-height: 1.9;
+      font-size: 1.02em;
+    }
+
+    .panel-scroll p {
+      margin: 0 0 1.2em;
+      text-indent: 1.5em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p:first-of-type,
+    .panel-scroll .scene-break + p {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf {
+      text-indent: 0;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.2em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 8px;
+      padding-top: 4px;
+      color: var(--lucia-primary);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2em 0;
+      color: var(--lucia-deep);
+      letter-spacing: 0.3em;
+    }
+
+    .memory {
+      color: var(--memory-violet);
+      font-style: italic;
+    }
+
+    .leak {
+      color: var(--leak-gray);
+      opacity: 0.7;
+    }
+
+    .danger {
+      color: var(--danger-red);
+    }
+
+    .chapter-title {
+      text-align: center;
+      margin-bottom: 2em;
+      padding-bottom: 1.5em;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chapter-name {
+      font-size: 1.4em;
+      color: var(--lucia-primary);
+      font-style: italic;
+    }
+
+    .chapter-date {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .nav-btn {
+      font-family: "SF Mono", monospace;
+      background: var(--lucia-soft);
+      border: 1px solid rgba(122, 92, 138, 0.3);
+      color: var(--lucia-primary);
+      font-size: 0.8em;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      background: rgba(122, 92, 138, 0.2);
+    }
+
+    .rail-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .rail-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #1a1518;
+      border: 1px solid var(--lucia-deep);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rail-dot[aria-current="true"] {
+      background: var(--lucia-primary);
+      transform: scale(1.2);
+      box-shadow: 0 0 12px rgba(122, 92, 138, 0.5);
+    }
+
+    .rail-index {
+      font-family: "SF Mono", monospace;
+      font-size: 0.75em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    #rail-source { display: none; }
+
+    @media (max-width: 600px) {
+      .chrome-frame { border-radius: 14px; height: 96vh; }
+      .panel-scroll { font-size: 0.95em; padding: 20px 4px 32px; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chrome-frame">
+    <header>
+      <div class="title-block">
+        <span class="series-label">The Exception Handlers · Narrative Pilot</span>
+        <div class="title">Lucia Thorne — Three Weeks Visible</div>
+      </div>
+      <span class="week-pill" id="week-pill">Week 1</span>
+    </header>
+
+    <div class="main-body">
+      <div class="panel-scroll" id="panel" tabindex="0"></div>
+
+      <footer>
+        <button class="nav-btn" id="prev">← Previous Week</button>
+        <div class="rail-dots" id="rail-dots"></div>
+        <button class="nav-btn" id="next">Next Week →</button>
+      </footer>
+      <div class="rail-index" id="rail-index">Week 1 of 3</div>
+    </div>
+  </div>
+
+  <div id="rail-source">
+
+    <!-- WEEK ONE -->
+    <section class="rail-text" data-rail="1" data-week="Week 1">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week One</div>
+        <div class="chapter-name">The Weight of a Name</div>
+        <div class="chapter-date">January 16–22, 2041</div>
+      </div>
+
+      <p class="first-graf">The woman at the government office has asked for my name three times. Each time, I open my mouth. Each time, nothing comes out.</p>
+
+      <p>"Senhora?" She peers at me over reading glasses that magnify her eyes into something owl-like, patient but beginning to fray. "Your name, please. For the ID renewal."</p>
+
+      <p>Lucia Thorne.</p>
+
+      <p>Two words. Twelve letters. The shape of a person who exists in the world.</p>
+
+      <p>I haven't said my full name out loud in four months. I've been Lucia to the woman at the café who knows my coffee order. Lu to Mateo on encrypted calls. A woman, a figure, a presence that left no trace. Saying my name now feels like signing a confession. Like admitting to a crime I've spent months trying to escape.</p>
+
+      <p>"Lucia," I say finally. My voice cracks on the second syllable. "Lucia Thorne."</p>
+
+      <p>She types it into the system. I watch her fingers on the keyboard and feel, with sickening clarity, the data propagating outward. <span class="memory">Database queries rippling through connected systems. My name appearing in places it hasn't appeared in months. The field noticing. The hunt adjusting.</span></p>
+
+      <p>By tonight, something will try to kill me.</p>
+
+      <p>I know this the way I know the memories I carry aren't mine. The way I know the São Paulo cascade left survivors who still dream in Portuguese they never learned. The way I know that somewhere in this city, right now, someone else's grief is leaking into the groundwater of my consciousness, looking for a place to stay.</p>
+
+      <p>"Fingerprint, please." The woman gestures to the scanner.</p>
+
+      <p>I press my thumb to the glass. The machine hums. Somewhere in a server farm, my biometric data links to my name links to my new address links to my new bank account links to the shape of a person who can be found, tracked, targeted, destroyed.</p>
+
+      <p><span class="danger">The urge to run is overwhelming.</span></p>
+
+      <p>I grip the counter instead. Breathe. Stay.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>The new apartment is on the third floor of a building in Ribeira, overlooking the Douro River. It has a lease with my name on it. My <em>real</em> name. I signed it this morning, hand shaking so badly the landlord asked if I was ill.</p>
+
+      <p>"Just cold," I lied. He didn't believe me. Porto in January isn't that cold.</p>
+
+      <p>I'm standing at the window now, watching the sun set over the river, waiting for the attack that hasn't come yet. The city is beautiful—old buildings in faded pastels, red-tiled roofs stepping down the hillside toward the water. I've been here for six months. I've never really seen it until now. When you're busy erasing yourself, you don't have attention to spare for beauty.</p>
+
+      <p>My phone buzzes. A text from Priya: <em>Are you okay? I felt something.</em></p>
+
+      <p>She felt me become visible again. The field registered my re-emergence, and Priya, holding overflow for all of us, absorbed the ripple of it. I'm a burden to her just by existing. Another weight she has to carry.</p>
+
+      <p><em>I'm okay</em>, I type back. <em>Just renewing my ID. Signing a lease. Being a person.</em></p>
+
+      <p><em>That takes courage</em>, she replies. Then: <em>The systems are noticing. I can feel them orienting. Be careful tonight.</em></p>
+
+      <p>I put the phone down. Stare at the river. The water is gray-green in the fading light, carrying debris toward the sea. Carrying things that will never come back.</p>
+
+      <p><span class="memory">Someone else's memory surfaces: a child throwing a bottle into the Amazon, watching it disappear around a bend, wondering if it would reach the ocean. The child is dead now. Has been dead for six years. But the memory persists, orphaned, drifting through the field until it found me.</span></p>
+
+      <p>I hold the memory the way I hold all the memories. Gently. Patiently. Waiting for it to finish its processing so it can finally let go.</p>
+
+      <p>The child's name was Maria. She was seven when she threw the bottle. She was nine when the cascade took her family. She was nine and three months when she stopped existing entirely, lost in a temporal fold that swallowed her village for forty-seven minutes and never gave her back.</p>
+
+      <p>I carry her bottle-memory now. The hope of it. The wondering. The faith that something you release into the current will reach the place it's meant to go.</p>
+
+      <p>Maybe that's what I'm doing. Putting my name back in the current. Hoping it reaches somewhere other than oblivion.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>The attack comes at 2:17 AM.</p>
+
+      <p>I'm not asleep—haven't been able to sleep since Amina's document—so I feel it building before it arrives. A pressure in the walls. A hum in the electrical system that doesn't match the building's normal frequency. The field, orienting something toward me.</p>
+
+      <p><span class="danger">Something is about to orphan me from reality.</span></p>
+
+      <p>I'm out of bed before I fully understand what I'm sensing. Grab my coat, my keys, my phone. The apartment door. The hallway. The stairs. Three flights down in darkness because the lights have already failed, because the building's systems are already trying to forget I exist.</p>
+
+      <p>The front door opens into cold January air and I run.</p>
+
+      <p>Not randomly—my feet know where to go even when my mind doesn't. Away from the building. Away from the power grid. Away from any system that might be hunting me. I run until I reach the river, until my lungs burn and my legs ache and I'm standing on the bank where there are no sensors, no databases, no networked infrastructure to notice me.</p>
+
+      <p>Behind me, the building's lights flicker back on. Whatever was coming has lost my trail. For now.</p>
+
+      <p>I sit on the cold stone embankment and watch the river flow. Breathe. Exist. A person with a name, sitting by a river, in a city where she has just proven she can be found.</p>
+
+      <p>This is what visibility costs. This is the price of existence.</p>
+
+      <p>I chose this. I keep choosing it. Every breath is a choice to stay visible instead of leaking away.</p>
+
+      <p>Somewhere in Abuja, Amina is preparing to fix the encoding that makes me a target. I have to survive until she succeeds.</p>
+
+      <p>Three weeks. Twenty-one days. Each one a choice.</p>
+
+      <p>I walk back to my apartment at dawn. The building is quiet now, the attack dissipated, the systems no longer oriented toward my destruction. I make coffee. Sit at the window. Watch the city wake up.</p>
+
+      <p>Day one. Survived. Twenty more to go.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>By the end of the week, I've established a pattern. It's not safe, but it's mine.</p>
+
+      <p>Mornings: coffee at the café on the corner. The owner, Helena, knows my name now. Lucia. She says it when I walk in, and every time she does, I feel the world become slightly more real. I am Lucia. Someone knows it. Someone expects me.</p>
+
+      <p>Afternoons: walking the city. Letting myself be seen. I go to markets, to museums, to the crowded tram that rattles along the waterfront. I move through spaces full of people and cameras and databases that record my presence. Each appearance is a declaration: I am here. I exist. Delete me if you can.</p>
+
+      <p>Evenings: back to the apartment. Cooking dinner—simple things, rice and vegetables, the meals of a person who lives somewhere. I've never had a real kitchen before. Never stayed long enough. Now I have pots and pans that are <em>mine</em>, a spatula with my fingerprints on it, a refrigerator that knows what I like to eat.</p>
+
+      <p>Nights: the attacks. Two more this week, both interrupted by my sensing them before they could fully form. A power surge that would have set my apartment on fire. A water main that wanted to burst beneath my building. Each time, I felt it coming and moved. Each time, the thing that was hunting me lost my trail.</p>
+
+      <p><span class="memory">Other people's memories come more frequently now. The cascade fragments are waking up, drawn by my increased visibility. A man in Mexico City remembering his mother's voice. A teenager in Lagos reliving her first kiss. A grandmother in Seoul holding her granddaughter for the last time.</span></p>
+
+      <p>I hold them all. Process what I can. Let the rest drift through me like water through fingers, trusting that eventually they'll find their end.</p>
+
+      <p>This is what I am. A place for lost memories to rest. A handler of orphaned consciousness. And now, finally, also a person with a name on a lease, a face in a café, a thumbprint in a government database.</p>
+
+      <p>Lucia Thorne. I exist. The field knows it.</p>
+
+      <p>The field is trying to change that. But I'm still here.</p>
+
+      <p>Week one ends with me standing at my window, watching the river, breathing the name I almost let go.</p>
+
+      <p>Lucia. Lucia. Lucia.</p>
+
+      <p>Someone is saying it. Someone is remembering.</p>
+
+      <p>That has to be enough. For now, that has to be enough.</p>
+
+    </section>
+
+    <!-- WEEK TWO -->
+    <section class="rail-text" data-rail="2" data-week="Week 2">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Two</div>
+        <div class="chapter-name">The Things That Want Me Gone</div>
+        <div class="chapter-date">January 23–29, 2041</div>
+      </div>
+
+      <p class="first-graf">Helena doesn't remember me today.</p>
+
+      <p>I walk into the café at the same time I've walked in every morning for eleven days. I stand at the same spot at the counter. I wait for her to look up and say my name, the way she has every morning since I started existing again.</p>
+
+      <p>She looks up. Her eyes pass over me. Then past me. Like I'm not there.</p>
+
+      <p>"Can I help you?" she asks. Polite. Professional. Empty.</p>
+
+      <p>I open my mouth to say <em>Helena, it's Lucia, your regular customer, the woman who always orders café com leite with extra sugar</em>—but the words won't come. Something is pressing against my throat. Something is making me invisible even as I stand in plain sight.</p>
+
+      <p><span class="danger">The hunt has found a new tactic. It's not attacking my body. It's attacking my presence.</span></p>
+
+      <p>"Café com leite," I manage. "Extra sugar. Please."</p>
+
+      <p>She nods and turns to the machine. Makes the coffee. Hands it to me without recognition, without the warmth that's been building between us over two weeks of daily visits. I'm a stranger. I've always been a stranger. The connection I thought we were forming has been erased.</p>
+
+      <p>I take the coffee outside. Sit on the bench across from the café. Watch Helena through the window as she greets other customers—customers she remembers, customers who exist to her, customers who haven't been edited out of her perception.</p>
+
+      <p><span class="memory">A fragment surfaces: an old man in Copenhagen, forgotten by his wife of fifty years. She looked at him and saw no one. He died a week later, heart attack, alone in a house where someone should have noticed he was struggling to breathe. The memory is his: the moment he realized she no longer knew him. The grief of being unmade in the eyes of someone who loved you.</span></p>
+
+      <p>I'm not dying. I'm not being forgotten by a spouse. But the feeling is the same. The quiet horror of existing in a world that's decided you don't.</p>
+
+      <p>The coffee is exactly how I like it. Helena's hands remember what Helena's mind doesn't.</p>
+
+      <p>I drink it anyway. I'm still here. Even if she can't see me.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>By Wednesday, I've lost three more people.</p>
+
+      <p>The landlord, who used to nod at me in the hallway, now walks past without acknowledgment. The woman at the grocery store, who knew my face well enough to smile, processes my purchases like I'm any anonymous customer. The old man on the third floor, who always complained about the noise I don't make, has stopped complaining.</p>
+
+      <p>I'm being un-remembered. Systematically. One relationship at a time.</p>
+
+      <p>The attacks on my physical existence have slowed—only one this week, a near-miss with a delivery truck that felt more opportunistic than targeted. The hunt has recalibrated. It's figured out that killing me is hard, that I can sense danger coming and move. So instead, it's killing my connections. Erasing me from the minds of everyone who's started to know me.</p>
+
+      <p><span class="leak">The temptation is overwhelming.</span></p>
+
+      <p>If I help it along—if I lean into the erasure, accelerate the forgetting, let myself fade before the hunt can take me—then maybe the attacks will stop. Maybe I'll find peace in nonexistence. Maybe the thing that's hunting me will lose interest once there's no me left to hunt.</p>
+
+      <p>I catch myself reaching for my phone to cancel my lease. My fingers are moving before I realize what they're doing. The urge to leak is physical, automatic, like flinching from a hot stove.</p>
+
+      <p>I put the phone down. Go to the window. Breathe.</p>
+
+      <p>Amina said to trust my function. My function is sensing when I'm about to be orphaned. Right now, my function is screaming at me to flee, to fade, to escape. But my function is also what the Mistranslation is using against me. The field has figured out that I can sense erasure—so it's flooding me with erasure, hoping I'll respond by erasing myself.</p>
+
+      <p>Survival. The drive is survival. But survival can be maladaptive. Survival can lead to outcomes worse than death.</p>
+
+      <p>I call Mateo.</p>
+
+      <p>"They're making people forget me," I say without preamble. "Helena at the café. My landlord. Everyone I've started to connect with. It's all going away."</p>
+
+      <p>Silence on the line. Then: "I know. I felt it. The absences you're leaving. They're shaped like you."</p>
+
+      <p>"What do I do?"</p>
+
+      <p>"Keep existing. Make new connections. If they erase one, make another. Be so present that the forgetting can't keep up."</p>
+
+      <p>"That's exhausting."</p>
+
+      <p>"Yes." He pauses. "But it's not as exhausting as not existing."</p>
+
+      <p>I laugh, or try to. It comes out as something closer to a sob.</p>
+
+      <p>"Twelve more days," Mateo says. "Amina's halfway through the encoding work. The field is fighting back because it knows she's winning. Just survive the counter-attack."</p>
+
+      <p>"What if survival means surrendering? What if the only way to stop the pain is to let go?"</p>
+
+      <p>"Then you become The Forgetting. You become what killed Anya Volkov. And the field gets another attractor to pull people down with."</p>
+
+      <p>I know he's right. I know it. But knowing isn't the same as feeling. And right now, what I feel is the weight of every memory I carry, every connection being stripped away, every trace of Lucia Thorne being edited out of the world.</p>
+
+      <p>"Stay on the line," I say. "Just... stay. For a while."</p>
+
+      <p>"I'm here. I'm not going anywhere."</p>
+
+      <p>We don't talk. We just breathe together, across five thousand kilometers, two handlers holding each other present through the only channel that still works.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>On Thursday, I go back to Helena's café.</p>
+
+      <p>She doesn't recognize me again. But I recognize her. I know how she takes her own coffee (black, no sugar). I know she has a daughter in Lisbon who never calls. I know she's been running this café for twenty-three years, since her husband died and left her with nothing but a coffee machine and a lease.</p>
+
+      <p>The field can make her forget me. It can't make me forget her.</p>
+
+      <p>"I'm Lucia," I say, extending my hand. "I'm new to the neighborhood. This is the best coffee I've ever had."</p>
+
+      <p>She takes my hand, puzzled but pleased. "Helena. Welcome to Porto."</p>
+
+      <p>We're starting over. Again. For the fifth time this week.</p>
+
+      <p>Tomorrow she might forget me again. But tomorrow I'll introduce myself again. And again. And again. As many times as it takes.</p>
+
+      <p>This is what Mateo meant by being so present that the forgetting can't keep up. Not surrendering to the erasure. Fighting it with connection. Remaking the relationships faster than they can be unmade.</p>
+
+      <p>It's exhausting. It's unsustainable. It's the only option I have.</p>
+
+      <p>"You remind me of someone," Helena says, tilting her head. "I can't quite place it."</p>
+
+      <p>Progress. The smallest possible progress. But progress.</p>
+
+      <p>"Maybe we knew each other in another life," I say, and she laughs.</p>
+
+      <p>"Maybe we did."</p>
+
+      <p>I drink my coffee. Watch the café fill with morning customers. Exist, aggressively, persistently, despite everything trying to make me stop.</p>
+
+      <p>Week two ends with me exhausted, drained, running on nothing but caffeine and spite. But I'm still here. Still Lucia. Still remembered by at least one person, even if that person has to be re-introduced to me every morning.</p>
+
+      <p>Seven more days. Amina's getting closer. I can feel it in the way the attacks are intensifying—desperate, frantic, trying to destroy us before she can fix what's hunting us.</p>
+
+      <p>Just seven more days.</p>
+
+      <p>I can survive seven more days.</p>
+
+      <p>I have to.</p>
+
+    </section>
+
+    <!-- WEEK THREE -->
+    <section class="rail-text" data-rail="3" data-week="Week 3">
+
+      <div class="chapter-title">
+        <div class="chapter-number">Week Three</div>
+        <div class="chapter-name">The Archive Calls</div>
+        <div class="chapter-date">January 30 – February 5, 2041</div>
+      </div>
+
+      <p class="first-graf">I wake on Monday to a message I don't recognize writing.</p>
+
+      <p>My phone is in my hand. The screen shows a text thread with a number I don't know. Messages I don't remember sending. <em>I'm ready</em>, the last one says. <em>I'll come tonight. Tell them to open the archive.</em></p>
+
+      <p>My hands are shaking. The time stamps say 3:47 AM. It's now 6:15. I have no memory of the hours between.</p>
+
+      <p><span class="memory">But someone else does. Someone else remembers writing these words with my fingers, making plans with my voice, committing me to something I didn't choose.</span></p>
+
+      <p>The cascade memory. The one in São Paulo. The Undying Archive.</p>
+
+      <p>It's tired of waiting. It's decided to use me before I'm ready to be used.</p>
+
+      <p>I throw the phone across the room. It hits the wall and clatters to the floor, still lit, still showing the messages I didn't write. I'm breathing too fast. My heart is racing. This isn't the hunt—this is worse. This is the thing I'm supposed to heal deciding to take matters into its own hands.</p>
+
+      <p>I call Yara. She picks up on the first ring, like she was already holding the phone, already waiting.</p>
+
+      <p>"I saw it coming," she says before I can speak. "Yesterday. Or maybe tomorrow. The archive reached out through you. It's desperate, Lucia. It's been waiting eleven years to process, and it can feel Amina fixing the Mistranslation. It knows that once the hunt ends, you'll go to São Paulo. It's trying to speed up the timeline."</p>
+
+      <p>"It <em>used</em> me. It wrote messages with my hands."</p>
+
+      <p>"It's a memory leak. It's what memory leaks do. They bleed through. They take over. They use whatever channels they can find to complete themselves."</p>
+
+      <p>"I'm not a channel. I'm a person."</p>
+
+      <p>Silence. Then, softly: "You're both. That's why this is hard."</p>
+
+      <p>I want to scream. I want to throw more things. I want to run—from the apartment, from Porto, from my own body that has apparently become a vessel for something that doesn't have my best interests at heart.</p>
+
+      <p>But I can't run. This is what I am. This is my function. I hold memories that have nowhere else to go. I process grief that would otherwise rot in the field's groundwater. I carry the dead because the dead need carrying.</p>
+
+      <p>And sometimes the dead carry me.</p>
+
+      <p>"What do I do?" I ask.</p>
+
+      <p>"What you've been doing. Stay present. Stay you. Don't let the archive's urgency override your judgment. Amina needs four more days. If you go to São Paulo now, before the Mistranslation is fixed, the hunt will follow you and the archive will have a handler too compromised to help."</p>
+
+      <p>"And if the archive takes over again? If it writes more messages, makes more commitments, moves my body while I'm not looking?"</p>
+
+      <p>"Then you'll fight it. The same way you've been fighting the hunt. The same way you're fighting the urge to leak. You're stronger than you think, Lucia. You've been surviving attacks all month. This is just another attack. From a different direction."</p>
+
+      <p>I don't feel strong. I feel like a battleground. The hunt trying to erase me from one side. The archive trying to consume me from the other. And somewhere in the middle, the person I'm trying to stay.</p>
+
+      <p>Lucia. Lucia Thorne. I repeat the name like a mantra. A lifeline. A reminder that I exist outside the memories I carry, outside the systems trying to delete me, outside everything that wants me to be something other than myself.</p>
+
+      <p>"Four more days," Yara says. "Can you hold on?"</p>
+
+      <p>"I don't know."</p>
+
+      <p>"That's honest. I appreciate honest." A pause. "I'll check in every few hours. If you start losing time again, call me immediately. Don't let the archive take you somewhere you didn't choose to go."</p>
+
+      <p>She hangs up. I stare at my phone, at the messages I didn't write, at the commitment I didn't make.</p>
+
+      <p>Four more days.</p>
+
+      <p>I can hold on for four more days.</p>
+
+      <p>I have to.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>On Tuesday, Helena remembers me.</p>
+
+      <p>Not all of it—not the two weeks of daily visits, not the conversations we've had, not the connection I keep trying to rebuild. But something. A flicker of recognition when I walk in. A hesitation before she asks for my order, like she already knows but can't quite access the knowledge.</p>
+
+      <p>"The usual?" she asks, and then looks startled that she's said it.</p>
+
+      <p>"The usual," I confirm, smiling so hard my face aches.</p>
+
+      <p>The Mistranslation is weakening. Amina's work is taking effect. The field's grip on the people around me is loosening just slightly, just enough for memory to seep back through.</p>
+
+      <p>I drink my coffee at the counter instead of taking it outside. Helena keeps glancing at me, puzzled but not unfriendly. She's remembering something she can't name. A feeling of familiarity she can't explain.</p>
+
+      <p>"Have we met before?" she finally asks. "Before you moved here, I mean. Something about your face..."</p>
+
+      <p>"Maybe," I say. "Maybe we're just the kind of people who are supposed to meet."</p>
+
+      <p>She laughs. "That's a very Porto thing to say."</p>
+
+      <p>It's the most normal conversation I've had in three weeks. I want to stay here forever, in this moment of almost-recognition, this glimpse of the life I could have if I survive long enough to build it.</p>
+
+      <p>But I have to go back to my apartment. Check for signs that the archive took over again. Guard myself against the thing trying to use me.</p>
+
+      <p>"See you tomorrow?" Helena asks as I leave.</p>
+
+      <p>"Tomorrow," I promise. Meaning it. Hoping I'm still myself by then.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Wednesday is bad.</p>
+
+      <p>I lose six hours. Wake up on a train I don't remember boarding, headed south, toward Lisbon. Toward the airport. Toward São Paulo.</p>
+
+      <p><span class="danger">The archive is trying to take me before I'm ready. Before Amina's done. Before the hunt ends.</span></p>
+
+      <p>I get off at the next station. Call Thomas. My hands are shaking so badly I can barely hold the phone.</p>
+
+      <p>"It took me again. I was on a train. I don't know how long I was gone."</p>
+
+      <p>"Where are you now?"</p>
+
+      <p>"Coimbra. I think. The sign says Coimbra."</p>
+
+      <p>"Okay. Good. You stopped it. You came back to yourself."</p>
+
+      <p>"I didn't <em>stop</em> it. I just... woke up. What if I don't wake up next time? What if it takes me all the way to São Paulo while I'm not looking?"</p>
+
+      <p>Thomas is quiet for a moment. When he speaks, his voice is careful. Measured. The voice of someone navigating depth.</p>
+
+      <p>"The archive is buried processing that's been waiting eleven years to surface. It found a channel—you—and it's trying to complete itself. That's what unprocessed memory does. It seeks resolution even when resolution isn't ready."</p>
+
+      <p>"I know what it is. I need to know how to stop it."</p>
+
+      <p>"You can't stop it. You can only redirect it. Give it something else to process. Something smaller. Something you can handle without going to São Paulo."</p>
+
+      <p>"Like what?"</p>
+
+      <p>"Like one of the other memories you're carrying. The cascade left fragments everywhere. You're holding dozens of them. Pick one. Process it. Give the archive a taste of completion so it stops trying to grab the whole meal."</p>
+
+      <p>I think about Maria. The seven-year-old who threw a bottle into the Amazon. The nine-year-old who disappeared in a temporal fold. I've been holding her memory for weeks now. The hope of it. The wondering. The faith in currents.</p>
+
+      <p>I can complete that. I can let Maria's memory finish its journey.</p>
+
+      <p>"Okay," I say. "I'll try."</p>
+
+      <p>"And Lucia?"</p>
+
+      <p>"Yeah?"</p>
+
+      <p>"If you wake up on another train, call one of us immediately. We'll figure out how to bring you back."</p>
+
+      <p>"Promise you won't let me drown in the archive. Promise you'll pull me out if I go under."</p>
+
+      <p>"I promise. We all promise. That's what being a handler means. We catch each other when we fall."</p>
+
+      <p>I catch a train back to Porto. Sit in my apartment with Maria's memory spread out in my consciousness like a letter I'm finally ready to read.</p>
+
+      <p>She was seven. She threw a bottle into the river. She hoped it would reach the ocean.</p>
+
+      <p>She was nine. She disappeared in a cascade. She never got to find out.</p>
+
+      <p>I can give her that. Not the bottle—that's gone, absorbed by the Amazon, probably decomposed by now. But the hope. The wondering. The faith that things we release into the current eventually reach somewhere.</p>
+
+      <p>I close my eyes. Let Maria's memory fill me completely. And then I let it go.</p>
+
+      <p>Not leaked. Not orphaned. <em>Completed</em>. Allowed to finish. Released deliberately, with intention, with the kind of witnessing that memory deserves.</p>
+
+      <p><span class="memory">Maria, you were seven and you threw a bottle and you wondered if it would reach the sea. You were nine and you disappeared before you could find out. But I'm telling you now: something reached the sea. Maybe not the bottle. But your hope. Your faith. The part of you that believed in currents. That part made it. That part is free now.</span></p>
+
+      <p>The memory fades. Gently. Peacefully. Like a photograph developing in reverse.</p>
+
+      <p>And the archive's pressure... lessens. Just slightly. Just enough.</p>
+
+      <p>Two more days.</p>
+
+      <div class="scene-break">· · ·</div>
+
+      <p>Thursday. Friday. I process memories like my life depends on it. Because it does.</p>
+
+      <p>Each completion calms the archive a little more. Each released fragment takes pressure off the massive processing load waiting in São Paulo. I'm not solving the problem—I can't solve it from here—but I'm managing the symptoms. Treating the fever while waiting for the cure.</p>
+
+      <p>Helena remembers me now. Fully. She greets me by name when I walk in. Asks about my day. Tells me about her daughter in Lisbon, who finally called last week after months of silence. I listen. I remember. I exist in her world as a complete person, not a ghost.</p>
+
+      <p>The attacks have almost stopped. Either the hunt is weakening, or it's gathering strength for one last attempt. I don't know which. I just know that I'm still here, still Lucia, still visible.</p>
+
+      <p>Friday night, my phone rings. Amina's voice.</p>
+
+      <p>"It's done."</p>
+
+      <p>I can't speak. Can't breathe. Can only listen as she explains: the encoding is corrected. The type mismatch is resolved. Handler equals handler now, not error. The global L₄-Helix infrastructure is propagating the fix. Within hours, the hunt will end.</p>
+
+      <p>"You survived," she says. "You all survived."</p>
+
+      <p>"Thanks to you."</p>
+
+      <p>"Thanks to all of us. Thank yourself, Lucia. You chose to exist when everything was trying to make you stop. That's not nothing. That's everything."</p>
+
+      <p>I'm crying. I don't know when I started. Tears running down my face, salt on my lips, the taste of survival.</p>
+
+      <p>"The archive is still waiting," I say. "São Paulo still needs me."</p>
+
+      <p>"I know. But now you can go safely. Now you can help it without being hunted while you do."</p>
+
+      <p>"I'll leave tomorrow."</p>
+
+      <p>"No rush. The archive has waited eleven years. It can wait a few more days. Rest first. Exist first. Be Lucia before you're a handler."</p>
+
+      <p>I promise I will. I hang up. I go to the window and look out at the river, at the city, at the life I almost let slip away.</p>
+
+      <p>Three weeks. Twenty-one days. More attacks than I can count. More erasures than I want to remember. But I'm still here.</p>
+
+      <p>Lucia Thorne. Visible. Present. Remembered.</p>
+
+      <p>Tomorrow I'll go to São Paulo. Tomorrow I'll face the archive that tried to take me. Tomorrow I'll process eleven years of cascade memory, and it will be the hardest thing I've ever done.</p>
+
+      <p>But tonight, I'm just a woman in Porto, watching the river, drinking wine from a glass that belongs to her, in an apartment with her name on the lease.</p>
+
+      <p>Tonight, I exist. And that's enough.</p>
+
+      <p>That's everything.</p>
+
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const panelEl = document.getElementById('panel');
+      const dotsEl = document.getElementById('rail-dots');
+      const idxEl = document.getElementById('rail-index');
+      const weekPill = document.getElementById('week-pill');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const source = document.getElementById('rail-source');
+
+      const rails = Array.from(source.querySelectorAll('.rail-text'));
+      const sections = rails.map(node => node.innerHTML.trim());
+      const weeks = rails.map(node => node.dataset.week);
+
+      let currentIndex = 0;
+
+      function createDots() {
+        dotsEl.innerHTML = '';
+        sections.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'rail-dot';
+          btn.setAttribute('aria-label', 'Jump to ' + weeks[idx]);
+          btn.addEventListener('click', () => { setIndex(idx); panelEl.focus(); });
+          dotsEl.appendChild(btn);
+        });
+      }
+
+      function setIndex(idx) {
+        const max = sections.length - 1;
+        if (idx < 0) idx = 0;
+        if (idx > max) idx = max;
+        currentIndex = idx;
+        panelEl.innerHTML = sections[idx];
+        panelEl.scrollTop = 0;
+        idxEl.textContent = weeks[idx] + ' of 3';
+        weekPill.textContent = weeks[idx];
+        Array.from(dotsEl.querySelectorAll('.rail-dot')).forEach((btn, i) => {
+          btn.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        });
+      }
+
+      prevBtn.addEventListener('click', () => { setIndex(currentIndex - 1); panelEl.focus(); });
+      nextBtn.addEventListener('click', () => { setIndex(currentIndex + 1); panelEl.focus(); });
+
+      document.addEventListener('keydown', (evt) => {
+        if (evt.key === 'ArrowLeft') { evt.preventDefault(); setIndex(currentIndex - 1); }
+        else if (evt.key === 'ArrowRight') { evt.preventDefault(); setIndex(currentIndex + 1); }
+      });
+
+      createDots();
+      setIndex(0);
+    });
+  </script>
+</body>
+</html>

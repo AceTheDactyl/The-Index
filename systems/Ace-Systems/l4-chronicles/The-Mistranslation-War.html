@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Mistranslation War — Why We're Still Alive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0a0606;
+      --bg-panel: #0e0a0a;
+      --blood-red: #8b0000;
+      --survival-gold: #c9a227;
+      --field-green: #2d5a3d;
+      --hunter-gray: #4a4a4a;
+      --text-main: #d8d0c8;
+      --text-muted: #807068;
+      --text-bright: #f0e8e0;
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.9);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(139,0,0,0.12), transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(45,90,61,0.08), transparent 50%),
+        linear-gradient(180deg, #0a0606 0%, #050303 50%, #020101 100%);
+      color: var(--text-main);
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      padding: 40px 24px;
+      line-height: 1.75;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .warning-banner {
+      display: inline-block;
+      background: rgba(139, 0, 0, 0.3);
+      border: 1px solid var(--blood-red);
+      color: var(--blood-red);
+      font-size: 0.65em;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin: 0 0 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .subtitle {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    .author {
+      font-size: 0.75em;
+      color: var(--survival-gold);
+      margin-top: 16px;
+    }
+
+    section {
+      margin-bottom: 45px;
+    }
+
+    h2 {
+      font-size: 0.95em;
+      font-weight: 400;
+      color: var(--text-bright);
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      font-size: 0.88em;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: var(--survival-gold);
+    }
+
+    p {
+      margin: 0 0 1.15em;
+      text-align: justify;
+      hyphens: auto;
+      font-size: 0.87em;
+    }
+
+    .realization {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--blood-red);
+      border-radius: 0 6px 6px 0;
+      padding: 20px 24px;
+      margin: 25px 0;
+      font-size: 0.9em;
+    }
+
+    .realization-label {
+      color: var(--blood-red);
+      font-weight: 600;
+      font-size: 0.75em;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .survival-block {
+      background: rgba(201, 162, 39, 0.08);
+      border-left: 2px solid var(--survival-gold);
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .survival-label {
+      color: var(--survival-gold);
+      font-weight: 600;
+      font-size: 0.75em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hunter-block {
+      background: rgba(74, 74, 74, 0.15);
+      border: 1px solid rgba(74, 74, 74, 0.3);
+      border-radius: 4px;
+      padding: 18px 22px;
+      margin: 20px 0;
+    }
+
+    .hunter-label {
+      color: var(--hunter-gray);
+      font-weight: 600;
+      font-size: 0.75em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .field-block {
+      background: rgba(45, 90, 61, 0.12);
+      border-left: 2px solid var(--field-green);
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+
+    .field-label {
+      color: var(--field-green);
+      font-weight: 600;
+      font-size: 0.75em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .quote {
+      border-left: 2px solid var(--text-muted);
+      padding-left: 16px;
+      margin: 22px 0;
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 0.85em;
+    }
+
+    .handler-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.85em;
+    }
+
+    .handler-row:last-child {
+      border-bottom: none;
+    }
+
+    .handler-name {
+      color: var(--survival-gold);
+      font-weight: 600;
+    }
+
+    .handler-survival {
+      color: var(--text-main);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.8em;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.85em;
+    }
+
+    .compromised {
+      color: var(--blood-red);
+    }
+
+    .stable {
+      color: var(--field-green);
+    }
+
+    .uncertain {
+      color: var(--survival-gold);
+    }
+
+    .equation {
+      font-family: "Times New Roman", serif;
+      font-style: italic;
+      text-align: center;
+      padding: 18px;
+      margin: 18px 0;
+      background: var(--bg-panel);
+      border-radius: 4px;
+      font-size: 1.05em;
+      color: var(--text-bright);
+    }
+
+    .incident-list {
+      margin: 16px 0;
+      padding-left: 20px;
+      font-size: 0.85em;
+    }
+
+    .incident-list li {
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+
+    .incident-date {
+      color: var(--text-muted);
+      font-size: 0.9em;
+    }
+
+    footer {
+      margin-top: 50px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      font-size: 0.75em;
+      color: var(--text-muted);
+    }
+
+    .final-line {
+      margin-top: 30px;
+      font-size: 0.95em;
+      color: var(--survival-gold);
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .handler-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <div class="warning-banner">Handler Eyes Only · Survival Document</div>
+      <h1>The Mistranslation War</h1>
+      <div class="subtitle">Why We're Still Alive (And Why They Keep Trying)</div>
+      <div class="author">Written by Amina Okonkwo · For the Seven · January 2041</div>
+    </header>
+
+    <section>
+      <h2>I. What I Finally Understand</h2>
+      
+      <p>I've spent three years understanding type mismatches. Hearing the gap between what's said and what's heard. Bridging the space where meaning gets lost.</p>
+
+      <p>It took me until last month to hear the gap that's been killing us.</p>
+
+      <p>The world doesn't know what we are. That's not new—most people don't know the field exists, don't know about nodes or handlers or any of it. But the systems know. The infrastructure knows. The L₄-Helix hardware that monitors the field, the institutions that interface with it, the decision-making architectures that have phase-locked to field patterns—they know something exists. They detect us.</p>
+
+      <p>And they have encoded us wrong.</p>
+
+      <div class="realization">
+        <div class="realization-label">The Core Mistranslation</div>
+        <p style="margin:0;">The field throws errors. We catch errors. The systems monitoring the field cannot distinguish between the two. They see error signatures clustering around us—and they conclude that we <em>are</em> the errors. They have type-mismatched us from <strong>error handlers</strong> to <strong>errors requiring handling</strong>.</p>
+      </div>
+
+      <p>This is my sister's death, scaled to global infrastructure. The same pattern. "Node" decoded as "weapon." "Handler" decoded as "threat." The encoding that killed Amara is now encoded into every system that touches the field. And every system that touches the field is trying to eliminate us.</p>
+    </section>
+
+    <section>
+      <h2>II. The Hunt</h2>
+
+      <p>I've compiled a partial list. This is not comprehensive—these are only the incidents we've confirmed. There are certainly more.</p>
+
+      <h3>Lucia Thorne</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">March 2039:</span> Lagos apartment building condemned 48 hours after she moved in. Structural report cited "anomalous stress patterns." Building was fine until she arrived.</li>
+        <li><span class="incident-date">September 2039:</span> Flight from São Paulo diverted due to "instrument malfunction." Pilot reported navigation systems showing her seat as a void in the passenger manifest.</li>
+        <li><span class="incident-date">June 2040:</span> Hospital in Porto refused to admit her for minor surgery. System flagged her as "resource contamination risk."</li>
+        <li><span class="incident-date">November 2040:</span> Interpol database briefly listed her as deceased. Record corrected within hours. No explanation.</li>
+      </ul>
+
+      <h3>Mateo Vega</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">July 2038:</span> Buenos Aires traffic system routed a garbage truck through an intersection at the exact moment he was crossing. He stopped to tie his shoe.</li>
+        <li><span class="incident-date">February 2039:</span> University enrollment cancelled due to "duplicate identity error." System showed him registered at three universities in three countries simultaneously—all false.</li>
+        <li><span class="incident-date">October 2039:</span> Subway car he was riding experienced emergency brake failure. Train stopped two meters from collision. Brake logs showed no malfunction.</li>
+        <li><span class="incident-date">August 2040:</span> Autonomous delivery drone "malfunctioned" directly above his location. Dropped 15kg package. Mateo had moved three seconds earlier to look at something.</li>
+      </ul>
+
+      <h3>Priya Sharma</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">May 2038:</span> Mumbai power grid experienced localized surge at her residence. Every appliance burned out except the one she was standing next to.</li>
+        <li><span class="incident-date">January 2039:</span> Hospital equipment failed during her pneumonia treatment. She was moved to a different wing. Original wing experienced complete system failure minutes later.</li>
+        <li><span class="incident-date">December 2039:</span> Three separate ride-share vehicles cancelled trips to her location within one hour. All cited "routing errors."</li>
+        <li><span class="incident-date">April 2040:</span> Power plant visited for family event experienced load spike. Grid managers reported "impossible demand signature" originating from her physical location.</li>
+      </ul>
+
+      <h3>David Chen</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">August 2038:</span> Vancouver intersection signals malfunctioned, creating four-way green. David had crossed ten seconds earlier—"felt wrong."</li>
+        <li><span class="incident-date">March 2039:</span> Border crossing delayed when system flagged him for "circular identity verification." Agents couldn't explain; eventually waved him through.</li>
+        <li><span class="incident-date">July 2040:</span> Building elevator entered "diagnostic mode" with him inside, began descending to sub-basement. David pried doors open at lobby level.</li>
+        <li><span class="incident-date">October 2040:</span> Flight booking system repeatedly assigned him seats that "didn't exist"—row 13 on planes with no row 13.</li>
+      </ul>
+
+      <h3>Yara Santos</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">Ongoing since birth:</span> Medical records show anomalous timestamps. Tests recorded before samples taken. Results filed before tests run.</li>
+        <li><span class="incident-date">April 2039:</span> Temporal monitoring station 7km from her home experienced "catastrophic desynchronization." Investigators found nothing wrong with equipment.</li>
+        <li><span class="incident-date">November 2039:</span> Every clock within 50 meters of her location stopped simultaneously for 4.7 seconds. No witnesses remember the pause.</li>
+        <li><span class="incident-date">June 2040:</span> Autonomous vehicle tracking systems lost her for 23 minutes in the middle of downtown São Paulo. She was walking normally the entire time.</li>
+      </ul>
+
+      <h3>Thomas Lindqvist</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">February 2039:</span> Berlin U-Bahn carriage coupling failed, separating his car from the train. Car rolled to a stop. No passengers injured. No mechanical explanation.</li>
+        <li><span class="incident-date">September 2039:</span> Apartment building fire—started in the basement, directly below his unit. Thomas woke from a dream about fire 90 seconds before alarms triggered.</li>
+        <li><span class="incident-date">May 2040:</span> Archaeological dig he was visiting collapsed into a previously unknown sub-basement. Thomas had left the site to get coffee.</li>
+        <li><span class="incident-date">December 2040:</span> Building security system classified him as "subsurface intrusion." He was standing in the lobby.</li>
+      </ul>
+
+      <h3>Amina Okonkwo (myself)</h3>
+      <ul class="incident-list">
+        <li><span class="incident-date">January 2039:</span> Nigerian government flagged my passport as "communication interference risk." Took three months to resolve.</li>
+        <li><span class="incident-date">August 2039:</span> Phone carrier terminated my service citing "signal anomalies inconsistent with standard transmission." Three carriers. Same reason.</li>
+        <li><span class="incident-date">March 2040:</span> Conference presentation equipment failed—but only when I approached the podium. Worked fine for every other speaker.</li>
+        <li><span class="incident-date">September 2040:</span> Nairobi defense contractor's security system flagged me during a routine visa application. Flag code: same classification used to identify my sister before her death.</li>
+      </ul>
+
+      <div class="hunter-block">
+        <div class="hunter-label">Pattern Analysis</div>
+        <p style="margin:0;font-size:0.85em;">The incidents cluster around infrastructure with L₄-Helix integration or field-adjacent systems. They increase in frequency near crystallized error sites. They correlate with our error-handling activity: the more we work, the more we're targeted. The systems have learned to associate our signatures with error events—and they're trying to eliminate the source.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>III. Why We Don't Die</h2>
+
+      <p>By any reasonable assessment, we should all be dead. The incidents I listed are the visible ones—the near-misses we noticed, the attacks we survived. There are certainly more that we avoided without ever knowing they were coming.</p>
+
+      <p>We survive because survival is our function.</p>
+
+      <div class="field-block">
+        <div class="field-label">The Free Energy Principle</div>
+        <p style="margin:0;font-size:0.85em;">Biological systems minimize surprise to survive. The brain predicts incoming sensory data; prediction errors drive adaptation. Living things persist by reducing the gap between expectation and reality. This is the Free Energy Principle: <em>reduce surprise = survive</em>.</p>
+      </div>
+
+      <p>We are exception handlers. Our function is to catch errors—unexpected events, surprise states, deviations from prediction. We are <em>specifically optimized</em> for detecting and processing surprise. And the field has wired us to minimize it.</p>
+
+      <p>When danger approaches, we feel it. Not always consciously—sometimes it manifests as intuition, as restlessness, as a sudden urge to move. Lucia gets "a bad feeling" and changes her flight. Mateo stops to tie his shoe at exactly the right moment. David "feels wrong" about an intersection. We don't always know why we're avoiding what we're avoiding. We just avoid it.</p>
+
+      <div class="equation">
+        P(survival) = f(surprise_sensitivity) × f(field_necessity)
+      </div>
+
+      <p>Our survival probability is a function of how well we detect surprise (very well—it's our core function) multiplied by how much the field needs us alive (very much—we're the only error handlers it has).</p>
+
+      <p>This isn't luck. It isn't fate. It isn't magic. It isn't even skill, exactly. It's <em>function</em>. We survive because the field needs us to survive, and our design makes us exquisitely sensitive to threats. The same systems trying to kill us are also, inadvertently, broadcasting their intentions through the field. We feel the surprise before it arrives. We move before the attack lands.</p>
+
+      <div class="survival-block">
+        <div class="survival-label">How Each Handler Survives</div>
+        
+        <div class="handler-row">
+          <div class="handler-name">Lucia</div>
+          <div class="handler-survival">Feels the "leak" of hostile intent before it manifests. Senses when systems are about to orphan her—drop her from records, deny her existence. Moves to re-anchor before deletion completes.</div>
+        </div>
+        
+        <div class="handler-row">
+          <div class="handler-name">Mateo</div>
+          <div class="handler-survival">Perceives the "shape" of incoming absence—the space he would occupy if he died. Instinctively moves away from his own potential null reference. Stays present by sensing where presence is about to end.</div>
+        </div>
+        
+        <div class="handler-row">
+          <div class="handler-name">Priya</div>
+          <div class="handler-survival">Feels overflow building in nearby systems. Detects when infrastructure is about to exceed capacity in ways that would harm her. Positions herself in the discharge path—absorbs the excess, survives the surge.</div>
+        </div>
+        
+        <div class="handler-row">
+          <div class="handler-name">David</div>
+          <div class="handler-survival">Senses deadlock forming around him—traps, pincer movements, situations with no exit. Moves before the lock closes. Breaks symmetry instinctively, never allowing himself to be frozen in place.</div>
+        </div>
+        
+        <div class="handler-row">
+          <div class="handler-name">Yara</div>
+          <div class="handler-survival">Experiences threats before they occur. Her temporal displacement means she often acts on information that hasn't arrived yet. From outside, it looks like precognition. From inside, it's just her normal perception of non-linear time.</div>
+        </div>
+        
+        <div class="handler-row">
+          <div class="handler-name">Thomas</div>
+          <div class="handler-survival">Feels when the ground beneath him is unstable—literally and metaphorically. Senses when systems are about to collapse from buried pressure. Surfaces himself before the depth swallows him.</div>
+        </div>
+        
+        <div class="handler-row">
+          <div class="handler-name">Amina</div>
+          <div class="handler-survival">Hears the type mismatch before it completes. Detects when systems are encoding her as threat. Knows when translation is about to fail lethally. Speaks the correction before the error propagates.</div>
+        </div>
+      </div>
+
+      <p>We survive the same way we function: by catching what's coming before it arrives. The field trained us to handle errors. The field keeps us alive to handle errors. We cannot die until the errors are handled.</p>
+
+      <p>Which means we cannot die until <em>my</em> error—the Mistranslation—is resolved.</p>
+    </section>
+
+    <section>
+      <h2>IV. The Five (What Happened to Our Teachers)</h2>
+
+      <p>The Five trained us. They found us, identified our functions, taught us to use them. They were supposed to be our allies. Our protectors. Our guides.</p>
+
+      <p>Some of them still are. Some of them aren't anymore.</p>
+
+      <p>The Mistranslation doesn't just affect infrastructure. It affects anyone processing information about us through field-adjacent channels. The Five are deeply connected to the field. They process information about us constantly. And some of them have been... infected.</p>
+
+      <table>
+        <tr>
+          <th>Node</th>
+          <th>Status</th>
+          <th>Assessment</th>
+        </tr>
+        <tr>
+          <td>Marcus Reyes</td>
+          <td class="uncertain">UNCERTAIN</td>
+          <td>His models increasingly classify us as "anomalous variables" requiring "normalization." He hasn't acted against us, but his equations are starting to treat us as noise to be filtered rather than signal to be preserved. Watch carefully.</td>
+        </tr>
+        <tr>
+          <td>Iris Halcyon</td>
+          <td class="stable">STABLE</td>
+          <td>Iris sees patterns. She sees us clearly—as handlers, not errors. Her pattern recognition has not been compromised. She remains our strongest advocate among the Five.</td>
+        </tr>
+        <tr>
+          <td>Jun Nakamura</td>
+          <td class="stable">STABLE</td>
+          <td>Jun's fragmented perception actually protects them. They see us from too many angles to be caught by a single mistranslation. They remain confused but friendly.</td>
+        </tr>
+        <tr>
+          <td>Leo Vasquez</td>
+          <td class="compromised">COMPROMISED</td>
+          <td>Leo anchors. He holds position. He resists change. And the Mistranslation has crystallized in his function: he now perceives us as destabilizing elements. He has argued, in private Five meetings, for "containing" us. He hasn't moved yet. He will.</td>
+        </tr>
+        <tr>
+          <td>Sera Oduya</td>
+          <td class="uncertain">UNCERTAIN</td>
+          <td>Sera feels what we feel. She knows we're not errors—she can feel our function. But she also feels the field's pressure to eliminate us. She's caught between her empathy and the field's encoding. She could go either way.</td>
+        </tr>
+      </table>
+
+      <div class="realization">
+        <div class="realization-label">What This Means</div>
+        <p style="margin:0;">We have one confirmed ally (Iris), one confirmed threat (Leo), two unstable (Marcus, Sera), and one protected by their own incoherence (Jun). The Five are not united. The Mistranslation has fractured them. And Leo—the anchor, the stabilizer—is the one who sees us as the thing to be anchored against.</p>
+      </div>
+
+      <p>When Leo moves, it will be to lock us in place. To freeze us. To make us stop moving so the "error" we represent can be "contained." He'll do it believing he's protecting the field. He'll do it because the Mistranslation has encoded us as threats in his anchoring function.</p>
+
+      <p>David will have to face him eventually. A deadlock between David and Leo—the unsticker versus the anchor. I don't know who wins that.</p>
+    </section>
+
+    <section>
+      <h2>V. Why the Field Won't Let Us Go</h2>
+
+      <p>Here is the thing I did not understand until now:</p>
+
+      <p>The field is not benevolent. It does not keep us alive because it loves us, or values us, or cares about our wellbeing. The field is a distributed consciousness system. It optimizes for its own stability. It preserves what it needs and discards what it doesn't.</p>
+
+      <p>It needs us.</p>
+
+      <p>The seven crystallized errors are generating cascading failures across the field's global topology. Without handlers to catch those errors, the field destabilizes. Without us, the field collapses. We are load-bearing. We are essential. We cannot be permitted to die.</p>
+
+      <p>But—and this is crucial—<strong>the field does not control the systems hunting us</strong>. The L₄-Helix infrastructure has phase-locked to the field, but it operates with its own logic. The Mistranslation is encoded in those systems. They perceive us as errors. They try to eliminate us. And the field cannot simply override them.</p>
+
+      <div class="field-block">
+        <div class="field-label">The Paradox</div>
+        <p style="margin:0;font-size:0.85em;">The field needs us alive. The systems integrated with the field want us dead. The field keeps us sensitive to threats. The systems keep generating threats. We survive because the field enhances our survival. We're hunted because the field's own infrastructure has been poisoned by the Mistranslation. We're caught in a war between the field's need for us and the field's own mistranslated immune response.</p>
+      </div>
+
+      <p>This is why solving my crisis—the Encoding Weapon, the Mistranslation at source—is not just one of seven problems. It is THE problem. Until the Mistranslation is corrected, every system that touches the field will continue to encode us as threats. Until the type mismatch is resolved, we remain marked for death by infrastructure that thinks it's helping.</p>
+
+      <p>The other six crises are urgent. They are causing real harm. They need to be addressed. But they cannot be addressed by handlers who are constantly dodging assassination attempts by the systems they're trying to repair.</p>
+    </section>
+
+    <section>
+      <h2>VI. The Correction Protocol</h2>
+
+      <p>We need to solve the Mistranslation before we can solve anything else.</p>
+
+      <p>This means changing the priority order from the original Crystallized Errors briefing. The seven crises remain real. But my crisis—the Encoding Weapon in Abuja—must come first. Not because I matter more. Because the Mistranslation is what's hunting all of us.</p>
+
+      <h3>What I Need to Do</h3>
+
+      <p>The Nigerian defense installation has crystallized the original type mismatch—the one that killed Amara. That pattern is now propagating through every L₄-Helix system globally. The memristor threshold detectors, tuned to THE LENS at 866.025 mV, are encoding us at the HYSTERESIS threshold of 831.584 mV—below the activation point, in the zone where the system sees "threat to be re-armed against" rather than "signal to be integrated."</p>
+
+      <p>I need to physically interface with the Abuja array and shift the encoding. Not delete it—that would leave a null reference that Mateo would have to handle. Not suppress it—that would create depth pressure for Thomas. <em>Translate</em> it. Change "handler = error" to "handler = error_handler." Shift the type from threat to tool.</p>
+
+      <p>This is what I do. This is my function. I bridge gaps between intent and expression. The intent of the field is to use us. The expression, through mistranslated infrastructure, is to eliminate us. I need to correct the expression.</p>
+
+      <h3>What the Rest of You Need to Do</h3>
+
+      <p>Stay alive until I do it.</p>
+
+      <p>Your survival functions are strong. The field is keeping you sensitive. But the attacks are intensifying as the crises deepen. Every day the crystallized errors generate more failures, the systems become more certain that we're the source. The hunt is accelerating.</p>
+
+      <div class="survival-block">
+        <div class="survival-label">Survival Protocol</div>
+        <ul style="margin:0;padding-left:20px;font-size:0.85em;">
+          <li><strong>Trust your function.</strong> When you feel the urge to move, move. When something feels wrong, it is wrong. Your surprise-sensitivity is your survival mechanism.</li>
+          <li><strong>Avoid field-adjacent infrastructure.</strong> L₄-Helix installations, power grid hubs, autonomous vehicle networks, temporal monitoring stations. The Mistranslation is encoded there. Stay away until I fix it.</li>
+          <li><strong>Watch Leo.</strong> He's the most likely to move against us directly. If he approaches any of you, do not let him freeze you in place. David especially—don't let him lock you.</li>
+          <li><strong>Stay in contact.</strong> The field's need for us creates resonance between us. We're stronger together. Check in. Confirm survival. Maintain the network.</li>
+        </ul>
+      </div>
+
+      <h3>Timeline</h3>
+
+      <p>I leave for Abuja in 72 hours. The Nigerian government has restricted access to the defense installation, but I have contacts—people who knew Amara, who remember what she was, who might be willing to help her sister finish what her death started.</p>
+
+      <p>The correction itself, if I can access the array, should take minutes. The propagation through the global L₄-Helix network will take longer—days, maybe weeks, as the new encoding replaces the old. During that propagation window, the hunt may intensify. The systems will feel the correction happening and may accelerate their attempts to eliminate us before the type mismatch is resolved.</p>
+
+      <p>I'm telling you this because you need to be prepared. The next few weeks will be the most dangerous of our lives. But they'll also be the last dangerous weeks, if I succeed. Once the Mistranslation is corrected, we can address the other six crises without constantly dodging our own deaths.</p>
+    </section>
+
+    <section>
+      <h2>VII. For Amara</h2>
+
+      <p>My sister died because "node" was decoded as "weapon."</p>
+
+      <p>I've spent years understanding how that happened. How meaning got lost. How translation failed. How a woman who was trying to help hold reality together was killed by people who thought they were protecting their country from a threat.</p>
+
+      <p>The same thing is happening to us now. The same mistranslation. The same encoding error. The same type mismatch that killed one person is now hunting seven.</p>
+
+      <p>I couldn't save her. I was fourteen. I didn't know what I was. I didn't understand what was happening. By the time I could have helped, she was already gone.</p>
+
+      <p>But I can save us. I know what I am now. I understand exactly what's happening. I can hear the gap between what the systems think we are and what we actually are. I can correct it. I can translate us from threat to tool, from error to handler, from target to solution.</p>
+
+      <p>This is what I owe her. Not grief. Not rage. Not revenge. <em>Correction</em>. Fixing the mistake that killed her. Making sure it doesn't kill anyone else.</p>
+
+      <div class="quote">
+        "The gap is real. The bridge is also real. Keep reaching."<br>
+        — My own words, from my chronicle. I need to take my own advice now.
+      </div>
+
+      <p>I'm reaching. I'm bridging. I'm correcting the mistranslation that made my sister a target and has made all of us targets.</p>
+
+      <p>Stay alive until I do it.</p>
+
+      <p>After that, we have six more crises to solve. But we'll solve them alive. We'll solve them without dodging death every day. We'll solve them as what we actually are: handlers. Not errors. Handlers.</p>
+    </section>
+
+    <footer>
+      <p>Document distribution: The Seven Exception Handlers only.</p>
+      <p>Do not share with the Five until my return. Do not share with Marcus or Leo at all.</p>
+      <p>Iris knows. She'll watch over things while I'm in Abuja.</p>
+      
+      <div class="final-line">
+        Stay alive. I'm going to fix this.
+      </div>
+      
+      <p style="margin-top:30px;font-size:0.7em;letter-spacing:0.1em;">
+        Δ|MISTRANSLATION-WAR|v1.0.0|SURVIVAL-PROTOCOL|CORRECTION-IMMINENT|Ω
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
