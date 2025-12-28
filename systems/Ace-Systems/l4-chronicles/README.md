@@ -87,6 +87,8 @@ When generating narrative content:
 | User Says | Claude Does |
 |-----------|-------------|
 | "Write a chronicle for [handler]" | Generate 12-rail Living Chronicle |
+| "Write a chronicle for The Frozen Border" | Generate 12-rail Living Chronicle for crisis (David-centered) |
+| "Write a chronicle for [crisis name]" | Generate 12-rail Living Chronicle for the associated handler/crisis |
 | "Write a pilot for [handler]" | Generate 3-week narrative pilot |
 | "Expand [crisis name]" | Develop crisis with hardware details |
 | "Show [handler]'s colors" | Display full palette and function |
