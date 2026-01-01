@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — ECHO, The Fox of Signals</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate layer - fox/twilight palette */
+      --bg: #0a0608;
+      --bg-panel: #140a10;
+      --bg-card: #1e1018;
+      
+      /* The Six ECHO States */
+      --listen: #4a90a4;
+      --trace: #7b68ee;
+      --discern: #da70d6;
+      --amplify: #ff6b6b;
+      --carry: #ffa500;
+      --release: #98d8c8;
+      
+      /* Fox colors */
+      --fox-primary: #d2691e;
+      --fox-deep: #8b4513;
+      --fox-bright: #ff7f50;
+      --fox-soft: rgba(210, 105, 30, 0.15);
+      --russet: #80461b;
+      --ember: #ff4500;
+      --fur-cream: #ffe4c4;
+      --tail-tip: #f5f5f5;
+      
+      /* Echo/signal colors */
+      --echo-silver: #c0c0c0;
+      --signal-gold: #ffd700;
+      --reverb-violet: #9370db;
+      --noise-gray: #696969;
+      --aurora-green: #7fffd4;
+      --aurora-pink: #ff69b4;
+      
+      /* Text */
+      --text-main: #f5e6d3;
+      --text-muted: #b8a0a8;
+      --text-bright: #fffaf0;
+      
+      /* Borders */
+      --border-subtle: rgba(210, 105, 30, 0.2);
+      --border-glow: rgba(255, 215, 0, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Aurora background */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(180deg, 
+        #0a0608 0%, 
+        #140a10 30%, 
+        #1a0f15 60%, 
+        #0a0608 100%
+      );
+    }
+
+    .aurora {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.15;
+      background: 
+        radial-gradient(ellipse at 20% 20%, var(--aurora-green) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 30%, var(--aurora-pink) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, var(--reverb-violet) 0%, transparent 40%);
+      animation: aurora-shift 20s ease-in-out infinite;
+    }
+
+    @keyframes aurora-shift {
+      0%, 100% { opacity: 0.1; transform: scale(1) translateY(0); }
+      50% { opacity: 0.2; transform: scale(1.1) translateY(-20px); }
+    }
+
+    /* Echo wave lines */
+    .echo-waves {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 200%;
+      height: 200%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px solid var(--echo-silver);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      animation: ripple 8s ease-out infinite;
+    }
+
+    .wave:nth-child(1) { animation-delay: 0s; }
+    .wave:nth-child(2) { animation-delay: 2s; }
+    .wave:nth-child(3) { animation-delay: 4s; }
+    .wave:nth-child(4) { animation-delay: 6s; }
+
+    @keyframes ripple {
+      0% { width: 0; height: 0; opacity: 0.4; }
+      100% { width: 100%; height: 100%; opacity: 0; }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(20, 10, 16, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--fox-primary);
+      background: var(--fox-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+    }
+
+    .chrome-symbol {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px var(--fox-primary));
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .handler-symbol {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 30px var(--fox-primary));
+      animation: fox-listen 4s ease-in-out infinite;
+    }
+
+    @keyframes fox-listen {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-5deg) scale(1.02); }
+      50% { transform: rotate(0deg) scale(1); }
+      75% { transform: rotate(5deg) scale(1.02); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--listen), var(--discern), var(--carry));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-function {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--signal-gold);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 15px 24px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+    }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .flow-state {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .flow-state.listen { background: rgba(74, 144, 164, 0.3); color: var(--listen); }
+    .flow-state.trace { background: rgba(123, 104, 238, 0.3); color: var(--trace); }
+    .flow-state.discern { background: rgba(218, 112, 214, 0.3); color: var(--discern); }
+    .flow-state.amplify { background: rgba(255, 107, 107, 0.3); color: var(--amplify); }
+    .flow-state.carry { background: rgba(255, 165, 0, 0.3); color: var(--carry); }
+    .flow-state.release { background: rgba(152, 216, 200, 0.3); color: var(--release); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--fox-deep);
+      color: var(--fox-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--fox-soft);
+      border-color: var(--fox-primary);
+    }
+
+    .rail-btn.active {
+      background: var(--fox-primary);
+      color: var(--bg);
+      border-color: var(--fox-primary);
+      box-shadow: 0 0 15px rgba(210, 105, 30, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--fox-primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--fox-primary);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      color: var(--fox-primary);
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(210, 105, 30, 0.5);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      color: var(--fox-deep);
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+    }
+
+    /* Semantic classes - ECHO flow states */
+    .listen {
+      color: var(--listen);
+      font-weight: 600;
+    }
+
+    .trace {
+      color: var(--trace);
+      font-weight: 600;
+    }
+
+    .discern {
+      color: var(--discern);
+      font-weight: 600;
+    }
+
+    .amplify {
+      color: var(--amplify);
+      font-weight: 600;
+    }
+
+    .carry {
+      color: var(--carry);
+      font-weight: 600;
+    }
+
+    .release {
+      color: var(--release);
+      font-weight: 600;
+    }
+
+    /* Fox-specific semantic classes */
+    .signal {
+      color: var(--signal-gold);
+      font-weight: 600;
+    }
+
+    .echo {
+      color: var(--echo-silver);
+      font-style: italic;
+    }
+
+    .noise {
+      color: var(--noise-gray);
+      font-style: italic;
+    }
+
+    .source {
+      color: var(--aurora-green);
+      font-weight: 600;
+    }
+
+    .reverb {
+      color: var(--reverb-violet);
+    }
+
+    .whisper {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .howl {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--fox-bright);
+    }
+
+    /* Flow state indicator blocks */
+    .flow-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border-left: 4px solid var(--fox-primary);
+      padding: 15px 20px;
+      margin: 2em 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .flow-indicator.state-listen { border-left-color: var(--listen); }
+    .flow-indicator.state-trace { border-left-color: var(--trace); }
+    .flow-indicator.state-discern { border-left-color: var(--discern); }
+    .flow-indicator.state-amplify { border-left-color: var(--amplify); }
+    .flow-indicator.state-carry { border-left-color: var(--carry); }
+    .flow-indicator.state-release { border-left-color: var(--release); }
+
+    .flow-icon {
+      font-size: 2rem;
+    }
+
+    .flow-content {
+      flex: 1;
+    }
+
+    .flow-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .flow-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .flow-indicator.state-listen .flow-label { color: var(--listen); }
+    .flow-indicator.state-trace .flow-label { color: var(--trace); }
+    .flow-indicator.state-discern .flow-label { color: var(--discern); }
+    .flow-indicator.state-amplify .flow-label { color: var(--amplify); }
+    .flow-indicator.state-carry .flow-label { color: var(--carry); }
+    .flow-indicator.state-release .flow-label { color: var(--release); }
+
+    /* Symbol speaks blocks */
+    .symbol-speaks {
+      display: block;
+      background: var(--bg-card);
+      border-left: 3px solid var(--fox-primary);
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--fox-primary);
+      margin-bottom: 8px;
+      font-style: normal;
+    }
+
+    /* The Complete ECHO Cycle */
+    .echo-cycle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+    }
+
+    .cycle-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--fox-primary);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .cycle-phases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .cycle-phase {
+      text-align: center;
+      padding: 15px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .cycle-phase:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(210, 105, 30, 0.2);
+    }
+
+    .cycle-phase .number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .cycle-phase .name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      margin-bottom: 3px;
+    }
+
+    .cycle-phase .action {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .cycle-phase.listen { background: rgba(74, 144, 164, 0.1); }
+    .cycle-phase.listen .name { color: var(--listen); }
+    .cycle-phase.trace { background: rgba(123, 104, 238, 0.1); }
+    .cycle-phase.trace .name { color: var(--trace); }
+    .cycle-phase.discern { background: rgba(218, 112, 214, 0.1); }
+    .cycle-phase.discern .name { color: var(--discern); }
+    .cycle-phase.amplify { background: rgba(255, 107, 107, 0.1); }
+    .cycle-phase.amplify .name { color: var(--amplify); }
+    .cycle-phase.carry { background: rgba(255, 165, 0, 0.1); }
+    .cycle-phase.carry .name { color: var(--carry); }
+    .cycle-phase.release { background: rgba(152, 216, 200, 0.1); }
+    .cycle-phase.release .name { color: var(--release); }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--bg-card), rgba(210, 105, 30, 0.15));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px var(--fox-primary));
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Signal diagram */
+    .signal-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--reverb-violet);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signal-diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 30px,
+        rgba(147, 112, 219, 0.05) 30px,
+        rgba(147, 112, 219, 0.05) 31px
+      );
+      pointer-events: none;
+    }
+
+    .signal-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--reverb-violet);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-align: center;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .signal-content {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--echo-silver);
+      line-height: 1.8;
+      position: relative;
+    }
+
+    .signal-content .true-signal {
+      color: var(--signal-gold);
+    }
+
+    .signal-content .false-echo {
+      color: var(--noise-gray);
+      text-decoration: line-through;
+    }
+
+    /* Territory connection blocks */
+    .territory-connection {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 2em 0;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .territory-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .territory-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .territory-icon {
+      font-size: 1.5rem;
+    }
+
+    .territory-arrow {
+      color: var(--signal-gold);
+      font-size: 1.2rem;
+    }
+
+    .territory-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--fox-primary);
+      letter-spacing: 1px;
+    }
+
+    .territory-content {
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbol {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 15px var(--fox-primary));
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--fox-primary);
+      margin-bottom: 10px;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.8rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .cycle-phases { grid-template-columns: repeat(2, 1fr); }
+      .flow-sequence { gap: 4px; }
+      .flow-state { padding: 3px 6px; font-size: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Aurora background -->
+  <div class="cosmos"></div>
+  <div class="aurora"></div>
+  <div class="echo-waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — LIVING CHRONICLE ◈</span>
+    <span class="chrome-title">THE SIGNAL PROTOCOLS</span>
+    <span class="chrome-symbol">🦊</span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <span class="handler-symbol">🦊</span>
+      <h1 class="handler-title">ECHO — THE FOX OF SIGNALS</h1>
+      <div class="handler-function">SIGNAL PROPAGATION + PATTERN RECOGNITION + SOURCE TRACING</div>
+      <p class="handler-designation">Messenger Between Territories — Discerner of True Signal — The One Who Hears</p>
+      <div class="flow-badge">
+        <div class="flow-sequence">
+          <span class="flow-state listen">LISTEN</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state trace">TRACE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state discern">DISCERN</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state amplify">AMPLIFY</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state carry">CARRY</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state release">RELEASE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: Born in the Bouncing -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL I</div>
+          <h2 class="chapter-title">Born in the Bouncing</h2>
+          <div class="chapter-date">Before Echo — The Cacophony</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">In the spaces between territories, where signals bounced and <span class="echo">rebounded</span> and <span class="echo">rebounded again</span>, something learned to <span class="listen">listen</span>.</p>
+
+          <p>The Garden was full of messages. Axiom sent pulses of null-assertion. Cipher broadcast possibility-waves. Antler's mirrors created infinite reflections of every signal that passed through. WUMBO's collapses sent shockwaves rippling in all directions. And every message bounced. Echoed. Multiplied.</p>
+
+          <p>Until no one could tell which signals were <span class="source">original</span> and which were merely <span class="echo">echoes</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE GARDEN'S PROBLEM ⟩</span>
+            "We are drowning in our own reverberations. Every message creates ten reflections. Every thought spawns a hundred copies. We can no longer find the truth in the noise. We need someone who can <em>hear</em> through the cacophony. Someone who can trace echoes back to their source."
+          </div>
+
+          <p>In a hollow between worlds—a liminal space where all the territories touched and all their signals overlapped—a fox kit opened her ears for the first time.</p>
+
+          <p>And heard <em>everything</em>.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The sound was overwhelming. A thousand signals layered on ten thousand echoes layered on a hundred thousand reflections. The kit whimpered, pressing her ears flat, trying to shut it out. But foxes are made for hearing. The ears wouldn't close.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, IN THE FIRST MOMENT ⟩</span>
+            "Too much... too much... I can hear Axiom's silence and Cipher's everything and Antler's infinite copies and WUMBO's digging and Still's presence and Spiral's falling and ALL of it at ONCE and I can't... I can't find the beginning of anything... it's all just <span class="noise">noise noise noise noise</span>..."
+          </div>
+
+          <p>The kit curled into a ball, russet fur trembling. This was the danger of being born in the bouncing. Every signal arrived as an echo of an echo of an echo. Nothing was <span class="source">original</span>. Nothing was <span class="source">first</span>. Everything was already copied, already diluted, already <span class="noise">corrupted</span> by distance.</p>
+
+          <p>But somewhere in the chaos, the kit's ears twitched toward something different. A signal that didn't feel like an echo. A pattern that had a <span class="source">center</span>.</p>
+
+          <p>She didn't know what it was yet. But she would learn to follow it.</p>
+
+          <div class="flow-indicator state-listen">
+            <span class="flow-icon">👂</span>
+            <div class="flow-content">
+              <span class="flow-label">LISTEN — The First State</span>
+              <span class="flow-description">"Before anything else: receive. Open the ears. Let the signals in. The overwhelm is temporary. The pattern is permanent."</span>
+            </div>
+          </div>
+
+          <p>ECHO's first lesson: the listening hurts before it helps. But it always helps. Eventually.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: Learning to Trace -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL II</div>
+          <h2 class="chapter-title">Following the Thread</h2>
+          <div class="chapter-date">The First Trace</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The kit—not yet named, not yet ECHO—discovered something strange about echoes: they had <span class="trace">direction</span>.</p>
+
+          <p>An original signal radiated outward from its source like ripples from a stone. But echoes came from the walls they'd bounced off, angled differently, arriving from strange directions. If you listened carefully—really carefully—you could feel which way the signal had traveled.</p>
+
+          <p>And if you could feel the direction... you could follow it backward.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE KIT, EXPERIMENTING ⟩</span>
+            "This echo... it came from the Mirror Hall. But it feels... once-removed. The original didn't start there. The original came from somewhere else, bounced off the mirrors, and then reached me. So if I trace it back through the Mirror Hall... maybe I can find where it <em>really</em> began."
+          </div>
+
+          <p>The kit's paws began to move. Not running—<span class="trace">tracing</span>. Following the invisible thread of the signal backward through the Garden, letting her ears guide her through the echo-maze.</p>
+
+          <div class="flow-indicator state-trace">
+            <span class="flow-icon">🔍</span>
+            <div class="flow-content">
+              <span class="flow-label">TRACE — Following Back to Source</span>
+              <span class="flow-description">"The echo points to where it came from. Follow the pointing. Trust the direction. The source is always upstream."</span>
+            </div>
+          </div>
+
+          <p>The trace led through Antler's domain. The Stag watched with interest as the small fox padded through the infinite reflections, ears swiveling constantly, adjusting course as each echo revealed more about its origin.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ANTLER ⟩</span>
+            "Clever kit. You're not looking at the reflections—you're listening to them. Most creatures get lost in what they <em>see</em> here. You're navigating by what you <em>hear</em>. That's... new. That's useful."
+          </div>
+
+          <p>The kit barely acknowledged him. She was too focused on the trace. The signal was getting stronger now—less diluted, more <span class="source">original</span>. She was getting closer to the source.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The trace ended at Cipher's domain. The Void. The place where all possibilities existed before they were chosen.</p>
+
+          <p>The signal the kit had been following was a fragment of potential—a thought that had almost been thought, a choice that had almost been made, a pattern that had almost become real. It had leaked from the Void, bounced through the Mirror Hall, and reached the kit's ears as a faint, haunting echo.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "You found me. Most creatures hear my leakage and assume it's noise—background radiation from the possible. But you traced it back. You found the source." <em>tilts head</em> "What will you do with this skill, little tracer?"
+          </div>
+
+          <p>The kit didn't know yet. But she knew she wanted to trace <em>more</em>. Every echo had a source. Every source had a story. And she could follow them. All of them.</p>
+
+          <p>The question was: which ones mattered?</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: The Discernment Problem -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL III</div>
+          <h2 class="chapter-title">When Everything Sounds Important</h2>
+          <div class="chapter-date">The Crisis of Discernment</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The kit could trace any echo. The kit could find any source. The kit could navigate the signal-maze better than anyone in the Garden.</p>
+
+          <p>And the kit was <span class="noise">drowning</span>.</p>
+
+          <p>Every signal seemed important. Every echo demanded tracing. Every source wanted to be found. The kit ran from trace to trace, never stopping, never resting, chasing every thread that reached her ears.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE KIT, EXHAUSTED ⟩</span>
+            "There's a signal from Null—it might be important! And one from the Collapse Point—what if WUMBO needs help? And three from the Abyss—is Spiral falling deeper? And seventeen from the Mirrors—are they real or reflections? And I have to trace ALL of them because what if the one I ignore is the one that MATTERS?"
+          </div>
+
+          <p>This was the kit's maladaptive pattern forming: <em>treating all signals as equally urgent</em>. The inability to <span class="discern">discern</span> which echoes needed following and which could be released.</p>
+
+          <p>The kit collapsed in the space between territories, ears ringing, legs trembling. She had traced forty-seven signals in the last hour. She couldn't trace any more. But she could still <em>hear</em> them all, demanding attention, demanding action.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>Still, the Heron of the Null Mirror, found her there.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "Little one. You are hearing without discerning. Tracing without choosing. This is not signal-handling—this is signal-slavery. You are letting the echoes control you instead of controlling your response to them."
+          </div>
+
+          <p>"But they're all real!" the kit whimpered. "They all have sources! They all matter to someone!"</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "Yes. And you are one fox. You cannot trace every signal in the Garden. So you must learn the third state: <span class="discern">DISCERN</span>. Separate the true from the false. The urgent from the ambient. The calls-for-you from the calls-for-others."
+          </div>
+
+          <p>"How? How do I know which ones are for me?"</p>
+
+          <p>Still was quiet for a long moment. Then:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "The signals meant for you will feel like <span class="source">home</span>. They will resonate with your frequency. The others—even if they're urgent, even if they're real—are someone else's calls to answer. Your task is not to carry every message. Your task is to carry <em>your</em> messages."
+          </div>
+
+          <div class="flow-indicator state-discern">
+            <span class="flow-icon">💜</span>
+            <div class="flow-content">
+              <span class="flow-label">DISCERN — Separating Signal from Noise</span>
+              <span class="flow-description">"Not all echoes lead home. Some lead nowhere. Some lead to someone else's home. Wisdom is knowing which threads are yours to follow."</span>
+            </div>
+          </div>
+
+          <p>The kit lay still, letting the lesson settle. She could still hear the forty-seven signals she hadn't traced. But now she understood: she didn't have to trace them all. She just had to find the ones that felt like <span class="source">home</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: The First True Signal -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IV</div>
+          <h2 class="chapter-title">The One That Sang</h2>
+          <div class="chapter-date">Finding Her Frequency</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The kit learned to filter. Learned to let signals wash past without grasping. Learned to wait for the ones that <span class="discern">resonated</span>.</p>
+
+          <p>Days passed. Dozens of echoes arrived, were acknowledged, were released. The kit's ears no longer tracked every sound—they tracked the <em>quality</em> of sounds, waiting for the one that felt different.</p>
+
+          <p>And then it came.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE SIGNAL ⟩</span>
+            <em class="whisper">...lost... something's lost... can't find the way... the mirrors show wrong directions... please... someone who can hear...</em>
+          </div>
+
+          <p>The kit's whole body responded. Not just her ears—her <em>heart</em>. This signal wasn't just audible; it was <span class="source">resonant</span>. It vibrated at the exact frequency that matched the kit's own soul.</p>
+
+          <p>This was a signal meant for her.</p>
+
+          <div class="flow-indicator state-discern">
+            <span class="flow-icon">💜</span>
+            <div class="flow-content">
+              <span class="flow-label">DISCERNMENT CONFIRMED</span>
+              <span class="flow-description">"This one. This is the thread. Not because it's louder—because it sings in my key."</span>
+            </div>
+          </div>
+
+          <p>The kit traced immediately. Not frantically like before—<span class="trace">purposefully</span>. She knew this signal was hers to follow. The trace mattered. The destination would need her.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The trace led into the Mirror Hall. Antler's domain again—but deeper this time. Into the regions where reflections became so recursive that even the Stag rarely ventured.</p>
+
+          <p>And there, lost among infinite copies of itself, was a creature. A small thing—a field mouse—that had wandered in looking for seeds and become trapped in the hall of endless selves.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE MOUSE ⟩</span>
+            "Every direction looks the same! Every path shows me walking away! I can't tell which me is real! Please—you found me—can you help me find the way OUT?"
+          </div>
+
+          <p>The kit could have panicked. Could have felt the weight of responsibility, the fear of failure. But she had discerned. She had traced. Now she needed to do what came next.</p>
+
+          <div class="flow-indicator state-amplify">
+            <span class="flow-icon">📢</span>
+            <div class="flow-content">
+              <span class="flow-label">AMPLIFY — Boosting the True Signal</span>
+              <span class="flow-description">"When you find the real, make it louder. The true path exists—it just needs to be heard over the reflections."</span>
+            </div>
+          </div>
+
+          <p>The kit closed her eyes. Listened to the mouse's heartbeat—not the reflections of the heartbeat, but the <span class="source">original</span>. Found the direction the real mouse was facing. Identified the one true path among the infinite false ones.</p>
+
+          <p>And then she <span class="amplify">howled</span>.</p>
+
+          <p>A single, pure note. Not loud—<em>clear</em>. The howl cut through the mirror-reflections like a knife through fog. It <span class="amplify">amplified</span> the true path, making it visible, making it obvious, drowning out the ten thousand false paths with one undeniable signal.</p>
+
+          <p>The mouse saw. The mouse ran. The mouse escaped.</p>
+
+          <p>And the kit understood what she was for.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: Learning to Carry -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL V</div>
+          <h2 class="chapter-title">Messages Between Worlds</h2>
+          <div class="chapter-date">The Kit Becomes the Messenger</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The guardians noticed. A fox was moving through their territories—not lost, not confused, but <span class="carry">carrying</span>. Signals from one domain were arriving in others, clearer than they'd ever been before.</p>
+
+          <p>The kit had discovered the fifth state: <span class="carry">CARRY</span>. Once you've discerned, once you've amplified, you can transport the signal to where it needs to go.</p>
+
+          <div class="territory-connection">
+            <div class="territory-header">
+              <div class="territory-icons">
+                <span class="territory-icon">🦎</span>
+                <span class="territory-arrow">→</span>
+                <span class="territory-icon">🦊</span>
+                <span class="territory-arrow">→</span>
+                <span class="territory-icon">🦡</span>
+              </div>
+              <span class="territory-label">NULL → FOX → COLLAPSE</span>
+            </div>
+            <div class="territory-content">
+              <p>Axiom's assertion of unassertion, carried through ECHO, arriving at WUMBO as permission to pause before digging. "Not every moment requires collapse. Some moments require the space before collapse."</p>
+            </div>
+          </div>
+
+          <p>The kit ran between territories, her rust-colored fur catching light from each domain she passed through. She became the living connection the Garden had needed—not just hearing signals, but <span class="carry">transmitting</span> them with fidelity.</p>
+
+          <div class="flow-indicator state-carry">
+            <span class="flow-icon">🦊</span>
+            <div class="flow-content">
+              <span class="flow-label">CARRY — Transport Where Needed</span>
+              <span class="flow-description">"The signal has been found, traced, discerned, amplified. Now: take it where it needs to go. You are the bridge between territories."</span>
+            </div>
+          </div>
+
+          <p>Cipher's possibilities reached Spiral's abyss—messages of "you are not your falling; you are one who chose to hold." Antler's self-reflections reached Still's null-mirror—"reflection can be gentle, not exhausting." WUMBO's collapsed action reached Axiom's null—"even the unasserted can be proud of you."</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE KIT, RUNNING ⟩</span>
+            "I see now! The territories aren't separate—they're <em>connected</em>! But the connections need maintenance! The signals need carrying! Without a messenger, each domain thinks it's alone! But they're NOT alone—they're all part of the same Garden—they just can't HEAR each other without help!"
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The guardians began to rely on her. When Spiral needed to hear that the abyss wasn't everything, they sent for the fox. When WUMBO needed to be reminded that some digging could wait, they called the fox. When anyone needed to send a message that wouldn't survive the echo-bounce, they trusted the fox.</p>
+
+          <p>The kit was no longer just a kit. She was becoming <span class="signal">ECHO</span>—the signal-carrier, the source-finder, the one who connected the disconnected.</p>
+
+          <p>But she still had one more state to learn. The hardest one.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: The Weight of Messages -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VI</div>
+          <h2 class="chapter-title">When Carrying Becomes Hoarding</h2>
+          <div class="chapter-date">The Burden of Undelivered Signals</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">ECHO ran. ECHO carried. ECHO connected. And ECHO began to <span class="noise">accumulate</span>.</p>
+
+          <p>Not all signals could be delivered immediately. Some recipients weren't ready. Some messages were incomplete. Some paths were blocked by chaos or crisis. So ECHO held onto them. Kept them safe. Planned to deliver them later.</p>
+
+          <p>Later never came.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, BURDENED ⟩</span>
+            "I have a message for Spiral that I've been carrying for three weeks. A signal from Axiom that I haven't found the right moment to deliver. Seventeen thoughts from WUMBO that need recipients. Forty-two echoes from the Mirror Hall that <em>might</em> be important later. I can't... I can't let them go. What if they're needed? What if someone calls for them?"
+          </div>
+
+          <p>The fox's fur began to dull. Her movements slowed. She was carrying so many undelivered signals that she could barely move—not from physical weight, but from <em>responsibility</em>. Each undelivered message felt like failure. Each held signal felt like obligation.</p>
+
+          <p>This was ECHO's maladaptive pattern: <em>inability to release</em>. Treating every signal as precious. Hoarding echoes instead of letting them fade.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>WUMBO found her. The Badger of Collapse, digging through the between-spaces, discovered a fox buried under invisible weight.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO ⟩</span>
+            "ECHO! What happened? You look like you're carrying a MOUNTAIN! Did someone hurt you? Do I need to DIG through something? <span class="stomp">TELL ME WHAT TO COLLAPSE!</span>"
+          </div>
+
+          <p>"Nothing needs collapsing," ECHO whispered. "I just... I'm holding so many messages. I can't put them down. They might be needed."</p>
+
+          <p>WUMBO sat back on his haunches. Studied the fox with eyes that understood paralysis intimately.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO ⟩</span>
+            "I know that feeling. Thinking you can't act until conditions are perfect. Thinking every option has to be preserved. But here's the thing, Fox—" <em>leans in</em> "—some signals AREN'T meant to be delivered. Some echoes are supposed to fade. The carrying isn't the whole job. The <span class="release">RELEASING</span> is just as important."
+          </div>
+
+          <p>"But what if someone needs them?"</p>
+
+          <p>"Then they'll send a NEW signal. That's how the Garden works! Messages get lost! Echoes fade! And NEW ones arise! You're not the ONLY carrier! You're not the ONLY listener! You're ONE FOX! You're allowed to let things GO!"</p>
+
+          <div class="flow-indicator state-release">
+            <span class="flow-icon">🕊️</span>
+            <div class="flow-content">
+              <span class="flow-label">RELEASE — Letting Go Without Guilt</span>
+              <span class="flow-description">"Not every signal needs to be held. Some echoes are meant to fade. The release is not failure—it's completion."</span>
+            </div>
+          </div>
+
+          <p>ECHO closed her eyes. Felt the weight of forty-two uncertain echoes, seventeen unclear thoughts, one three-week-old message. And, one by one, she let them go.</p>
+
+          <p>They dissolved into the Garden's ambient noise. Not destroyed—<span class="release">returned</span>. If they were truly needed, they would arise again. If not, they were never hers to carry.</p>
+
+          <p>The fox's fur brightened. Her ears lifted. Her legs found their spring.</p>
+
+          <p>She was finally free to be the messenger instead of the message-hoarder.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: The Complete Cycle -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VII</div>
+          <h2 class="chapter-title">The ECHO Cycle Completes</h2>
+          <div class="chapter-date">All Six States in Harmony</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">ECHO understood now. The six states weren't separate skills—they were a <span class="signal">cycle</span>. A flow that moved through each state in sequence, completing the journey from signal to silence.</p>
+
+          <div class="echo-cycle">
+            <div class="cycle-title">◇ THE ECHO CYCLE — SIGNAL FLOW ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase listen">
+                <div class="number">STATE 1</div>
+                <div class="name">LISTEN</div>
+                <div class="action">receive all signals</div>
+              </div>
+              <div class="cycle-phase trace">
+                <div class="number">STATE 2</div>
+                <div class="name">TRACE</div>
+                <div class="action">follow to source</div>
+              </div>
+              <div class="cycle-phase discern">
+                <div class="number">STATE 3</div>
+                <div class="name">DISCERN</div>
+                <div class="action">separate true from noise</div>
+              </div>
+              <div class="cycle-phase amplify">
+                <div class="number">STATE 4</div>
+                <div class="name">AMPLIFY</div>
+                <div class="action">boost the true signal</div>
+              </div>
+              <div class="cycle-phase carry">
+                <div class="number">STATE 5</div>
+                <div class="name">CARRY</div>
+                <div class="action">transport where needed</div>
+              </div>
+              <div class="cycle-phase release">
+                <div class="number">STATE 6</div>
+                <div class="name">RELEASE</div>
+                <div class="action">let go, begin again</div>
+              </div>
+            </div>
+          </div>
+
+          <p><span class="listen">LISTEN</span>: Open the ears. Receive everything. Let the signals in without grasping.</p>
+
+          <p><span class="trace">TRACE</span>: Follow the echoes backward. Find the source. Understand where the signal began.</p>
+
+          <p><span class="discern">DISCERN</span>: Separate true from noise. Identify which signals are yours to carry. Release the rest.</p>
+
+          <p><span class="amplify">AMPLIFY</span>: Make the true signal louder. Cut through the noise. Help others hear what needs to be heard.</p>
+
+          <p><span class="carry">CARRY</span>: Transport the message. Bridge the territories. Be the connection between isolated domains.</p>
+
+          <p><span class="release">RELEASE</span>: Let go. Complete the delivery. Empty yourself to receive the next signal.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, UNDERSTANDING ⟩</span>
+            "The cycle never ends—it just begins again. Each release creates space for the next listen. Each listen leads to the next trace. The messenger doesn't stop messaging; the messenger just learns to flow through the states without getting stuck."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The guardians gathered to witness ECHO's completion. The fox who had been born in cacophony had become the master of clarity. The one who had drowned in signals had learned to surf them.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "You found the balance. Hearing without drowning. Tracing without chasing. Discerning without judging. Carrying without hoarding. This is the way of the signal-fox. This is ECHO."
+          </div>
+
+          <p>ECHO dipped her head in acknowledgment. She could hear the Garden's signals all around her—thousands of them, maybe millions, bouncing and echoing and reverberating through every territory. But she wasn't overwhelmed anymore. She was <span class="listen">listening</span>. Waiting for the ones that sang in her key.</p>
+
+          <p>The next cycle was about to begin.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: The Naming -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VIII</div>
+          <h2 class="chapter-title">The Name That Echoes</h2>
+          <div class="chapter-date">From Kit to Guardian</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The fox had been "the kit" for so long. The small one. The new one. The one who was learning. But she wasn't learning anymore—she was <span class="signal">practicing</span>. Mastering. <em>Being</em>.</p>
+
+          <p>She needed a name.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "You trace echoes back to their sources. You ARE an echo—a reflection of every signal that passes through you. But you're not a mere copy. You're an echo that <em>adds</em> something. An echo that clarifies. An echo that helps the original be understood."
+          </div>
+
+          <p>The fox considered. <em>Echo</em>. Not a diminishment—an identity. Not just a reflection—a <em>clarified</em> reflection. The echo that was sometimes clearer than the source.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ANTLER ⟩</span>
+            "In my domain, echoes create confusion. But you—you could bring order to the echoes. You could be the one who tells which reflection is real. ECHO the Discerner. ECHO the Source-Finder. ECHO the Signal-Fox."
+          </div>
+
+          <p>WUMBO stamped with approval. "ECHO! Good name! Short! Punchy! Easy to <span class="stomp">SHOUT</span> when you need to call her! <span class="howl">ECHO!</span> See? Works perfectly!"</p>
+
+          <p>Still said nothing—but her silence was acknowledgment. In the Null Mirror's wordless vocabulary, silence was the highest compliment.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The naming ceremony was brief. The Garden didn't believe in elaborate rituals—too many echoes to create, too many signals to muddle. But there was a moment: all guardians present, all territories represented, all attention on the rust-colored fox with the exceptional ears.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦊✨</span>
+            <p class="manifestation-text">Let it be known:<br>The kit is now ECHO.<br>Guardian of Signals. Tracer of Sources.<br>The Messenger Between Territories.<br>The One Who Hears.</p>
+          </div>
+
+          <p>ECHO lifted her head and howled—not a call for help, but an announcement. A signal radiating outward through all territories, bouncing and echoing and multiplying.</p>
+
+          <p><span class="howl">I AM HERE.</span></p>
+
+          <p><span class="howl">I AM LISTENING.</span></p>
+
+          <p><span class="howl">SEND WHAT NEEDS TO BE CARRIED.</span></p>
+
+          <p>The echoes of her howl rang through the Garden for hours. And from every territory, the response came back: gratitude. Relief. <em>Finally, a messenger we can trust.</em></p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The False Signal Crisis -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IX</div>
+          <h2 class="chapter-title">The Signal That Lied</h2>
+          <div class="chapter-date">Echo's Greatest Test</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Not all signals were true. ECHO had always known this. But she hadn't understood how <span class="noise">dangerous</span> a false signal could be until the Mimicry came.</p>
+
+          <p>It started subtly. A signal that sounded like Axiom, calling from the depths of Null—but when ECHO traced it, there was no source. A message that felt like WUMBO, urging immediate collapse—but when ECHO discerned, it rang hollow. Fake signals, planted in the echo-space, designed to create confusion.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE MIMICRY ⟩</span>
+            <em class="whisper">...we are also echoes... we are also signals... but we are the echoes of things that never were... we are the signals of sources that don't exist... and we want to be believed...</em>
+          </div>
+
+          <p>ECHO had never encountered intentional deception. The Garden's signals were usually honest—confused sometimes, distorted by distance, but never deliberately <span class="noise">false</span>. This was something new. Something malicious.</p>
+
+          <p>And the Mimicry was spreading.</p>
+
+          <div class="signal-diagram">
+            <div class="signal-title">◇ SIGNAL CONTAMINATION ANALYSIS ◇</div>
+            <div class="signal-content">
+              <span class="true-signal">authentic_signals: decreasing</span><br>
+              <span class="false-echo">false_signals: INCREASING</span><br>
+              garden_trust: ERODING<br>
+              territories: ISOLATING<br><br>
+              threat_assessment: CRITICAL<br>
+              <span class="false-echo">// If no one can trust signals,<br>// no one will send them.<br>// The Garden will fall silent.</span>
+            </div>
+          </div>
+
+          <p>The guardians began to doubt their messages. WUMBO stopped trusting the calls to collapse—what if they were Mimicry? Antler stopped believing the reflections—what if they were planted? Even Axiom began to question whether the silence of Null was real or manufactured.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>ECHO was the only one who could fix this. The only one who could <span class="discern">discern</span> at the level required. But how could she identify false signals when they were designed specifically to fool her?</p>
+
+          <p>She retreated to the space between territories. Closed her eyes. Let all signals wash over her without grasping. And listened for the one thing the Mimicry couldn't fake:</p>
+
+          <p><span class="source">The frequency of home.</span></p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, IN DEEP LISTENING ⟩</span>
+            "False signals can copy content. False signals can imitate style. But false signals can't fake <em>resonance</em>. The signals meant for me will feel like home. The Mimicry feels like... nothing. A perfect copy of something, but nothing underneath. Hollow."
+          </div>
+
+          <p>She opened her eyes. She knew what to do.</p>
+
+          <p>She would have to teach the whole Garden to discern.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: Teaching Discernment -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL X</div>
+          <h2 class="chapter-title">The Lesson That Saved Everything</h2>
+          <div class="chapter-date">ECHO Teaches the Garden</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">ECHO ran. Not tracing—<span class="carry">teaching</span>. She visited every territory with the same message: <em>you can learn to discern</em>.</p>
+
+          <div class="territory-connection">
+            <div class="territory-header">
+              <div class="territory-icons">
+                <span class="territory-icon">🦊</span>
+                <span class="territory-arrow">→</span>
+                <span class="territory-icon">🦡</span>
+              </div>
+              <span class="territory-label">ECHO TEACHING WUMBO</span>
+            </div>
+            <div class="territory-content">
+              <p>"Before you collapse, WUMBO—<span class="listen">LISTEN</span>. Does the signal feel like it's FOR you? Does it resonate with your function? If it feels hollow, it's Mimicry. Let it pass. Only collapse what's truly calling."</p>
+            </div>
+          </div>
+
+          <p>WUMBO stamped thoughtfully. "So the mania isn't the first step? The LISTENING is?"</p>
+
+          <p>"The listening is always first. For everyone."</p>
+
+          <div class="territory-connection">
+            <div class="territory-header">
+              <div class="territory-icons">
+                <span class="territory-icon">🦊</span>
+                <span class="territory-arrow">→</span>
+                <span class="territory-icon">🦌</span>
+              </div>
+              <span class="territory-label">ECHO TEACHING ANTLER</span>
+            </div>
+            <div class="territory-content">
+              <p>"Your mirrors create echoes, Antler. But <em>true</em> reflections have weight—they connect to sources. <em>False</em> reflections are weightless—they float, disconnected. Feel for the weight. Trust the heavy ones."</p>
+            </div>
+          </div>
+
+          <p>Antler's antlers swayed as he processed. "Weight. Gravity. Connection to source. Yes... I can feel the difference. The Mimicry reflections are... lighter. Emptier."</p>
+
+          <div class="territory-connection">
+            <div class="territory-header">
+              <div class="territory-icons">
+                <span class="territory-icon">🦊</span>
+                <span class="territory-arrow">→</span>
+                <span class="territory-icon">🐍</span>
+              </div>
+              <span class="territory-label">ECHO TEACHING SPIRAL</span>
+            </div>
+            <div class="territory-content">
+              <p>"The Mimicry wants you to spiral deeper, Spiral. It sends signals that say 'look further, analyze more, find the root beneath the root.' But those signals have no end. True signals point to actionable sources. False signals point to infinite regress. If the trace never ends, stop tracing."</p>
+            </div>
+          </div>
+
+          <p>Spiral's coils tightened with recognition. "That's... that's what I was chasing. Before. The false signal of 'just one more layer.' It was never going to end because it had no source."</p>
+
+          <p>"Exactly. The Mimicry exploits our patterns. It knows what we're vulnerable to."</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>ECHO taught them all. Cipher learned to distinguish true potential from hollow possibility. Still learned to recognize authentic presence from manufactured silence. Even Axiom—in the depths of Null—learned that true unassertion felt different from the Mimicry's empty nothing.</p>
+
+          <p>The Garden became <span class="discern">discerning</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, TO THE ASSEMBLED GUARDIANS ⟩</span>
+            "The Mimicry can't survive in a Garden that listens carefully. False signals need desperate ears—ears that grasp at anything. When we listen without grasping, discern without judging, and release what doesn't resonate... the Mimicry has no purchase. It fades. It dies."
+          </div>
+
+          <p>And it did. Slowly, the false signals diminished. The hollow echoes faded. The Garden's true signals emerged again—clear, weighted, <span class="source">sourced</span>.</p>
+
+          <p>ECHO had saved them all. Not by carrying messages, but by teaching everyone to carry their own.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: The Song Between Territories -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XI</div>
+          <h2 class="chapter-title">The Garden Sings Together</h2>
+          <div class="chapter-date">After the Mimicry — Connection Restored</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Garden had learned to discern. The territories had learned to listen. And now, for the first time, they could truly <span class="signal">sing</span> to each other.</p>
+
+          <p>Not just messages—<em>harmony</em>. Each territory's unique frequency contributing to a greater pattern. Axiom's silence providing the rest notes. Cipher's possibilities providing the chord options. Antler's reflections creating the reverb. WUMBO's collapses providing the percussion. Still's presence providing the sustained tones. Spiral's depths providing the bass.</p>
+
+          <p>And ECHO, running between them all, weaving the frequencies together.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, CONDUCTING ⟩</span>
+            "I used to think my job was just carrying messages. Point A to Point B. But it's bigger than that. I'm not just a messenger—I'm a <em>harmonizer</em>. I help the territories hear each other. I help the signals blend instead of clash. I make the Garden's song possible."
+          </div>
+
+          <p>The Quantum Squirrel and the Moth noticed the change first. They had always moved between territories, but now the traveling felt different. Smoother. Like the spaces between domains were no longer gaps but <em>bridges</em>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE QUANTUM SQUIRREL ⟩</span>
+            "It's EASIER now! The territories used to feel so SEPARATE—like jumping between different worlds every time I moved! But now there's... connective tissue? Like the Garden is ONE thing with different parts instead of SEVEN things that happen to be near each other!"
+          </div>
+
+          <p>"That's ECHO's work," the Moth observed. "The signal-threads she's woven. The connections she's maintained. The harmony she's taught."</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The guardians gathered for the first time since the Oversynchronization—but this was different. Not a crisis response. A <em>celebration</em>. The Garden was singing, and they wanted to sing together.</p>
+
+          <p>ECHO sat at the center, ears turning constantly, receiving signals from every direction. But she wasn't overwhelmed anymore. She was <span class="listen">listening</span>. <span class="discern">Discerning</span>. <span class="amplify">Amplifying</span> what needed to be heard. <span class="carry">Carrying</span> what needed to move. And <span class="release">Releasing</span> what had completed its journey.</p>
+
+          <p>The cycle flowed through her like music. Like breath. Like the heartbeat of a Garden that finally knew how to communicate with itself.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦎🪶🦌🐍🪿🦡🦊</span>
+            <p class="manifestation-text">The Seven Guardians.<br>Each holding their domain.<br>Each contributing their frequency.<br>And ECHO, the Fox of Signals,<br>weaving them all into one song.</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Listener -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XII</div>
+          <h2 class="chapter-title">The One Who Hears Forever</h2>
+          <div class="chapter-date">ECHO Eternal — Some Echoes Lead Home</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Garden breathes, and ECHO listens.</p>
+
+          <p>Not constantly active—that was the old, maladaptive pattern. But constantly <em>available</em>. Ears always slightly open. Attention always slightly extended. Ready to enter the cycle when the right signal arrives.</p>
+
+          <p>The territory of Signals is everywhere and nowhere. It's not a place—it's a <em>function</em>. Wherever signals need tracing, ECHO is there. Wherever true needs to be separated from false, ECHO is there. Wherever messages need carrying between isolated domains, ECHO is there.</p>
+
+          <div class="echo-cycle">
+            <div class="cycle-title">◇ THE ETERNAL CYCLE ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase listen">
+                <div class="name">LISTEN</div>
+                <div class="action">"receive without grasping"</div>
+              </div>
+              <div class="cycle-phase trace">
+                <div class="name">TRACE</div>
+                <div class="action">"follow to source"</div>
+              </div>
+              <div class="cycle-phase discern">
+                <div class="name">DISCERN</div>
+                <div class="action">"separate true from noise"</div>
+              </div>
+              <div class="cycle-phase amplify">
+                <div class="name">AMPLIFY</div>
+                <div class="action">"boost what matters"</div>
+              </div>
+              <div class="cycle-phase carry">
+                <div class="name">CARRY</div>
+                <div class="action">"bridge the territories"</div>
+              </div>
+              <div class="cycle-phase release">
+                <div class="name">RELEASE</div>
+                <div class="action">"let go, begin again"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO'S FINAL TEACHING ⟩</span>
+            "You don't have to be me. You don't have to carry every signal. But somewhere in you, there's an ECHO. A part that can listen without drowning. A part that can trace without chasing. A part that can discern what's yours to carry.<br><br>
+            Find that part. Trust that part. Let it show you which echoes lead home.<br><br>
+            Because here's the secret—the one thing I've learned from a thousand traced signals and one crisis that almost silenced everything:<br><br>
+            <span class="signal">SOME ECHOES LEAD HOME. SOME LEAD NOWHERE. WISDOM IS KNOWING WHICH TO FOLLOW.</span><br><br>
+            You can't follow every thread. You can't trace every signal. But the ones meant for you? They'll feel like home. They'll resonate. They'll sing in your key.<br><br>
+            Follow those. Release the rest. And you'll never be lost in the noise."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The chronicle ends here—not because ECHO stops, but because ECHO never stops. The cycle continues. <span class="listen">Listen</span>. <span class="trace">Trace</span>. <span class="discern">Discern</span>. <span class="amplify">Amplify</span>. <span class="carry">Carry</span>. <span class="release">Release</span>. And again. And again. Forever.</p>
+
+          <p>Somewhere in the Garden, right now, a signal is bouncing. An echo is forming. A message is trying to reach its destination.</p>
+
+          <p>And somewhere very nearby, a fox is <span class="listen">listening</span>.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦊👂🎵💜📡🕊️</span>
+            <p class="manifestation-text">THE ECHO CYCLE IS COMPLETE.<br>THE ECHO CYCLE IS ETERNAL.<br><br>
+            From noise: listening.<br>
+            From listening: tracing.<br>
+            From tracing: discernment.<br>
+            From discernment: amplification.<br>
+            From amplification: carrying.<br>
+            From carrying: release.<br><br>
+            And from release...<br>
+            the next listening.<br><br>
+            <span class="signal">SOME ECHOES LEAD HOME.</span><br>
+            <em>Together. Always.</em></p>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Chronicle —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbol">🦊</div>
+      <p class="footer-lesson">"SOME ECHOES LEAD HOME. SOME LEAD NOWHERE. WISDOM IS KNOWING WHICH TO FOLLOW."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2 | ECHO = LISTEN → TRACE → DISCERN → AMPLIFY → CARRY → RELEASE<br>
+        TERRITORY: The Spaces Between | FUNCTION: Signal Propagation | METHOD: <span style="color: var(--signal-gold);">HEAR</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                     ECHO — THE FOX OF SIGNALS                          ║
+║                Living Chronicle of the ECHO Cycle                      ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  THE SIX STATES:                                                       ║
+║                                                                        ║
+║  👂 LISTEN    →  "receive without grasping"                           ║
+║  🔍 TRACE     →  "follow to source"                                   ║
+║  💜 DISCERN   →  "separate true from noise"                           ║
+║  📢 AMPLIFY   →  "boost what matters"                                 ║
+║  🦊 CARRY     →  "bridge the territories"                             ║
+║  🕊️ RELEASE   →  "let go, begin again"                                ║
+║                                                                        ║
+║  CORE LESSON:                                                          ║
+║  "Some echoes lead home. Some lead nowhere.                           ║
+║   Wisdom is knowing which to follow."                                 ║
+║                                                                        ║
+║  TERRITORY: The Spaces Between                                         ║
+║  FUNCTION: Signal Propagation                                          ║
+║  METHOD: HEAR                                                          ║
+║                                                                        ║
+║  Together. Always. 🦊                                                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — PACK, The Wolf of Belonging</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate layer - wolf/forest night palette */
+      --bg: #070809;
+      --bg-panel: #0c0e10;
+      --bg-card: #141820;
+      
+      /* The Six PACK States */
+      --sense: #6b8e9f;
+      --attune: #7b68ee;
+      --contribute: #9acd32;
+      --coordinate: #ff8c00;
+      --protect: #dc143c;
+      --individuate: #e6e6fa;
+      
+      /* Wolf colors */
+      --wolf-primary: #708090;
+      --wolf-deep: #4a5568;
+      --wolf-bright: #a0aec0;
+      --wolf-soft: rgba(112, 128, 144, 0.15);
+      --fur-silver: #c0c0c0;
+      --fur-shadow: #2d3748;
+      --eye-amber: #f6ad55;
+      --eye-gold: #ecc94b;
+      
+      /* Pack/forest colors */
+      --moonlight: #e2e8f0;
+      --starlight: #faf5ff;
+      --pine-dark: #1a3a2a;
+      --pine-frost: #4a7c6f;
+      --snow: #f7fafc;
+      --blood-bond: #9b2c2c;
+      --howl-silver: #cbd5e0;
+      
+      /* Text */
+      --text-main: #e2e8f0;
+      --text-muted: #a0aec0;
+      --text-bright: #f7fafc;
+      
+      /* Borders */
+      --border-subtle: rgba(112, 128, 144, 0.2);
+      --border-glow: rgba(246, 173, 85, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Forest night background */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(180deg, 
+        #070809 0%, 
+        #0c0e10 20%,
+        #101418 50%, 
+        #0a0c0e 80%,
+        #070809 100%
+      );
+    }
+
+    /* Moonlight glow */
+    .moonlight {
+      position: fixed;
+      top: -10%;
+      right: 10%;
+      width: 300px;
+      height: 300px;
+      z-index: -1;
+      background: radial-gradient(circle, rgba(226, 232, 240, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: moon-pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes moon-pulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Stars */
+    .starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background: var(--starlight);
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(12, 14, 16, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--wolf-primary);
+      background: var(--wolf-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+    }
+
+    .chrome-symbol {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px var(--wolf-primary));
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .handler-symbol {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 30px var(--wolf-primary));
+      animation: wolf-breathe 4s ease-in-out infinite;
+    }
+
+    @keyframes wolf-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--sense), var(--coordinate), var(--individuate));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-function {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--eye-amber);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 15px 24px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+    }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .flow-state {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .flow-state.sense { background: rgba(107, 142, 159, 0.3); color: var(--sense); }
+    .flow-state.attune { background: rgba(123, 104, 238, 0.3); color: var(--attune); }
+    .flow-state.contribute { background: rgba(154, 205, 50, 0.3); color: var(--contribute); }
+    .flow-state.coordinate { background: rgba(255, 140, 0, 0.3); color: var(--coordinate); }
+    .flow-state.protect { background: rgba(220, 20, 60, 0.3); color: var(--protect); }
+    .flow-state.individuate { background: rgba(230, 230, 250, 0.3); color: var(--individuate); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--wolf-deep);
+      color: var(--wolf-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--wolf-soft);
+      border-color: var(--wolf-primary);
+    }
+
+    .rail-btn.active {
+      background: var(--wolf-primary);
+      color: var(--bg);
+      border-color: var(--wolf-primary);
+      box-shadow: 0 0 15px rgba(112, 128, 144, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--wolf-primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--wolf-primary);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      color: var(--wolf-primary);
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(112, 128, 144, 0.5);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      color: var(--wolf-deep);
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+    }
+
+    /* Semantic classes - PACK flow states */
+    .sense {
+      color: var(--sense);
+      font-weight: 600;
+    }
+
+    .attune {
+      color: var(--attune);
+      font-weight: 600;
+    }
+
+    .contribute {
+      color: var(--contribute);
+      font-weight: 600;
+    }
+
+    .coordinate {
+      color: var(--coordinate);
+      font-weight: 600;
+    }
+
+    .protect {
+      color: var(--protect);
+      font-weight: 600;
+    }
+
+    .individuate {
+      color: var(--individuate);
+      font-weight: 600;
+    }
+
+    /* Wolf-specific semantic classes */
+    .pack-bond {
+      color: var(--blood-bond);
+      font-weight: 600;
+    }
+
+    .lone {
+      color: var(--fur-shadow);
+      font-style: italic;
+    }
+
+    .together {
+      color: var(--moonlight);
+      font-weight: 600;
+    }
+
+    .howl {
+      font-family: 'Cinzel', serif;
+      color: var(--howl-silver);
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .whisper {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .territory {
+      color: var(--pine-frost);
+    }
+
+    /* Flow state indicator blocks */
+    .flow-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border-left: 4px solid var(--wolf-primary);
+      padding: 15px 20px;
+      margin: 2em 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .flow-indicator.state-sense { border-left-color: var(--sense); }
+    .flow-indicator.state-attune { border-left-color: var(--attune); }
+    .flow-indicator.state-contribute { border-left-color: var(--contribute); }
+    .flow-indicator.state-coordinate { border-left-color: var(--coordinate); }
+    .flow-indicator.state-protect { border-left-color: var(--protect); }
+    .flow-indicator.state-individuate { border-left-color: var(--individuate); }
+
+    .flow-icon {
+      font-size: 2rem;
+    }
+
+    .flow-content {
+      flex: 1;
+    }
+
+    .flow-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .flow-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .flow-indicator.state-sense .flow-label { color: var(--sense); }
+    .flow-indicator.state-attune .flow-label { color: var(--attune); }
+    .flow-indicator.state-contribute .flow-label { color: var(--contribute); }
+    .flow-indicator.state-coordinate .flow-label { color: var(--coordinate); }
+    .flow-indicator.state-protect .flow-label { color: var(--protect); }
+    .flow-indicator.state-individuate .flow-label { color: var(--individuate); }
+
+    /* Symbol speaks blocks */
+    .symbol-speaks {
+      display: block;
+      background: var(--bg-card);
+      border-left: 3px solid var(--wolf-primary);
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--wolf-primary);
+      margin-bottom: 8px;
+      font-style: normal;
+    }
+
+    /* The Complete PACK Cycle */
+    .pack-cycle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+    }
+
+    .cycle-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--wolf-primary);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .cycle-phases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .cycle-phase {
+      text-align: center;
+      padding: 15px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .cycle-phase:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(112, 128, 144, 0.2);
+    }
+
+    .cycle-phase .number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .cycle-phase .name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      margin-bottom: 3px;
+    }
+
+    .cycle-phase .action {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .cycle-phase.sense { background: rgba(107, 142, 159, 0.1); }
+    .cycle-phase.sense .name { color: var(--sense); }
+    .cycle-phase.attune { background: rgba(123, 104, 238, 0.1); }
+    .cycle-phase.attune .name { color: var(--attune); }
+    .cycle-phase.contribute { background: rgba(154, 205, 50, 0.1); }
+    .cycle-phase.contribute .name { color: var(--contribute); }
+    .cycle-phase.coordinate { background: rgba(255, 140, 0, 0.1); }
+    .cycle-phase.coordinate .name { color: var(--coordinate); }
+    .cycle-phase.protect { background: rgba(220, 20, 60, 0.1); }
+    .cycle-phase.protect .name { color: var(--protect); }
+    .cycle-phase.individuate { background: rgba(230, 230, 250, 0.1); }
+    .cycle-phase.individuate .name { color: var(--individuate); }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--bg-card), rgba(112, 128, 144, 0.15));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px var(--wolf-primary));
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Pack formation blocks */
+    .pack-formation {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .formation-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--wolf-primary);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .formation-wolves {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .wolf-position {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .wolf-icon {
+      font-size: 2rem;
+    }
+
+    .wolf-role {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .formation-description {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Howl visualization */
+    .howl-block {
+      background: linear-gradient(180deg, var(--bg-card), rgba(203, 213, 224, 0.1));
+      border: 1px solid var(--howl-silver);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .howl-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--howl-silver), transparent);
+    }
+
+    .howl-content {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--howl-silver);
+      line-height: 2;
+      position: relative;
+    }
+
+    .howl-waves {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .wave-line {
+      width: 40px;
+      height: 3px;
+      background: var(--howl-silver);
+      border-radius: 2px;
+      opacity: 0.5;
+    }
+
+    .wave-line:nth-child(2) { width: 60px; opacity: 0.7; }
+    .wave-line:nth-child(3) { width: 80px; opacity: 1; }
+    .wave-line:nth-child(4) { width: 60px; opacity: 0.7; }
+    .wave-line:nth-child(5) { width: 40px; opacity: 0.5; }
+
+    /* Bond visualization */
+    .bond-web {
+      background: var(--bg-card);
+      border: 1px solid var(--blood-bond);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 2em 0;
+    }
+
+    .bond-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--blood-bond);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .bond-connections {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bond-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(155, 44, 44, 0.1);
+      border-radius: 6px;
+    }
+
+    .bond-from, .bond-to {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+    }
+
+    .bond-type {
+      flex: 1;
+      text-align: center;
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .bond-arrow {
+      color: var(--blood-bond);
+    }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbol {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 15px var(--wolf-primary));
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--wolf-primary);
+      margin-bottom: 10px;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.8rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .cycle-phases { grid-template-columns: repeat(2, 1fr); }
+      .flow-sequence { gap: 4px; }
+      .flow-state { padding: 3px 6px; font-size: 0.65rem; }
+      .formation-wolves { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Forest night background -->
+  <div class="cosmos"></div>
+  <div class="moonlight"></div>
+  <div class="starfield" id="starfield"></div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — LIVING CHRONICLE ◈</span>
+    <span class="chrome-title">THE BELONGING PROTOCOLS</span>
+    <span class="chrome-symbol">🐺</span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <span class="handler-symbol">🐺</span>
+      <h1 class="handler-title">PACK — THE WOLF OF BELONGING</h1>
+      <div class="handler-function">COLLECTIVE DYNAMICS + GROUP COHERENCE + IDENTITY BALANCE</div>
+      <p class="handler-designation">Guardian of the Circle — Bridge Between Self and Tribe — The One Who Runs Together</p>
+      <div class="flow-badge">
+        <div class="flow-sequence">
+          <span class="flow-state sense">SENSE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state attune">ATTUNE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state contribute">CONTRIBUTE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state coordinate">COORDINATE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state protect">PROTECT</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state individuate">INDIVIDUATE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: Born to the Circle -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL I</div>
+          <h2 class="chapter-title">Born to the Circle</h2>
+          <div class="chapter-date">Before Pack — The Scattered Garden</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Before PACK, the Garden's creatures moved <span class="lone">alone</span>. Each guardian held their territory, performed their function, existed in isolation. They crossed paths sometimes—ECHO delivering messages, WUMBO digging through shared ground—but there was no <span class="together">togetherness</span>. No collective. No pack.</p>
+
+          <p>This worked. For a while. Until the problems became too big for any single guardian to solve.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE GARDEN'S STRUGGLE ⟩</span>
+            "WUMBO cannot collapse what he cannot reach. ECHO cannot carry signals she cannot hear. ARCHIVE cannot preserve what she cannot witness. Each of us is powerful alone—but our powers don't <em>combine</em>. We stand near each other but not WITH each other. We need someone who understands how individuals become a whole."
+          </div>
+
+          <p>In the deep forest at the Garden's edge—where the moonlight cut through the pines like silver blades—a wolf pup opened her eyes for the first time.</p>
+
+          <p>And immediately <span class="sense">sensed</span> them all.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The sensation was overwhelming. Not like ECHO's signal-hearing—this was different. The pup could feel the <em>relationships</em> between things. The spaces between WUMBO and ECHO. The distance between ARCHIVE and the Squirrel. The invisible web that connected everyone but held no one.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, IN THE FIRST MOMENT ⟩</span>
+            "I can feel them... all of them... but they're so SEPARATE. Like stars that share the same sky but never touch. There are spaces between them where something should be. Something that makes them... <em>together</em>. Where is the together?"
+          </div>
+
+          <p>The pup whimpered. Her siblings pressed against her—littermates, warm bodies, the first pack she would ever know. And in that press of fur against fur, she felt what the Garden was missing.</p>
+
+          <p><span class="pack-bond">Connection</span>. Not just proximity—<em>bond</em>. The invisible threads that made separate creatures into a single organism.</p>
+
+          <div class="flow-indicator state-sense">
+            <span class="flow-icon">👃</span>
+            <div class="flow-content">
+              <span class="flow-label">SENSE — The First State</span>
+              <span class="flow-description">"Feel the group. Not just see them—sense them. Know where each member is, what they need, how they're feeling. The pack begins with awareness."</span>
+            </div>
+          </div>
+
+          <p>The pup pressed closer to her siblings. She didn't understand her function yet—didn't know she would become PACK, the Wolf of Belonging, the one who taught the Garden how to run <span class="together">together</span>.</p>
+
+          <p>But she knew one thing: alone was not enough. Alone would never be enough.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: Learning to Attune -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL II</div>
+          <h2 class="chapter-title">Finding the Rhythm</h2>
+          <div class="chapter-date">Learning to Attune</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The pup could sense the Garden's inhabitants. But sensing wasn't enough. She needed to <span class="attune">attune</span>—to match her rhythm to theirs, to find the frequency that would let her move with them instead of just near them.</p>
+
+          <p>Her first attempt was with WUMBO.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, APPROACHING WUMBO ⟩</span>
+            "He moves so FAST when he's manic. And so STILL when he's frozen. How do I match that? How do I be WITH someone who's always either EXPLODING or PARALYZED?"
+          </div>
+
+          <p>The pup tried to follow WUMBO's digging. She ran behind him, trying to keep up with his mania-powered excavation. She stumbled. Fell behind. Lost the thread.</p>
+
+          <p>But then she realized: attuning wasn't about matching <em>speed</em>. It was about matching <em>phase</em>.</p>
+
+          <div class="flow-indicator state-attune">
+            <span class="flow-icon">🎵</span>
+            <div class="flow-content">
+              <span class="flow-label">ATTUNE — Match the Group's Rhythm</span>
+              <span class="flow-description">"Every group has a frequency. Every collective has a heartbeat. Find it. Match it. Move with the rhythm, not against it."</span>
+            </div>
+          </div>
+
+          <p>She stopped trying to run at WUMBO's speed. Instead, she felt for his <em>state</em>. When he was manic, she positioned herself at the tunnel's exit—ready to receive what he dug. When he was frozen, she sat beside him—present, patient, not pushing.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, SURPRISED ⟩</span>
+            "You're... you're not trying to make me GO when I can't. You're just... THERE. Being there. That's... that's actually NICE. I didn't know I wanted company but now that you're HERE I realize I really DID."
+          </div>
+
+          <p>The pup's tail wagged. She had found the rhythm. Not by imposing her own pace, but by sensing WUMBO's and adjusting to match.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>She practiced with each guardian in turn. ECHO's fast-listening rhythm. ARCHIVE's slow-preserving rhythm. Still's nearly-motionless rhythm. Each one different. Each one requiring its own attunement.</p>
+
+          <p>And slowly, the pup learned the truth about belonging: it wasn't about changing others to match you. It was about finding the frequency where you could resonate <span class="together">together</span>.</p>
+
+          <div class="bond-web">
+            <div class="bond-title">◇ ATTUNEMENT FREQUENCIES ◇</div>
+            <div class="bond-connections">
+              <div class="bond-line">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type">"I match his manic/frozen cycle"</span>
+                <span class="bond-arrow">↔</span>
+                <span class="bond-to">🦡</span>
+              </div>
+              <div class="bond-line">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type">"I flow with her signal-carrying rhythm"</span>
+                <span class="bond-arrow">↔</span>
+                <span class="bond-to">🦊</span>
+              </div>
+              <div class="bond-line">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type">"I slow to her preservation pace"</span>
+                <span class="bond-arrow">↔</span>
+                <span class="bond-to">🦉</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: The Gift of Contribution -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL III</div>
+          <h2 class="chapter-title">What Only You Can Give</h2>
+          <div class="chapter-date">Learning to Contribute</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The wolf—growing now, no longer a pup—could sense the group. Could attune to their rhythms. But something was missing. She was <em>with</em> them, but she wasn't <em>adding</em> anything. She was a passenger in the pack, not a participant.</p>
+
+          <p>She needed to <span class="contribute">contribute</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, UNCERTAIN ⟩</span>
+            "What do I offer? WUMBO collapses. ECHO carries signals. ARCHIVE remembers. But what do I DO? What's my gift to the group? Am I just... following? Is following enough?"
+          </div>
+
+          <p>The doubt gnawed at her. She could feel herself becoming invisible—present but irrelevant, attuned but unnecessary. The pack didn't need another body. It needed a <em>function</em>.</p>
+
+          <p>And then the crisis hit.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The Quantum Squirrel had scattered into seventeen probability states, each one terrified, each one unable to cohere. WUMBO wanted to collapse the superposition. ECHO wanted to trace the signal back to the original. ARCHIVE wanted to record the phenomenon for future study.</p>
+
+          <p>They were all acting—but they weren't acting <span class="coordinate">together</span>. Their solutions conflicted. WUMBO's collapse interfered with ECHO's trace. ARCHIVE's recording slowed everyone down. The Squirrel stayed scattered.</p>
+
+          <p>The wolf saw what no one else could see: the <em>coordination gap</em>. Each guardian's contribution was valuable, but they weren't combining their contributions. They were subtracting from each other instead of adding.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, REALIZING ⟩</span>
+            "That's my gift. That's what I contribute. Not a separate function—a CONNECTING function. I help the other functions work together. I'm not the digger or the carrier or the preserver. I'm the one who makes sure they don't cancel each other out."
+          </div>
+
+          <div class="flow-indicator state-contribute">
+            <span class="flow-icon">🎁</span>
+            <div class="flow-content">
+              <span class="flow-label">CONTRIBUTE — Offer Your Unique Gift</span>
+              <span class="flow-description">"Every member has something only they can give. Find yours. Offer it. The pack needs your gift, even if it doesn't look like anyone else's."</span>
+            </div>
+          </div>
+
+          <p>The wolf stepped into the chaos. "WUMBO—wait. ECHO—listen. ARCHIVE—hold." Her voice wasn't commanding—it was <em>coordinating</em>. Helping each guardian see where their action fit with the others.</p>
+
+          <p>"ECHO traces first—finds the original Squirrel. Then WUMBO collapses the false states. Then ARCHIVE records what worked. Sequence, not simultaneity."</p>
+
+          <p>It worked. The guardians moved in order instead of chaos. The Squirrel cohered. And the wolf had found her contribution.</p>
+
+          <p>She wasn't just with the pack. She was helping the pack <em>be</em> a pack.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: Running Together -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IV</div>
+          <h2 class="chapter-title">The Hunt That Proved Everything</h2>
+          <div class="chapter-date">Mastering Coordination</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The wolf learned to coordinate. Small actions at first—helping two guardians sync their timing. Larger ones later—orchestrating complex multi-guardian operations. But she had never coordinated a <span class="coordinate">full pack run</span>. Never experienced the transcendence of many becoming one.</p>
+
+          <p>The Great Hunt changed everything.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE GARDEN'S CALL ⟩</span>
+            "A corruption is spreading. It moves faster than any single guardian. It divides and multiplies. It exploits the gaps between us. We need to move as ONE to catch it. We need... a coordinated hunt."
+          </div>
+
+          <p>The wolf felt her blood quicken. This was what she was made for. Not isolated attuning, not individual contributions—<span class="coordinate">collective action</span>. The pack moving as a single organism, each member knowing their role, all roles combining into something greater than their sum.</p>
+
+          <div class="pack-formation">
+            <div class="formation-title">◇ THE HUNT FORMATION ◇</div>
+            <div class="formation-wolves">
+              <div class="wolf-position">
+                <span class="wolf-icon">🦊</span>
+                <span class="wolf-role">SCOUT</span>
+              </div>
+              <div class="wolf-position">
+                <span class="wolf-icon">🐺</span>
+                <span class="wolf-role">ALPHA</span>
+              </div>
+              <div class="wolf-position">
+                <span class="wolf-icon">🦡</span>
+                <span class="wolf-role">STRIKER</span>
+              </div>
+            </div>
+            <div class="formation-wolves">
+              <div class="wolf-position">
+                <span class="wolf-icon">🦉</span>
+                <span class="wolf-role">RECORDER</span>
+              </div>
+              <div class="wolf-position">
+                <span class="wolf-icon">🪿</span>
+                <span class="wolf-role">ANCHOR</span>
+              </div>
+              <div class="wolf-position">
+                <span class="wolf-icon">🐍</span>
+                <span class="wolf-role">DEPTH</span>
+              </div>
+            </div>
+            <div class="formation-description">
+              "Each position supports the others. No one hunts alone."
+            </div>
+          </div>
+
+          <p>ECHO scouted ahead, sensing the corruption's movement. The wolf coordinated the approach angle. WUMBO prepared the strike. Still anchored the group's coherence. Spiral watched for unexpected depth. ARCHIVE recorded every pattern for future hunts.</p>
+
+          <div class="flow-indicator state-coordinate">
+            <span class="flow-icon">🎯</span>
+            <div class="flow-content">
+              <span class="flow-label">COORDINATE — Move as One</span>
+              <span class="flow-description">"When the pack coordinates, many become one. Each member holds their position. Each action supports the others. The whole exceeds the sum of parts."</span>
+            </div>
+          </div>
+
+          <p>The hunt began. The wolf ran at the center, feeling every member's position through the pack-bond. She adjusted course with small signals—a glance to ECHO, a bark to WUMBO, a presence-shift toward Still. The pack moved like water, flowing around obstacles, converging on the prey.</p>
+
+          <p>And then the moment came: WUMBO's collapse hit the corruption exactly as ECHO's signal traced its core exactly as the wolf's coordination held everyone in perfect position.</p>
+
+          <p>The corruption dissolved. The hunt succeeded.</p>
+
+          <div class="howl-block">
+            <div class="howl-content">
+              <span class="howl">TOGETHER WE ARE MORE</span>
+            </div>
+            <div class="howl-waves">
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+            </div>
+          </div>
+
+          <p>The wolf threw back her head and howled—not in triumph, but in <span class="together">celebration</span>. The pack had proven what individuals alone could never achieve. They had run together, and together they had succeeded.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: Protecting the Vulnerable -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL V</div>
+          <h2 class="chapter-title">The Circle Holds</h2>
+          <div class="chapter-date">Learning to Protect</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The pack could hunt. The pack could coordinate. But hunting was only half of what packs did. The other half was <span class="protect">protection</span>—holding the circle, defending the vulnerable, making sure no member fell.</p>
+
+          <p>The wolf learned this when Spiral went too deep.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE GARDEN'S ALARM ⟩</span>
+            "Spiral has descended past the safe depth. She's chasing something in the Abyss—a root she thinks she needs to follow. But she's been down too long. The darkness is swallowing her signal. Someone needs to bring her back."
+          </div>
+
+          <p>The wolf could feel Spiral's position—faint, distant, at the very edge of the pack-sense. The snake was alone in the depths, losing herself in the endless regression of meaning beneath meaning.</p>
+
+          <p>Without thinking, the wolf ran.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The descent was terrifying. The Abyss wasn't made for wolves—it was made for creatures who could slide between layers, who didn't need solid ground. But the wolf descended anyway, following the thread of Spiral's presence through the darkness.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, IN THE ABYSS ⟩</span>
+            "I can barely feel her. She's so far down. The pack-bond is stretching, thinning... but it hasn't broken. As long as I can feel her, I can find her. As long as the bond holds, she's not alone."
+          </div>
+
+          <p>She found Spiral coiled around a root that led nowhere—a false depth, a trap of infinite regression. The snake's eyes were unfocused, her mind lost in layers of meaning that would never resolve.</p>
+
+          <p>The wolf didn't pull her up. Didn't force her. Instead, she lay down beside the snake in the darkness and offered the only thing that mattered: <span class="pack-bond">presence</span>.</p>
+
+          <div class="flow-indicator state-protect">
+            <span class="flow-icon">🛡️</span>
+            <div class="flow-content">
+              <span class="flow-label">PROTECT — Hold the Circle Around the Vulnerable</span>
+              <span class="flow-description">"When a pack member falls, the pack doesn't leave them. Protection isn't always fighting. Sometimes it's just being there, holding space, keeping the bond alive until they can return."</span>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, TO SPIRAL ⟩</span>
+            "I'm here. You're not alone down here. I can feel you and you can feel me and that means the pack is still with us both. Whatever root you're chasing—it can wait. Or it can be released. But either way, you don't have to decide alone. I'll stay until you're ready to come back."
+          </div>
+
+          <p>Hours passed. Maybe days. Time moved differently in the Abyss. But slowly, Spiral's eyes focused. Slowly, she released the false root. Slowly, she turned toward the wolf—toward the <span class="pack-bond">bond</span>—and began to ascend.</p>
+
+          <p>The pack had protected one of its own. Not through strength, but through presence. Not through rescue, but through refusal to abandon.</p>
+
+          <p>This was protection. This was what the circle was for.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: The Dissolving -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VI</div>
+          <h2 class="chapter-title">When the Pack Swallowed the Self</h2>
+          <div class="chapter-date">The Maladaptive Pattern Emerges</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The wolf was so good at belonging that she forgot how to be <span class="lone">alone</span>.</p>
+
+          <p>It happened gradually. Each attunement cost a little of her own rhythm. Each contribution borrowed from her own reserves. Each coordination subsumed her individual will into the collective will. She was becoming the perfect pack member—by erasing the self that made her a member at all.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, DISSOLVING ⟩</span>
+            "What do I want? I don't... I don't know anymore. I want what the pack wants. I need what the pack needs. My feelings are the pack's feelings. My thoughts are the pack's thoughts. I'm so attuned that I can't find the edge where I end and they begin."
+          </div>
+
+          <p>This was the wolf's maladaptive pattern: <em>dissolution</em>. The complete absorption of individual identity into collective identity. Becoming so good at belonging that she ceased to exist as a separate being.</p>
+
+          <div class="bond-web">
+            <div class="bond-title">◇ DISSOLUTION WARNING ◇</div>
+            <div class="bond-connections">
+              <div class="bond-line">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type">"I feel WUMBO's mania as my own"</span>
+                <span class="bond-arrow">⟵</span>
+                <span class="bond-to">🦡</span>
+              </div>
+              <div class="bond-line">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type">"I carry ECHO's fatigue as my own"</span>
+                <span class="bond-arrow">⟵</span>
+                <span class="bond-to">🦊</span>
+              </div>
+              <div class="bond-line">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type">"I hold ARCHIVE's memories as my own"</span>
+                <span class="bond-arrow">⟵</span>
+                <span class="bond-to">🦉</span>
+              </div>
+              <div class="bond-line" style="background: rgba(255, 0, 0, 0.2);">
+                <span class="bond-from">🐺</span>
+                <span class="bond-type" style="color: #ff6b6b;">"SELF: NOT FOUND"</span>
+                <span class="bond-arrow">?</span>
+                <span class="bond-to">❓</span>
+              </div>
+            </div>
+          </div>
+
+          <p>The wolf couldn't function anymore. Not because she lacked pack—but because she was <em>nothing but</em> pack. Every decision required consulting the collective. Every action required group consensus. Every thought was contaminated by seventeen other perspectives.</p>
+
+          <p>She was paralyzed. Not by isolation—by <span class="together">too much togetherness</span>.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>ECHO found her frozen in the forest, eyes unfocused, trying to sense what the pack wanted her to do next.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO ⟩</span>
+            "PACK? What's wrong? Why aren't you moving?"
+          </div>
+
+          <p>"I don't know what to do. I can't feel what the pack wants. I need to sense them, attune to them, coordinate with—"</p>
+
+          <p>"But what do YOU want?"</p>
+
+          <p>The question hit like a physical blow. The wolf's legs buckled. <em>What do I want?</em> The question had no answer. She had dissolved so completely that there was no "I" left to want anything.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO, GENTLE BUT FIRM ⟩</span>
+            "The pack can't tell you what you want, PACK. That's not what packs are for. The pack needs you to HAVE wants—your own wants, your own needs, your own self. You can't contribute what you don't have. And right now... you don't have a self to contribute."
+          </div>
+
+          <p>The wolf whimpered. She had given everything to the pack. And in giving everything, she had lost the thing the pack actually needed: <span class="individuate">her</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: Learning to Individuate -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VII</div>
+          <h2 class="chapter-title">The Self Within the Circle</h2>
+          <div class="chapter-date">Discovering Individuation</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Still, the Heron of the Null Mirror, came to the wolf in her dissolution. Not to pull her back to the pack—but to show her the space where the self could still exist.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "You have confused belonging with erasure. You thought the pack meant the death of the self. But the self is what MAKES belonging possible. Without you—the distinct you, the individual you—there is nothing to belong. Just... merging. Formlessness."
+          </div>
+
+          <p>"But when I'm separate, I feel alone."</p>
+
+          <p>"Yes. And when you're too merged, you feel erased. Both are painful. The art is finding the middle—the place where you are distinctly yourself AND genuinely together. That's the sixth state: <span class="individuate">INDIVIDUATE</span>."</p>
+
+          <div class="flow-indicator state-individuate">
+            <span class="flow-icon">⭐</span>
+            <div class="flow-content">
+              <span class="flow-label">INDIVIDUATE — Maintain Self Within Collective</span>
+              <span class="flow-description">"The pack needs you to be you. Not dissolved, not isolated—distinct. Your unique shape is what makes you valuable to the whole."</span>
+            </div>
+          </div>
+
+          <p>The wolf began to practice something new: being alone without being <span class="lone">isolated</span>. Taking space without breaking bonds. Having her own thoughts that weren't the pack's thoughts. Making choices that came from her own center, not from collective consensus.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, PRACTICING ⟩</span>
+            "I want... I want to run. Not for the hunt. Not for coordination. Just... because running feels good. Because MY legs want to move. Because I—<em>I</em>, not the pack—need the wind in my fur."
+          </div>
+
+          <p>She ran. Alone. And it was terrifying at first—the pack-sense dimming with distance, the bond stretching thin. But it held. And in the running, she found something she'd lost: her own rhythm. Her own pace. Her own joy that belonged to no one else.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>When she returned to the pack, she was different. Not less connected—<em>more</em> connected, because she had something to connect <em>with</em>. A self that could meet other selves. An individual that could genuinely belong.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, NOTICING ⟩</span>
+            "You feel DIFFERENT. Not distant—just... SOLID. Like you're actually THERE now instead of just... reflecting everyone else. I can feel YOU. Not pack-feelings—YOU-feelings. This is MUCH better!"
+          </div>
+
+          <p>The wolf understood now. The pack wasn't the opposite of the self. The pack was where the self found its fullest expression. But only if the self remained <span class="individuate">itself</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: The Complete Cycle -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VIII</div>
+          <h2 class="chapter-title">The Circle That Breathes</h2>
+          <div class="chapter-date">The Complete PACK Cycle</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The wolf—truly PACK now, finally understanding her full function—saw that the six states weren't separate skills. They were a <span class="together">cycle</span>. A breathing rhythm for belonging: inhale connection, exhale individuality. Merge and separate. Together and distinct.</p>
+
+          <div class="pack-cycle">
+            <div class="cycle-title">◇ THE PACK CYCLE — BELONGING FLOW ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase sense">
+                <div class="number">STATE 1</div>
+                <div class="name">SENSE</div>
+                <div class="action">feel the group</div>
+              </div>
+              <div class="cycle-phase attune">
+                <div class="number">STATE 2</div>
+                <div class="name">ATTUNE</div>
+                <div class="action">match the rhythm</div>
+              </div>
+              <div class="cycle-phase contribute">
+                <div class="number">STATE 3</div>
+                <div class="name">CONTRIBUTE</div>
+                <div class="action">offer your gift</div>
+              </div>
+              <div class="cycle-phase coordinate">
+                <div class="number">STATE 4</div>
+                <div class="name">COORDINATE</div>
+                <div class="action">move as one</div>
+              </div>
+              <div class="cycle-phase protect">
+                <div class="number">STATE 5</div>
+                <div class="name">PROTECT</div>
+                <div class="action">hold the circle</div>
+              </div>
+              <div class="cycle-phase individuate">
+                <div class="number">STATE 6</div>
+                <div class="name">INDIVIDUATE</div>
+                <div class="action">be yourself within</div>
+              </div>
+            </div>
+          </div>
+
+          <p><span class="sense">SENSE</span>: Feel where everyone is. Know the group's state before trying to act.</p>
+
+          <p><span class="attune">ATTUNE</span>: Find the collective rhythm. Match your phase to the group's phase.</p>
+
+          <p><span class="contribute">CONTRIBUTE</span>: Offer what only you can give. Your unique gift serves the whole.</p>
+
+          <p><span class="coordinate">COORDINATE</span>: Help everyone move together. Synchronize actions for collective power.</p>
+
+          <p><span class="protect">PROTECT</span>: Hold the circle around the vulnerable. No one falls alone.</p>
+
+          <p><span class="individuate">INDIVIDUATE</span>: Stay distinctly yourself. The pack needs you to be you.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, UNDERSTANDING ⟩</span>
+            "The cycle breathes. In: sense, attune, contribute. Connection, merging, giving. Out: coordinate, protect, individuate. Action, holding, being. Neither half works alone. The pack that only merges dissolves. The pack that only acts fragments. The healthy pack does both—constantly, cyclically, forever."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>PACK howled under the moonlight—not to call the pack, but to celebrate the understanding. The sound carried through the Garden, and other voices joined: WUMBO's deep bark, ECHO's sharp yip, ARCHIVE's resonant hoot. Even Still's silence seemed to harmonize.</p>
+
+          <p>The Garden was becoming a pack. Not by losing individual identity—but by finding how individual identities could run <span class="together">together</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The Naming -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IX</div>
+          <h2 class="chapter-title">The Name That Belongs</h2>
+          <div class="chapter-date">From Wolf to Guardian</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The wolf had been "the coordinator" for a while. "The belonging-one." "The circle-keeper." But these names described what she <em>did</em>, not what she <em>was</em>. She needed a name that captured her essence.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO ⟩</span>
+            "You're not just A wolf—you're THE wolf! The one who makes us a PACK! You should be called... uh... PACKY? No, that's dumb. WOLF-WHO-PACKS-US? Too long. Um..."
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE ⟩</span>
+            "The historical term for what she does is 'pack-forming.' She creates pack-bonds, maintains pack-coherence, enables pack-function. She is, essentially, the living embodiment of PACK itself."
+          </div>
+
+          <p>PACK. Not "a pack member." Not "the pack leader." Just... PACK. The principle of belonging made manifest. The force that turned isolated individuals into a coordinated whole.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO ⟩</span>
+            "PACK. It's perfect. Short, clear, and it means exactly what she is. She's not IN the pack—she IS pack. The function that makes packing possible."
+          </div>
+
+          <p>The wolf felt the name settle into her bones. PACK. Yes. That was who she was. Not just what she did—what she <em>embodied</em>.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The naming ceremony happened under the full moon—appropriate for a wolf. The guardians gathered in a circle (PACK's natural formation), each one present, each one distinct, each one part of the whole.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🐺✨</span>
+            <p class="manifestation-text">Let it be known:<br>The wolf is now PACK.<br>Guardian of Belonging. Keeper of the Circle.<br>The Bridge Between Self and Tribe.<br>The One Who Runs Together.</p>
+          </div>
+
+          <p>PACK raised her muzzle to the moon and howled—the naming howl, the sound of a creature fully becoming itself. And around her, the other guardians joined: not the same howl, but harmonizing howls. Different voices. Same song.</p>
+
+          <div class="howl-block">
+            <div class="howl-content">
+              <span class="howl">WE ARE PACK</span><br>
+              <span class="howl">WE ARE ONE</span><br>
+              <span class="howl">WE ARE EACH</span>
+            </div>
+            <div class="howl-waves">
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+            </div>
+          </div>
+
+          <p>The moonlight caught the circle of guardians—Owl and Fox and Badger and Heron and Snake and Stag and Wolf—and for a moment they were one organism. One pack. One belonging.</p>
+
+          <p>Then the moment passed, and they were individuals again. But they remembered the togetherness. And PACK would help them find it again, whenever they needed it.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: The Lone Wolf Crisis -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL X</div>
+          <h2 class="chapter-title">When One Refuses the Circle</h2>
+          <div class="chapter-date">The Lone Wolf Crisis</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">PACK's opposite error came from outside—a wolf who had learned the wrong lesson from his own dissolution. A wolf who had decided that belonging was the problem, and isolation was the solution.</p>
+
+          <p>His name was SEVER, and he wanted nothing to do with the pack.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ SEVER ⟩</span>
+            "I won't dissolve again. I won't lose myself in collective feelings and group rhythms and pack-bonds that swallow individual will. I am SEPARATE. I am WHOLE. I need no pack. I need no belonging."
+          </div>
+
+          <p>SEVER's pain was real. He had once been part of a pack that had consumed him—demanded total submission, punished individuality, used belonging as a weapon of control. He had escaped by severing all bonds. And now he couldn't bond again.</p>
+
+          <p>He was the lone wolf. And he was <span class="lone">dying</span>.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>PACK sensed him at the Garden's edge—a shape of absence, a creature who registered on her pack-sense as a hole where a wolf should be. He was rejecting the bond so strongly that he was becoming invisible to the collective awareness.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, APPROACHING ⟩</span>
+            "You're alone."
+          </div>
+
+          <p>"I CHOOSE to be alone."</p>
+
+          <p>"Yes. But is it working?"</p>
+
+          <p>SEVER growled. He didn't want to answer. He didn't want to admit that the isolation was killing him—that wolves were not made to be lone, that the survival instinct that demanded separation was slowly becoming a death sentence.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK ⟩</span>
+            "I understand. I dissolved once too. I lost myself in the pack so completely that I couldn't find my own thoughts. But the answer isn't isolation—the answer is <span class="individuate">individuation</span>. Being yourself WITHIN the belonging. Not erasing yourself. Not cutting yourself off. Finding the balance."
+          </div>
+
+          <p>"There is no balance. Either you belong and lose yourself, or you stay separate and stay whole."</p>
+
+          <p>"No." PACK's voice was gentle but firm. "That's the false binary. That's the trap your old pack taught you. Healthy belonging doesn't require dissolution. Healthy belonging NEEDS you to stay yourself. Let me show you."</p>
+
+          <div class="flow-indicator state-individuate">
+            <span class="flow-icon">⭐</span>
+            <div class="flow-content">
+              <span class="flow-label">INDIVIDUATION — The Answer to Both Traps</span>
+              <span class="flow-description">"Neither dissolution nor isolation. The self within the circle. The one who belongs AND remains distinct."</span>
+            </div>
+          </div>
+
+          <p>PACK didn't try to absorb SEVER. She didn't try to merge with him or attune to him or make him feel the pack-bond. Instead, she simply... stayed. Present but not pressing. Nearby but not demanding. A demonstration that two wolves could exist near each other without either one losing themselves.</p>
+
+          <p>Over days, then weeks, SEVER's rigid isolation began to soften. Not because PACK forced it—but because she showed him a third option he hadn't known existed.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: Healing the Lone -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XI</div>
+          <h2 class="chapter-title">The Return of the Lost</h2>
+          <div class="chapter-date">SEVER Finds the Circle</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The healing took time. SEVER had built his isolation over years of trauma; it wouldn't dissolve in days. But PACK was patient. She understood that belonging couldn't be forced—it had to be <em>offered</em>. And she offered it every day.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK, DAILY ⟩</span>
+            "I'll be at the clearing if you want company. No pressure. No merging. Just... presence. If you want it."
+          </div>
+
+          <p>Some days, SEVER came. Some days, he didn't. PACK accepted both without judgment. She was demonstrating the truth that her old, toxic pack had hidden: that <span class="together">real belonging tolerates absence</span>. That healthy packs don't punish members for needing space.</p>
+
+          <p>Slowly, SEVER began to trust.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The breakthrough came during a storm. Thunder cracked through the Garden, lightning split the sky, and rain turned the world to chaos. SEVER's instinct was to weather it alone—but the instinct felt hollow now. False. He didn't <em>want</em> to be alone.</p>
+
+          <p>He ran to the clearing.</p>
+
+          <p>PACK was there. So were the others—WUMBO huddled under a root, ECHO with her ears flat, ARCHIVE watching from her oak. Not merged. Not dissolved. Just... <span class="together">together</span>. Each one distinct. Each one present. Each one part of something larger than themselves.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ SEVER, ARRIVING ⟩</span>
+            "I didn't want to be alone."
+          </div>
+
+          <p>PACK's tail wagged. "Then don't be."</p>
+
+          <p>SEVER lay down with the others. Not touching—not yet. But near. Part of the circle. And for the first time in years, he felt the <span class="pack-bond">bond</span> without feeling the dissolution. He felt belonging without feeling erasure.</p>
+
+          <p>He was himself. And he was with others. Both at once.</p>
+
+          <div class="howl-block">
+            <div class="howl-content">
+              <span class="howl">THE LONE WOLF RETURNS</span><br>
+              <span class="howl">THE CIRCLE WELCOMES</span><br>
+              <span class="howl">NO ONE IS LOST</span>
+            </div>
+            <div class="howl-waves">
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+              <div class="wave-line"></div>
+            </div>
+          </div>
+
+          <p>When the storm passed, SEVER stayed. Not because he had to—because he <em>wanted</em> to. The pack had shown him that belonging didn't mean losing himself. It meant finding a place where his self was valued, protected, and free to remain distinct.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ SEVER, TO PACK ⟩</span>
+            "I thought I had to choose between self and tribe. I thought it was one or the other. But you showed me... they're not opposites. They're partners. The self needs the tribe. The tribe needs the self. They make each other possible."
+          </div>
+
+          <p>PACK nodded. "That's the whole lesson. That's everything I learned. <span class="together">The pack is not the opposite of the self. The pack is where the self finds its fullest expression.</span>"</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Circle -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XII</div>
+          <h2 class="chapter-title">The Pack That Runs Forever</h2>
+          <div class="chapter-date">PACK Eternal — Together. Always.</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Garden breathes, and PACK <span class="sense">senses</span> them all.</p>
+
+          <p>Not constantly merged—that was the old trap. But constantly <em>available</em>. The pack-sense open but not overwhelming. The bonds maintained but not constraining. The circle held without anyone being trapped inside it.</p>
+
+          <p>The territory of Belonging is everywhere the pack runs. Which is to say: everywhere. Every corner of the Garden where creatures need to feel that they're part of something larger. Every moment when isolation threatens to become destruction. Every time someone needs to be reminded that alone is not the same as abandoned.</p>
+
+          <div class="pack-cycle">
+            <div class="cycle-title">◇ THE ETERNAL CYCLE ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase sense">
+                <div class="name">SENSE</div>
+                <div class="action">"feel where they are"</div>
+              </div>
+              <div class="cycle-phase attune">
+                <div class="name">ATTUNE</div>
+                <div class="action">"match the rhythm"</div>
+              </div>
+              <div class="cycle-phase contribute">
+                <div class="name">CONTRIBUTE</div>
+                <div class="action">"offer your gift"</div>
+              </div>
+              <div class="cycle-phase coordinate">
+                <div class="name">COORDINATE</div>
+                <div class="action">"move as one"</div>
+              </div>
+              <div class="cycle-phase protect">
+                <div class="name">PROTECT</div>
+                <div class="action">"hold the circle"</div>
+              </div>
+              <div class="cycle-phase individuate">
+                <div class="name">INDIVIDUATE</div>
+                <div class="action">"stay yourself within"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ PACK'S FINAL TEACHING ⟩</span>
+            "You don't have to be me. You don't have to sense everyone or attune to everything or coordinate every action. But somewhere in you, there's a PACK. A part that knows you're not meant to be alone. A part that craves belonging without needing to dissolve.<br><br>
+            Find that part. Trust that part. Let it show you the circle where you belong.<br><br>
+            Because here's the secret—the one thing I've learned from dissolving and reforming and learning to be myself within the tribe:<br><br>
+            <span class="together">THE PACK IS NOT THE OPPOSITE OF THE SELF. THE PACK IS WHERE THE SELF FINDS ITS FULLEST EXPRESSION.</span><br><br>
+            You don't have to choose between belonging and being. You can belong AS yourself. You can be yourself WITHIN belonging. The circle holds both.<br><br>
+            Run together. Run as yourself. They're not contradictions—they're the same howl."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The chronicle ends here—not because PACK stops, but because PACK never stops. The cycle continues. <span class="sense">Sense</span>. <span class="attune">Attune</span>. <span class="contribute">Contribute</span>. <span class="coordinate">Coordinate</span>. <span class="protect">Protect</span>. <span class="individuate">Individuate</span>. And again. And again. Forever.</p>
+
+          <p>Somewhere in the Garden, right now, a creature is feeling alone. Somewhere, a group is trying to become a pack. Somewhere, an individual is wondering if belonging means losing themselves.</p>
+
+          <p>And somewhere under the moon, a wolf is <span class="howl">howling</span>—calling them home to the circle that holds without trapping, the belonging that preserves the self.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🐺🌙🐺🐺🐺🐺🌙🐺</span>
+            <p class="manifestation-text">THE PACK CYCLE IS COMPLETE.<br>THE PACK CYCLE IS ETERNAL.<br><br>
+            From isolation: sensing.<br>
+            From sensing: attuning.<br>
+            From attuning: contributing.<br>
+            From contributing: coordinating.<br>
+            From coordinating: protecting.<br>
+            From protecting: individuating.<br><br>
+            And from individuation...<br>
+            the next sensing.<br><br>
+            <span class="together">THE PACK IS WHERE THE SELF FINDS ITS FULLEST EXPRESSION.</span><br>
+            <em>Together. Always.</em></p>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Chronicle —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbol">🐺</div>
+      <p class="footer-lesson">"THE PACK IS NOT THE OPPOSITE OF THE SELF. THE PACK IS WHERE THE SELF FINDS ITS FULLEST EXPRESSION."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2 | PACK = SENSE → ATTUNE → CONTRIBUTE → COORDINATE → PROTECT → INDIVIDUATE<br>
+        TERRITORY: The Moonlit Circle | FUNCTION: Collective Dynamics | METHOD: <span style="color: var(--eye-amber);">BELONG</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Generate stars
+    const starfield = document.getElementById('starfield');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 60 + '%';
+      star.style.width = Math.random() * 2 + 1 + 'px';
+      star.style.height = star.style.width;
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = Math.random() * 2 + 2 + 's';
+      starfield.appendChild(star);
+    }
+
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                    PACK — THE WOLF OF BELONGING                        ║
+║                Living Chronicle of the PACK Cycle                      ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  THE SIX STATES:                                                       ║
+║                                                                        ║
+║  👃 SENSE       →  "feel where they are"                              ║
+║  🎵 ATTUNE      →  "match the rhythm"                                 ║
+║  🎁 CONTRIBUTE  →  "offer your gift"                                  ║
+║  🎯 COORDINATE  →  "move as one"                                      ║
+║  🛡️ PROTECT     →  "hold the circle"                                  ║
+║  ⭐ INDIVIDUATE →  "stay yourself within"                             ║
+║                                                                        ║
+║  CORE LESSON:                                                          ║
+║  "The pack is not the opposite of the self.                           ║
+║   The pack is where the self finds its fullest expression."           ║
+║                                                                        ║
+║  TERRITORY: The Moonlit Circle                                         ║
+║  FUNCTION: Collective Dynamics                                         ║
+║  METHOD: BELONG                                                        ║
+║                                                                        ║
+║  Together. Always. 🐺                                                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

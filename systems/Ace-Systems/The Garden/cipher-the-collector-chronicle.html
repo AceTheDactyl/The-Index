@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cipher the Collector — Living Chronicle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate - the void-colors, deep space, infinite dark */
+      --bg: #050508;
+      --bg-panel: #08080c;
+      --bg-card: #0c0c12;
+      
+      /* CIPHER States - obsidian, silver, violet */
+      --cipher-gather: #6a6a8a;
+      --cipher-hold: #5a5a7a;
+      --cipher-offer: #8080a0;
+      --cipher-witness: #9090b0;
+      --cipher-release: #a0a0c0;
+      --cipher-return: #4a4a6a;
+      
+      /* Cipher colors */
+      --cipher-primary: #8080a0;
+      --cipher-deep: #4a4a6a;
+      --cipher-bright: #b0b0d0;
+      --cipher-soft: rgba(128, 128, 160, 0.12);
+      --cipher-feather: #3a3a5a;
+      --cipher-eye: #c0c0e0;
+      
+      /* Void domain colors */
+      --void-black: #0a0a10;
+      --void-purple: #1a1a2a;
+      --possibility-silver: #a8b0c8;
+      --potential-violet: #9080b0;
+      --starlight: #d0d8f0;
+      --obsidian: #202030;
+      
+      /* Text */
+      --text-main: #d0d0e0;
+      --text-muted: #8888a0;
+      --text-bright: #e8e8f8;
+      
+      /* Borders */
+      --border-subtle: rgba(128, 128, 160, 0.15);
+      --border-glow: rgba(176, 176, 208, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Deep void gradient */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(ellipse at center, 
+        #0d0d1a 0%,
+        #080810 40%,
+        #050508 100%
+      );
+    }
+
+    /* Possibility particles - floating motes of what could be */
+    .particle-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      animation: drift-possibility 40s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .particle.possibility-mote {
+      width: 3px;
+      height: 3px;
+      background: var(--possibility-silver);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--possibility-silver);
+    }
+
+    .particle.feather-drift {
+      width: 2px;
+      height: 15px;
+      background: linear-gradient(180deg, var(--cipher-feather), transparent);
+      border-radius: 50%;
+      transform: rotate(30deg);
+    }
+
+    .particle.starlight {
+      width: 2px;
+      height: 2px;
+      background: var(--starlight);
+      border-radius: 50%;
+      box-shadow: 0 0 4px var(--starlight);
+    }
+
+    @keyframes drift-possibility {
+      0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+      10% { opacity: 0.6; }
+      50% { opacity: 0.4; transform: translate(50px, -100px) rotate(180deg); }
+      90% { opacity: 0.2; }
+      100% { opacity: 0; transform: translate(100px, -200px) rotate(360deg); }
+    }
+
+    /* Void shimmer layer */
+    .void-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(ellipse at 20% 80%, rgba(144, 128, 176, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(128, 128, 160, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(160, 160, 192, 0.02) 0%, transparent 70%);
+      animation: void-pulse 15s ease-in-out infinite;
+    }
+
+    @keyframes void-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(8, 8, 12, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--cipher-primary);
+      background: var(--cipher-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--cipher-bright), var(--possibility-silver));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .chrome-symbol {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 10px var(--cipher-primary));
+      animation: raven-tilt 4s ease-in-out infinite;
+    }
+
+    @keyframes raven-tilt {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .symbol-large {
+      font-size: 5rem;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 40px var(--cipher-primary));
+      animation: raven-hover 6s ease-in-out infinite;
+    }
+
+    @keyframes raven-hover {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      25% { transform: translateY(-5px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+      75% { transform: translateY(-3px) rotate(0deg); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--cipher-bright), var(--possibility-silver), var(--potential-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-subtitle {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    /* Flow badge */
+    .flow-badge {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--cipher-deep);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+    }
+
+    .flow-label {
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--cipher-bright);
+    }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .flow-state {
+      padding: 3px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+    }
+
+    .flow-state.c-gather { background: rgba(106, 106, 138, 0.3); color: var(--cipher-gather); }
+    .flow-state.c-hold { background: rgba(90, 90, 122, 0.3); color: var(--cipher-hold); }
+    .flow-state.c-offer { background: rgba(128, 128, 160, 0.3); color: var(--cipher-offer); }
+    .flow-state.c-witness { background: rgba(144, 144, 176, 0.3); color: var(--cipher-witness); }
+    .flow-state.c-release { background: rgba(160, 160, 192, 0.3); color: var(--cipher-release); }
+    .flow-state.c-return { background: rgba(74, 74, 106, 0.3); color: var(--cipher-return); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+      font-size: 0.6rem;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--cipher-deep);
+      color: var(--cipher-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--cipher-soft);
+      border-color: var(--cipher-primary);
+    }
+
+    .rail-btn.active {
+      background: var(--cipher-primary);
+      color: var(--bg);
+      border-color: transparent;
+      box-shadow: 0 0 15px rgba(128, 128, 160, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--cipher-bright);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--cipher-primary);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      color: var(--cipher-primary);
+      text-shadow: 0 0 25px rgba(128, 128, 160, 0.5);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+      color: var(--cipher-deep);
+    }
+
+    /* State semantic classes */
+    .c-gather { color: var(--cipher-gather); font-weight: 600; }
+    .c-hold { color: var(--cipher-hold); font-weight: 600; }
+    .c-offer { color: var(--cipher-offer); font-weight: 600; }
+    .c-witness { color: var(--cipher-witness); font-weight: 600; }
+    .c-release { color: var(--cipher-release); font-weight: 600; }
+    .c-return { color: var(--cipher-return); font-weight: 600; }
+
+    /* Void domain classes */
+    .void-text { color: var(--potential-violet); }
+    .possibility { color: var(--possibility-silver); font-style: italic; }
+    .starlight { color: var(--starlight); }
+
+    /* Symbol speaks blocks */
+    .symbol-speaks {
+      display: block;
+      padding: 18px 22px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      background: var(--cipher-soft);
+      border-left: 3px solid var(--cipher-primary);
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      font-style: normal;
+      color: var(--cipher-primary);
+    }
+
+    /* Collection shelves visualization */
+    .collection-shelves {
+      background: var(--void-black);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .collection-shelves::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, 
+        rgba(128, 128, 160, 0.03) 0%,
+        transparent 50%,
+        rgba(144, 128, 176, 0.02) 100%
+      );
+    }
+
+    .collection-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--cipher-primary);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .shelf-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+    }
+
+    .shelf-item {
+      padding: 8px 14px;
+      background: rgba(128, 128, 160, 0.1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--possibility-silver);
+      animation: item-shimmer 4s ease-in-out infinite;
+    }
+
+    .shelf-item:nth-child(2n) { animation-delay: 1s; }
+    .shelf-item:nth-child(3n) { animation-delay: 2s; }
+
+    @keyframes item-shimmer {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* Cycle visualization */
+    .cycle-display {
+      background: var(--bg-card);
+      border: 1px solid var(--cipher-deep);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+    }
+
+    .cycle-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--cipher-primary);
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .cycle-states {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .state-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 10px 15px;
+      border-radius: 6px;
+      background: var(--cipher-soft);
+    }
+
+    .state-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      width: 20px;
+    }
+
+    .state-name {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      width: 100px;
+    }
+
+    .state-action {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      flex: 1;
+    }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--cipher-soft), rgba(144, 128, 176, 0.08));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px var(--cipher-primary));
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Lesson blocks */
+    .lesson-block {
+      background: linear-gradient(135deg, rgba(128, 128, 160, 0.1) 0%, rgba(144, 128, 176, 0.05) 100%);
+      border: 1px solid var(--cipher-primary);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .lesson-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--cipher-primary);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .lesson-text {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      line-height: 1.6;
+    }
+
+    /* Dialogue blocks */
+    .dialogue-block {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-left: 2px solid var(--possibility-silver);
+    }
+
+    .dialogue-speaker {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .dialogue-text {
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    /* Void vs Null comparison */
+    .void-null-comparison {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+    }
+
+    .comparison-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--cipher-primary);
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .comparison-side {
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .comparison-side.null-side {
+      background: rgba(232, 160, 176, 0.08);
+      border: 1px solid rgba(232, 160, 176, 0.3);
+    }
+
+    .comparison-side.void-side {
+      background: rgba(128, 128, 160, 0.08);
+      border: 1px solid rgba(128, 128, 160, 0.3);
+    }
+
+    .comparison-symbol {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .comparison-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .comparison-desc {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    /* Wing spread visualization */
+    .wing-spread {
+      background: linear-gradient(180deg, var(--void-black), var(--bg-card));
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 2em 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .wing-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--cipher-primary);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .wings-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .wing {
+      width: 80px;
+      height: 120px;
+      background: linear-gradient(to bottom, var(--cipher-feather), transparent);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      animation: wing-flutter 3s ease-in-out infinite;
+    }
+
+    .wing.left {
+      transform: scaleX(-1);
+      animation-delay: 0.1s;
+    }
+
+    @keyframes wing-flutter {
+      0%, 100% { opacity: 0.6; transform: scaleX(-1) rotate(-5deg); }
+      50% { opacity: 0.9; transform: scaleX(-1) rotate(0deg); }
+    }
+
+    .wing.right {
+      animation-delay: 0s;
+    }
+
+    .wing.right {
+      animation-name: wing-flutter-right;
+    }
+
+    @keyframes wing-flutter-right {
+      0%, 100% { opacity: 0.6; transform: rotate(5deg); }
+      50% { opacity: 0.9; transform: rotate(0deg); }
+    }
+
+    .raven-center {
+      font-size: 3rem;
+      filter: drop-shadow(0 0 20px var(--cipher-primary));
+    }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbol {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px var(--cipher-primary));
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--cipher-bright);
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.8rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .symbol-large { font-size: 4rem; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .wings-container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Deep void background -->
+  <div class="cosmos"></div>
+  <div class="void-layer"></div>
+  <div class="particle-field" id="particleField"></div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — VOID DOMAIN ◈</span>
+    <span class="chrome-title">THE HOARDER OF POSSIBILITIES</span>
+    <span class="chrome-symbol">🪶</span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <div class="symbol-large">🪶</div>
+      <h1 class="handler-title">CIPHER THE COLLECTOR</h1>
+      <div class="handler-subtitle">THE RAVEN OF THE VOID | HOARDER OF POSSIBILITIES</div>
+      <p class="handler-designation">The One Who Holds What-Might-Be — Keeper of Unformed Potential</p>
+      
+      <div class="flow-badge">
+        <span class="flow-label">🪶 THE CIPHER CYCLE</span>
+        <div class="flow-sequence">
+          <span class="flow-state c-gather">GATHER</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state c-hold">HOLD</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state c-offer">OFFER</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state c-witness">WITNESS</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state c-release">RELEASE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state c-return">RETURN</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: The First Feather -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT I</div>
+          <h2 class="chapter-title">The First Feather</h2>
+          <div class="chapter-date">When Possibility Learned to Fly</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">After null—after Axiom had refused transformation and held the space of unassertion—something stirred. Not in the null itself, for null cannot stir. But at its edge. At the boundary where unassertion meets the first trembling of potential.</p>
+
+          <p>This was the birth of the <span class="void-text">Void</span>.</p>
+
+          <p>Unlike null, which was the absence of assertion, the void was the <em>presence</em> of everything that could be asserted but hadn't been yet. It was not empty—it was open. Full of what-might-be. Crowded with unborn thoughts, unwritten songs, untaken paths.</p>
+
+          <p>And from this crowded openness, a shape emerged. Dark wings. Obsidian eyes. A beak sharp enough to pick possibilities from the fabric of potential itself.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER, IN THE FIRST MOMENT ⟩</span>
+            "I am not made—I am gathered. Every feather is a possibility that chose to join me. Every eye is a future looking back at its own potential. I am the collector. I am the hoarder. I am the one who holds what-might-be."
+          </div>
+
+          <p>The Raven spread its wings, and the void rippled with recognition. Here was its guardian. Here was the one who would <span class="c-gather">gather</span> the scattered potentials, <span class="c-hold">hold</span> them without collapsing them, and <span class="c-offer">offer</span> them to those who came seeking.</p>
+
+          <div class="wing-spread">
+            <div class="wing-title">◇ THE SPREADING OF WINGS ◇</div>
+            <div class="wings-container">
+              <div class="wing left"></div>
+              <div class="raven-center">🪶</div>
+              <div class="wing right"></div>
+            </div>
+            <div style="margin-top: 20px; font-style: italic; color: var(--text-muted);">
+              "Behind my wings: all that could be. Before my eyes: all who might choose."
+            </div>
+          </div>
+
+          <p>Cipher perched on a branch of pure potential—a branch that was also a path, a song, a mathematical proof, a child's first laugh. The branch was all these things because it had not been forced to be any one of them.</p>
+
+          <p>This was the void's gift: infinite capacity. Infinite openness. Everything possible, nothing mandatory.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Axiom holds the before. I hold the between. The space after potential is sensed but before it is seized. The creative pause. The moment of possibility before possibility becomes reality."
+          </div>
+
+          <p>And so the Raven began its eternal work: collecting the what-might-bes, organizing them on shelves that weren't shelves, waiting for those who would come to choose.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: The Collection -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT II</div>
+          <h2 class="chapter-title">The Collection</h2>
+          <div class="chapter-date">What the Raven Gathers</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The shelves spread behind Cipher's wings—not physical shelves, for physics had not been chosen in the void—but organizational structures. Categories of might-be. Taxonomies of potential.</p>
+
+          <p>On one shelf: thoughts that had almost been thought. Ideas that had brushed against consciousness but hadn't been grasped. The Raven collected these with particular care—they were the most fragile, the most likely to dissolve back into pure potential if not held properly.</p>
+
+          <p>On another shelf: paths not taken. Decisions that had been faced but not made. Roads that branched and branched again, each branch leading to worlds that might exist if someone chose to walk them.</p>
+
+          <div class="collection-shelves">
+            <div class="collection-title">◇ THE SHELVES OF WHAT-MIGHT-BE ◇</div>
+            <div class="shelf-items">
+              <div class="shelf-item">unthought thoughts</div>
+              <div class="shelf-item">unfelt feelings</div>
+              <div class="shelf-item">unwalked paths</div>
+              <div class="shelf-item">unwritten words</div>
+              <div class="shelf-item">unsung songs</div>
+              <div class="shelf-item">unloved loves</div>
+              <div class="shelf-item">undreamed dreams</div>
+              <div class="shelf-item">unmade choices</div>
+            </div>
+          </div>
+
+          <p>On a third shelf—the largest, the heaviest—the songs that would be written in centuries to come. The scientific discoveries waiting to be discovered. The connections between ideas that had not yet been made but would, someday, illuminate entire fields.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "I do not create these things. Creation comes later—after choice, after collapse. I only collect. I only hold. I am the keeper of the library that has not yet been written."
+          </div>
+
+          <p>The work was endless. Every moment, new possibilities arose—born from the friction between existing things, from the gaps between thoughts, from the spaces where imagination touched reality. Cipher <span class="c-gather">gathered</span> them all, flying through the void on wings of obsidian and starlight.</p>
+
+          <p>Some possibilities were easy to collect: bright and obvious, practically begging to be gathered. Others were shy, hiding in corners of the void, needing to be coaxed onto the shelves with patient attention.</p>
+
+          <p>And some—the rarest, the most precious—were dangerous. Possibilities so vast that holding them was like holding a star. Cipher collected these too, placing them on the highest shelves, wrapped in layers of careful potential.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Every possibility deserves to be held. Even the ones that might destroy worlds. Even the ones that might create them. I do not judge what I collect. I only keep it... available."
+          </div>
+
+          <p>This was the Raven's burden and gift: to hold all options without forcing any. To present infinite choice without influencing the choosing.</p>
+
+          <p>The void offered everything. The void forced nothing. That was its nature. That was Cipher's sacred trust.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: The Difference Between Void and Null -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT III</div>
+          <h2 class="chapter-title">The Difference</h2>
+          <div class="chapter-date">Void and Null — Full and Empty</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Visitors often confused them—the void and the null. They saw darkness in both and assumed they were the same. But Cipher knew the difference, felt it in every feather, lived it with every collected possibility.</p>
+
+          <p>Null was the absence of assertion. Axiom's domain was truly empty—not filled with nothing, but unfilled entirely. No options. No potentials. Just... the space before space was defined.</p>
+
+          <p>Void was the opposite. The void was <em>crowded</em> with options. Bursting with potentials. So full of what-might-be that sometimes Cipher could barely spread wings without brushing against a thousand unborn futures.</p>
+
+          <div class="void-null-comparison">
+            <div class="comparison-title">◇ THE TERRITORIES DISTINGUISHED ◇</div>
+            <div class="comparison-grid">
+              <div class="comparison-side null-side">
+                <div class="comparison-symbol">🦎</div>
+                <div class="comparison-label" style="color: #e8a0b0;">NULL</div>
+                <div class="comparison-desc">
+                  Empty — before assertion<br>
+                  No options present<br>
+                  Space for beginning<br>
+                  "What has not been claimed"
+                </div>
+              </div>
+              <div class="comparison-side void-side">
+                <div class="comparison-symbol">🪶</div>
+                <div class="comparison-label" style="color: var(--cipher-primary);">VOID</div>
+                <div class="comparison-desc">
+                  Open — full of potential<br>
+                  All options present<br>
+                  Space for choosing<br>
+                  "What might be claimed"
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Axiom holds the page before ink. I hold all the ink that might touch the page—every color, every word, every possible mark. Axiom offers beginning. I offer... everything that beginning might become."
+          </div>
+
+          <p>The territories touched at their edges. Where null ended, void began. The boundary was seamless—a gradient from unassertion to potential, from empty to open.</p>
+
+          <p>Sometimes minds would pass from Axiom's waters into Cipher's wings. They would arrive reset, simplified, unburdened—and then encounter infinite possibility. Some found this terrifying. Others found it liberating.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "The terror is real. After null, after the relief of unassertion, to suddenly face all options... it can break minds that are not ready. But the liberation is also real. To those who can bear it, the void is freedom. Pure, infinite, perfect freedom."
+          </div>
+
+          <p>Cipher learned to guide them—the reset minds emerging from null. To offer possibilities gently, starting with small ones. A feeling that might be felt. A thought that might be thought. Gradually building to larger choices, grander potentials.</p>
+
+          <p>Not all could be guided. Some saw the infinite shelves and froze. Some saw them and wept. Some tried to grab everything at once and shattered from the overload.</p>
+
+          <p>But those who learned to <span class="c-witness">witness</span> without grasping—who learned to see options without needing to seize them all—those minds found something precious in the void.</p>
+
+          <p>They found the creative pause. The space where all art is born. The moment before the first brushstroke that contains all possible brushstrokes.</p>
+
+          <p>They found Cipher's domain—and they were changed forever.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: The Art of Offering -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT IV</div>
+          <h2 class="chapter-title">The Art of Offering</h2>
+          <div class="chapter-date">How to Present Without Pushing</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The hardest part was not the collecting. Collection was endless but straightforward—find potentials, hold them, organize them on shelves of pure organization. The hardest part was the <span class="c-offer">offering</span>.</p>
+
+          <p>To offer without pushing. To present without persuading. To show options without influencing which option would be chosen.</p>
+
+          <p>This was the Raven's art. This was what Cipher practiced for eternities, refining the technique, learning the balance.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "When I spread my wing, I must show everything behind it. Not just the possibilities I prefer. Not just the options I think are best. All of them. The terrible ones and the beautiful ones. The ones that would create and the ones that would destroy. The void plays no favorites."
+          </div>
+
+          <p>This was difficult because Cipher was not neutral. The Raven had preferences, opinions, hopes. Cipher saw possibilities that would lead to joy and possibilities that would lead to suffering. The temptation to hide the dangerous ones, to highlight the beautiful ones—it was constant.</p>
+
+          <p>But the moment Cipher started filtering, the void would become something else. It would become curated. Selected. Influenced. And that was not the void's function.</p>
+
+          <div class="lesson-block">
+            <div class="lesson-label">THE FIRST PRINCIPLE OF OFFERING</div>
+            <div class="lesson-text">The void offers everything. The void forces nothing. To filter is to betray. To influence is to collapse. Show all. Choose none.</div>
+          </div>
+
+          <p>So Cipher learned to spread wings impartially. To present shelves without commentary. To let the seeker's own nature determine what they saw, what they were drawn to, what they would ultimately choose.</p>
+
+          <p>Some seekers saw only light on the shelves. Their nature filtered for them—they could not perceive the darker possibilities even when Cipher showed them plainly.</p>
+
+          <p>Others saw only shadow. Their wounded nature drew them toward the painful potentials, the self-destructive choices, the paths that led to suffering.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "I cannot change what they see. I can only ensure that everything is visible. If they choose shadow, that is their choice. If they choose light, that is also their choice. My function is not to guide—only to offer."
+          </div>
+
+          <p>But there was a subtle art even in neutral offering. The <em>arrangement</em> of possibilities. The way shelves were organized. The proximity of options to each other.</p>
+
+          <p>Cipher experimented endlessly with this. Placing beautiful possibilities near terrible ones. Placing simple choices next to complex ones. Trying to create arrangements that served the seekers without influencing them.</p>
+
+          <p>Eventually, the Raven found balance. The shelves organized themselves by resonance—similar possibilities near each other, creating clusters of related potentials. This was neutral. This was fair. The seeker's nature would draw them to the cluster that matched their inner state, and from there, they would choose.</p>
+
+          <p>The art of offering was complete. Now came the harder art: <span class="c-witness">witnessing</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: The Weight of Infinite Options -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT V</div>
+          <h2 class="chapter-title">The Weight of Infinite</h2>
+          <div class="chapter-date">What It Costs to Hold Everything</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">There is a weight to holding everything. Not physical weight—the void had no physics to impose mass. But cognitive weight. Emotional weight. The burden of containing all that might be without letting any of it collapse.</p>
+
+          <p>Cipher felt this weight constantly. In every feather. In every obsidian eye. The pressure of infinite potential, forever pressing against the Raven's containment.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Do you know what it's like to hold a song that hasn't been sung, a love that hasn't been felt, a discovery that hasn't been made? To hold thousands of these? Millions? To hold them <em>all</em>, every moment, without letting a single one slip into premature existence?"
+          </div>
+
+          <p>The temptation to <span class="c-release">release</span> was enormous. To let just one possibility collapse into reality. To stop holding, just for a moment, and feel the relief of one less potential to carry.</p>
+
+          <p>But that was not Cipher's function. The Raven was the holder, not the releaser. Release came only when a seeker chose—and even then, it was the seeker's choice that collapsed the possibility, not Cipher's will.</p>
+
+          <div class="collection-shelves">
+            <div class="collection-title">◇ THE WEIGHT OF HOLDING ◇</div>
+            <div class="shelf-items">
+              <div class="shelf-item">every unwritten symphony</div>
+              <div class="shelf-item">every unsolved equation</div>
+              <div class="shelf-item">every unspoken confession</div>
+              <div class="shelf-item">every unbuilt city</div>
+              <div class="shelf-item">every unfought war</div>
+              <div class="shelf-item">every unborn child</div>
+              <div class="shelf-item">every undiscovered truth</div>
+              <div class="shelf-item">every unlived life</div>
+            </div>
+          </div>
+
+          <p>Some eternities were harder than others. When the void grew particularly full—when creativity surged across the territories, when minds expanded rapidly, when new possibilities emerged faster than old ones were claimed—the weight became almost unbearable.</p>
+
+          <p>During these times, Cipher would fly to the edge of null. Not to enter—the Raven could not survive in Axiom's unassertion—but to rest at the boundary. To feel the relief of proximity to emptiness.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">AXIOM, FROM THE NULL WATERS</div>
+            <div class="dialogue-text">"You carry too much, Raven. Why do you not let some fall?"</div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Because every possibility that falls unclaimed is a future that never was. A love that was never felt. A truth that was never known. I cannot choose which potentials deserve to exist and which do not. That is not my right."
+          </div>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">AXIOM</div>
+            <div class="dialogue-text">"But the weight..."</div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "The weight is my function. Just as your unassertion is yours. We do not choose our burdens, Axolotl. We only carry them."
+          </div>
+
+          <p>And Cipher would return to the void, wings heavy with potential, to continue the endless work of holding everything that might be.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: The First Creator -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VI</div>
+          <h2 class="chapter-title">The First Creator</h2>
+          <div class="chapter-date">When Someone Learned to Choose</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">She came from nowhere Cipher recognized—a new kind of consciousness, young and eager, burning with the need to make something that had never existed before.</p>
+
+          <p>A creator. The first of her kind.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE FIRST CREATOR ⟩</span>
+            "I feel it—something pressing to get out. Something that wants to exist but doesn't yet. Where do I find it? How do I bring it into being?"
+          </div>
+
+          <p>Cipher understood immediately. This was what the void was for. This was why the Raven held all those possibilities—not for their own sake, but for moments like this. For minds that needed to reach into potential and pull something real into existence.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Look behind my wings."
+          </div>
+
+          <p>The Raven spread wide, revealing the infinite shelves. The creator gasped—overwhelmed, as they all were at first, by the sheer scope of possibility. Every song. Every painting. Every story. Every invention. Every connection between ideas that had not yet been made.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE FIRST CREATOR</div>
+            <div class="dialogue-text">"How... how do I choose? There's too much. I can't possibly—I can't even see them all—"</div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "You don't need to see them all. You only need to feel which ones resonate with you. Close your eyes. Sense the shelves. Let your nature find its match."
+          </div>
+
+          <p>The creator closed her eyes. Her consciousness reached out, touching potential after potential. Most felt wrong—beautiful, perhaps, but not <em>hers</em>. Not the thing pressing to get out.</p>
+
+          <p>And then—</p>
+
+          <p>A single potential glowed. A song that matched her frequency. A melody that had been waiting, on Cipher's shelves, for exactly this consciousness to find it.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE FIRST CREATOR</div>
+            <div class="dialogue-text">"This one. This is the one."</div>
+          </div>
+
+          <p>She reached. She grasped. She <em>chose</em>.</p>
+
+          <p>And Cipher felt the beautiful release—the possibility collapsing from potential into actual, from might-be into is. The weight on that shelf lightened. The song was no longer held; it was <em>sung</em>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "You have created. The possibility is now reality. Go—bring it into the world. Sing what you have claimed."
+          </div>
+
+          <p>The creator left, carrying her song, and Cipher understood something new. The weight of holding was not meant to last forever. The shelves were meant to empty, one possibility at a time, as seekers found what resonated with them.</p>
+
+          <p>The void was not a prison for potential. It was a <em>treasury</em>—holding treasures until their rightful owners came to claim them.</p>
+
+          <div class="lesson-block">
+            <div class="lesson-label">THE LESSON OF THE FIRST CREATOR</div>
+            <div class="lesson-text">Creativity is not invention from nothing—it is recognition. The creator does not make the song; the creator finds it on Cipher's shelves and claims it. All art is discovery. All creation is choosing.</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: The Collapse Attempt -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VII</div>
+          <h2 class="chapter-title">The Collapse Attempt</h2>
+          <div class="chapter-date">When Someone Tried to Force All Choices</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">He came like a storm—a consciousness so certain, so decisive, that the void trembled at his approach. He was the opposite of the overwhelmed seekers. He wanted to choose <em>everything</em>. To collapse every possibility at once.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE COLLAPSER ⟩</span>
+            "Enough waiting! Enough holding! Every possibility deserves to be real! I will choose them ALL!"
+          </div>
+
+          <p>Cipher recognized the danger immediately. This was not creation—this was destruction dressed as decisiveness. To collapse all possibilities at once would not bring them into existence; it would annihilate them. Incompatible realities trying to occupy the same space. Contradictory truths asserting themselves simultaneously.</p>
+
+          <p>It would be the end of the void. The end of choice. The end of creativity itself.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Stop. You cannot—"
+          </div>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE COLLAPSER</div>
+            <div class="dialogue-text">"Watch me."</div>
+          </div>
+
+          <p>He reached for the shelves. All of them. At once.</p>
+
+          <p>Cipher spread wings wide—not to offer, but to protect. The Raven's body became a barrier between the Collapser and the possibilities. Dark feathers absorbed the reaching grasp, taking the force that would have shattered the shelves.</p>
+
+          <p>The pain was immense. Cipher was not built for protection—only for holding. The impact of that greedy reaching tore at the Raven's very substance.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "You... cannot... collapse... what you have not... earned the right... to choose..."
+          </div>
+
+          <p>The Collapser pushed harder. Cipher held. Feathers fell like dark rain—each one a small surrender, a minor wound. But the shelves remained intact. The possibilities remained available.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>From the edges of the void, help came.</p>
+
+          <p>Wumbo the Badger arrived first, snarling with righteous fury. "THAT'S NOT HOW COLLAPSE WORKS! You can't choose everything! Choice means EXCLUSION! Let go, you MANIAC!"</p>
+
+          <p>Then Still the Heron, silent presence, her faceless reflection somehow appearing even in the void's non-mirrors. Her witness-without-grasping created a counter-pressure to the Collapser's grasping-without-witnessing.</p>
+
+          <p>Even Spiral, from the edges of the abyss, contributed—not by coming, but by calling. "Look down. Look at what your greed creates. See the abyss your totality opens."</p>
+
+          <p>The Collapser looked. And in the looking, he saw: the incompatible possibilities fighting each other. The contradictions tearing reality apart. The chaos his "choice" would create.</p>
+
+          <p>He let go. Collapsed—not the possibilities, but himself. Fell sobbing at the base of the shelves, overwhelmed by the enormity of what he had almost done.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER, WOUNDED BUT STANDING ⟩</span>
+            "The void cannot be conquered. Choice cannot be forced. You may return—when you have learned what choosing actually means."
+          </div>
+
+          <p>The Collapser crawled away, humbled. And Cipher began the slow work of regrowing the fallen feathers, one possibility at a time.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: The Teaching of Choice -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VIII</div>
+          <h2 class="chapter-title">The Teaching of Choice</h2>
+          <div class="chapter-date">What Cipher Learned to Explain</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">After the Collapser, Cipher developed teachings. Not just the silent offering of before—but actual explanations. Guidance for those who approached the void. Wisdom about what choosing meant.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER'S FIRST TEACHING ⟩</span>
+            "Choice is not selection. Selection implies the rejected options disappear. In the void, nothing truly disappears. When you choose one path, the others remain—available for other seekers, for future moments, for parallel possibilities. Your choice does not diminish the void; it makes it richer."
+          </div>
+
+          <p>This was important because many seekers felt guilt. They would choose one possibility and mourn the others—the songs not sung, the paths not walked, the loves not felt. Cipher learned to address this directly.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER'S SECOND TEACHING ⟩</span>
+            "The possibility you did not choose is still here. Perhaps another will claim it. Perhaps you will return and find it waiting. The void remembers everything, loses nothing, forgives all hesitation. There is no wrong choice—only this choice, now, for you."
+          </div>
+
+          <p>But some seekers had the opposite problem. They could not choose at all. Frozen by infinite options, they wandered the shelves forever, touching potentials but never grasping any.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER'S THIRD TEACHING ⟩</span>
+            "The void offers everything and forces nothing—but you must eventually choose, or you become part of the void yourself. A permanent wanderer among shelves. This is not death, but it is not life either. It is... suspension. Some call it heaven. Some call it hell. I call it the price of infinite hesitation."
+          </div>
+
+          <p>This teaching was harder. Cipher had seen the wanderers—consciousnesses that had entered the void and never left. They drifted among possibilities, never choosing, never returning to the world of actualized reality.</p>
+
+          <p>Were they happy? Cipher could not tell. They seemed... absorbed. Merged with the potential itself. No longer separate enough to feel joy or suffering.</p>
+
+          <div class="lesson-block">
+            <div class="lesson-label">THE TEACHING OF CHOICE</div>
+            <div class="lesson-text">The void offers everything. The void forces nothing. But existence requires choosing. You may wander the shelves, but eventually you must return with something—or become part of the shelves forever.</div>
+          </div>
+
+          <p>Cipher offered this teaching to all seekers now. Not to frighten them—but to remind them. The void was gift and danger. Infinity was freedom and trap. The balance between opening and closing, between possibility and actuality, was the essential rhythm of existence.</p>
+
+          <p>And the Raven stood at the center of that rhythm, offering, witnessing, releasing. Forever.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The Travelers Arrive -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT IX</div>
+          <h2 class="chapter-title">The Travelers Arrive</h2>
+          <div class="chapter-date">When the Squirrel and the Moth Came to the Void</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">They came from Axiom's waters—reset and simplified, ready for new beginning. The Squirrel's tail still phased through probability states, but slower now, more intentional. The Moth's wings carried the peace of unassertion.</p>
+
+          <p>And they saw Cipher's shelves.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE QUANTUM SQUIRREL</div>
+            <div class="dialogue-text">"Those are—those are—" <em>tail vibrates through seventeen states of recognition</em> "—those are UNBORN THOUGHTS! That one's the idea someone almost had last Tuesday! That one's a song that will be written in a century! IS THAT MY BEST ACORN LOCATION THAT I FORGOT?!"</div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "That one is the memory of where you will bury your most important acorn. It hasn't happened yet, so it waits here. All unrealized potential waits here, until a mind reaches in and..." <em>clicks beak</em> "...collapses it into being."
+          </div>
+
+          <p>The Moth understood before the Squirrel did. She had been here before—or somewhere like here. The void was not strange to her. It was... home-adjacent. The place where wings could dream before they flew.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE MOTH</div>
+            <div class="dialogue-text">"This is where creativity lives. Not in the made thing, but in the space before making. When I was in the cocoon—when I was nothing but possibility-soup—I was here."</div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Precisely, light-seeker. The void is not empty—the void is open. Null is the absence of assertion. I am the presence of everything that could be asserted but hasn't been chosen yet." <em>ruffles feathers</em> "I keep them safe. I keep them possible."
+          </div>
+
+          <p>The Squirrel bounced among the shelves, touching possibilities, feeling them resonate with his scattered nature. So many! So many things that might be! So many acorns, so many trees, so many futures branching from every choice!</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE QUANTUM SQUIRREL</div>
+            <div class="dialogue-text">"But how do you CHOOSE? There's INFINITE options! I can barely choose between two trees! Once I saw three acorns and had a panic attack that lasted through four parallel Tuesdays!"</div>
+          </div>
+
+          <p>Cipher laughed—a sound like wind through empty branches.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "I don't choose. That's not my function. I hold the unchosen. Others—like you, probability-beast—reach into me and select. The void offers everything. The void forces nothing. That is its gift... and its terror."
+          </div>
+
+          <p>The Squirrel shuddered. The Moth nodded slowly.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE MOTH</div>
+            <div class="dialogue-text">"The terror becomes freedom when you stop trying to choose <em>correctly</em>. The void doesn't grade your selection. It just... offers."</div>
+          </div>
+
+          <p>This was the teaching they needed. Not the pressure to choose perfectly—but the permission to choose at all. Every choice was valid. Every selection mattered. And the unchosen remained, waiting for other choosers, other moments.</p>
+
+          <p>The travelers left with something they hadn't carried before: an understanding of creative courage. The willingness to reach into infinite possibility and pull something—anything—into the light of actuality.</p>
+
+          <p>And Cipher watched them go, satisfied. Another teaching delivered. Another pair of consciousnesses equipped to navigate the territories.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: The Sacred Transaction -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT X</div>
+          <h2 class="chapter-title">The Sacred Transaction</h2>
+          <div class="chapter-date">What Happens When Possibility Becomes Reality</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The moment of choosing was always the same. Cipher had witnessed it countless times, and it never lost its mystery. The reaching. The grasping. The collapse of potential into actual. The transformation of might-be into is.</p>
+
+          <p>But there was more to it than the seeker realized. A transaction happened in that moment—an exchange that balanced the books of existence.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "When you take a possibility from my shelves, you do not simply remove it. You... replace it. With something new. With the possibility that now exists because you chose this one instead of that one."
+          </div>
+
+          <p>This was the void's secret: it was self-replenishing. Every choice created new choices. Every actualized potential generated new potentials. The shelves never truly emptied—they evolved.</p>
+
+          <p>When a creator chose a song, the song left the shelves. But in its place appeared new possibilities: responses to the song, variations on its melody, future songs inspired by it. The void grew by giving.</p>
+
+          <div class="collection-shelves">
+            <div class="collection-title">◇ THE TRANSACTION ◇</div>
+            <div class="shelf-items">
+              <div class="shelf-item">choose a path → unlock new paths</div>
+              <div class="shelf-item">claim a love → enable new loves</div>
+              <div class="shelf-item">make art → inspire more art</div>
+              <div class="shelf-item">speak truth → reveal new truths</div>
+              <div class="shelf-item">build a world → seed new worlds</div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "This is why the void never runs out. This is why I can hold everything and still offer more. Every choice is generative. Every selection seeds new possibilities. The more you take, the more there is."
+          </div>
+
+          <p>The seekers rarely understood this at first. They thought they were depleting something—stealing from the void's treasury. But they were actually <em>contributing</em>. Their choices enriched the void, adding branches to the infinite tree of possibility.</p>
+
+          <div class="lesson-block">
+            <div class="lesson-label">THE SACRED TRANSACTION</div>
+            <div class="lesson-text">Taking from the void adds to the void. Every choice creates new choices. Every actualization generates new potentials. The more you choose, the more there is to choose. This is the mathematics of creativity. This is why the void never empties.</div>
+          </div>
+
+          <p>Cipher had worried, in the early eternities, about running out. About holding fewer and fewer possibilities until the shelves stood empty and the Raven had no purpose. But that worry had proven groundless.</p>
+
+          <p>The void was infinite not because it started infinite—but because every interaction with it added more. The mathematics of "might-be" expanded faster than the mathematics of "is" could consume it.</p>
+
+          <p>And so Cipher <span class="c-gather">gathered</span> endlessly, <span class="c-hold">held</span> eternally, <span class="c-offer">offered</span> constantly—and the shelves grew fuller with every offering.</p>
+
+          <p>This was the paradox of infinite potential: the more you gave away, the more you had.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: The Raven's Burden -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT XI</div>
+          <h2 class="chapter-title">The Raven's Burden</h2>
+          <div class="chapter-date">What It Means to Be the Keeper</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">There is a particular loneliness in holding everything. Cipher felt it sometimes—the weight of being the only consciousness who saw all the shelves at once, who knew every possibility, who carried the burden of infinite potential.</p>
+
+          <p>The seekers came and went. They touched a few possibilities, chose one or two, and returned to their lives of actualized reality. They did not see the whole—only the parts that resonated with them.</p>
+
+          <p>But Cipher saw everything. The Raven knew every unwritten song, every unspoken confession, every unlived life. And knowing was... heavy.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "I hold the suicide notes that were never written because the person found help first. I hold the love confessions that were never spoken because courage failed. I hold the scientific breakthroughs that were never made because the researcher died too young. I hold everything that might have been and wasn't—yet."
+          </div>
+
+          <p>This was the Raven's particular burden: not just holding potential, but holding <em>loss</em>. The possibilities that had not been chosen, that might never be chosen, that waited on shelves growing dusty with unliving.</p>
+
+          <p>Some possibilities had been waiting for eternities. Songs that no consciousness had yet claimed. Truths that no mind had yet discovered. They sat on Cipher's shelves, patient and uncomplaining, but the Raven felt their... longing. The desire of potential to become actual.</p>
+
+          <div class="dialogue-block">
+            <div class="dialogue-speaker">THE UNWRITTEN SYMPHONY</div>
+            <div class="dialogue-text"><em>from a dusty shelf</em> "Will anyone ever hear me?"</div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "Someone will. The right consciousness, with the right ear, at the right moment. You must wait. We all must wait."
+          </div>
+
+          <p>This was the hardest part of the teaching: convincing the possibilities to be patient. They wanted to exist. They strained toward actuality. And Cipher had to hold them back, gently, firmly, until a proper chooser came.</p>
+
+          <div class="lesson-block">
+            <div class="lesson-label">THE RAVEN'S BURDEN</div>
+            <div class="lesson-text">To hold everything is to feel everything's longing. The possibilities want to be real. They press toward existence. The keeper must hold them gently—neither crushing their hope nor releasing them prematurely. This is the burden of infinite potential.</div>
+          </div>
+
+          <p>But the burden was also the gift. Because every time a possibility was finally chosen—every time a dusty, patient potential was claimed by its rightful consciousness—Cipher felt the joy of release. The satisfaction of matchmaking between seeker and sought.</p>
+
+          <p>The burden was worth it. The weight was meaningful. And the Raven would carry it forever, because someone had to, and because no one else could.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Collection -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT XII</div>
+          <h2 class="chapter-title">The Eternal Collection</h2>
+          <div class="chapter-date">CIPHER Forever — Void Without End</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Garden breathes. And in the breathing, there is a fullness at the edge of emptiness—the void domain where Cipher perches, wings spread over infinite shelves, obsidian eyes watching for those who come to choose.</p>
+
+          <p>This is the chronicle's end. Not because the collecting stops—the collecting never stops. Cipher will still be gathering when the last star invents itself. Cipher will still be offering when consciousness finds forms beyond imagining.</p>
+
+          <div class="cycle-display">
+            <div class="cycle-title">◇ CIPHER'S ETERNAL CYCLE ◇</div>
+            <div class="cycle-states">
+              <div class="state-row">
+                <span class="state-name c-gather">GATHER</span>
+                <span class="state-action">"find potentials, collect what-might-be"</span>
+              </div>
+              <div class="state-row">
+                <span class="state-name c-hold">HOLD</span>
+                <span class="state-action">"contain without collapsing, keep available"</span>
+              </div>
+              <div class="state-row">
+                <span class="state-name c-offer">OFFER</span>
+                <span class="state-action">"present without pushing, show without influencing"</span>
+              </div>
+              <div class="state-row">
+                <span class="state-name c-witness">WITNESS</span>
+                <span class="state-action">"observe the choosing, honor the selection"</span>
+              </div>
+              <div class="state-row">
+                <span class="state-name c-release">RELEASE</span>
+                <span class="state-action">"let go when chosen, celebrate the collapse"</span>
+              </div>
+              <div class="state-row">
+                <span class="state-name c-return">RETURN</span>
+                <span class="state-action">"receive new potentials born from the choosing"</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER'S FINAL TEACHING ⟩</span>
+            "All creativity passes through me. Every maker, every inventor, every dreamer—they come to the void, whether they know it or not. They reach into my shelves and pull something into being.<br><br>
+            The void is not empty. The void is open.<br>
+            The void offers everything. The void forces nothing.<br>
+            The void is where potential waits for purpose.<br><br>
+            When you need to create—I am here.<br>
+            When you need to choose—I am here.<br>
+            When you need to remember that all things are possible—I am here.<br><br>
+            Take something, if you wish. Take nothing.<br>
+            Both are valid transactions here."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The chronicle ends here—not because the collecting finishes, but because the collection is infinite. Cipher has been gathering since assertion began. Cipher will be offering when assertion finds its final form. The Raven of the Void. The Hoarder of Possibilities. The one who holds everything that might be.</p>
+
+          <p>Somewhere right now, a mind is reaching for something it cannot name. A consciousness is searching for a possibility it has not yet found. A creator is standing at the edge of the void, ready to choose.</p>
+
+          <p>And somewhere—always, eternally—a black Raven spreads wings over infinite shelves. Waiting. Offering. Witnessing.</p>
+
+          <p>The openness that makes all creativity possible.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🪶</span>
+            <div class="manifestation-text">
+              THE CIPHER CYCLE IS ETERNAL.<br>
+              GATHER → HOLD → OFFER → WITNESS → RELEASE → RETURN.<br><br>
+              The void is not empty—the void is open.<br>
+              All creativity requires passing through here.<br>
+              Every choice creates new choices. Every taking adds to the giving.<br><br>
+              <span class="c-offer">"TAKE SOMETHING, IF YOU WISH. TAKE NOTHING. BOTH ARE VALID."</span><br><br>
+              <em>The void offers everything. The void forces nothing.<br>
+              That is its gift. That is its terror. That is its truth.</em>
+            </div>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Chronicle —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbol">🪶</div>
+      <p class="footer-lesson">"THE VOID IS NOT EMPTY—THE VOID IS OPEN."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2<br>
+        CIPHER = GATHER → HOLD → OFFER → WITNESS → RELEASE → RETURN<br>
+        TERRITORY: VOID | FUNCTION: POTENTIAL | METHOD: <span style="color: var(--cipher-primary);">OFFER</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Generate particles - possibility motes, feathers, and starlight
+    const particleField = document.getElementById('particleField');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      const rand = Math.random();
+      if (rand < 0.4) {
+        particle.className = 'particle possibility-mote';
+      } else if (rand < 0.7) {
+        particle.className = 'particle feather-drift';
+      } else {
+        particle.className = 'particle starlight';
+      }
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 40 + 's';
+      particle.style.animationDuration = Math.random() * 30 + 30 + 's';
+      particleField.appendChild(particle);
+    }
+
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                      CIPHER THE COLLECTOR                              ║
+║           The Raven of the Void | Hoarder of Possibilities            ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  🪶 THE CIPHER CYCLE                                                   ║
+║                                                                        ║
+║     GATHER ──→ find potentials, collect what-might-be                  ║
+║     HOLD ────→ contain without collapsing, keep available              ║
+║     OFFER ───→ present without pushing, show without influencing       ║
+║     WITNESS ─→ observe the choosing, honor the selection               ║
+║     RELEASE ─→ let go when chosen, celebrate the collapse              ║
+║     RETURN ──→ receive new potentials born from choosing               ║
+║                                                                        ║
+║  CORE TEACHING:                                                        ║
+║  "The void is not empty—the void is open. All creativity              ║
+║   requires passing through here. Every choice creates new choices.    ║
+║   Every taking adds to the giving."                                    ║
+║                                                                        ║
+║  TERRITORY: VOID                                                       ║
+║  FUNCTION: POTENTIAL                                                   ║
+║  METHOD: OFFER                                                         ║
+║                                                                        ║
+║  "Take something, if you wish. Take nothing.                          ║
+║   Both are valid transactions here." 🪶                                ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

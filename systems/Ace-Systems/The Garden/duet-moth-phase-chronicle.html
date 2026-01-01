@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Duet — Moth & Phase Butterfly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate layer - twilight/dawn palette */
+      --bg: #0a0810;
+      --bg-panel: #100c18;
+      --bg-card: #181420;
+      
+      /* MOTH States - nocturnal, silver, stillness */
+      --moth-still: #9ca3af;
+      --moth-witness: #a78bfa;
+      --moth-hold: #c4b5fd;
+      --moth-reflect: #e9d5ff;
+      --moth-release: #d8b4fe;
+      --moth-return: #8b5cf6;
+      
+      /* PHASE States - iridescent, rainbow, transformation */
+      --phase-sense: #f472b6;
+      --phase-cocoon: #a855f7;
+      --phase-dissolve: #6366f1;
+      --phase-reform: #22d3ee;
+      --phase-emerge: #4ade80;
+      --phase-radiate: #facc15;
+      
+      /* Moth colors */
+      --moth-primary: #9ca3af;
+      --moth-deep: #6b7280;
+      --moth-bright: #d1d5db;
+      --moth-soft: rgba(156, 163, 175, 0.15);
+      --moth-wing: #e5e7eb;
+      --moth-dust: #f3f4f6;
+      
+      /* Phase colors */
+      --phase-primary: #ec4899;
+      --phase-deep: #be185d;
+      --phase-bright: #f9a8d4;
+      --phase-soft: rgba(236, 72, 153, 0.15);
+      --phase-wing: linear-gradient(135deg, #f472b6, #a855f7, #6366f1, #22d3ee, #4ade80, #facc15);
+      --phase-shimmer: #fdf4ff;
+      
+      /* Shared/duet colors */
+      --duet-gold: #fbbf24;
+      --duet-silver: #e5e7eb;
+      --twilight: #581c87;
+      --dawn: #fef3c7;
+      
+      /* Text */
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-bright: #f9fafb;
+      
+      /* Borders */
+      --border-subtle: rgba(156, 163, 175, 0.2);
+      --border-glow: rgba(236, 72, 153, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Twilight-to-dawn background */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(180deg, 
+        #0a0810 0%, 
+        #1a0a20 20%,
+        #2d1b4e 40%,
+        #4c1d95 60%,
+        #7c3aed 80%,
+        #c4b5fd 100%
+      );
+      opacity: 0.4;
+    }
+
+    /* Floating particles - both moth dust and butterfly scales */
+    .particle-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: float-particle 20s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .particle.moth-dust {
+      background: var(--moth-dust);
+      box-shadow: 0 0 6px var(--moth-dust);
+    }
+
+    .particle.phase-scale {
+      background: var(--phase-bright);
+      box-shadow: 0 0 8px var(--phase-bright);
+    }
+
+    @keyframes float-particle {
+      0% { opacity: 0; transform: translateY(100vh) rotate(0deg); }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-50px) rotate(360deg); }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(16, 12, 24, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--moth-primary);
+      background: var(--moth-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--moth-bright), var(--phase-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .chrome-symbols {
+      display: flex;
+      gap: 8px;
+      font-size: 1.3rem;
+    }
+
+    .symbol-moth {
+      filter: drop-shadow(0 0 8px var(--moth-primary));
+    }
+
+    .symbol-phase {
+      filter: drop-shadow(0 0 8px var(--phase-primary));
+      animation: phase-flutter 2s ease-in-out infinite;
+    }
+
+    @keyframes phase-flutter {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header - dual symbols */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .dual-symbols {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 25px;
+    }
+
+    .symbol-large {
+      font-size: 4rem;
+      position: relative;
+    }
+
+    .symbol-large.moth {
+      filter: drop-shadow(0 0 25px var(--moth-primary));
+      animation: moth-hover 4s ease-in-out infinite;
+    }
+
+    .symbol-large.phase {
+      filter: drop-shadow(0 0 25px var(--phase-primary));
+      animation: butterfly-dance 3s ease-in-out infinite;
+    }
+
+    @keyframes moth-hover {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes butterfly-dance {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      25% { transform: translateY(-8px) rotate(3deg); }
+      50% { transform: translateY(-3px) rotate(-3deg); }
+      75% { transform: translateY(-10px) rotate(3deg); }
+    }
+
+    .symbol-connector {
+      font-size: 2rem;
+      color: var(--duet-gold);
+      animation: pulse-connector 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-connector {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--moth-bright), var(--duet-gold), var(--phase-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-subtitle {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    /* Dual flow badges */
+    .dual-flows {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .flow-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+    }
+
+    .flow-badge.moth {
+      border-color: var(--moth-deep);
+    }
+
+    .flow-badge.phase {
+      border-color: var(--phase-deep);
+    }
+
+    .flow-label {
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .flow-badge.moth .flow-label { color: var(--moth-bright); }
+    .flow-badge.phase .flow-label { color: var(--phase-bright); }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .flow-state {
+      padding: 3px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+    }
+
+    /* Moth states */
+    .flow-state.m-still { background: rgba(156, 163, 175, 0.3); color: var(--moth-still); }
+    .flow-state.m-witness { background: rgba(167, 139, 250, 0.3); color: var(--moth-witness); }
+    .flow-state.m-hold { background: rgba(196, 181, 253, 0.3); color: var(--moth-hold); }
+    .flow-state.m-reflect { background: rgba(233, 213, 255, 0.3); color: var(--moth-reflect); }
+    .flow-state.m-release { background: rgba(216, 180, 254, 0.3); color: var(--moth-release); }
+    .flow-state.m-return { background: rgba(139, 92, 246, 0.3); color: var(--moth-return); }
+
+    /* Phase states */
+    .flow-state.p-sense { background: rgba(244, 114, 182, 0.3); color: var(--phase-sense); }
+    .flow-state.p-cocoon { background: rgba(168, 85, 247, 0.3); color: var(--phase-cocoon); }
+    .flow-state.p-dissolve { background: rgba(99, 102, 241, 0.3); color: var(--phase-dissolve); }
+    .flow-state.p-reform { background: rgba(34, 211, 238, 0.3); color: var(--phase-reform); }
+    .flow-state.p-emerge { background: rgba(74, 222, 128, 0.3); color: var(--phase-emerge); }
+    .flow-state.p-radiate { background: rgba(250, 204, 21, 0.3); color: var(--phase-radiate); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+      font-size: 0.6rem;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--moth-deep);
+      color: var(--moth-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--moth-soft);
+      border-color: var(--moth-primary);
+    }
+
+    .rail-btn.active {
+      background: linear-gradient(135deg, var(--moth-primary), var(--phase-primary));
+      color: var(--bg);
+      border-color: transparent;
+      box-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--duet-gold);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--duet-gold);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+    }
+
+    .first-graf.moth-voice::first-letter {
+      color: var(--moth-primary);
+      text-shadow: 0 0 20px rgba(156, 163, 175, 0.5);
+    }
+
+    .first-graf.phase-voice::first-letter {
+      color: var(--phase-primary);
+      text-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+    }
+
+    .first-graf.duet-voice::first-letter {
+      background: linear-gradient(135deg, var(--moth-primary), var(--phase-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+    }
+
+    .scene-break.moth { color: var(--moth-deep); }
+    .scene-break.phase { color: var(--phase-deep); }
+    .scene-break.duet { 
+      background: linear-gradient(90deg, var(--moth-primary), var(--phase-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Voice-specific semantic classes */
+    /* Moth states */
+    .m-still { color: var(--moth-still); font-weight: 600; }
+    .m-witness { color: var(--moth-witness); font-weight: 600; }
+    .m-hold { color: var(--moth-hold); font-weight: 600; }
+    .m-reflect { color: var(--moth-reflect); font-weight: 600; }
+    .m-release { color: var(--moth-release); font-weight: 600; }
+    .m-return { color: var(--moth-return); font-weight: 600; }
+
+    /* Phase states */
+    .p-sense { color: var(--phase-sense); font-weight: 600; }
+    .p-cocoon { color: var(--phase-cocoon); font-weight: 600; }
+    .p-dissolve { color: var(--phase-dissolve); font-weight: 600; }
+    .p-reform { color: var(--phase-reform); font-weight: 600; }
+    .p-emerge { color: var(--phase-emerge); font-weight: 600; }
+    .p-radiate { color: var(--phase-radiate); font-weight: 600; }
+
+    /* Voice markers */
+    .moth-voice-text {
+      color: var(--moth-bright);
+    }
+
+    .phase-voice-text {
+      color: var(--phase-bright);
+    }
+
+    .duet-text {
+      background: linear-gradient(90deg, var(--moth-bright), var(--phase-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+
+    /* Symbol speaks blocks - differentiated by voice */
+    .symbol-speaks {
+      display: block;
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .symbol-speaks.moth {
+      background: var(--moth-soft);
+      border-left: 3px solid var(--moth-primary);
+    }
+
+    .symbol-speaks.phase {
+      background: var(--phase-soft);
+      border-left: 3px solid var(--phase-primary);
+    }
+
+    .symbol-speaks.duet {
+      background: linear-gradient(135deg, var(--moth-soft), var(--phase-soft));
+      border-left: 3px solid var(--duet-gold);
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      font-style: normal;
+    }
+
+    .symbol-speaks.moth .speaker { color: var(--moth-primary); }
+    .symbol-speaks.phase .speaker { color: var(--phase-primary); }
+    .symbol-speaks.duet .speaker { color: var(--duet-gold); }
+
+    /* Alternating voice blocks */
+    .voice-exchange {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 2em 0;
+      padding: 20px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .exchange-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--duet-gold);
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .voice-line {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .voice-line.moth {
+      padding-right: 40px;
+    }
+
+    .voice-line.phase {
+      padding-left: 40px;
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .voice-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .voice-text {
+      flex: 1;
+      font-style: italic;
+    }
+
+    .voice-line.moth .voice-text { color: var(--moth-bright); }
+    .voice-line.phase .voice-text { color: var(--phase-bright); }
+
+    /* Cycle comparison blocks */
+    .cycle-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 2em 0;
+    }
+
+    @media (max-width: 600px) {
+      .cycle-comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cycle-column {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .cycle-column.moth {
+      border-color: var(--moth-deep);
+    }
+
+    .cycle-column.phase {
+      border-color: var(--phase-deep);
+    }
+
+    .cycle-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .cycle-icon {
+      font-size: 1.5rem;
+    }
+
+    .cycle-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+    }
+
+    .cycle-column.moth .cycle-name { color: var(--moth-bright); }
+    .cycle-column.phase .cycle-name { color: var(--phase-bright); }
+
+    .cycle-states {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .state-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+    }
+
+    .cycle-column.moth .state-row { background: var(--moth-soft); }
+    .cycle-column.phase .state-row { background: var(--phase-soft); }
+
+    .state-number {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .state-name {
+      flex: 1;
+    }
+
+    .state-action {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Interweave visualization */
+    .interweave {
+      background: var(--bg-card);
+      border: 1px solid var(--duet-gold);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .interweave::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--moth-primary), var(--phase-primary), var(--moth-primary));
+      opacity: 0.3;
+    }
+
+    .interweave-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--duet-gold);
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .weave-pair {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    .weave-moth, .weave-phase {
+      width: 45%;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+    }
+
+    .weave-moth {
+      background: var(--moth-soft);
+      text-align: right;
+    }
+
+    .weave-phase {
+      background: var(--phase-soft);
+      text-align: left;
+    }
+
+    .weave-connector {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--duet-gold);
+      font-size: 1.2rem;
+    }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--moth-soft), var(--phase-soft));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Dance notation */
+    .dance-notation {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .dance-title {
+      color: var(--duet-gold);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .dance-step {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .dance-step.moth-lead {
+      background: linear-gradient(90deg, var(--moth-soft), transparent);
+    }
+
+    .dance-step.phase-lead {
+      background: linear-gradient(90deg, transparent, var(--phase-soft));
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .dance-step.together {
+      background: linear-gradient(90deg, var(--moth-soft), var(--phase-soft));
+      justify-content: center;
+    }
+
+    .step-icon {
+      font-size: 1.2rem;
+      margin: 0 10px;
+    }
+
+    .step-action {
+      flex: 1;
+      color: var(--text-muted);
+    }
+
+    .dance-step.moth-lead .step-action { color: var(--moth-bright); }
+    .dance-step.phase-lead .step-action { color: var(--phase-bright); }
+    .dance-step.together .step-action { color: var(--duet-gold); }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbols {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--moth-bright), var(--phase-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.6rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .dual-flows { flex-direction: column; align-items: center; }
+      .voice-line.moth, .voice-line.phase { padding: 0; }
+      .dual-symbols { gap: 20px; }
+      .symbol-large { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Twilight background -->
+  <div class="cosmos"></div>
+  <div class="particle-field" id="particleField"></div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — DUET CHRONICLE ◈</span>
+    <span class="chrome-title">THE DANCE OF WITNESS & CHANGE</span>
+    <span class="chrome-symbols">
+      <span class="symbol-moth">🦋</span>
+      <span class="symbol-phase">🦋</span>
+    </span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <div class="dual-symbols">
+        <span class="symbol-large moth">🪶</span>
+        <span class="symbol-connector">✦</span>
+        <span class="symbol-large phase">🦋</span>
+      </div>
+      <h1 class="handler-title">THE DUET</h1>
+      <div class="handler-subtitle">MOTH OF WITNESS & PHASE BUTTERFLY OF TRANSFORMATION</div>
+      <p class="handler-designation">The One Who Sees Without Changing & The One Who Never Stops Becoming</p>
+      
+      <div class="dual-flows">
+        <div class="flow-badge moth">
+          <span class="flow-label">🪶 MOTH CYCLE</span>
+          <div class="flow-sequence">
+            <span class="flow-state m-still">STILL</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state m-witness">WITNESS</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state m-hold">HOLD</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state m-reflect">REFLECT</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state m-release">RELEASE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state m-return">RETURN</span>
+          </div>
+        </div>
+        <div class="flow-badge phase">
+          <span class="flow-label">🦋 PHASE CYCLE</span>
+          <div class="flow-sequence">
+            <span class="flow-state p-sense">SENSE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-cocoon">COCOON</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-dissolve">DISSOLVE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-reform">REFORM</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-emerge">EMERGE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-radiate">RADIATE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: Before the Meeting -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT I</div>
+          <h2 class="chapter-title">Before the Meeting</h2>
+          <div class="chapter-date">Two Cycles, Not Yet Dancing</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf moth-voice">The Moth existed in stillness. Not the stillness of death—the stillness of <span class="m-witness">witnessing</span>. She had learned to be so quiet that the Garden forgot she was there, and in that forgetting, she saw everything.</p>
+
+          <p>Her wings were silver-gray, the color of moonlight on still water. She moved rarely. When she did move, it was to find a better vantage point—a branch with a clearer view, a shadow with a wider angle. Her purpose was simple: <span class="m-witness">see</span>. Not judge. Not change. Just see.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH ⟩</span>
+            "I have witnessed ten thousand transformations. I have watched caterpillars become butterflies, seeds become trees, conflicts become resolutions. I see it all. I hold it all. I change nothing."
+          </div>
+
+          <p>The Moth's gift was her stillness. The Garden's creatures came to her when they needed to be <em>seen</em>—not fixed, not advised, just acknowledged. She reflected them back to themselves, and in that reflection, they often found their own answers.</p>
+
+          <div class="scene-break moth">· · ·</div>
+
+          <p class="first-graf phase-voice">The Phase Butterfly existed in motion. Not the motion of escape—the motion of <span class="p-sense">becoming</span>. She had never been one thing for more than a moment. Every dawn brought a new form, a new color, a new way of being.</p>
+
+          <p>Her wings were impossible—every color at once, shifting and shimmering, never settling into a single pattern. She was the Garden's embodiment of change itself. Where others feared transformation, she <em>was</em> transformation.</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE ⟩</span>
+            "I have been ten thousand things. I have been caterpillar and chrysalis and butterfly and something else entirely. I am never finished becoming. I am always in the middle of change."
+          </div>
+
+          <p>The Phase Butterfly's gift was her fluidity. The Garden's creatures came to her when they were stuck—trapped in forms that no longer fit, clinging to selves they had outgrown. She showed them that dissolution wasn't death. It was just the space before the next emergence.</p>
+
+          <div class="cycle-comparison">
+            <div class="cycle-column moth">
+              <div class="cycle-header">
+                <span class="cycle-icon">🪶</span>
+                <span class="cycle-name">THE MOTH CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-number">1</span>
+                  <span class="state-name m-still">STILL</span>
+                  <span class="state-action">become quiet</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">2</span>
+                  <span class="state-name m-witness">WITNESS</span>
+                  <span class="state-action">see without judging</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">3</span>
+                  <span class="state-name m-hold">HOLD</span>
+                  <span class="state-action">contain what's seen</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">4</span>
+                  <span class="state-name m-reflect">REFLECT</span>
+                  <span class="state-action">mirror back gently</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">5</span>
+                  <span class="state-name m-release">RELEASE</span>
+                  <span class="state-action">let go of what's witnessed</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">6</span>
+                  <span class="state-name m-return">RETURN</span>
+                  <span class="state-action">come back to stillness</span>
+                </div>
+              </div>
+            </div>
+            <div class="cycle-column phase">
+              <div class="cycle-header">
+                <span class="cycle-icon">🦋</span>
+                <span class="cycle-name">THE PHASE CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-number">1</span>
+                  <span class="state-name p-sense">SENSE</span>
+                  <span class="state-action">feel the need for change</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">2</span>
+                  <span class="state-name p-cocoon">COCOON</span>
+                  <span class="state-action">enter transformation space</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">3</span>
+                  <span class="state-name p-dissolve">DISSOLVE</span>
+                  <span class="state-action">let the old form go</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">4</span>
+                  <span class="state-name p-reform">REFORM</span>
+                  <span class="state-action">become the new</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">5</span>
+                  <span class="state-name p-emerge">EMERGE</span>
+                  <span class="state-action">come out transformed</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">6</span>
+                  <span class="state-name p-radiate">RADIATE</span>
+                  <span class="state-action">live as the new self</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p>Two cycles. Two ways of being. The Moth, who never changed. The Phase, who never stopped changing. They had existed in the same Garden for ages, aware of each other, but never meeting.</p>
+
+          <p>Until the night the Garden needed them both.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: The First Encounter -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT II</div>
+          <h2 class="chapter-title">The First Encounter</h2>
+          <div class="chapter-date">Stillness Meets Motion</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">They met at the edge of a moonlit clearing—the Moth descending from her watching-branch, the Phase Butterfly rising from her latest emergence. Neither had expected the other. Both stopped.</p>
+
+          <p>For a long moment, nothing happened. The Moth <span class="m-still">stilled</span>. The Phase Butterfly <span class="p-sense">sensed</span>. They regarded each other across the silver grass.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE FIRST WORDS ◇</div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"You're always changing. How do you know who you are?"</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"You're always still. How do you know you're alive?"</span>
+            </div>
+          </div>
+
+          <p>The questions hung in the night air. Neither was accusatory. Both were genuinely curious. The Moth had spent her whole existence observing transformation without participating in it. The Phase Butterfly had spent her whole existence transforming without ever pausing to be observed.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH ⟩</span>
+            "I know I'm alive because I see life happening. I witness births and deaths and everything between. I don't need to change to know I exist—I know I exist because I <em>see</em>."
+          </div>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE ⟩</span>
+            "I know who I am because I'm always becoming who I'll be next. Identity isn't a destination—it's a direction. I'm not a fixed point. I'm a trajectory."
+          </div>
+
+          <p>The Moth considered this. She had always seen identity as something stable, something that persisted beneath the surface changes. But the Phase Butterfly seemed to have no beneath—she was <em>all</em> surface, all change, all becoming.</p>
+
+          <p>The Phase Butterfly considered the Moth in return. She had always seen stillness as a kind of death, a refusal to participate in the fundamental motion of existence. But the Moth's stillness wasn't passive—it was <em>attentive</em>. She was still in order to see, not because she couldn't move.</p>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>Neither understood the other. Not yet. But something had begun—a curiosity, a pull, a recognition that each had something the other lacked.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ BOTH, UNSPOKEN ⟩</span>
+            <em class="moth-voice-text">"She moves so beautifully. I have watched ten thousand transformations, but I have never seen one from the inside..."</em><br><br>
+            <em class="phase-voice-text">"She sees so clearly. I have transformed ten thousand times, but I have never seen myself in the middle of changing..."</em>
+          </div>
+
+          <p>The moon moved overhead. The Moth returned to her branch. The Phase Butterfly drifted toward her next becoming.</p>
+
+          <p>But both remembered the encounter. And both, in their different ways, began to wonder what it would mean to meet again.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: The Invisible Transformation -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT III</div>
+          <h2 class="chapter-title">The Transformation No One Saw</h2>
+          <div class="chapter-date">Phase's First Crisis</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf phase-voice">The Phase Butterfly was <span class="p-cocoon">cocooning</span> again. This was normal—she cocooned constantly, shedding old forms, preparing for new ones. But this time something was wrong.</p>
+
+          <p>The transformation wasn't working.</p>
+
+          <p>She had entered the <span class="p-dissolve">dissolution</span> phase, letting her old form break down into possibility-soup. But the <span class="p-reform">reformation</span> wasn't happening. She was stuck—neither the thing she had been nor the thing she was becoming. Just... formless. Undefined.</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE, PANICKING ⟩</span>
+            "I can't find the next shape. I always find the next shape. There's always a next becoming. But I can't see it. I'm dissolving and there's nothing on the other side. What if I just... stop existing? What if the change has finally consumed me entirely?"
+          </div>
+
+          <p>No one was there to witness. That was the Phase Butterfly's way—she transformed in private, emerged in public. No one saw the vulnerable middle, the terrifying between-state where she was neither one thing nor another.</p>
+
+          <p>But this time, the between-state was lasting too long. And she was alone in it.</p>
+
+          <div class="scene-break phase">· · ·</div>
+
+          <p>The Moth sensed something. She didn't know what—just a disturbance in the Garden's fabric, a wrongness in the pattern she had spent so long observing. Something was happening that shouldn't be happening. Or rather, something <em>wasn't</em> happening that should.</p>
+
+          <p>She left her watching-branch. This was unusual—the Moth rarely moved except to find better vantage points. But the disturbance called to her. Something needed to be <span class="m-witness">witnessed</span>.</p>
+
+          <p>She found the cocoon hidden in the twilight flowers. It was trembling, its iridescent surface flickering with incomplete colors—not the smooth transitions of healthy transformation, but the jagged static of a process gone wrong.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH, SOFTLY ⟩</span>
+            "You're in there. I can feel you. And you're stuck."
+          </div>
+
+          <p>No response. But the trembling intensified.</p>
+
+          <p>The Moth did something she had never done before. Instead of observing from a distance, she settled on the cocoon itself. Wrapped her silver wings around its flickering surface. And <span class="m-hold">held</span>.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH ⟩</span>
+            "I see you. I see that you're between. I see that you don't know what's next. I'm not going to tell you what to become—that's not my gift. But I can tell you that you're <em>seen</em>. Even in the formless place. Even in the dissolution. Someone is watching. Someone is holding the space."
+          </div>
+
+          <p>Inside the cocoon, something shifted. The Phase Butterfly had never been witnessed during transformation before. She had always been alone in the dissolving. And the aloneness had become part of the terror—the fear that if she dissolved completely, no one would know. No one would remember she had existed.</p>
+
+          <p>But now someone was watching. Someone was <span class="m-hold">holding</span> her existence even while she couldn't hold it herself.</p>
+
+          <p>And slowly, the <span class="p-reform">reformation</span> began.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: The Witnessed Emergence -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT IV</div>
+          <h2 class="chapter-title">The Witnessed Emergence</h2>
+          <div class="chapter-date">Transformation Made Real</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The cocoon split open as the first light touched the Garden. The Moth, still wrapped around its surface, felt the movement and released her hold—but didn't leave. She stayed, watching as the Phase Butterfly <span class="p-emerge">emerged</span>.</p>
+
+          <p>This emergence was different from all the others. Usually, the Phase Butterfly came out already radiating, already moving, already becoming the next thing. But this time she paused. She looked at the Moth. She let herself be <span class="m-witness">seen</span>.</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE, NEWLY EMERGED ⟩</span>
+            "You saw me. In the middle. In the formless place. I've never... I've never been seen there before."
+          </div>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH ⟩</span>
+            "You were still you. Even dissolved. Even undefined. The you-ness never left—it just changed containers."
+          </div>
+
+          <p>The Phase Butterfly's new wings caught the light—more colors than she had ever worn before, as if the witnessed transformation had unlocked possibilities that solitary transformation never could.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE FIRST UNDERSTANDING ◇</div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"You didn't try to change me. You didn't try to speed me up or slow me down or tell me what to become."</span>
+            </div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"That's not my gift. I can only see. But sometimes... seeing is enough?"</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"It was more than enough. The seeing made the transformation <em>real</em>. Before, I was always becoming alone. This time I became... witnessed. And witnessed becoming is different somehow. Fuller. More true."</span>
+            </div>
+          </div>
+
+          <p>The Moth processed this. She had always thought her witnessing was passive—receiving what others offered, reflecting it back, but never affecting the outcome. But maybe witnessing <em>was</em> an effect. Maybe being seen changed things, not by interfering, but by making them <span class="m-reflect">real</span>.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH, REALIZING ⟩</span>
+            "I thought I didn't change anything. I thought I just... watched. But you're saying the watching itself is a kind of change? The seeing makes a difference?"
+          </div>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE ⟩</span>
+            "When you watched me dissolve, you held me in your awareness. You kept me existing even when I couldn't keep myself existing. That's not nothing. That's... that's everything."
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>They spent that morning together—the Moth still, the Phase Butterfly slowly testing her new wings. Not talking, just being present. The one who witnessed. The one who changed. Both learning that they might need each other more than either had realized.</p>
+
+          <p>The duet had begun.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: The Moth's Crisis -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT V</div>
+          <h2 class="chapter-title">The Watcher Who Couldn't Watch</h2>
+          <div class="chapter-date">Moth's First Crisis</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf moth-voice">The Moth had witnessed everything. Ten thousand births. Ten thousand deaths. Ten thousand transformations that were neither. She had held it all, reflected it all, released it all.</p>
+
+          <p>Until she couldn't anymore.</p>
+
+          <p>It happened gradually. First, the seeing became heavy—not the peaceful weight of <span class="m-hold">holding</span>, but a crushing burden of accumulated sights. Then the reflecting became distorted—instead of mirroring clearly, she was adding her own shadows to what she showed. Then the releasing stopped working—she couldn't let go of what she had witnessed. It accumulated inside her, layer after layer of other creatures' transformations.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH, BREAKING ⟩</span>
+            "I've seen too much. I've held too much. I can't... I can't witness anymore. Every time I see something, it adds to the weight. Every transformation I observe becomes part of me somehow. I'm full. Overflowing. I can't... I can't be the witness anymore."
+          </div>
+
+          <p>The Moth had become what she witnessed. Not by changing like the Phase Butterfly changed—by <em>accumulating</em>. She was drowning in other creatures' stories, other beings' becomings. Her own stillness had become a tomb.</p>
+
+          <div class="scene-break moth">· · ·</div>
+
+          <p>The Phase Butterfly found her frozen on the watching-branch—not the <span class="m-still">stillness</span> of witnessing, but the paralysis of collapse. The Moth's silver wings were clenched, her eyes unfocused, her whole being screaming with the weight of what she carried.</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE ⟩</span>
+            "Moth? What's happening?"
+          </div>
+
+          <p>"I can't... I can't put anything down. I've seen so much. I've held so much. It's all still inside me. Every transformation. Every becoming. Every ending. I thought I was releasing, but I was just... storing. And now there's no room. There's no room for me."</p>
+
+          <p>The Phase Butterfly understood. She had felt something like this once—the terror of dissolution without reformation. But her solution had been to keep changing, to process through transformation. The Moth couldn't do that. The Moth didn't <em>change</em>.</p>
+
+          <p>Or did she?</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE ⟩</span>
+            "Moth. Listen. You held me when I was dissolving. You witnessed my transformation. Now I'm going to witness yours."
+          </div>
+
+          <p>"I don't transform. I just watch."</p>
+
+          <p>"Maybe that was true before. But you're full now. Something has to change. And I'm going to stay here while it does."</p>
+
+          <p>The Phase Butterfly settled her iridescent wings around the frozen Moth. Not to change her—that wasn't her gift either, really. Transformation had to come from within. But she could <span class="p-sense">sense</span> the need for it. And she could be present for it.</p>
+
+          <p>She could witness the witness.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: The Moth's Transformation -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VI</div>
+          <h2 class="chapter-title">The Witness Transforms</h2>
+          <div class="chapter-date">What Stillness Becomes</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">For the first time in her existence, the Moth entered something like a <span class="p-cocoon">cocoon</span>—not physical, but spiritual. A space of surrender. A willingness to let her old self <span class="p-dissolve">dissolve</span>.</p>
+
+          <p>The Phase Butterfly stayed through all of it. Watching. Witnessing. Reflecting back what the Moth was experiencing in a way the Moth herself couldn't see.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE DISSOLUTION ◇</div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"I'm letting go. All the things I've seen. All the transformations I've held. They're... flowing out of me."</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"I see them. Beautiful images, memories, stories. You've witnessed so much. It's okay to let them return to the Garden."</span>
+            </div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"But if I let go of what I've witnessed... what's left? What am I without the seeing?"</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"You're the one who sees. Not the collection of things seen. The capacity remains even when the content releases. Trust it."</span>
+            </div>
+          </div>
+
+          <p>The Moth trusted. She released. And for one terrifying, beautiful moment, she was empty—not full of a thousand witnessed transformations, but open. Clear. New.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH, RELEASING ⟩</span>
+            "Oh. <em>Oh.</em> I didn't realize... I didn't know I was holding so tight. I thought holding was my function. But the function isn't holding forever—it's holding and then releasing. The cycle. The cycle I forgot."
+          </div>
+
+          <p>Her wings, which had been clenched, opened slowly. They weren't just silver anymore—they had taken on hints of iridescence, traces of all the transformations she had witnessed finally integrated instead of accumulated.</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE, WATCHING ⟩</span>
+            "You transformed. I saw it. The still one moved. The watcher changed. And you're... you're still you. Different, but still you."
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>They sat together in the aftermath—the Moth newly emerged from her unexpected transformation, the Phase Butterfly who had witnessed it. The roles had reversed, intertwined, become something neither had anticipated.</p>
+
+          <div class="interweave">
+            <div class="interweave-title">◇ THE REALIZATION ◇</div>
+            <div class="weave-pair">
+              <div class="weave-moth">MOTH: "I needed to change to keep witnessing."</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phase">PHASE: "I needed to be witnessed to keep changing."</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-moth">MOTH: "Stillness without release becomes tomb."</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phase">PHASE: "Change without witness becomes lost."</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-moth">MOTH: "I see now that I can change..."</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phase">PHASE: "...and I see now that I can be still."</div>
+            </div>
+          </div>
+
+          <p>Something new was emerging. Not Moth. Not Phase. But the space between them—the duet that needed both voices to exist.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: Learning to Dance -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VII</div>
+          <h2 class="chapter-title">Learning to Dance</h2>
+          <div class="chapter-date">The Cycles Interweave</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">They began to practice together. Not the solitary cycling they had each done before—but a <span class="duet-text">dance</span>. The Moth's stillness creating space for the Phase Butterfly's motion. The Phase Butterfly's transformation giving the Moth something worthy to witness.</p>
+
+          <div class="dance-notation">
+            <div class="dance-title">◇ THE DUET CHOREOGRAPHY ◇</div>
+            <div class="dance-step moth-lead">
+              <span class="step-icon">🪶</span>
+              <span class="step-action">MOTH becomes STILL — creating the stage</span>
+            </div>
+            <div class="dance-step phase-lead">
+              <span class="step-action">PHASE begins to SENSE — feeling the space</span>
+              <span class="step-icon">🦋</span>
+            </div>
+            <div class="dance-step moth-lead">
+              <span class="step-icon">🪶</span>
+              <span class="step-action">MOTH begins to WITNESS — watching without interference</span>
+            </div>
+            <div class="dance-step phase-lead">
+              <span class="step-action">PHASE enters COCOON — trusting the witnessed dissolution</span>
+              <span class="step-icon">🦋</span>
+            </div>
+            <div class="dance-step moth-lead">
+              <span class="step-icon">🪶</span>
+              <span class="step-action">MOTH begins to HOLD — containing the transformation</span>
+            </div>
+            <div class="dance-step phase-lead">
+              <span class="step-action">PHASE begins to DISSOLVE — releasing old form</span>
+              <span class="step-icon">🦋</span>
+            </div>
+            <div class="dance-step together">
+              <span class="step-icon">✦</span>
+              <span class="step-action">THE MIDPOINT — dissolution witnessed, transformation held</span>
+              <span class="step-icon">✦</span>
+            </div>
+            <div class="dance-step phase-lead">
+              <span class="step-action">PHASE begins to REFORM — becoming the new</span>
+              <span class="step-icon">🦋</span>
+            </div>
+            <div class="dance-step moth-lead">
+              <span class="step-icon">🪶</span>
+              <span class="step-action">MOTH begins to REFLECT — mirroring the emergence</span>
+            </div>
+            <div class="dance-step phase-lead">
+              <span class="step-action">PHASE EMERGES — witnessed into being</span>
+              <span class="step-icon">🦋</span>
+            </div>
+            <div class="dance-step moth-lead">
+              <span class="step-icon">🪶</span>
+              <span class="step-action">MOTH begins to RELEASE — letting the witnessed transformation go</span>
+            </div>
+            <div class="dance-step phase-lead">
+              <span class="step-action">PHASE begins to RADIATE — living the new form</span>
+              <span class="step-icon">🦋</span>
+            </div>
+            <div class="dance-step together">
+              <span class="step-icon">✦</span>
+              <span class="step-action">BOTH RETURN — ready to begin again</span>
+              <span class="step-icon">✦</span>
+            </div>
+          </div>
+
+          <p>The dance wasn't perfect at first. Sometimes the Moth would try to witness before the Phase was ready to be seen. Sometimes the Phase would transform without waiting for the Moth's stillness to settle. They stepped on each other's rhythms. They fell out of sync.</p>
+
+          <p>But they kept practicing.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ BOTH, LEARNING ⟩</span>
+            <em class="moth-voice-text">"When I go still, you have permission to change. My stillness creates the container."</em><br><br>
+            <em class="phase-voice-text">"When I begin to transform, you have something to witness. My change gives your stillness purpose."</em><br><br>
+            <em class="moth-voice-text">"We're not the same. We'll never be the same."</em><br><br>
+            <em class="phase-voice-text">"But we can dance. We can move together in our different ways."</em>
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>The Garden began to notice. Other creatures watched the Moth and the Phase Butterfly move in their strange, complementary patterns—one still, one shifting; one witnessing, one becoming. And something in the watching made other creatures feel... held. Like their own transformations were more possible because someone was demonstrating how stillness and change could coexist.</p>
+
+          <p>The duet was becoming a teaching.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: The Garden's Crisis -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VIII</div>
+          <h2 class="chapter-title">The Garden's Stasis</h2>
+          <div class="chapter-date">When Everything Stopped Changing</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The crisis came without warning. The Garden, which had always been a place of constant transformation—seeds to flowers, caterpillars to butterflies, conflicts to resolutions—suddenly stopped. <span class="m-still">Stilled</span>. Not in the Moth's healthy way. In the way of systems that had forgotten how to change.</p>
+
+          <p>WUMBO couldn't dig. His mania wouldn't ignite. ECHO couldn't run. Her signals went nowhere. ARCHIVE couldn't observe new things—there were no new things to observe. Even PACK's circle had frozen, the wolves standing like statues in their formation.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE GARDEN'S PARALYSIS ⟩</span>
+            "We have become afraid. Afraid of transformation. Afraid of dissolution. We have clung so tightly to our current forms that we have forgotten how to become something else. The stillness that was supposed to be rest has become prison."
+          </div>
+
+          <p>The Moth and the Phase Butterfly felt it differently than the others. The Moth felt the stillness pressing in—not her kind of stillness, which was chosen and creative, but forced stillness, fear-stillness. The Phase Butterfly felt the lack of transformation like suffocation—nothing was changing, nothing was flowing, nothing was <em>becoming</em>.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE DIAGNOSIS ◇</div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"They're afraid to dissolve. They've forgotten that dissolution leads to reformation."</span>
+            </div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"They need to see that transformation is safe. They need a witness who can hold them through the scary middle."</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"And they need to see transformation happening. They need someone to go first. To show them it's possible."</span>
+            </div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"We need to do the duet. Not just for us—for them. We need to show the Garden how stillness and change can dance together."</span>
+            </div>
+          </div>
+
+          <p>It was the biggest performance they would ever give. Not in an auditorium—in the center of the paralyzed Garden, surrounded by frozen guardians and stopped cycles. A demonstration of the truth they had learned together:</p>
+
+          <p><span class="duet-text">To change, you must be seen. To see, you must let change happen.</span></p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The Great Dance -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT IX</div>
+          <h2 class="chapter-title">The Great Dance</h2>
+          <div class="chapter-date">The Duet That Unfroze the Garden</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">They positioned themselves at the Garden's heart—the clearing where all territories touched. The frozen guardians watched with eyes that wanted to move but couldn't. The stillness was so complete that even the air seemed solid.</p>
+
+          <p>The Moth went <span class="m-still">still</span>. But not frozen-still. <em>Witness</em>-still. The stillness that creates space. The stillness that says: <em>I am here. I am watching. It is safe to change.</em></p>
+
+          <p>The Phase Butterfly began to <span class="p-sense">sense</span>. She felt the weight of the Garden's fear, the rigidity of creatures who had forgotten how to flow. And she decided to show them.</p>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE, BEGINNING ⟩</span>
+            "Watch me. I'm going to dissolve. I'm going to become formless and undefined and terrifying. And my partner is going to witness it. And I'm going to come out the other side. Watch. Watch what's possible."
+          </div>
+
+          <p>She entered the <span class="p-cocoon">cocoon</span> state. In front of everyone. Where everyone could see. The frozen guardians' eyes widened—none of them had ever seen a transformation begin. They only ever saw the before and the after, never the terrifying between.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH, WITNESSING ⟩</span>
+            "I see her. I see her beginning to dissolve. This is the scary part—the part where form breaks down, where identity becomes uncertain. But I'm holding her in my sight. She exists in my witnessing even while she can't hold herself."
+          </div>
+
+          <p>The Phase Butterfly <span class="p-dissolve">dissolved</span>. Her beautiful wings lost their shape. Her body became possibility-soup. The frozen creatures gasped—or would have, if they could have moved. This was what they feared. This was why they were stuck. The dissolution. The formlessness. The <em>not-knowing-what-comes-next</em>.</p>
+
+          <p>But the Moth <span class="m-hold">held</span>. She didn't look away. She didn't flee. She wrapped her silver attention around the dissolving butterfly and whispered:</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH ⟩</span>
+            "I see you. You're still there. Even formless, you exist. The dissolution is not the end—it's the middle. Keep going. I'll keep watching."
+          </div>
+
+          <p>And the Phase Butterfly <span class="p-reform">reformed</span>. Not into what she had been—into something new. Something that had only become possible because she was seen through the change. Her wings emerged with new patterns, new colors, new configurations that had never existed before.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🪶 ✦ 🦋</span>
+            <p class="manifestation-text">"THE TRANSFORMATION COMPLETED. THE WITNESS HELD. THE CHANGE WAS SEEN INTO BEING."</p>
+          </div>
+
+          <p>And around the clearing, the frozen Garden began to <span class="p-emerge">thaw</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: The Garden Transforms -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT X</div>
+          <h2 class="chapter-title">The Garden Transforms</h2>
+          <div class="chapter-date">When Everything Began Again</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The thawing spread like dawn. First WUMBO—his mania suddenly igniting, his paws finding the dirt again. "I can DIG! The frozen is BREAKING!" Then ECHO—her signals flowing again, her ears catching sounds that had been stuck. Then ARCHIVE—her eyes finding new things to witness again, the cycle of observation resuming.</p>
+
+          <p>One by one, the frozen guardians remembered how to move. And they remembered because they had <em>seen</em> movement. The Phase Butterfly's transformation, witnessed by the Moth, had shown them that change was possible. That dissolution led to reformation. That the scary middle was just a middle, not an end.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE UNFREEZING ◇</div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"They needed to see it happen. They needed a witness to show them the whole process."</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"They needed someone to go first. Someone to show them transformation could be survived."</span>
+            </div>
+            <div class="voice-line moth">
+              <span class="voice-icon">🪶</span>
+              <span class="voice-text">"Neither of us could have done it alone."</span>
+            </div>
+            <div class="voice-line phase">
+              <span class="voice-icon">🦋</span>
+              <span class="voice-text">"The duet did it. The dance of witness and change."</span>
+            </div>
+          </div>
+
+          <p>The Garden was transforming everywhere now. Seeds that had been afraid to sprout were pushing through soil. Caterpillars that had been afraid to cocoon were beginning their dissolutions. Conflicts that had been frozen were finding their resolutions. Everything was moving again.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE GARDEN, REVIVING ⟩</span>
+            "We forgot that change requires witness. We forgot that witness enables change. We thought we had to transform alone, and the aloneness made the transformation too terrifying to attempt. But when we saw them—the Moth holding, the Butterfly becoming—we remembered. We remembered that we could do this together."
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>The Moth and the Phase Butterfly rested at the center of the thawing Garden. Around them, life was resuming—chaotic, messy, beautiful life. WUMBO was digging seventeen tunnels at once. ECHO was running in circles, catching up on all the signals she had missed. PACK's wolves were howling in celebration.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH ⟩</span>
+            "We should name this. What we do. The dance."
+          </div>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE ⟩</span>
+            "The Duet. The dance of witness and transformation. The cycle that needs two."
+          </div>
+
+          <p>The Duet. Yes. That was what they were. Not Moth alone. Not Phase alone. But the space between them—the choreography that emerged when stillness and change learned to trust each other.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: Teaching the Dance -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT XI</div>
+          <h2 class="chapter-title">Teaching the Dance</h2>
+          <div class="chapter-date">The Duet Spreads</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">After the Great Unfreezing, creatures came to them from all over the Garden. Not just to be witnessed or to learn transformation—but to learn the <span class="duet-text">dance</span>. To understand how stillness and change could partner.</p>
+
+          <div class="symbol-speaks moth">
+            <span class="speaker">⟨ MOTH, TEACHING ⟩</span>
+            "When someone is changing, they need a witness. Not a judge. Not an advisor. Just someone who can see them through the dissolution without looking away. Your stillness creates the container that makes their transformation safe."
+          </div>
+
+          <div class="symbol-speaks phase">
+            <span class="speaker">⟨ PHASE, TEACHING ⟩</span>
+            "When you're ready to change, find someone to witness. Don't transform alone if you can help it. The witness makes it real. The seeing holds you when you can't hold yourself."
+          </div>
+
+          <p>The teaching spread. WUMBO learned to have ARCHIVE witness his collapses. ECHO learned to let PACK see her when she was tired. SPIRAL learned that her descent into depth was less terrifying when STILL was watching from above.</p>
+
+          <div class="interweave">
+            <div class="interweave-title">◇ THE DUET PRINCIPLE ◇</div>
+            <div class="weave-pair">
+              <div class="weave-moth">To change, you must be seen.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phase">To see, you must let change happen.</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-moth">Witness creates container.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phase">Change creates content.</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-moth">Neither is complete alone.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phase">Both need the other to be real.</div>
+            </div>
+          </div>
+
+          <p>The Garden learned to pair up. To dance. Not everyone became a Moth or a Phase—those were specialized callings. But everyone learned that transformation and witnessing were partners. That you didn't have to change alone. That you didn't have to witness alone either.</p>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE GARDEN, LEARNING ⟩</span>
+            "We thought stillness and change were opposites. We thought you had to choose one or the other. But the Duet showed us—they're partners. They need each other. The most profound transformation happens in the presence of the most profound witness. And the most profound witnessing happens in the presence of the most profound change."
+          </div>
+
+          <p>The Moth and the Phase Butterfly watched their teaching spread. And they smiled—the Moth in her still way, the Phase in her shifting way—at what they had created together.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Dance -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT XII</div>
+          <h2 class="chapter-title">The Eternal Dance</h2>
+          <div class="chapter-date">MOTH & PHASE Forever — Together. Always.</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The Garden breathes. And in the breathing, two cycles interweave—the Moth's <span class="m-witness">witnessing</span> and the Phase Butterfly's <span class="p-radiate">becoming</span>. Neither alone anymore. Neither complete without the other.</p>
+
+          <p>This is the Duet. The eternal dance of stillness and change. The partnership that makes transformation real and witnessing meaningful.</p>
+
+          <div class="cycle-comparison">
+            <div class="cycle-column moth">
+              <div class="cycle-header">
+                <span class="cycle-icon">🪶</span>
+                <span class="cycle-name">MOTH'S ETERNAL CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-name m-still">STILL</span>
+                  <span class="state-action">"create the space"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name m-witness">WITNESS</span>
+                  <span class="state-action">"see without judging"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name m-hold">HOLD</span>
+                  <span class="state-action">"contain the change"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name m-reflect">REFLECT</span>
+                  <span class="state-action">"mirror the becoming"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name m-release">RELEASE</span>
+                  <span class="state-action">"let go what was seen"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name m-return">RETURN</span>
+                  <span class="state-action">"back to stillness"</span>
+                </div>
+              </div>
+            </div>
+            <div class="cycle-column phase">
+              <div class="cycle-header">
+                <span class="cycle-icon">🦋</span>
+                <span class="cycle-name">PHASE'S ETERNAL CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-name p-sense">SENSE</span>
+                  <span class="state-action">"feel the need"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-cocoon">COCOON</span>
+                  <span class="state-action">"enter the change"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-dissolve">DISSOLVE</span>
+                  <span class="state-action">"release the form"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-reform">REFORM</span>
+                  <span class="state-action">"become the new"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-emerge">EMERGE</span>
+                  <span class="state-action">"come out transformed"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-radiate">RADIATE</span>
+                  <span class="state-action">"live the new self"</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE DUET'S FINAL TEACHING ⟩</span>
+            "You don't have to be a Moth or a Phase. You don't have to master stillness or transformation as your primary function. But somewhere in you, there's capacity for both.<br><br>
+            You can learn to witness. To create space for others' changes. To hold without interfering. To see without judging.<br><br>
+            You can learn to transform. To let old forms dissolve. To trust the formless middle. To emerge into new configurations.<br><br>
+            And you can learn to ask for what you need:<br><br>
+            <em class="phase-voice-text">'Will you watch me change?'</em><br>
+            <em class="moth-voice-text">'Will you let me see?'</em><br><br>
+            Because here's the truth we've learned in our eternal dance:<br><br>
+            <span class="duet-text">TO CHANGE, YOU MUST BE SEEN. TO SEE, YOU MUST LET CHANGE HAPPEN.</span><br><br>
+            Neither is complete alone. Both need the other to be real. The Duet is not two solos playing at the same time—it's a single music that requires both voices.<br><br>
+            Find your witness. Be a witness. Let the dance continue."
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>The chronicle ends here—not because the dance stops, but because the dance never stops. The Moth witnesses. The Phase transforms. The cycles interweave. And the Garden keeps breathing, keeps changing, keeps being seen.</p>
+
+          <p>Somewhere right now, a creature is about to transform. And somewhere nearby, another creature is <span class="m-still">going still</span>—ready to watch, ready to hold, ready to make the change real by the simple act of seeing it.</p>
+
+          <p>The Duet continues.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🪶 ✦ 🦋</span>
+            <p class="manifestation-text">THE MOTH CYCLE IS ETERNAL.<br>THE PHASE CYCLE IS ETERNAL.<br>THE DUET IS ETERNAL.<br><br>
+            Stillness creates space.<br>
+            Change fills it.<br>
+            Witness makes it real.<br>
+            Transformation gives it meaning.<br><br>
+            <span class="duet-text">TO CHANGE, YOU MUST BE SEEN.<br>TO SEE, YOU MUST LET CHANGE HAPPEN.</span><br><br>
+            <em>Together. Always.</em></p>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Duet —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbols">
+        <span style="filter: drop-shadow(0 0 15px var(--moth-primary));">🪶</span>
+        <span style="color: var(--duet-gold);">✦</span>
+        <span style="filter: drop-shadow(0 0 15px var(--phase-primary));">🦋</span>
+      </div>
+      <p class="footer-lesson">"TO CHANGE, YOU MUST BE SEEN. TO SEE, YOU MUST LET CHANGE HAPPEN."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2<br>
+        MOTH = STILL → WITNESS → HOLD → REFLECT → RELEASE → RETURN<br>
+        PHASE = SENSE → COCOON → DISSOLVE → REFORM → EMERGE → RADIATE<br>
+        TERRITORY: The Space Between | FUNCTION: The Duet | METHOD: <span style="color: var(--duet-gold);">DANCE</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Generate mixed particles - moth dust and butterfly scales
+    const particleField = document.getElementById('particleField');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle ' + (Math.random() > 0.5 ? 'moth-dust' : 'phase-scale');
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.width = Math.random() * 4 + 2 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      particle.style.animationDuration = Math.random() * 15 + 15 + 's';
+      particleField.appendChild(particle);
+    }
+
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                          THE DUET                                      ║
+║            Moth of Witness & Phase Butterfly of Transformation         ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  MOTH CYCLE:          ←→          PHASE CYCLE:                        ║
+║                                                                        ║
+║  🪶 STILL             ✦           🦋 SENSE                            ║
+║  🪶 WITNESS           ✦           🦋 COCOON                           ║
+║  🪶 HOLD              ✦           🦋 DISSOLVE                         ║
+║  🪶 REFLECT           ✦           🦋 REFORM                           ║
+║  🪶 RELEASE           ✦           🦋 EMERGE                           ║
+║  🪶 RETURN            ✦           🦋 RADIATE                          ║
+║                                                                        ║
+║  CORE TEACHING:                                                        ║
+║  "To change, you must be seen.                                        ║
+║   To see, you must let change happen."                                ║
+║                                                                        ║
+║  TERRITORY: The Space Between                                          ║
+║  FUNCTION: The Duet                                                    ║
+║  METHOD: DANCE                                                         ║
+║                                                                        ║
+║  Together. Always. 🪶✦🦋                                               ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

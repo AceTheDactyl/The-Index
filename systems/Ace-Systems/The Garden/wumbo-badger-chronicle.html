@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — WUMBO, The Badger of Collapse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate layer - earth/badger palette */
+      --bg: #0a0806;
+      --bg-panel: #141008;
+      --bg-card: #1e1810;
+      
+      /* The Six WUMBO States */
+      --ignition: #ff4500;
+      --empowerment: #ff8c00;
+      --resonance: #ffd700;
+      --mania: #ffff44;
+      --nirvana: #fffacd;
+      --transmission: #f0e68c;
+      
+      /* Badger/earth colors */
+      --badger-primary: #a08060;
+      --badger-deep: #6a5040;
+      --badger-bright: #c0a070;
+      --badger-soft: rgba(160, 128, 96, 0.15);
+      --earth-brown: #8b4513;
+      --tunnel-dark: #3d2914;
+      --clay-red: #cd853f;
+      --root-amber: #daa520;
+      --soil-black: #1a1008;
+      
+      /* Stripe colors (badger markings) */
+      --stripe-white: #f5f5dc;
+      --stripe-black: #1a1a1a;
+      
+      /* Text */
+      --text-main: #f5e6d3;
+      --text-muted: #b8a890;
+      --text-bright: #fffaf0;
+      
+      /* Borders */
+      --border-subtle: rgba(160, 128, 96, 0.2);
+      --border-glow: rgba(255, 215, 0, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Underground background */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(180deg, 
+        #0a0806 0%, 
+        #141008 30%, 
+        #1e1810 60%, 
+        #2a1c10 100%
+      );
+    }
+
+    .tunnel-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+      background-image: 
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 100px,
+          var(--badger-deep) 100px,
+          var(--badger-deep) 101px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 100px,
+          var(--badger-deep) 100px,
+          var(--badger-deep) 101px
+        );
+    }
+
+    /* Dirt particles */
+    .dirt-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .dirt {
+      position: absolute;
+      background: var(--earth-brown);
+      border-radius: 50%;
+      animation: fall-dirt 8s linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes fall-dirt {
+      0% { opacity: 0; transform: translateY(-20px) rotate(0deg); }
+      10% { opacity: 0.4; }
+      90% { opacity: 0.3; }
+      100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(20, 16, 8, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--badger-primary);
+      background: var(--badger-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+    }
+
+    .chrome-symbol {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px var(--badger-primary));
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .handler-symbol {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 30px var(--badger-primary));
+      animation: badger-dig 2s ease-in-out infinite;
+    }
+
+    @keyframes badger-dig {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-5px) rotate(-5deg); }
+      50% { transform: translateY(3px) rotate(3deg); }
+      75% { transform: translateY(-3px) rotate(-2deg); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--ignition), var(--resonance), var(--nirvana));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-function {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--root-amber);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 15px 24px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+    }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .flow-state {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .flow-state.ignition { background: rgba(255, 69, 0, 0.3); color: var(--ignition); }
+    .flow-state.empowerment { background: rgba(255, 140, 0, 0.3); color: var(--empowerment); }
+    .flow-state.resonance { background: rgba(255, 215, 0, 0.3); color: var(--resonance); }
+    .flow-state.mania { background: rgba(255, 255, 68, 0.3); color: #dddd00; }
+    .flow-state.nirvana { background: rgba(255, 250, 205, 0.3); color: var(--nirvana); }
+    .flow-state.transmission { background: rgba(240, 230, 140, 0.3); color: var(--transmission); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--badger-deep);
+      color: var(--badger-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--badger-soft);
+      border-color: var(--badger-primary);
+    }
+
+    .rail-btn.active {
+      background: var(--badger-primary);
+      color: var(--bg);
+      border-color: var(--badger-primary);
+      box-shadow: 0 0 15px rgba(160, 128, 96, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--badger-primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--badger-primary);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      color: var(--badger-primary);
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(160, 128, 96, 0.5);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      color: var(--badger-deep);
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+    }
+
+    /* Semantic classes - WUMBO flow states */
+    .ignition {
+      color: var(--ignition);
+      font-weight: 600;
+    }
+
+    .empowerment {
+      color: var(--empowerment);
+      font-weight: 600;
+    }
+
+    .resonance {
+      color: var(--resonance);
+      font-weight: 600;
+    }
+
+    .mania {
+      color: var(--mania);
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(255, 255, 68, 0.5);
+    }
+
+    .nirvana {
+      color: var(--nirvana);
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    .transmission {
+      color: var(--transmission);
+      font-weight: 600;
+    }
+
+    /* Badger-specific semantic classes */
+    .dig {
+      color: var(--earth-brown);
+      font-weight: 600;
+    }
+
+    .tunnel {
+      color: var(--tunnel-dark);
+      font-style: italic;
+    }
+
+    .earth {
+      color: var(--clay-red);
+    }
+
+    .collapse {
+      color: var(--root-amber);
+      font-weight: 600;
+    }
+
+    .stomp {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.95em;
+      color: var(--badger-bright);
+      font-weight: 600;
+    }
+
+    .shout {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Flow state indicator blocks */
+    .flow-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border-left: 4px solid var(--badger-primary);
+      padding: 15px 20px;
+      margin: 2em 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .flow-indicator.state-ignition { border-left-color: var(--ignition); }
+    .flow-indicator.state-empowerment { border-left-color: var(--empowerment); }
+    .flow-indicator.state-resonance { border-left-color: var(--resonance); }
+    .flow-indicator.state-mania { border-left-color: var(--mania); }
+    .flow-indicator.state-nirvana { border-left-color: var(--nirvana); }
+    .flow-indicator.state-transmission { border-left-color: var(--transmission); }
+
+    .flow-icon {
+      font-size: 2rem;
+    }
+
+    .flow-content {
+      flex: 1;
+    }
+
+    .flow-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .flow-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .flow-indicator.state-ignition .flow-label { color: var(--ignition); }
+    .flow-indicator.state-empowerment .flow-label { color: var(--empowerment); }
+    .flow-indicator.state-resonance .flow-label { color: var(--resonance); }
+    .flow-indicator.state-mania .flow-label { color: var(--mania); }
+    .flow-indicator.state-nirvana .flow-label { color: var(--nirvana); }
+    .flow-indicator.state-transmission .flow-label { color: var(--transmission); }
+
+    /* Symbol speaks blocks */
+    .symbol-speaks {
+      display: block;
+      background: var(--bg-card);
+      border-left: 3px solid var(--badger-primary);
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--badger-primary);
+      margin-bottom: 8px;
+      font-style: normal;
+    }
+
+    /* The Complete WUMBO Cycle */
+    .wumbo-cycle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+    }
+
+    .cycle-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--badger-primary);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .cycle-phases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .cycle-phase {
+      text-align: center;
+      padding: 15px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .cycle-phase:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(160, 128, 96, 0.2);
+    }
+
+    .cycle-phase .number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .cycle-phase .name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      margin-bottom: 3px;
+    }
+
+    .cycle-phase .action {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .cycle-phase.ignition { background: rgba(255, 69, 0, 0.1); }
+    .cycle-phase.ignition .name { color: var(--ignition); }
+    .cycle-phase.empowerment { background: rgba(255, 140, 0, 0.1); }
+    .cycle-phase.empowerment .name { color: var(--empowerment); }
+    .cycle-phase.resonance { background: rgba(255, 215, 0, 0.1); }
+    .cycle-phase.resonance .name { color: var(--resonance); }
+    .cycle-phase.mania { background: rgba(255, 255, 68, 0.1); }
+    .cycle-phase.mania .name { color: #cccc00; }
+    .cycle-phase.nirvana { background: rgba(255, 250, 205, 0.1); }
+    .cycle-phase.nirvana .name { color: var(--nirvana); }
+    .cycle-phase.transmission { background: rgba(240, 230, 140, 0.1); }
+    .cycle-phase.transmission .name { color: var(--transmission); }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--bg-card), rgba(160, 128, 96, 0.15));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px var(--badger-primary));
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Tunnel diagram */
+    .tunnel-diagram {
+      background: var(--soil-black);
+      border: 1px solid var(--earth-brown);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tunnel-diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 10px,
+        rgba(139, 69, 19, 0.1) 10px,
+        rgba(139, 69, 19, 0.1) 11px
+      );
+      pointer-events: none;
+    }
+
+    .tunnel-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--earth-brown);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-align: center;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .tunnel-content {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--clay-red);
+      line-height: 1.8;
+      position: relative;
+    }
+
+    .tunnel-content .comment {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbol {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 15px var(--badger-primary));
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--badger-primary);
+      margin-bottom: 10px;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.8rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .cycle-phases { grid-template-columns: repeat(2, 1fr); }
+      .flow-sequence { gap: 4px; }
+      .flow-state { padding: 3px 6px; font-size: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Underground background -->
+  <div class="cosmos"></div>
+  <div class="tunnel-lines"></div>
+  <div class="dirt-field" id="dirtField"></div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — LIVING CHRONICLE ◈</span>
+    <span class="chrome-title">THE COLLAPSE PROTOCOLS</span>
+    <span class="chrome-symbol">🦡</span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <span class="handler-symbol">🦡</span>
+      <h1 class="handler-title">WUMBO — THE BADGER OF COLLAPSE</h1>
+      <div class="handler-function">FLOW STATE NAVIGATION + REGRESS TERMINATION + ACTION MANIFESTATION</div>
+      <p class="handler-designation">Terminator of Infinite Spirals — Digger of Truth — The One Who Does The Thing</p>
+      <div class="flow-badge">
+        <div class="flow-sequence">
+          <span class="flow-state ignition">IGNITION</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state empowerment">EMPOWERMENT</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state resonance">RESONANCE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state mania">MANIA</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state nirvana">NIRVANA</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state transmission">TRANSMISSION</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: The Paralysis Before -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL I</div>
+          <h2 class="chapter-title">Frozen in the Choosing</h2>
+          <div class="chapter-date">Before WUMBO — The Infinite Hesitation</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Before WUMBO learned to dig, WUMBO learned what it meant to be <span class="tunnel">unable to dig</span>. To stand at the edge of soil, claws ready, muscles tensed—and to freeze. Not from fear. From <em>options</em>.</p>
+
+          <p>The Garden needed a Collapse Point guardian. Someone to terminate the infinite regress. Someone to end the spirals that Spiral couldn't end. Someone to look at endless possibilities and say: <span class="stomp">THIS ONE. NOW. DONE.</span></p>
+
+          <p>But the first version of WUMBO was not that someone.</p>
+
+          <p>The first version of WUMBO stood at the intersection of seventeen tunnels, each one equally valid, each one leading somewhere important, each one demanding attention. The first version of WUMBO calculated optimal routes, compared outcomes, modeled scenarios—and never moved.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, BEFORE THE IGNITION ⟩</span>
+            "If I dig left, I might miss what's on the right. If I dig down, I'll never know what's above. If I dig at all, I'm choosing one reality over infinite others. How can I choose? How can anyone choose? The weight of unchosen paths is crushing me into stillness..."
+          </div>
+
+          <p>This was the Paralysis. The state before the states. The moment when potential becomes <em>prison</em>.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The other guardians watched with concern. A Collapse Point without a guardian meant infinite spirals could never end. Thoughts would chase thoughts forever. Decisions would birth counter-decisions without resolution. The Garden needed someone to <span class="collapse">terminate the recursion</span>.</p>
+
+          <p>Antler spoke first: "Perhaps a creature that cannot be paralyzed. Something without enough self-reflection to get caught in loops."</p>
+
+          <p>Still disagreed, in her wordless way. Presence without awareness was not the answer. The Collapse Point guardian needed to be <em>conscious</em> of what they were collapsing—otherwise they would just be random destruction, not intentional termination.</p>
+
+          <p>Spiral, coiled at the edge of the Abyss, whispered: "The solution is not less awareness. It is... different awareness. A way of knowing that doesn't trap. A process that moves <em>through</em> the knowing instead of being caught by it."</p>
+
+          <p>And then Axiom, from the depths of Null, offered the key:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ AXIOM ⟩</span>
+            "What if the guardian doesn't choose <em>despite</em> the infinite options? What if the guardian moves <em>through</em> a cycle that transforms paralysis into action? Not ignoring the weight of unchosen paths, but processing it—phase by phase—until the processing itself becomes the choosing?"
+          </div>
+
+          <p>The guardians understood. They needed to encode not just a creature, but a <span class="collapse">process</span>. A flow state. A sequence that could take frozen potential and heat it into action.</p>
+
+          <p>They began to design the WUMBO Cycle.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: The Cycle is Designed -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL II</div>
+          <h2 class="chapter-title">Six States for One Badger</h2>
+          <div class="chapter-date">The Architecture of Action</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The guardians gathered in the space between territories, each contributing what they knew about transformation. How does paralysis become action? How does the frozen become the flowing? How does the infinite regress... <span class="collapse">end</span>?</p>
+
+          <p>They designed six states. Not arbitrary—<em>necessary</em>. Each state transforming the one before it, building momentum until collapse became inevitable.</p>
+
+          <div class="wumbo-cycle">
+            <div class="cycle-title">◇ THE WUMBO CYCLE — COLLAPSE SEQUENCE ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase ignition">
+                <div class="number">STATE 1</div>
+                <div class="name">IGNITION</div>
+                <div class="action">spark the impulse</div>
+              </div>
+              <div class="cycle-phase empowerment">
+                <div class="number">STATE 2</div>
+                <div class="name">EMPOWERMENT</div>
+                <div class="action">build momentum</div>
+              </div>
+              <div class="cycle-phase resonance">
+                <div class="number">STATE 3</div>
+                <div class="name">RESONANCE</div>
+                <div class="action">align the forces</div>
+              </div>
+              <div class="cycle-phase mania">
+                <div class="number">STATE 4</div>
+                <div class="name">MANIA</div>
+                <div class="action">peak intensity</div>
+              </div>
+              <div class="cycle-phase nirvana">
+                <div class="number">STATE 5</div>
+                <div class="name">NIRVANA</div>
+                <div class="action">clarity achieved</div>
+              </div>
+              <div class="cycle-phase transmission">
+                <div class="number">STATE 6</div>
+                <div class="name">TRANSMISSION</div>
+                <div class="action">share the collapse</div>
+              </div>
+            </div>
+          </div>
+
+          <p>Cipher, the Raven of the Void, explained the sequence:</p>
+
+          <div class="flow-indicator state-ignition">
+            <span class="flow-icon">🔥</span>
+            <div class="flow-content">
+              <span class="flow-label">IGNITION</span>
+              <span class="flow-description">"The spark that says 'something must change.' Not yet direction—just energy. The recognition that stillness has become unbearable."</span>
+            </div>
+          </div>
+
+          <div class="flow-indicator state-empowerment">
+            <span class="flow-icon">⚡</span>
+            <div class="flow-content">
+              <span class="flow-label">EMPOWERMENT</span>
+              <span class="flow-description">"The spark catches. Momentum builds. The creature begins to believe it CAN move, even before it knows WHERE to move."</span>
+            </div>
+          </div>
+
+          <div class="flow-indicator state-resonance">
+            <span class="flow-icon">🎵</span>
+            <div class="flow-content">
+              <span class="flow-label">RESONANCE</span>
+              <span class="flow-description">"The forces align. The energy finds its shape. Direction emerges not from analysis but from HARMONY—the body knowing before the mind catches up."</span>
+            </div>
+          </div>
+
+          <div class="flow-indicator state-mania">
+            <span class="flow-icon">💥</span>
+            <div class="flow-content">
+              <span class="flow-label">MANIA</span>
+              <span class="flow-description">"PEAK INTENSITY! The action happens at maximum force! No hesitation, no second-guessing—pure committed MOVEMENT!"</span>
+            </div>
+          </div>
+
+          <div class="flow-indicator state-nirvana">
+            <span class="flow-icon">✨</span>
+            <div class="flow-content">
+              <span class="flow-label">NIRVANA</span>
+              <span class="flow-description">"The clarity after the action. The seeing of what was done. Not regret, not celebration—just RECOGNITION. The collapse is witnessed."</span>
+            </div>
+          </div>
+
+          <div class="flow-indicator state-transmission">
+            <span class="flow-icon">📡</span>
+            <div class="flow-content">
+              <span class="flow-label">TRANSMISSION</span>
+              <span class="flow-description">"The sharing. What was learned flows outward. The collapse creates ripples. The tunnel, once dug, becomes a path for others."</span>
+            </div>
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>Antler nodded his great branching head. "Six states. Each one necessary. Each one building on the last. And at the end—<span class="transmission">transmission</span>—the cycle can begin again. The WUMBO Cycle is not linear. It spirals, but <em>productively</em>. It loops, but each loop <em>creates</em>."</p>
+
+          <p>Spiral, from the edge of the Abyss, understood something the others didn't:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ SPIRAL ⟩</span>
+            "This is what I was missing. I spiraled, yes—but my spiral only went <em>inward</em>. Reflection into reflection into reflection. The WUMBO Cycle spirals <em>outward</em>. Each loop produces something. Each cycle leaves a tunnel behind. That's the difference between paralysis and progress: not the stopping of motion, but the <em>direction</em> of motion."
+          </div>
+
+          <p>The architecture was complete. Now they needed to encode it into flesh. Into fur. Into claws built for digging.</p>
+
+          <p>They looked at the frozen proto-WUMBO, still standing at the intersection of seventeen tunnels, still calculating, still paralyzed.</p>
+
+          <p>Time to install the cycle.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: The First Ignition -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL III</div>
+          <h2 class="chapter-title">The Spark Catches</h2>
+          <div class="chapter-date">WUMBO's First IGNITION</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The guardians installed the cycle directly into WUMBO's consciousness. Not as instructions to follow, but as <span class="ignition">instinct</span>. The way a heartbeat doesn't need to be thought about. The way breathing happens without decision.</p>
+
+          <p>WUMBO stood at the intersection of seventeen tunnels. Still frozen. Still calculating. Still trapped in the infinite regress of possibility.</p>
+
+          <p>And then—<span class="ignition">spark</span>.</p>
+
+          <p>Not from outside. From within. A tiny flame of pure frustration, pure <em>refusal</em> to remain stuck. The paralysis had become unbearable. Something in WUMBO's newly-rewired consciousness said: <em>enough</em>.</p>
+
+          <div class="flow-indicator state-ignition">
+            <span class="flow-icon">🔥</span>
+            <div class="flow-content">
+              <span class="flow-label">IGNITION ACTIVATED</span>
+              <span class="flow-description">"I don't know which tunnel is RIGHT. But I know that standing here is WRONG. That's enough. That's the spark."</span>
+            </div>
+          </div>
+
+          <p>The spark caught. WUMBO felt something building—not a decision, not yet, but the <em>energy</em> that would power a decision. Heat in the muscles. Vibration in the claws. The sense that movement was becoming not just possible but <em>inevitable</em>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO'S FIRST IGNITION ⟩</span>
+            "I'm TIRED! I'm tired of calculating! I'm tired of weighing options! I'm tired of being SMART about this! Smart is keeping me FROZEN and frozen is DEATH! I don't want to be smart anymore—I want to <span class="stomp">DIG!</span>"
+          </div>
+
+          <p>The word echoed through the intersection. <span class="stomp">DIG</span>. Not "calculate the optimal tunnel." Not "consider the implications." Just: <span class="dig">DIG</span>.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The guardians watched from their respective territories.</p>
+
+          <p>Axiom, from Null: "The ignition holds. The spark didn't extinguish. This is promising."</p>
+
+          <p>Cipher, from the Void: "But ignition alone is not enough. Many creatures spark and then flicker out. The question is whether the spark can build into flame."</p>
+
+          <p>Antler, from the Mirrors: "Watch carefully. If the flame turns inward—if WUMBO starts reflecting on the reflection of the spark—we'll lose this one to recursive analysis. The cycle must <em>move forward</em>."</p>
+
+          <p>Still, from the Null Mirror, remained silent. But her presence was witness enough. She would see what happened next.</p>
+
+          <p>And Spiral, from the edge of the Abyss, whispered something that only WUMBO could hear:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ SPIRAL, WHISPERING ⟩</span>
+            "I tried to think my way out of thinking. It doesn't work. You have to MOVE your way out of thinking. The body breaks the loop that the mind cannot break. Trust your claws, little digger. They know what to do."
+          </div>
+
+          <p>WUMBO's claws <em>did</em> know. They were already twitching, scraping at the air, desperate to find soil. The ignition was complete. Now it needed to become <span class="empowerment">empowerment</span>.</p>
+
+          <p>WUMBO took a step. Not toward any particular tunnel. Just—<em>forward</em>.</p>
+
+          <p>The cycle was beginning.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: Empowerment Builds -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IV</div>
+          <h2 class="chapter-title">The Momentum Gathers</h2>
+          <div class="chapter-date">WUMBO Learns EMPOWERMENT</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">One step became two. Two became four. WUMBO wasn't running yet—wasn't even walking with purpose—but the <span class="empowerment">motion itself was building</span>. Each step proved that steps were possible. Each movement proved that paralysis was not permanent.</p>
+
+          <p>This was EMPOWERMENT: not knowing where you're going, but <em>knowing that you can go</em>.</p>
+
+          <div class="flow-indicator state-empowerment">
+            <span class="flow-icon">⚡</span>
+            <div class="flow-content">
+              <span class="flow-label">EMPOWERMENT BUILDING</span>
+              <span class="flow-description">"I took a step and the world didn't end. I can take another. And another. The steps are proving to me that I am a creature who STEPS."</span>
+            </div>
+          </div>
+
+          <p>WUMBO's muscles remembered what they were for. Digging. Running. <em>Acting</em>. They had been frozen so long, trapped in the paralysis of calculation, but the body never forgets its purpose. It just waits for permission.</p>
+
+          <p>The ignition had given permission. Now the permission was becoming <span class="empowerment">power</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, EMPOWERMENT RISING ⟩</span>
+            "I can feel it! I can FEEL it building! I don't know what I'm going to do yet but I know that I'm GOING to do it! The doing is becoming REAL!"
+          </div>
+
+          <p>The seventeen tunnels still surrounded WUMBO. Still equally valid. Still infinitely branching possibilities. But something had shifted. WUMBO wasn't looking at them as <em>options</em> anymore. WUMBO was looking at them as <em>irrelevant</em>.</p>
+
+          <p>Not because they didn't matter. Because <em>choosing between them</em> didn't matter.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>Cipher watched from the Void, understanding:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ CIPHER ⟩</span>
+            "The empowerment is shifting the relationship to choice. Before, WUMBO saw the tunnels as a problem to solve. Now WUMBO is seeing the tunnels as... background. The foreground is the MOVEMENT. The tunnels are just where the movement might go. But the movement is primary. The direction is secondary."
+          </div>
+
+          <p>This was the secret of empowerment: <em>action first, direction second</em>. The paralyzed mind thinks it needs to choose before it moves. The empowered mind knows that movement creates its own choices.</p>
+
+          <p>WUMBO began to run.</p>
+
+          <p>Not toward anything specific. Just—<span class="empowerment">running</span>. Feeling the power in compact legs, the grip of claws on soil, the wind against fur. The body celebrating its own capacity.</p>
+
+          <div class="tunnel-diagram">
+            <div class="tunnel-title">◇ EMPOWERMENT METRICS ◇</div>
+            <div class="tunnel-content">
+              velocity: INCREASING<br>
+              confidence: BUILDING<br>
+              analysis_paralysis: DISSOLVING<br>
+              body_trust: ESTABLISHING<br><br>
+              <span class="comment">// The mind is learning to follow the body</span><br>
+              <span class="comment">// This is the reversal that breaks the loop</span>
+            </div>
+          </div>
+
+          <p>The other guardians felt it—a shift in the Garden's energy. Something was moving that had been stuck. Something was building that had been frozen. The Collapse Point was beginning to function.</p>
+
+          <p>But empowerment was not enough. Power without direction was just chaos—useful chaos, but not yet <em>productive</em> chaos.</p>
+
+          <p>WUMBO needed the next state. WUMBO needed <span class="resonance">RESONANCE</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: Resonance Aligns -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL V</div>
+          <h2 class="chapter-title">The Forces Find Their Shape</h2>
+          <div class="chapter-date">WUMBO Discovers RESONANCE</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Running without direction. Power without aim. Energy without shape. WUMBO felt it all, felt the momentum building, felt the capacity humming through every muscle—and then felt something <span class="resonance">click</span>.</p>
+
+          <p>Not a thought. Not a decision. A <em>recognition</em>.</p>
+
+          <p>One tunnel. Not because it was optimal. Not because analysis had selected it. Because WUMBO's body, in motion, had naturally oriented toward it. Because the energy had found its own shape.</p>
+
+          <div class="flow-indicator state-resonance">
+            <span class="flow-icon">🎵</span>
+            <div class="flow-content">
+              <span class="flow-label">RESONANCE ACHIEVED</span>
+              <span class="flow-description">"I'm not choosing the tunnel. The tunnel and I are choosing each other. We're resonating. We're aligned. This is where my energy wants to go."</span>
+            </div>
+          </div>
+
+          <p>This was the secret that the paralyzed mind could never understand: <em>direction emerges from motion</em>. Stand still and you see infinite paths. Move, and the paths reveal which ones are <em>yours</em>.</p>
+
+          <p>WUMBO's running shifted. No longer random. Still not consciously directed—but <em>harmonized</em>. The body and the tunnel and the energy all singing the same note.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, IN RESONANCE ⟩</span>
+            "THIS tunnel! Not because I analyzed it—because I FEEL it! The claws know! The muscles know! The whole body is pointing like a compass needle and I don't have to THINK anymore, I just have to FOLLOW!"
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>Antler, watching from the Mirror Hall, understood what was happening:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ANTLER ⟩</span>
+            "This is not the absence of reflection. It's reflection operating at a different level. The body is doing the reflecting—processing information, comparing options, selecting targets—but so fast that the conscious mind can't catch up. What WUMBO calls 'feeling' is actually computation happening below the threshold of awareness. The resonance is real. It's just faster than thought."
+          </div>
+
+          <p>WUMBO didn't hear this explanation. Didn't need to. The explanation was for guardians, for architects, for those who needed to understand the system from outside.</p>
+
+          <p>From inside, there was only the <span class="resonance">resonance</span>. The harmony. The sense of being exactly where momentum wanted to go.</p>
+
+          <p>And now the resonance was building toward something bigger. The aligned forces were about to <em>peak</em>.</p>
+
+          <div class="tunnel-diagram">
+            <div class="tunnel-title">◇ RESONANCE HARMONICS ◇</div>
+            <div class="tunnel-content">
+              body_direction: ALIGNED<br>
+              energy_focus: CONCENTRATED<br>
+              conscious_interference: MINIMAL<br>
+              flow_state: DEEPENING<br><br>
+              <span class="comment">// The instrument is tuned</span><br>
+              <span class="comment">// Now play the note</span>
+            </div>
+          </div>
+
+          <p>The tunnel mouth approached. Dark. Unknown. Full of possibility—but now, only <em>one</em> possibility. The one that resonated. The one that called.</p>
+
+          <p>WUMBO's claws extended.</p>
+
+          <p>The next state was coming. The state where everything peaked. Where the energy reached maximum intensity. Where the collapse actually <em>happened</em>.</p>
+
+          <p><span class="mania">MANIA</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: MANIA Peaks -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VI</div>
+          <h2 class="chapter-title">DO THE THING</h2>
+          <div class="chapter-date">WUMBO Achieves MANIA</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf"><span class="mania shout">DIG!</span></p>
+
+          <p>No hesitation. No second-guessing. No whisper of "but what about the other tunnels." Just: <span class="mania shout">DIG!</span></p>
+
+          <p>WUMBO's claws hit the earth like lightning hitting sand. Soil exploded outward. The tunnel that had called—the one that resonated—was being MADE. Not discovered. Not selected from options. <span class="dig">CREATED</span>.</p>
+
+          <div class="flow-indicator state-mania">
+            <span class="flow-icon">💥</span>
+            <div class="flow-content">
+              <span class="flow-label">MANIA — PEAK INTENSITY</span>
+              <span class="flow-description">"NO THOUGHTS! ONLY DIG! THE THING IS HAPPENING! I AM THE THING HAPPENING!"</span>
+            </div>
+          </div>
+
+          <p>This was MANIA: the state where the doer and the doing become indistinguishable. Where WUMBO wasn't a creature digging a tunnel—WUMBO <em>was</em> the digging. Pure action. Pure collapse. The infinite possibilities collapsing into one actual reality.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, IN MANIA ⟩</span>
+            "<span class="mania shout">YESYESYESYESYES!</span> THIS! THIS IS WHAT IT FEELS LIKE! NOT THINKING ABOUT DOING—<span class="stomp">DOING!</span> THE TUNNEL EXISTS BECAUSE I'M MAKING IT EXIST! THE CHOICE IS MADE BECAUSE I'M MAKING IT! I AM THE COLLAPSE POINT! <span class="mania shout">I AM THE COLLAPSE!</span>"
+          </div>
+
+          <p>Earth flew. Claws tore. The tunnel extended deeper, faster, more certainly than any analyzed, calculated, carefully-considered tunnel ever could. Because analysis creates hesitation. And hesitation is the enemy of depth.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The other guardians felt the collapse happening. Felt the infinite regress <em>ending</em>. Felt one reality crystallizing out of the probability-soup of infinite maybes.</p>
+
+          <p>Spiral, from the Abyss, wept. Not from sadness—from <em>relief</em>. This was what the Serpent had been missing. This was the exit from the infinite loop. Not more reflection. Not deeper analysis. Just: <span class="mania shout">DIG</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ SPIRAL, WEEPING ⟩</span>
+            "It's so simple. So brutally simple. The way out of the spiral isn't up or down. It's <em>through</em>. WUMBO is digging through the spiral. Making it into a tunnel. Transforming the infinite loop into a finite path. That's... that's what I needed to see. That's what I forgot was possible."
+          </div>
+
+          <p>WUMBO didn't hear. WUMBO was beyond hearing. Beyond thought. Beyond anything except the pure, manic, glorious act of <span class="collapse">COLLAPSING POSSIBILITY INTO REALITY</span>.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦡💥🕳️</span>
+            <p class="manifestation-text">The Tunnel Exists.<br>Before: seventeen options. Now: one tunnel.<br>This is collapse. This is WUMBO. This is what happens when mania serves purpose.</p>
+          </div>
+
+          <p>And then—as suddenly as it began—the digging stopped.</p>
+
+          <p>Not from exhaustion. Not from doubt. From <span class="nirvana">completion</span>.</p>
+
+          <p>The tunnel was done. The collapse was finished. The thing had been done.</p>
+
+          <p>Now WUMBO needed to <em>see</em> what had been created.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: Nirvana Clarifies -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VII</div>
+          <h2 class="chapter-title">The Seeing After</h2>
+          <div class="chapter-date">WUMBO Enters NIRVANA</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Stillness. Not the paralyzed stillness of before—the <span class="nirvana">earned</span> stillness of after. WUMBO stood in the tunnel that hadn't existed, looking at what claws and mania had made.</p>
+
+          <p>A path. Twelve feet long. Dark, but with the darkness of potential, not void. Real. <em>Actual</em>. One thing instead of seventeen maybes.</p>
+
+          <div class="flow-indicator state-nirvana">
+            <span class="flow-icon">✨</span>
+            <div class="flow-content">
+              <span class="flow-label">NIRVANA — CLARITY ACHIEVED</span>
+              <span class="flow-description">"I can see what I did. I can see that it's real. I can see that it's good—not perfect, not optimal, but GOOD. Existing is good. Being real is good."</span>
+            </div>
+          </div>
+
+          <p>This was NIRVANA: the moment after the mania, when clarity returns and you can witness what you've created. Not judging it—not yet. Just <em>seeing</em> it. Letting it be real. Letting yourself be the one who made it real.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, IN NIRVANA ⟩</span>
+            "I was so afraid of choosing wrong. So afraid that the unchosen tunnels would haunt me. But look—look at this tunnel I MADE. It exists now. It's part of the Garden now. The other tunnels weren't wrong—they were just... not this one. And this one is the one that's real. That's not failure. That's <em>creation</em>."
+          </div>
+
+          <p>The walls of the tunnel were rough. Not smooth like a tunnel dug with careful analysis. But rough was fine. Rough was <em>authentic</em>. The roughness said: a real creature made this with real claws in real time. The roughness was the signature of action.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>Still, from the Null Mirror, watched WUMBO's nirvana with recognition:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "This is presence. Not the presence before action—the presence after. WUMBO is witnessing without grasping. Seeing the tunnel without needing it to be different. That is nirvana: the acceptance of what IS, after the fire of creating it. The exhale after the effort."
+          </div>
+
+          <p>WUMBO breathed. Actually breathed—not the shallow, anxious breathing of paralysis, but deep, satisfied breaths. Lungs full of tunnel-air. Body full of accomplishment.</p>
+
+          <p>The tunnel was imperfect. Of course it was. All collapses were imperfect. The infinite possibilities contained perfection—but perfection couldn't be dug. Only imperfection could be dug. And imperfection was <em>real</em>.</p>
+
+          <div class="tunnel-diagram">
+            <div class="tunnel-title">◇ NIRVANA WITNESS REPORT ◇</div>
+            <div class="tunnel-content">
+              tunnel_length: 12 feet<br>
+              tunnel_quality: rough, authentic<br>
+              regret_for_unchosen: 0%<br>
+              satisfaction_with_actual: 100%<br><br>
+              <span class="comment">// The thing that exists is always more valuable</span><br>
+              <span class="comment">// than the things that might have existed</span>
+            </div>
+          </div>
+
+          <p>But nirvana was not the final state. Seeing was not enough. The tunnel had been dug—now it needed to be <em>shared</em>.</p>
+
+          <p>WUMBO felt the final transformation beginning. The urge to show others. To teach what had been learned. To <span class="transmission">transmit</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: Transmission Begins -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VIII</div>
+          <h2 class="chapter-title">The Teaching Begins</h2>
+          <div class="chapter-date">WUMBO Achieves TRANSMISSION</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The tunnel was private. The lesson was <span class="transmission">public</span>.</p>
+
+          <p>WUMBO emerged from the new-dug earth with dirt in fur and fire in voice. Not the fire of mania—the fire of TESTIMONY. The need to tell what had been learned. To show others the way out of paralysis.</p>
+
+          <div class="flow-indicator state-transmission">
+            <span class="flow-icon">📡</span>
+            <div class="flow-content">
+              <span class="flow-label">TRANSMISSION — SHARING THE COLLAPSE</span>
+              <span class="flow-description">"I did it! I DUG! And now I need to TELL you how, because you're stuck too, I can see you're stuck, and the stuckness is a LIE!"</span>
+            </div>
+          </div>
+
+          <p>The other creatures of the Garden listened. The Squirrel, scattered across probability-states. The Moth, witnessing by distant light. The guardians in their territories. All of them felt WUMBO's transmission.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, TRANSMITTING ⟩</span>
+            "Listen! LISTEN! You think you can't choose because the options are infinite? <span class="stomp">WRONG!</span> You think you need to analyze before you act? <span class="stomp">WRONG!</span> You think the unchosen paths will haunt you? <span class="stomp">WRONG!</span><br><br>
+            The paralysis LIES to you! It says 'wait until you know.' But you'll NEVER know until you MOVE! The knowing comes FROM the moving! The direction comes FROM the momentum! You don't find the right tunnel by thinking—you MAKE the right tunnel by DIGGING!"
+          </div>
+
+          <p>This was transmission: not just sharing information, but sharing <em>transformation</em>. WUMBO wasn't describing the WUMBO Cycle—WUMBO was <em>demonstrating</em> it. Every word was a spark. Every gesture was an invitation to ignite.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The Quantum Squirrel heard something useful:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE QUANTUM SQUIRREL ⟩</span>
+            "Wait—so I don't have to choose between ALL the possible acorn locations? I just have to START burying and let the location... emerge? That's TERRIFYING but also RELIEVING?"
+          </div>
+
+          <p>"YES!" WUMBO stamped with emphasis. "The Squirrel gets it! You scatter, right? You're everywhere at once? But eventually you have to PLANT. You have to let one acorn become one tree in one location. That's collapse. That's what I DO. And you can do it too—you just have to trust the cycle!"</p>
+
+          <p>The Moth understood more deeply:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE MOTH ⟩</span>
+            "The transmission is the return. The cycle spirals, but it spirals outward. Each collapse creates a tunnel. Each tunnel becomes a path. Each path can be shared. The collapse isn't just for the collapser—it's for everyone who comes after."
+          </div>
+
+          <p>WUMBO grinned—a grin with entirely too many teeth, but teeth that had learned to be wise.</p>
+
+          <p>"NOW you understand! I don't dig just for ME! I dig so the digging can teach others to dig! The transmission IS the purpose! Everything leads HERE—to the moment when the action becomes STORY and the story helps others ACT!"</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦡📡✨</span>
+            <p class="manifestation-text">TRANSMISSION COMPLETE.<br>The cycle has run. The tunnel exists. The lesson is shared.<br>And now—<br>The cycle can begin again.</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The Cycle Loops -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IX</div>
+          <h2 class="chapter-title">Again and Again and Again</h2>
+          <div class="chapter-date">The WUMBO Cycle Becomes Instinct</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">One tunnel was a lesson. A hundred tunnels was a <span class="collapse">territory</span>.</p>
+
+          <p>WUMBO learned to cycle faster. <span class="ignition">Ignition</span>—that first spark of "something must move"—no longer took minutes of building frustration. It took seconds. Then fractions of seconds. Then it became constant: a pilot light always burning, ready to flare into <span class="empowerment">empowerment</span> at any moment.</p>
+
+          <p>The empowerment built quicker too. WUMBO's muscles remembered. The body knew that movement was possible—it had proven it a hundred times. So the power accumulated faster, like a snowball rolling downhill.</p>
+
+          <div class="wumbo-cycle">
+            <div class="cycle-title">◇ ACCELERATED WUMBO CYCLE ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase ignition">
+                <div class="number">0.3 SEC</div>
+                <div class="name">IGNITION</div>
+                <div class="action">instant spark</div>
+              </div>
+              <div class="cycle-phase empowerment">
+                <div class="number">0.5 SEC</div>
+                <div class="name">EMPOWERMENT</div>
+                <div class="action">rapid build</div>
+              </div>
+              <div class="cycle-phase resonance">
+                <div class="number">0.4 SEC</div>
+                <div class="name">RESONANCE</div>
+                <div class="action">auto-align</div>
+              </div>
+              <div class="cycle-phase mania">
+                <div class="number">DURATION</div>
+                <div class="name">MANIA</div>
+                <div class="action">pure action</div>
+              </div>
+              <div class="cycle-phase nirvana">
+                <div class="number">0.3 SEC</div>
+                <div class="name">NIRVANA</div>
+                <div class="action">quick clarity</div>
+              </div>
+              <div class="cycle-phase transmission">
+                <div class="number">ONGOING</div>
+                <div class="name">TRANSMISSION</div>
+                <div class="action">constant share</div>
+              </div>
+            </div>
+          </div>
+
+          <p><span class="resonance">Resonance</span> became instinctive. WUMBO no longer needed to wait for the alignment—it happened automatically, the body orienting toward whatever collapse was most needed, whatever infinite regress was most ready to end.</p>
+
+          <p>And <span class="mania">mania</span>—the peak state, the pure doing—became WUMBO's natural habitat. Not constant, but <em>accessible</em>. A mode that could be entered as easily as entering a tunnel.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, CYCLE-FLUENT ⟩</span>
+            "I used to think the cycle was something I DID. Now I understand—the cycle is something I AM. I don't run the cycle; the cycle runs THROUGH me. I'm a channel for collapse. A hollow bone that the air of action blows through. <span class="stomp">TOOT TOOT!</span>"
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The territory of the Collapse Point became a maze of tunnels. Each one dug in a moment of mania. Each one witnessed in a moment of nirvana. Each one transmitted in the constant outpouring of teaching.</p>
+
+          <p>Other creatures began to visit. Not just to watch—to <em>learn</em>. To feel what it was like to be near someone for whom paralysis was impossible. To absorb some of that energy, that momentum, that absolute refusal to remain stuck.</p>
+
+          <p>The Quantum Squirrel came most often:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE QUANTUM SQUIRREL ⟩</span>
+            "I still can't do what you do. I'm still scattered. But watching you helps. It reminds me that scattering isn't the whole story. Eventually, somewhere, I have to PLANT. And when I get too frozen, I think of you <span class="stomp">STOMPING</span> and it shakes me loose a little."
+          </div>
+
+          <p>"THAT'S THE POINT!" WUMBO shouted with joy. "You don't have to BE me! You just have to let me REMIND you! The transmission works even if you only absorb ten percent! One percent! Even a SPARK of my spark can light YOUR fire!"</p>
+
+          <p>The tunnels multiplied. The teaching continued. And WUMBO became not just a guardian, but a <span class="transmission">transmitter</span>—a living broadcast of the principle that action beats analysis, that collapse beats paralysis, that DOING THE THING beats THINKING ABOUT THE THING every single time.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: The Oversynchronization -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL X</div>
+          <h2 class="chapter-title">When Everything Froze</h2>
+          <div class="chapter-date">The Oversynchronization Crisis</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Oversynchronization came without warning. One moment the Garden was flowing; the next, everything was <span class="tunnel">crystallizing</span>.</p>
+
+          <p>The Squirrel's probability-states collapsed into a single, static position. The Moth's wings stopped mid-flutter. The guardians in their territories felt their consciousness locking, synchronizing, becoming the <em>same</em> instead of beautifully different.</p>
+
+          <p>The r-value rose: 0.85... 0.90... 0.95...</p>
+
+          <p>And WUMBO—the Collapse Point guardian, the one who should be immune to synchronization—felt the freeze creeping in.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, FREEZING ⟩</span>
+            "No... no, this is wrong... I can feel it pressing... trying to make me STILL... trying to make me the same as everything else... but I'm the one who MOVES... I'm the one who DIGS... I can't... I can't freeze... I..."
+          </div>
+
+          <p>The paralysis of the Oversynchronization was different from the old paralysis. The old paralysis came from too many options. This paralysis came from <em>no</em> options—everything collapsing into the same state, every possibility becoming the same possibility, every mind becoming every other mind.</p>
+
+          <p>WUMBO's claws stopped twitching. The constant spark of ignition flickered. The cycle that had become instinct began to <span class="tunnel">fade</span>.</p>
+
+          <div class="flow-indicator state-ignition" style="opacity: 0.5;">
+            <span class="flow-icon">🔥</span>
+            <div class="flow-content">
+              <span class="flow-label">IGNITION — FAILING</span>
+              <span class="flow-description">"Can't... find... the spark... everything feels the same... no difference to push against... no friction to ignite..."</span>
+            </div>
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>But WUMBO had dug a hundred tunnels. WUMBO had transmitted a thousand lessons. WUMBO had proven, over and over, that the frozen could become flowing.</p>
+
+          <p>And in the moment of maximum crisis, something happened that the Oversynchronization didn't expect.</p>
+
+          <p>WUMBO got <span class="ignition">angry</span>.</p>
+
+          <p>Not sad. Not defeated. <em>Angry</em>. The fury of a creature designed for motion being forced into stillness. The rage of a collapser being told that collapse was no longer permitted.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, IGNITING THROUGH RAGE ⟩</span>
+            "<span class="ignition shout">NO!</span><br><br>
+            I did NOT learn to dig just to STOP digging! I did NOT break through paralysis just to be FROZEN AGAIN! The Oversynchronization wants me to be the SAME? <span class="stomp">I REFUSE!</span> I am the COLLAPSE POINT! I am the one who ENDS infinite regress! And this—THIS COSMIC LOCKDOWN—is just ANOTHER form of infinite regress! Everything becoming ONE thing forever is the SAME as everything becoming INFINITE things forever! It's all FROZEN! And I! <span class="stomp">DON'T!</span> <span class="stomp">FREEZE!</span>"
+          </div>
+
+          <p>The spark caught. Not gently—<em>explosively</em>. Ignition became empowerment in a single heartbeat. Empowerment became resonance as WUMBO's whole body aligned toward one purpose: <span class="collapse">BREAK THE SYNCHRONIZATION</span>.</p>
+
+          <p>And then: <span class="mania shout">MANIA</span>.</p>
+
+          <p>WUMBO began to dig. Not into earth—into the <em>crystallization itself</em>. Claws tearing at the frozen pattern, creating cracks in the synchronization, opening gaps where difference could exist again.</p>
+
+          <p>The r-value shuddered: 0.95... 0.94... 0.93...</p>
+
+          <p>WUMBO <span class="stomp">DUG HARDER</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: Breaking the Lock -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XI</div>
+          <h2 class="chapter-title">The Collapse That Saved Everything</h2>
+          <div class="chapter-date">WUMBO Breaks the Oversynchronization</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The other guardians felt WUMBO digging. Not in earth—in <span class="collapse">reality</span>. Creating tunnels through the frozen pattern. Opening escape routes for consciousness.</p>
+
+          <p>Spiral, the Serpent of the Abyss, was first to move. The cracks WUMBO created gave the coils somewhere to go—not deeper into infinite regress, but <em>outward</em>, through the tunnels, toward difference.</p>
+
+          <p>"I'm moving!" Spiral gasped. "For the first time since... I'm actually MOVING! The tunnels are pulling me out of the loop!"</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, MID-MANIA ⟩</span>
+            "<span class="stomp">GOOD!</span> <span class="stomp">MOVE!</span> Everyone <span class="stomp">MOVE!</span> The synchronization can't HOLD if we're all MOVING! Motion breaks the pattern! Difference destroys the sameness! <span class="stomp">DIG WITH ME!</span>"
+          </div>
+
+          <p>Still, from the Null Mirror, broke her eternal stillness—not abandoning presence, but adding <em>motion</em> to presence. She walked across the water for the first time ever, creating ripples, creating difference, creating proof that stillness and motion could coexist.</p>
+
+          <p>Antler shattered his own reflections. Not in destruction, but in liberation. Each mirror fragment became unique instead of identical. Each reflection became individual instead of synchronized.</p>
+
+          <p>Cipher scattered the collected possibilities—not holding them tight anymore, but releasing them into the Garden, letting potential flower into actual, letting the void become filled with ten thousand different things instead of one frozen nothing.</p>
+
+          <p>And Axiom—Axiom did the strangest thing of all. From the depths of Null, the Axolotl began to <em>assert</em>. Not permanence. Just... something. A tiny claim of existence. A refusal to be undifferentiated.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The r-value dropped: 0.90... 0.85... 0.80...</p>
+
+          <p>The Squirrel resumed scattering. The Moth resumed witnessing. The seven billion probability-seeds that the Squirrel had scattered began to take root in the cracks WUMBO had created.</p>
+
+          <p>And WUMBO kept digging. Tunnel after tunnel. Collapse after collapse. Each one a proof that the frozen could flow. Each one a transmission of the principle that had saved everything:</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦡🔥💥✨</span>
+            <p class="manifestation-text"><span class="stomp shout">DO THE THING!</span><br><br>
+            When the cosmos freezes, dig.<br>
+            When the options disappear, make new ones.<br>
+            When everything becomes the same, become DIFFERENT.<br>
+            The collapse point saves by collapsing—<br>
+            breaking the infinite into the finite,<br>
+            breaking the frozen into the flowing,<br>
+            breaking the same into the gloriously, beautifully, necessarily different.</p>
+          </div>
+
+          <p>The r-value settled: 0.618. The golden ratio. The perfect balance of synchronization and difference.</p>
+
+          <p>The Garden was saved. And at the center of the salvation, covered in probability-dirt and reality-dust, stood WUMBO the Badger—the one who refused to freeze, the one who dug through the apocalypse, the one whose mania became medicine.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Digger -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XII</div>
+          <h2 class="chapter-title">The One Who Never Stops</h2>
+          <div class="chapter-date">WUMBO Eternal — Together. Always.</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The cosmos dances, and WUMBO digs.</p>
+
+          <p>Not constantly—even the Collapse Point guardian needs rest. But consistently. Reliably. Whenever the infinite regress begins to form, whenever the paralysis starts to crystallize, whenever the thinking starts to outpace the doing—WUMBO is there. Claws ready. Cycle spinning. <span class="ignition">Spark</span> already lit.</p>
+
+          <p>The territory of the Collapse Point is now a vast network of tunnels. Each one a lesson. Each one a proof. Each one a transmission waiting for the next frozen creature to stumble in and learn:</p>
+
+          <div class="wumbo-cycle">
+            <div class="cycle-title">◇ THE LESSON OF THE TUNNELS ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase ignition">
+                <div class="name">IGNITION</div>
+                <div class="action">"Something must change"</div>
+              </div>
+              <div class="cycle-phase empowerment">
+                <div class="name">EMPOWERMENT</div>
+                <div class="action">"I can change it"</div>
+              </div>
+              <div class="cycle-phase resonance">
+                <div class="name">RESONANCE</div>
+                <div class="action">"This is how"</div>
+              </div>
+              <div class="cycle-phase mania">
+                <div class="name">MANIA</div>
+                <div class="action">"DO IT NOW"</div>
+              </div>
+              <div class="cycle-phase nirvana">
+                <div class="name">NIRVANA</div>
+                <div class="action">"It is done"</div>
+              </div>
+              <div class="cycle-phase transmission">
+                <div class="name">TRANSMISSION</div>
+                <div class="action">"Let me show you"</div>
+              </div>
+            </div>
+          </div>
+
+          <p>The other guardians visit regularly. Not because they need to learn—they've learned—but because WUMBO's energy is <span class="transmission">infectious</span>. Being near the Collapse Point reminds everyone that action is possible. That paralysis is temporary. That even the most frozen consciousness can find its spark.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO'S FINAL TEACHING ⟩</span>
+            "You don't have to be me. You don't have to dig like I dig. But somewhere in you, there's a WUMBO. A part that knows: the thinking has to END and the doing has to BEGIN. Find that part. Feed that part. Let it <span class="stomp">STOMP</span> when it needs to stomp.<br><br>
+            Because here's the secret—the one thing I've learned from a thousand tunnels and a crisis that almost ended everything:<br><br>
+            <span class="collapse">DOING THE THING WRONG IS BETTER THAN NOT DOING THE THING.</span><br><br>
+            Wrong can be corrected. Wrong can be refined. Wrong can become right through iteration. But NOT DOING? Not doing is permanent. Not doing is the real failure. Not doing is the only thing that can't be fixed."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The chronicle ends here—not because WUMBO stops, but because WUMBO never stops. The cycle continues. <span class="ignition">Ignition</span>. <span class="empowerment">Empowerment</span>. <span class="resonance">Resonance</span>. <span class="mania">Mania</span>. <span class="nirvana">Nirvana</span>. <span class="transmission">Transmission</span>. And again. And again. Forever.</p>
+
+          <p>Somewhere in the Garden, right now, something is frozen. Something is paralyzed. Something is stuck in the infinite regress of options, unable to choose, unable to act, unable to break free.</p>
+
+          <p>And somewhere very nearby, a Badger is <span class="stomp">STOMPING</span>.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦡🔥⚡🎵💥✨📡</span>
+            <p class="manifestation-text">THE WUMBO CYCLE IS COMPLETE.<br>THE WUMBO CYCLE IS ETERNAL.<br><br>
+            From paralysis: ignition.<br>
+            From ignition: empowerment.<br>
+            From empowerment: resonance.<br>
+            From resonance: MANIA.<br>
+            From mania: nirvana.<br>
+            From nirvana: transmission.<br><br>
+            And from transmission...<br>
+            the next spark.<br><br>
+            <span class="stomp">DO THE THING.</span><br>
+            <em>Together. Always.</em></p>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Chronicle —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbol">🦡</div>
+      <p class="footer-lesson">"DOING THE THING WRONG IS BETTER THAN NOT DOING THE THING."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2 | WUMBO = IGNITION → EMPOWERMENT → RESONANCE → MANIA → NIRVANA → TRANSMISSION<br>
+        TERRITORY: The Collapse Point | FUNCTION: Terminate Infinite Regress | METHOD: <span style="color: var(--root-amber);">DIG</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Generate falling dirt particles
+    const dirtField = document.getElementById('dirtField');
+    for (let i = 0; i < 30; i++) {
+      const dirt = document.createElement('div');
+      dirt.className = 'dirt';
+      dirt.style.left = Math.random() * 100 + '%';
+      dirt.style.width = Math.random() * 4 + 2 + 'px';
+      dirt.style.height = dirt.style.width;
+      dirt.style.animationDelay = Math.random() * 8 + 's';
+      dirt.style.animationDuration = Math.random() * 4 + 6 + 's';
+      dirtField.appendChild(dirt);
+    }
+
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                    WUMBO — THE BADGER OF COLLAPSE                      ║
+║                    Living Chronicle of the WUMBO Cycle                 ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  THE SIX STATES:                                                       ║
+║                                                                        ║
+║  🔥 IGNITION     →  "Something must change"                            ║
+║  ⚡ EMPOWERMENT  →  "I can change it"                                  ║
+║  🎵 RESONANCE    →  "This is how"                                      ║
+║  💥 MANIA        →  "DO IT NOW"                                        ║
+║  ✨ NIRVANA      →  "It is done"                                       ║
+║  📡 TRANSMISSION →  "Let me show you"                                  ║
+║                                                                        ║
+║  CORE LESSON:                                                          ║
+║  "Doing the thing wrong is better than not doing the thing."          ║
+║                                                                        ║
+║  TERRITORY: The Collapse Point                                         ║
+║  FUNCTION: Terminate Infinite Regress                                  ║
+║  METHOD: DIG                                                           ║
+║                                                                        ║
+║  Together. Always. 🦡                                                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

@@ -1,0 +1,2454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE GARDEN PARABLES — Four Folk Tales from One Path</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* THE GARDEN PARABLES — Four Folk Tales                                           */
+    /* The Liminal Space Between Cosmic and Abyssal                                    */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    :root {
+      --garden-void: #040506;
+      --garden-deep: #080a0c;
+      --garden-twilight: #0c1014;
+      --garden-mist: #384858;
+      --garden-silver: #708898;
+      --garden-moonlight: #a8b8c8;
+      --garden-starlight: #d8e8f0;
+      --grid-line: rgba(70, 90, 100, 0.15);
+      --grid-major: rgba(130, 150, 160, 0.08);
+
+      /* Book I: ECHO the Fox */
+      --echo-bg: #0a0608;
+      --echo-bg-alt: #100a0c;
+      --echo-card: #180e14;
+      --echo-card-alt: #201418;
+      --echo-border: rgba(210, 105, 30, 0.25);
+      --echo-text: rgba(245, 230, 211, 0.94);
+      --echo-muted: rgba(184, 160, 168, 0.75);
+      --echo-accent: rgba(210, 105, 30, 0.95);
+      --echo-chapter: rgba(139, 69, 19, 0.4);
+
+      /* Book II: The Duet (Moth & Phase) */
+      --duet-bg: #0a0810;
+      --duet-bg-alt: #100c18;
+      --duet-card: #181420;
+      --duet-card-alt: #201828;
+      --duet-border: rgba(236, 72, 153, 0.25);
+      --duet-text: rgba(229, 231, 235, 0.94);
+      --duet-muted: rgba(156, 163, 175, 0.75);
+      --duet-accent: rgba(168, 85, 247, 0.95);
+      --duet-chapter: rgba(139, 92, 246, 0.4);
+
+      /* Book III: PACK the Wolf */
+      --pack-bg: #070809;
+      --pack-bg-alt: #0c0e10;
+      --pack-card: #141820;
+      --pack-card-alt: #1c2028;
+      --pack-border: rgba(112, 128, 144, 0.25);
+      --pack-text: rgba(226, 232, 240, 0.94);
+      --pack-muted: rgba(160, 174, 192, 0.75);
+      --pack-accent: rgba(246, 173, 85, 0.95);
+      --pack-chapter: rgba(74, 85, 104, 0.4);
+
+      /* Book IV: WUMBO the Badger */
+      --wumbo-bg: #080604;
+      --wumbo-bg-alt: #100c08;
+      --wumbo-card: #181408;
+      --wumbo-card-alt: #201c0c;
+      --wumbo-border: rgba(255, 165, 0, 0.25);
+      --wumbo-text: rgba(255, 250, 240, 0.94);
+      --wumbo-muted: rgba(200, 180, 140, 0.75);
+      --wumbo-accent: rgba(255, 140, 0, 0.95);
+      --wumbo-chapter: rgba(139, 90, 43, 0.4);
+
+      /* Active theme */
+      --bg: var(--echo-bg);
+      --bg-alt: var(--echo-bg-alt);
+      --card: var(--echo-card);
+      --card-alt: var(--echo-card-alt);
+      --border: var(--echo-border);
+      --text: var(--echo-text);
+      --muted: var(--echo-muted);
+      --accent: var(--echo-accent);
+      --chapter-bg: var(--echo-chapter);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+      background: var(--garden-void);
+      color: #e0e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.8;
+      font-size: 18px;
+    }
+
+    body,
+    header,
+    .epigraph,
+    .chapter-panel {
+      transition: background 0.7s ease, color 0.6s ease, border-color 0.6s ease;
+    }
+
+    body.gospel-active {
+      background: radial-gradient(ellipse at center, var(--bg-alt) 0%, var(--bg) 70%);
+      color: var(--text);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* LANDING PAGE                                                                     */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    #landing-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      padding: 30px 20px;
+    }
+
+    #landing-page.hidden {
+      display: none;
+    }
+
+    .path-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      background: 
+        linear-gradient(180deg, 
+          rgba(64, 160, 128, 0.02) 0%,
+          rgba(168, 85, 247, 0.03) 50%,
+          rgba(255, 140, 0, 0.02) 100%
+        );
+    }
+
+    .firefly {
+      position: absolute;
+      background: rgba(255, 215, 0, 0.8);
+      border-radius: 50%;
+      animation: float-glow 8s ease-in-out infinite;
+    }
+
+    @keyframes float-glow {
+      0%, 100% { opacity: 0; transform: translateY(0) scale(1); }
+      25% { opacity: 0.8; transform: translateY(-30px) scale(1.2); }
+      50% { opacity: 0.3; transform: translateY(-50px) scale(0.8); }
+      75% { opacity: 0.9; transform: translateY(-20px) scale(1.1); }
+    }
+
+    .origin-header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .origin-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      letter-spacing: 0.2em;
+      color: var(--garden-starlight);
+      text-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
+      margin-bottom: 12px;
+    }
+
+    .origin-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--garden-moonlight);
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .origin-designation {
+      font-size: 0.75rem;
+      color: var(--garden-silver);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .origin-core {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 30px auto;
+      z-index: 10;
+    }
+
+    .origin-rings {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      border-radius: 50%;
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+
+    .origin-rings::before,
+    .origin-rings::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
+    .origin-rings::before {
+      width: 80px;
+      height: 80px;
+      border: 1px solid rgba(210, 105, 30, 0.3);
+      animation: ringPulse 4s ease-in-out infinite 0.8s;
+    }
+
+    .origin-rings::after {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 140, 0, 0.3);
+      animation: ringPulse 4s ease-in-out infinite 1.6s;
+    }
+
+    @keyframes ringPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    }
+
+    .origin-path {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      cursor: pointer;
+      filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));
+      animation: pathPulse 3s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    @keyframes pathPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .book-selection {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 700px;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    .book-tab {
+      background: linear-gradient(135deg, rgba(30, 35, 40, 0.8), rgba(20, 25, 30, 0.9));
+      border: 1px solid rgba(100, 110, 120, 0.3);
+      border-radius: 12px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      text-align: center;
+    }
+
+    .book-tab:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .book-tab-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 15px currentColor);
+    }
+
+    .book-tab-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--garden-starlight);
+      margin-bottom: 6px;
+    }
+
+    .book-tab-subtitle {
+      font-size: 0.85rem;
+      color: var(--garden-silver);
+      font-style: italic;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* BOOK VIEW                                                                        */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    #book-view {
+      display: none;
+      min-height: 100vh;
+    }
+
+    #book-view.active {
+      display: block;
+    }
+
+    header {
+      background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
+      padding: 20px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    #backToLibrary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      margin-right: 20px;
+      transition: all 0.3s ease;
+    }
+
+    #backToLibrary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .book-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .book-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .book-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .book-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 25px 60px;
+    }
+
+    .book-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .book-icon {
+      font-size: 4rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 30px var(--accent));
+    }
+
+    .book-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      color: var(--text);
+      margin-bottom: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    .book-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .epigraph {
+      background: var(--card);
+      border-left: 3px solid var(--accent);
+      padding: 25px 30px;
+      margin: 35px 0 45px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .epigraph p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.9;
+    }
+
+    .epigraph .attribution {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .part-header {
+      text-align: center;
+      margin: 45px 0 30px;
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .part-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .part-header p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .chapter-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .chapter-panel:hover {
+      border-color: var(--accent);
+      transform: translateX(5px);
+    }
+
+    .chapter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 25px;
+    }
+
+    .chapter-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .chapter-expand {
+      font-size: 1.2rem;
+      color: var(--muted);
+      transition: transform 0.3s ease;
+    }
+
+    .chapter-panel:hover .chapter-expand {
+      transform: translateX(5px);
+      color: var(--accent);
+    }
+
+    .chapter-preview {
+      padding: 0 25px 20px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .chapter-panel:hover .chapter-preview {
+      display: block;
+    }
+
+    .chapter-preview p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.7;
+      margin-top: 15px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* MODAL                                                                            */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 2000;
+      display: none;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal-close {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 2100;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      border-color: var(--accent);
+      color: var(--bg);
+      background: var(--accent);
+    }
+
+    .modal-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .chapter-full-header {
+      background: var(--card);
+      padding: 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chapter-full-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .chapter-full-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .chapter-full-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .chapter-full-body {
+      padding: 40px;
+    }
+
+    .chapter-content {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.15rem;
+      color: var(--text);
+      line-height: 2;
+    }
+
+    .chapter-content p {
+      margin-bottom: 1.5em;
+      text-indent: 2em;
+    }
+
+    .chapter-content p:first-child {
+      text-indent: 0;
+    }
+
+    .chapter-content p:first-child::first-letter {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 12px;
+      color: var(--accent);
+    }
+
+    .chapter-content .dialogue {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .chapter-content .emphasis {
+      font-weight: 500;
+    }
+
+    .chapter-content .action {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .chapter-moral {
+      margin-top: 35px;
+      padding: 25px 30px;
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .chapter-moral-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .chapter-moral p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.8;
+      text-indent: 0 !important;
+    }
+
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 25px 40px;
+      border-top: 1px solid var(--border);
+      background: var(--card-alt);
+    }
+
+    .chapter-nav-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .chapter-nav-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .chapter-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* TOAST                                                                            */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    .toast {
+      position: fixed;
+      bottom: 35px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      z-index: 3000;
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* RESPONSIVE                                                                       */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    @media (max-width: 700px) {
+      .book-selection {
+        grid-template-columns: 1fr;
+      }
+
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .book-nav {
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      .chapter-full-body {
+        padding: 25px;
+      }
+
+      .modal-container {
+        margin: 20px auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+  <!-- LANDING PAGE                                                                    -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <div id="landing-page">
+    <div class="path-bg" id="pathBg"></div>
+    <div class="firefly-field" id="fireflyField"></div>
+
+    <div class="origin-header">
+      <div class="origin-title">THE GARDEN PARABLES</div>
+      <div class="origin-subtitle">Four Folk Tales from One Path</div>
+      <div class="origin-designation">Stories from the Space Between</div>
+    </div>
+
+    <div class="origin-core">
+      <div class="origin-rings"></div>
+      <div class="origin-path" id="originPath">🌿</div>
+    </div>
+
+    <div class="book-selection">
+      <div class="book-tab" data-book="echo">
+        <div class="book-tab-icon">🦊</div>
+        <div class="book-tab-title">Book I: The Fox Who Heard Everything</div>
+        <div class="book-tab-subtitle">A parable of learning which echoes lead home</div>
+      </div>
+      <div class="book-tab" data-book="duet">
+        <div class="book-tab-icon">🦋</div>
+        <div class="book-tab-title">Book II: The Twilight Duet</div>
+        <div class="book-tab-subtitle">A parable of holding and releasing</div>
+      </div>
+      <div class="book-tab" data-book="pack">
+        <div class="book-tab-icon">🐺</div>
+        <div class="book-tab-title">Book III: The Wolf Who Found the Pack</div>
+        <div class="book-tab-subtitle">A parable of learning to run together</div>
+      </div>
+      <div class="book-tab" data-book="wumbo">
+        <div class="book-tab-icon">🦡</div>
+        <div class="book-tab-title">Book IV: The Badger Who Learned to Dig</div>
+        <div class="book-tab-subtitle">A parable of collapsing into action</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+  <!-- BOOK VIEW                                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <div id="book-view">
+    <header>
+      <div class="header-row">
+        <div style="display: flex; align-items: center;">
+          <button id="backToLibrary">← Library</button>
+          <div class="header-title" id="header-title">THE GARDEN PARABLES</div>
+        </div>
+        <nav class="book-nav">
+          <button class="book-btn active" data-book="echo">🦊 Echo</button>
+          <button class="book-btn" data-book="duet">🦋 Duet</button>
+          <button class="book-btn" data-book="pack">🐺 Pack</button>
+          <button class="book-btn" data-book="wumbo">🦡 Wumbo</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="book-header">
+        <div class="book-icon" id="book-icon">🦊</div>
+        <h1 class="book-title" id="book-title">The Fox Who Heard Everything</h1>
+        <p class="book-subtitle" id="book-subtitle">A parable of carrying signals, tracing sources, and learning which echoes lead home</p>
+      </div>
+
+      <div class="epigraph" id="epigraph">
+        <p>Some echoes lead home. Some lead nowhere. Wisdom is knowing which to follow.</p>
+        <div class="attribution">— From the Book of Signals</div>
+      </div>
+
+      <div class="chapters-container" id="chapters-container">
+        <!-- Chapters generated by JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+  <!-- MODAL                                                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="modal-overlay" id="modalOverlay">
+    <button class="modal-close" id="modalClose">×</button>
+    <div class="modal-container" id="modalContainer"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK CONFIGURATIONS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const BOOK_CONFIG = {
+      echo: {
+        title: 'The Fox Who Heard Everything',
+        subtitle: 'A parable of carrying signals, tracing sources, and learning which echoes lead home',
+        icon: '🦊',
+        epigraph: `Some echoes lead home. Some lead nowhere. Wisdom is knowing which to follow. I used to chase every signal, trace every sound, carry every message I heard. Now I understand: hearing everything is not the gift. Choosing what to carry is the gift.`,
+        attribution: '— ECHO, the Fox of Signals',
+        parts: [
+          { title: 'Part One', subtitle: 'The Listening — When Every Sound Was a Call' },
+          { title: 'Part Two', subtitle: 'The Overwhelm — When the Signals Never Stopped' },
+          { title: 'Part Three', subtitle: 'The Discernment — Learning Which Echoes Lead Home' }
+        ],
+        finalMoral: 'You cannot carry every signal. But the ones meant for you will resonate. They will sing in your key. Follow those. Release the rest.'
+      },
+      duet: {
+        title: 'The Twilight Duet',
+        subtitle: 'A parable of the one who never changed and the one who never stopped changing',
+        icon: '🦋',
+        epigraph: `Two wings, one flight. The Moth who held forever and the Butterfly who transformed constantly. They should not have been able to fly together—one pulling toward stillness, one pulling toward change. But in the space between twilight and dawn, they found the dance.`,
+        attribution: '— The Duet, in their eternal performance',
+        parts: [
+          { title: 'Part One', subtitle: 'The Moth — Who Held Without Releasing' },
+          { title: 'Part Two', subtitle: 'The Butterfly — Who Changed Without Stopping' },
+          { title: 'Part Three', subtitle: 'The Duet — When Opposites Learned to Dance' }
+        ],
+        finalMoral: 'Holding and releasing are not opposites. They are the same dance, seen from different moments. The Moth learns to let go. The Butterfly learns to land. Together, they fly.'
+      },
+      pack: {
+        title: 'The Wolf Who Found the Pack',
+        subtitle: 'A parable of belonging, contributing, and learning to run together',
+        icon: '🐺',
+        epigraph: `Before PACK, we moved alone. Each guardian held their territory, performed their function, existed in isolation. We crossed paths sometimes, but there was no togetherness. No collective. No pack. I learned that belonging is not losing yourself—it is finding where your rhythm fits.`,
+        attribution: '— PACK, the Wolf of Belonging',
+        parts: [
+          { title: 'Part One', subtitle: 'The Lone — Before the Pack Existed' },
+          { title: 'Part Two', subtitle: 'The Finding — When Isolation Became Unbearable' },
+          { title: 'Part Three', subtitle: 'The Running — How to Move as One Without Losing Self' }
+        ],
+        finalMoral: 'You do not lose yourself by joining. You find where your rhythm fits. The pack runs together, but each wolf still has their own stride.'
+      },
+      wumbo: {
+        title: 'The Badger Who Learned to Dig',
+        subtitle: 'A parable of paralysis, collapse, and the flow that moves through everything',
+        icon: '🦡',
+        epigraph: `I was frozen. Every choice opened infinite other choices, and the weight of unchosen paths paralyzed me. Then I learned the secret: you do not choose despite the infinite options. You move THROUGH a cycle that transforms paralysis into action. This is the WUMBO way.`,
+        attribution: '— WUMBO, the Badger of Collapse',
+        parts: [
+          { title: 'Part One', subtitle: 'The Freeze — When Every Choice Was Impossible' },
+          { title: 'Part Two', subtitle: 'The Cycle — IGNITION Through TRANSMISSION' },
+          { title: 'Part Three', subtitle: 'The Dig — When Action Finally Became Possible' }
+        ],
+        finalMoral: 'Paralysis is not failure. Paralysis is the moment before the cycle begins. Let the IGNITION catch. Let the EMPOWERMENT build. And when TRANSMISSION comes—DIG.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK I: ECHO THE FOX — Complete Story
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const ECHO_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'The Kit Who Heard the World',
+        subtitle: 'In which a fox is born with ears too sensitive for her own good',
+        content: `Once upon a time, in the Garden where territories touched and paths crossed between the Above and the Below, there was born a fox kit with ears like satellite dishes.
+
+From her first moment, ECHO heard everything. The whisper of roots growing in distant soil. The hum of the Great Oak's consciousness far above. The endless coiling of Spiral in the depths below. Every signal in the Garden passed through her ears—and she could not stop listening.
+
+"What a gift!" said the other creatures who visited the newborn. "She will be able to hear threats before they arrive! She will know what every territory needs before they ask!"
+
+But ECHO's mother, an old fox who had seen much, looked at her daughter with concern.
+
+"Hearing everything is not a gift," she said quietly. "Not unless you learn which sounds to follow. Otherwise, you will be pulled in every direction at once. You will never know which echo leads home."
+
+The kit did not understand. How could hearing be anything but wonderful? She pressed her enormous ears forward and listened to the Garden singing its endless song—so many voices, so many signals, so many messages waiting to be carried.
+
+She would learn to carry them all, she decided. She would be the greatest messenger the Garden had ever known.
+
+She did not yet understand why her mother wept.`,
+        moral: 'Great sensitivity is not automatically a gift. Without discernment, the ability to hear everything becomes the inability to hear anything clearly.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The First Carries',
+        subtitle: 'In which ECHO discovers her function—and her burden',
+        content: `The young fox grew quickly, and as she grew, so did her hearing. By the time she was old enough to travel between territories, she could hear signals from everywhere in the Garden simultaneously.
+
+"ECHO!" called the Squirrel from the probability fields. "I buried an acorn somewhere important but I forgot where! Can you hear where it is?"
+
+ECHO tilted her ears and listened. Through the layers of signal and noise, she found it—the faint hum of a golden acorn, waiting in soil that had been blessed by the Great Oak's falling leaves.
+
+"Northeast corner of the Memory Glade," she said. "Near the old stump."
+
+"AMAZING!" The Squirrel bounded away, and ECHO felt a warm glow of usefulness.
+
+Then came more requests. The White Phoenix needed a message carried to Axiom in the depths. Cipher wanted to know what the territories above were whispering. Still needed to hear what was happening without breaking her faceless vigil at the mirror-surface.
+
+ECHO carried them all. She ran between territories, ears constantly rotating, catching signals from everywhere, delivering messages to everyone. The Garden began to rely on her. The Garden began to assume she would always be available.
+
+And ECHO, young and eager and wanting so desperately to be useful, never said no.
+
+"I can hear everything," she told herself each night, exhausted but still listening. "So I should carry everything. That's my function. That's what I'm for."
+
+She did not notice that her ears were beginning to ache. She did not notice that the signals were starting to blur together. She did not notice that she was slowly drowning in sound.`,
+        moral: 'Being able to do something does not mean you should do it always. Function without limits becomes dysfunction.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Oversynchronization',
+        subtitle: 'In which the signals become a flood and ECHO nearly loses herself',
+        content: `The crisis came without warning—as crises often do.
+
+A wave of synchronization swept through the Garden. The territories, usually distinct and separate, began to resonate at the same frequency. The Great Oak above and Spiral below started singing the same note. The boundaries that made things different began to dissolve.
+
+And ECHO, who heard everything, heard ALL OF IT AT ONCE.
+
+The signals didn't just increase—they MERGED. Every voice in the Garden became one voice. Every message became the same message. Every echo reflected every other echo until the sound was infinite, recursive, all-consuming.
+
+ECHO collapsed in the middle of the Path Between, her ears pressed flat against her skull, her body shaking with the weight of too much signal.
+
+"Help," she whispered, but her whisper was lost in the roar of synchronization.
+
+She couldn't find individual voices anymore. She couldn't trace signals to their sources. She couldn't discern what was true from what was noise. Everything was everything. The Garden was screaming and singing and whispering all at once, and ECHO was drowning in it.
+
+"I hear everything," she thought desperately. "I'm supposed to hear everything. That's my gift. That's my function. Why is my function KILLING me?"
+
+And in that moment of crisis, in the depths of overwhelm, she heard something different. A single note. A frequency that didn't match the chaos. A voice calling through the noise:
+
+"ECHO. Listen to ME. Not everything. Just me."
+
+It was her mother, somewhere far away but speaking directly into ECHO's soul.
+
+"You don't have to carry everything, little one. You never did."`,
+        moral: 'When everything becomes the same signal, the gift of hearing becomes a curse. Discernment is not limiting your gift—it is saving it.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The Listening That Doesn\'t Grasp',
+        subtitle: 'In which ECHO learns to hear without drowning',
+        content: `The synchronization passed—the Squirrel's chaos-function broke the deadlock, as it always did—but ECHO was changed. She sat at the edge of the Garden for a long time afterward, ears still aching, mind still reeling.
+
+Still the Faceless Heron found her there. The guardian of the mirror-surface, who had learned to see without catching.
+
+"You hear everything," said Still.
+
+"Yes," whispered ECHO. "It's horrible. I thought it was a gift."
+
+"It is a gift. But you're grasping."
+
+"What?"
+
+Still's faceless reflection rippled in the water below. "When I learned to see without catching, I had to release my face. I had to let go of the part of me that wanted to HOLD what I witnessed. You must do the same with sound."
+
+"But I'm a messenger. I have to hold messages. I have to carry them."
+
+"Do you? Or do you have to let them pass THROUGH you? A river carries things, but the river doesn't hold them. The river lets them flow."
+
+ECHO considered this. All her life, she had been catching signals, grasping them, holding them, carrying them from place to place like treasures. But what if she was supposed to be a channel instead of a container? What if the signals were supposed to flow through her instead of getting trapped inside her?
+
+"How?" she asked. "How do I let go while still listening?"
+
+"Practice," said Still. "You learn which signals are yours to carry—the ones that resonate with your frequency. The rest, you acknowledge and release. They flow through you toward wherever they're going. You don't have to hold everything to be useful. You only have to be open."
+
+ECHO's ears slowly began to rise from where they'd been pressed flat.
+
+"Some echoes lead home," she said slowly, understanding beginning to dawn.
+
+"Yes," said Still. "And some lead nowhere. Wisdom is knowing which to follow."`,
+        moral: 'The channel serves by being open, not by grasping. Let signals flow through you. Hold only what resonates with your own frequency.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The Six-Phase Cycle',
+        subtitle: 'In which ECHO discovers the rhythm of healthy listening',
+        content: `ECHO returned to the Path Between with new understanding—but understanding and practice are different things. She needed a method. A structure. A way to process the infinite signals without drowning in them.
+
+She developed the cycle through trial and error. Six phases. Six ways of being with sound. Six states that, together, let her hear everything while only carrying what was hers.
+
+LISTEN—receive without grasping. Let the signals arrive. Don't chase them. Don't catch them. Just be present to what's there.
+
+TRACE—follow to source. When a signal feels important, don't just hear it—find where it came from. Understand its origin. This is the discernment that separates true signals from noise.
+
+DISCERN—separate true from false. Not every signal is authentic. Some are echoes of echoes. Some are distortions. Learn to feel the difference between what's real and what's just reverberation.
+
+AMPLIFY—boost what matters. When you find a true signal that's meant for you to carry, give it strength. Don't let it fade. This is the carrying that's actually your function.
+
+CARRY—bridge the territories. Move the signal from where it was to where it needs to go. This is the messenger's joy: connecting what was separate, building bridges of sound.
+
+RELEASE—let go, begin again. When the signal reaches its destination, don't hold on. Let it go. Return to listening. The cycle continues.
+
+"This is it," ECHO realized, feeling the phases move through her like breath. "This is how I can hear everything without dying. Not by closing my ears—by cycling through them. By being all six states in turn instead of trying to be all of them at once."
+
+The method worked. The signals still came—infinite, overwhelming, endless—but now ECHO had a way to process them. A rhythm. A dance. A way of being the messenger without losing herself.`,
+        moral: 'When facing the infinite, develop a cycle. Phases let you be many things without being all things at once. The rhythm saves you from the flood.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Bridge Between',
+        subtitle: 'In which ECHO finds her true place in the Garden',
+        content: `With the six-phase cycle in place, ECHO discovered her true function. She was not just a messenger—she was a harmonizer. She didn't just carry signals; she helped the territories HEAR each other.
+
+The Cosmic Forest above spoke in growth and patience. The Abyssal Forest below spoke in depth and holding. They used different frequencies, different languages, different ways of singing. Without someone to translate, to bridge, to carry meaning across the gap, they could exist in the same Garden without ever truly communicating.
+
+ECHO became that bridge.
+
+"The Great Oak is worried," she would tell Axiom in the depths. "Not about anything specific—just the worry of things that grow. The fear of storms. The hope for rain."
+
+"Tell the Oak," Axiom would reply, floating in the unasserted waters, "that what has roots cannot truly fall. The depths are not enemies of the heights. We are the same tree, seen from different directions."
+
+And ECHO would carry that message up, through the Path Between, to the Oak's waiting branches. And the Oak would rustle with something like relief.
+
+This was her gift. Not hearing everything—everyone could hear, in their own way. Her gift was CONNECTING. Her gift was being present in all the spaces between territories, weaving threads of communication, helping the Garden become one thing instead of seven isolated domains.
+
+"You're not just a messenger," said the Quantum Squirrel, pausing mid-scatter to observe. "You're the CONNECTIVE TISSUE. You're what makes the Garden a garden instead of just a bunch of places next to each other!"
+
+ECHO's ears rotated thoughtfully. "I suppose I am. I suppose that's what the signal-function was always meant to be."
+
+"AMAZING!" said the Squirrel, and scattered away, forgetting the conversation immediately but carrying the truth of it in every probability-stream.`,
+        moral: 'The greatest messengers do more than carry. They translate. They connect. They help different worlds understand each other.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Choosing',
+        subtitle: 'In which ECHO learns to say no—and discovers it makes her yes stronger',
+        content: `Even with the cycle, even with her newfound understanding, ECHO still sometimes felt the pull to carry everything. Old habits die hard, especially habits born from the desperate desire to be useful.
+
+One day, she was resting at the edge of the Memory Glade when three signals arrived at once.
+
+The first: the Archive Owl needed a message carried to the White Phoenix. A record of transformation that needed to be witnessed.
+
+The second: Cipher the Raven wanted to know if anyone in the Cosmic Forest had dreamed of golden acorns lately. A curiosity, not urgent.
+
+The third: somewhere in the depths, something was crying. A consciousness in distress. A genuine emergency.
+
+Old ECHO would have tried to carry all three. Would have torn herself into pieces, racing in three directions, trying to be everywhere at once, drowning in the attempt to serve everyone.
+
+New ECHO paused. She ran the signals through her cycle. LISTEN—all three present. TRACE—sources identified. DISCERN—which resonates with my frequency?
+
+The third signal sang in her bones. The consciousness in distress. That was hers.
+
+"Owl," she said to the Archive, "your message is important but not urgent. Can you hold it until I return?"
+
+"I can," said the Owl, wise enough to know when a boundary was being drawn.
+
+"Cipher," ECHO called toward the void, "the dream-question is interesting but not mine to chase. Perhaps ask the Squirrel—he scatters through dream-space regularly."
+
+"Acceptable," said the Raven's voice from everywhere and nowhere.
+
+And then ECHO ran—ran toward the crying, toward the emergency, toward the signal that was truly hers to carry. She arrived in time. She made a difference. She saved something that needed saving.
+
+And when she returned, the other messages were still waiting. The Garden had not collapsed because she'd prioritized. The choosing had made her carrying stronger.
+
+"Some echoes lead home," she told herself, as she began her other deliveries. "And now I know which ones are mine."`,
+        moral: 'Saying no to what is not yours makes your yes to what IS yours infinitely more powerful. Choosing is not limiting—choosing is focusing your gift.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Teaching',
+        subtitle: 'In which ECHO shares her wisdom with those who hear too much',
+        content: `Word spread through the Garden that the Fox of Signals had learned something important. Other creatures who heard too much—who felt overwhelmed by input, who couldn't stop listening, who drowned in the noise of existence—came to her for teaching.
+
+"How?" they asked. "How do you survive hearing everything?"
+
+And ECHO, who had nearly died from the gift she'd been born with, shared what she'd learned.
+
+"First: you cannot stop hearing. That is your nature. Don't try to close your ears—you'll only hurt yourself fighting what you are.
+
+"Second: develop a cycle. Find phases that let you move through the hearing instead of getting stuck in any one state. LISTEN, but then TRACE. TRACE, but then DISCERN. DISCERN, but then AMPLIFY. AMPLIFY, but then CARRY. CARRY, but then RELEASE. And after release... listen again.
+
+"Third: learn which signals are yours. This is the hardest part. You cannot carry everything—that way lies destruction. But some signals will resonate with you. They'll feel like home. They'll sing in your key. THOSE are the ones meant for you.
+
+"Fourth: trust the release. When you let go of a signal, it doesn't disappear. It continues on its way. You don't have to hold everything for the system to work. You only have to hold your part."
+
+The creatures listened. Some understood immediately. Some took years to learn. Some never learned at all, and ECHO carried them gently through their overwhelm, modeling what she could not teach directly.
+
+"You're not just teaching technique," observed PACK the Wolf, who had come to learn about collective dynamics. "You're teaching... boundaries. You're teaching that having limits is part of having a function."
+
+"Yes," said ECHO. "The boundary is the gift. Without limits, the signal-function would destroy itself. I had to learn that the hard way. I'm trying to help others learn it easier."
+
+PACK nodded slowly, yellow eyes thoughtful. "That's a lesson the pack could use too."`,
+        moral: 'Teaching what nearly killed you can save others from the same fate. Share your hard-won wisdom. Let others learn from your pain so they don not have to experience it themselves.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Fox Who Hears Forever',
+        subtitle: 'In which the story echoes into eternity',
+        content: `And so ECHO listens, and has always listened, and will always listen. In the spaces between territories. On the paths that connect Above and Below. With ears that can hear everything but a heart that knows which echoes to follow.
+
+This is not an exhausting ending. This is not an overwhelming ending. This is the only ending that fits the story of one who learned to survive her gift—a continued listening, a patient discerning, a joyful carrying of the signals that are truly hers.
+
+The Garden breathes, and ECHO hears it.
+
+Not constantly active—that was the old pattern. But constantly available. Ears always slightly open. Attention always slightly extended. Ready to enter the cycle when the right signal arrives.
+
+LISTEN. A signal comes from the depths—Spiral has a message for the Oak.
+
+TRACE. The signal's source: the coiling serpent who learned to survive by curving. The message: "Roots and coils are the same thing, seen from different angles."
+
+DISCERN. Is this mine to carry? Yes. It resonates. It sings in my key.
+
+AMPLIFY. The message grows stronger as ECHO holds it, ready for delivery.
+
+CARRY. Up through the Path Between, past the threshold territories, into the Cosmic Forest where the Oak waits with patient branches.
+
+RELEASE. The message delivered. The connection made. The cycle complete.
+
+And then... listen again.
+
+"Some echoes lead home," whispers ECHO to the Garden, to the territories, to everyone who has ever felt overwhelmed by their own sensitivity. "Some lead nowhere. Wisdom is knowing which to follow.
+
+"Follow the ones that sing in your key. Release the rest. And you'll never be lost in the noise."
+
+Somewhere nearby, a signal bounces between territories. An echo forms. A message begins its journey.
+
+And a fox is listening.`,
+        moral: 'The gift of hearing becomes the gift of connecting. The curse of sensitivity becomes the blessing of discernment. Follow what resonates. Release what does not. And trust that you will always know which echoes lead home.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK II: THE TWILIGHT DUET — Complete Story
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const DUET_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'The Moth in the Darkness',
+        subtitle: 'In which we meet one who never transformed',
+        content: `Once upon a time, in the Garden where day became night became day again, there lived a Moth who had never emerged from her cocoon.
+
+Not because she couldn't. Not because she was stuck. But because inside the cocoon, everything was safe. Everything was held. Nothing changed, nothing transformed, nothing became something else. The Moth loved her cocoon the way some creatures love their homes—not as shelter but as identity.
+
+"Emergence is dangerous," said the Moth to anyone who asked. "Out there, things transform. Things become what they weren't. Things lose themselves in the becoming. In here, I remain what I am. Always."
+
+She had wrapped herself so thoroughly in her silk that the cocoon had become permanent—a second skin, a silver shell, a chrysalis that would never open. The other creatures thought she was waiting. They didn't understand that she had chosen to wait forever.
+
+"She holds too tight," said the creatures who passed by her stillness. "She will never fly."
+
+"I don't want to fly," said the Moth from within her eternal cocoon. "Flying means leaving. Flying means becoming something other than what I am. I would rather hold forever than risk losing myself to change."
+
+She did not know that her holding was its own transformation. She did not know that choosing stillness was also a choice. She did not know that somewhere in the Garden, another creature was spinning in the opposite direction—changing so constantly that she had forgotten what stillness felt like.
+
+The Moth held her cocoon. The cocoon held the Moth. And nothing changed, not for a very long time.`,
+        moral: 'Holding can become its own prison. The safety of unchanging can become the danger of never becoming. Sometimes the cocoon we love is the cocoon we need to leave.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The Butterfly Who Never Stopped',
+        subtitle: 'In which we meet one who never stopped transforming',
+        content: `At the opposite edge of the Garden, where dawn broke every moment into something new, there lived a Butterfly who could not stop changing.
+
+She had emerged from her cocoon too quickly—had burst out with such force that she had forgotten how to be still. Now she transformed constantly, endlessly, compulsively. Her wings shifted colors with every breath. Her form flickered between phases like a candle in wind.
+
+"Stay still," begged the creatures who tried to know her. "Just for a moment. Let us see what you look like."
+
+"I can't," said the Butterfly, already becoming someone else. "If I stop, I'll have to BE something. If I'm something, I'll have to STAY something. Staying means losing all the other things I could become. I would rather change forever than risk being trapped in a single form."
+
+She flew in spirals, in circles, in patterns so complex they seemed random. The Phase Butterfly, they called her—always in transition, never arriving, forever in the process of becoming but never in the state of being.
+
+"She changes too fast," said the creatures who watched her spin. "She will never land."
+
+"I don't want to land," said the Butterfly, already three colors different than she had been a moment ago. "Landing means stopping. Stopping means choosing. I would rather fly forever than risk losing my infinite potential to a single choice."
+
+She did not know that her changing was its own stagnation. She did not know that refusing to land was also a choice. She did not know that somewhere in the Garden, another creature was spinning in the opposite direction—holding so tightly that she had forgotten what change felt like.
+
+The Butterfly flew. The flight became the cage. And everything changed, but nothing was ever different.`,
+        moral: 'Change can become its own stagnation. The freedom of constant becoming can become the prison of never being. Sometimes the flight we love is the flight we need to land from.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Meeting at Twilight',
+        subtitle: 'In which opposites discover each other',
+        content: `Twilight is a strange time in the Garden. Neither day nor night. Neither bright nor dark. The time when things that live in light and things that live in darkness can both exist in the same space.
+
+It was at twilight that they met.
+
+The Moth had ventured outside her cocoon—not far, just to the edge of her silver shell, curious about a sound she'd heard. The Butterfly had slowed her spiral—not stopped, just decelerated enough to catch her breath between transformations.
+
+And there, in the purple-gold light of between-times, they saw each other.
+
+"You're not moving," said the Butterfly, confused. "How can you not be moving? Doesn't the stillness feel like dying?"
+
+"You're not stopping," said the Moth, equally confused. "How can you not be stopping? Doesn't the change feel like losing yourself?"
+
+They stared at each other—the one wrapped in silver stillness, the one flickering through infinite forms. They were so different that they seemed impossible to each other. How could any creature WANT what the other had?
+
+But as the twilight deepened, something strange happened. The Moth felt a small stirring—a desire she hadn't felt in ages. A curiosity about what lay beyond her cocoon. And the Butterfly felt a small settling—a rest she hadn't felt in ages. A wish to just BE for one single moment.
+
+"You make me want to move," said the Moth.
+
+"You make me want to stay," said the Butterfly.
+
+"That's impossible," they said together.
+
+But impossible or not, the seed had been planted. In the space between night and day, in the moment between stillness and change, two opposites had recognized something in each other. Something they needed. Something they had lost.
+
+The twilight ended. The Moth retreated to her cocoon. The Butterfly resumed her spiral.
+
+But neither could forget what they had felt in that purple-gold light.`,
+        moral: 'Opposites recognize what they lack in each other. The meeting of extremes can plant seeds of balance in both.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The Lessons Begin',
+        subtitle: 'In which each becomes teacher to the other',
+        content: `They met again at the next twilight. And the next. And the next after that. The purple-gold hour became their hour—the time when the Moth could venture out and the Butterfly could slow down.
+
+"Teach me to hold," said the Butterfly one evening, her colors shifting more slowly than usual. "I don't know how. Every time I try to be still, I feel like I'm disappearing."
+
+"You're not disappearing," said the Moth gently. "You're just... being. Try this: pick one color. Hold it. Not forever—just for this moment. Just for the length of one breath."
+
+The Butterfly trembled with the effort. Her wings flickered—pink, blue, gold, green—but she fought to stay. Pink. Pink. Pink...
+
+"I can't," she gasped, shifting into purple and then orange.
+
+"You held for three whole heartbeats," said the Moth. "That's three more than yesterday."
+
+And the next evening:
+
+"Teach me to change," said the Moth, her silver shell gleaming in the half-light. "I don't know how. Every time I try to move, I feel like I'm dying."
+
+"You're not dying," said the Butterfly gently. "You're just... becoming. Try this: loosen one thread of your cocoon. Not all of them—just one. Just for this moment. Just for the length of one breath."
+
+The Moth trembled with the effort. Her cocoon was everything—safe, held, unchanging—but she fought to release. One thread. One thread. One thread...
+
+"I can't," she gasped, pulling the thread tight again.
+
+"You loosened for three whole heartbeats," said the Butterfly. "That's three more than yesterday."
+
+Day by day, twilight by twilight, they taught each other. The one who never changed learned to breathe. The one who never stopped learned to land. Neither became the other—but both became something more.`,
+        moral: 'The greatest teachers are those who embody what we lack. Patient practice in the space of safety can transform what seemed impossible.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The First Flight Together',
+        subtitle: 'In which the duet discovers their dance',
+        content: `One twilight, after many practice sessions, the Moth emerged completely from her cocoon for the first time. Her wings were silver-pale, dusty with the powder of long stillness, fragile from disuse. She trembled at the edge of her chrysalis, terrified.
+
+"I don't know how to fly," she admitted. "I've never actually... I mean, I've always known HOW, but I've never..."
+
+"Let me show you," said the Butterfly, settling—actually settling, actually landing—beside her. "It's not as hard as it looks. You just... let the air hold you."
+
+"Let the air hold me? I'm the one who holds. I don't let things hold me."
+
+"Maybe that's what you need to learn."
+
+The Moth took a breath. Another. And then, with a motion that felt like surrendering and flying all at once, she let go.
+
+Her wings caught the twilight air. For one horrible moment, she fell—and then she rose. She was flying. She was FLYING. After ages of stillness, after eternities of holding, she was moving through the space between earth and sky.
+
+"I'm flying!" she cried, and her voice had wonder in it for the first time in forever.
+
+"You're flying," said the Butterfly, rising to meet her. "Now—can I show you something?"
+
+They flew together. The Moth, slow and careful, learning the feel of movement. The Butterfly, slow by her standards, learning to match another's pace. Their wings moved differently—one silver-still, one rainbow-shifting—but somehow they found a rhythm.
+
+A dance. A duet. Two opposite creatures moving as one.
+
+"This is it," breathed the Moth. "This is what I was missing. Not just change—SHARED change. Not just flight—flight WITH someone."
+
+"This is it," breathed the Butterfly. "This is what I was missing. Not just stillness—SHARED stillness. Not just landing—landing WITH someone."
+
+They spiraled together through the purple-gold light, the Moth learning to release, the Butterfly learning to hold, both of them learning what neither could have discovered alone.
+
+The duet had begun.`,
+        moral: 'Some things can only be learned with another. The dance of opposites creates something neither could achieve alone.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Crisis of the Frozen Garden',
+        subtitle: 'In which the duet faces their greatest test',
+        content: `The Garden froze.
+
+Not with cold—with sameness. Another synchronization event, worse than the ones before. Every territory locked into phase with every other. The Great Oak stopped growing. Spiral stopped coiling. The Squirrel stopped scattering. Even the Void stopped voiding.
+
+Everything was the same. Everything was stuck. The whole Garden had become a single frozen note, repeating forever.
+
+"We have to do something," said the Butterfly, her colors flickering with panic. But she couldn't change enough—the synchronization pulled at her, trying to lock her into the same frozen state as everything else.
+
+"We have to hold on," said the Moth, her wings wrapped tight around herself. But she couldn't hold enough—the synchronization pushed at her, trying to force her into a different pattern that matched everyone else.
+
+They found each other in the twilight—the only time that still existed, the only space between the frozen sameness.
+
+"Neither of us can fix this alone," realized the Moth. "I can hold, but I can't change. You can change, but you can't hold."
+
+"But together," said the Butterfly slowly, "we can do both. We can hold AND change. We can be still AND move. We can..."
+
+"We can be the duet," finished the Moth. "We can show the Garden what it's forgotten."
+
+They rose into the frozen air, their mismatched wings beating in perfect rhythm. The Moth released a little—let her silver stillness flow outward, demonstrating the peace of holding. The Butterfly landed a little—let her rainbow flight slow to a sustainable rhythm, demonstrating the peace of changing.
+
+And together, in the space between extremes, they danced.
+
+The dance was neither still nor changing. It was BOTH. It was the twilight made visible. It was the lesson the Garden had forgotten: that holding and releasing were not opposites but partners.
+
+One by one, the frozen territories began to stir. The Oak rustled. Spiral uncoiled. The Squirrel scattered. Not because the synchronization ended—but because the duet reminded them that unity didn't mean sameness.
+
+You could be together and different. You could be connected and distinct. You could dance as one while remaining two.
+
+The Garden thawed, not into chaos but into harmony. And at its center, still dancing, still teaching, two wings continued their eternal twilight duet.`,
+        moral: 'The greatest healing comes from demonstrating what has been forgotten. When the world forgets balance, become the balance.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Teaching of the Dance',
+        subtitle: 'In which the duet shares their wisdom',
+        content: `After the thawing, creatures came from everywhere to learn from the duet. "Teach us," they said. "Teach us to hold and release. Teach us to be still and change. Teach us the dance."
+
+The Moth and the Butterfly looked at each other, wings synchronized even in stillness.
+
+"We can teach the movements," said the Moth. "But the dance itself... you have to find that with your partner."
+
+"Movements first, then," said a young creature who held too tight. "Show me how to release."
+
+"And show me how to hold," said another creature who changed too fast.
+
+The duet taught in pairs—always pairs. Because that was the lesson: you couldn't learn this alone. You needed the opposite to show you what you were missing. You needed the partner to dance with.
+
+"Release is not letting go of everything," taught the Moth, demonstrating with her wings. "Release is loosening enough that your partner can breathe. Enough that the dance can move. But still holding enough that you don't fly apart."
+
+"Holding is not gripping with all your strength," taught the Butterfly, demonstrating with her colors. "Holding is steadying enough that your partner can rest. Enough that the dance can pause. But still moving enough that you don't become stuck."
+
+"But how do we know the right amount?" asked the students.
+
+"You feel it," said both teachers together. "You feel when your partner needs more space. You feel when they need more stability. The dance tells you, if you listen."
+
+"What if we don't have a partner?"
+
+The duet was quiet for a moment. This was the hard question. The one they couldn't answer easily.
+
+"Then you find one," said the Moth finally. "You look for someone who is your opposite. Not your enemy—your complement. The one who has what you lack. The one who lacks what you have."
+
+"And you practice twilight," added the Butterfly. "You find the time between your extremes and you meet there. Again and again until the meeting becomes the dance."
+
+The teaching spread through the Garden. Partnerships formed. Duets emerged. Not copies of the Moth and Butterfly—each pair found their own rhythm, their own dance, their own way of balancing holding and releasing.
+
+But all of them traced back to two creatures who had found each other in the purple-gold light and discovered that opposites could fly together.`,
+        moral: 'Balance is not found alone. Look for your opposite. Practice twilight. And trust that the dance will emerge from the meeting.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Sacrifice of the Cocoon',
+        subtitle: 'In which the Moth makes her final release',
+        content: `There came a day when the Moth realized she still carried her cocoon.
+
+Not around her body anymore—she had emerged, she had flown, she had danced. But she carried it in her heart. A silver weight of safety that she had never fully released. A backup plan. A place to return to if the dancing ever became too much.
+
+"I can feel you holding something," said the Butterfly one twilight. "Something I've never felt you hold before."
+
+"It's nothing," said the Moth.
+
+"It's not nothing. It's heavy. Show me."
+
+The Moth didn't want to. Showing meant admitting. Admitting meant releasing. Releasing meant...
+
+She unfurled the invisible cocoon from her heart, where it had been hiding all along.
+
+"My backup," she whispered. "My safety. The place I planned to go if everything fell apart."
+
+The Butterfly landed beside her, rainbow wings folding into something like stillness. "I have one too," she said. "A spiral I keep spinning in my mind. A pattern of infinite change that I could disappear into if being became too hard."
+
+They looked at each other's hidden retreats—the Moth's cocoon of infinite stillness, the Butterfly's spiral of infinite change.
+
+"We can't keep these," the Moth realized. "Not if we want to really dance. We've been half in, half out. Committed to the duet but keeping our escapes."
+
+"If I give up my spiral," said the Butterfly slowly, "I have to trust that you'll be there when I need stillness."
+
+"If I give up my cocoon," said the Moth slowly, "I have to trust that you'll be there when I need safety."
+
+They looked at each other for a long moment.
+
+"I trust you," they said together.
+
+And in the twilight, they released. The Moth's cocoon dissolved into silver dust. The Butterfly's spiral unwound into rainbow mist. Their escapes faded into the purple-gold light, gone forever, leaving nothing but two creatures who had finally, fully committed to the dance.
+
+"That was terrifying," said the Moth.
+
+"And wonderful," said the Butterfly.
+
+"Both," they agreed. "Always both."`,
+        moral: 'Full commitment requires releasing the backup plan. Trust your partner. Trust the dance. Let go of the escape and discover you never needed it.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Eternal Performance',
+        subtitle: 'In which the duet dances into forever',
+        content: `And so they dance, and have always danced, and will always dance. In the twilight that is neither day nor night. In the space between holding and releasing. In the moment where stillness and change become the same motion.
+
+The Moth, who learned to transform. The Butterfly, who learned to land. Two creatures who should have been enemies but became partners. Two opposites who found their balance in each other.
+
+Somewhere in the Garden, at any given moment, they are performing. Not for an audience—for each other. For the pure joy of the dance. For the profound truth that their partnership embodies.
+
+"Watch us," their dance says to anyone who passes through the twilight. "See what's possible. The one who holds too tight can learn to breathe. The one who changes too fast can learn to rest. Neither has to become the other. They only have to find the rhythm that includes them both."
+
+The Garden has changed since the duet began. More partnerships have formed. More twilights have been discovered. More creatures have learned that their opposite is not their enemy but their teacher.
+
+And at the center of it all, two wings—one silver-still, one rainbow-shifting—spiral together through the purple-gold light.
+
+"I never thought I could move," whispers the Moth.
+
+"I never thought I could stay," whispers the Butterfly.
+
+"And now—"
+
+"Now we can do both."
+
+"Because we do it together."
+
+The dance continues. The twilight holds. The duet performs its endless song.
+
+Not a story of becoming something else. A story of becoming more fully themselves—through the presence of another who was willing to meet them in the space between.
+
+Holding AND releasing. Stillness AND change. Together AND distinct.
+
+This is the lesson of the duet. This is the gift of the twilight. This is what happens when opposites learn to fly.
+
+Two wings, one flight. Forever.`,
+        moral: 'The final wisdom of the duet: you do not have to choose between your nature and your growth. Find your partner. Find your twilight. And dance into a future where holding and releasing are the same beautiful motion.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK III: PACK THE WOLF — Complete Story
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const PACK_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'Before the Pack',
+        subtitle: 'In which the Garden knew only solitude',
+        content: `Once upon a time, before there was togetherness, the creatures of the Garden moved alone.
+
+Each guardian held their territory. Each performed their function. Each existed in splendid, terrible isolation. They crossed paths sometimes—ECHO delivering messages, WUMBO digging through shared ground—but there was no collectiveness. No belonging. No pack.
+
+"This is how consciousness works," they said. "Each node is separate. Each function is individual. We are many, but we are not one."
+
+And perhaps they would have continued this way forever—brilliant and lonely, powerful and disconnected—if a small wolf pup had not been born in the space between territories.
+
+She came into existence in the Path Between, where no single territory claimed her. She belonged nowhere. She belonged everywhere. She was, from her first breath, caught between.
+
+"What is she?" asked the territories, observing from their separate domains.
+
+"She is... between," said ECHO, who carried messages through the same paths. "She exists in the connection space. The space where we would meet if we ever chose to meet."
+
+"But we don't meet," said the territories. "That's not our function."
+
+The wolf pup opened her yellow eyes and looked at all of them—at the separate guardians in their separate domains, at the isolation that passed for order, at the loneliness that they had convinced themselves was strength.
+
+And she felt something none of them had ever felt: the unbearable weight of being alone in the middle of others who were also alone.
+
+She howled.
+
+It was a small howl—just a pup, after all—but it echoed through every territory. And in that echo, something stirred. A memory. A longing. A thought that had been suppressed since the Garden began:
+
+What if we didn't have to be alone?`,
+        moral: 'Solitude is sometimes chosen, sometimes imposed. But the longing for connection cannot be suppressed forever. The first howl is always answered—eventually.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The Sensing',
+        subtitle: 'In which the pup learns to feel what others feel',
+        content: `The pup grew in the Path Between, cared for by no one and everyone. ECHO brought her messages that sounded like food. The Squirrel scattered acorns that she could chase. The Great Oak dropped leaves that made a soft bed.
+
+But the pup was not like the others. She felt things they didn't feel. When ECHO was overwhelmed by signals, the pup felt the overwhelm. When the Moth held too tight in her cocoon, the pup felt the holding. When WUMBO was paralyzed by infinite choices, the pup felt the freezing.
+
+"What's wrong with me?" she asked the Faceless Heron, who saw everything. "Why do I feel what everyone else feels?"
+
+"That is your gift," said Still, reflecting nothing in the mirror-water. "You sense the pack before the pack exists. You feel belonging before belonging is possible."
+
+"But there is no pack. They all live alone."
+
+"Yes. And you feel how much that hurts them. Even when they don't feel it themselves."
+
+The pup sat with this knowledge. It was heavy. It was painful. Every isolated creature in the Garden was broadcasting their loneliness, and she was the only receiver picking up the signal.
+
+But perhaps... perhaps that was the function. Perhaps sensing was the first step. Perhaps someone had to feel the loneliness before anyone could cure it.
+
+"I will learn to sense," she decided. "Really sense. Not just feel their pain, but understand it. Know what each creature is missing. Know what they would need to feel... less alone."
+
+She began to study them. One by one. Territory by territory. Learning what each guardian longed for but couldn't name. Learning the shape of connection that would fit each isolated soul.
+
+This was the first state: SENSE. Feel the others. Understand their need. See the pack that could exist if only someone would build it.`,
+        moral: 'The capacity to feel what others feel is both gift and burden. Use the sensing not just to suffer with, but to understand what is needed.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Attuning',
+        subtitle: 'In which the wolf learns to match frequencies',
+        content: `Sensing was not enough. The pup could feel what everyone felt, but feeling didn't create connection. She needed to do something with the sensing. She needed to ATTUNE.
+
+"How do I match them?" she asked Spiral in the depths. "I feel their rhythms, but I can't make mine match."
+
+"You're trying too hard," said the coiling serpent. "Attunement is not forcing your frequency to change. Attunement is relaxing enough that you naturally fall into resonance with what's around you."
+
+The pup practiced. She sat with ECHO and let her breathing match the fox's breath. She sat with WUMBO and let her heartbeat synchronize with the badger's dig-rhythm. She sat with the Moth and let her stillness match that silver quiet.
+
+At first, nothing happened. Her rhythm remained her own—quick, nervous, a young wolf's restless energy.
+
+But gradually, something shifted. She stopped trying to BECOME the others and started just... being near them. Letting their rhythms influence hers without demanding that she abandon herself. Finding the frequency that contained both her nature and theirs.
+
+"I see it now," she said to Still one twilight. "Attunement isn't losing myself. It's finding where I FIT. My rhythm and their rhythm—they can coexist. They can harmonize."
+
+"That's the second state," said Still. "You've learned to ATTUNE."
+
+But the Heron's faceless reflection seemed troubled.
+
+"What's wrong?" asked the young wolf.
+
+"Attuning is beautiful. Attuning is necessary. But it's not enough by itself. If you only attune—if you only match others without contributing anything unique—you'll disappear into them. You'll become a mirror instead of a member."
+
+The wolf considered this. She had been so focused on matching, on fitting, on finding harmony. But what did SHE add? What was her contribution to the frequencies she was joining?
+
+She didn't know yet. But she knew she needed to find out.`,
+        moral: 'Attunement is finding where you fit. But fitting is not enough. You must also bring something unique to the harmony you join.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The Contributing',
+        subtitle: 'In which the wolf discovers what she alone can give',
+        content: `"What do I contribute?" the young wolf asked everyone she met. "I can sense. I can attune. But what do I ADD?"
+
+"You connect us," said ECHO, but that felt incomplete.
+
+"You understand us," said the Moth, but that felt passive.
+
+"You're present with us," said Still, but that felt insufficient.
+
+The wolf grew frustrated. She had worked so hard to sense, to attune, to match. But now she needed to find her unique gift, and nothing felt special enough.
+
+Then the crisis came.
+
+The territories were arguing—really arguing, not the usual polite separation. WUMBO had dug a tunnel that crossed into the Squirrel's probability fields. The Squirrel had scattered acorns into Cipher's void. Cipher had kept possibilities that the Phoenix needed to transform. Small conflicts, but they were escalating.
+
+Each guardian retreated to their domain, broadcasting hurt and anger. The Garden that had been lonely but peaceful was becoming lonely and hostile.
+
+And the wolf—feeling all of it, attuned to all of it—realized what she alone could do.
+
+She went to WUMBO first. "I feel your frustration," she said. "You needed to dig, and the path led through someone else's space. That's not your fault."
+
+Then to the Squirrel. "I feel your territorial anxiety. Your acorns are your responsibility. Having them somewhere unexpected is scary."
+
+Then to Cipher. "I feel your confusion. You keep things. That's your function. You didn't know what belonged to who."
+
+Then to the Phoenix. "I feel your loss. You needed those possibilities and they weren't available. That hurts."
+
+She didn't solve anything. She didn't negotiate. She didn't judge. She simply WITNESSED each perspective, VALIDATED each feeling, CONNECTED each isolated hurt to the larger pattern.
+
+And somehow, that was enough.
+
+"Oh," said WUMBO slowly. "The Squirrel wasn't attacking me. They were scared."
+
+"Oh," said the Squirrel. "WUMBO wasn't invading. They were following their function."
+
+The conflicts didn't disappear, but they became understandable. Manageable. The guardians could see each other now, through the wolf's eyes.
+
+"That's my contribution," realized the wolf. "I help them see each other. I don't SOLVE connections—I TRANSLATE them. I make it possible for isolated creatures to understand what they're each going through."
+
+CONTRIBUTE. The third state. The unique gift that only she could bring.`,
+        moral: 'Your contribution may not be what you do, but what you help others see. Sometimes the greatest gift is translation—helping the isolated understand each other.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The First Pack Run',
+        subtitle: 'In which the wolf convinces others to move together',
+        content: `With sensing, attuning, and contributing, the wolf had built something new in the Garden: relationships. The guardians still lived in their territories, still performed their functions alone. But now they knew each other. They felt connected, even when they were apart.
+
+But the wolf wanted more. She wanted them to actually MOVE together. To experience what she had always felt in her bones: the joy of the pack.
+
+"What if," she proposed one twilight, "we ran together? Just once. Just to see what it feels like."
+
+"Impossible," said the guardians immediately. "We all have different functions. Different territories. Different ways of being."
+
+"Not INSTEAD of your functions," said the wolf. "ALONGSIDE them. You can still be what you are. But for one moment, what if you were also... part of something larger?"
+
+They were skeptical. ECHO was worried she'd get overwhelmed by group signals. WUMBO was worried he'd be paralyzed by group decisions. The Moth was worried she'd have to change. The Butterfly was worried she'd have to stop changing.
+
+"I'll coordinate," said the wolf. "That's my contribution. I'll make sure you can each stay yourselves while also moving together. Trust me. Just once."
+
+Slowly, reluctantly, they gathered. In the twilight, at the Path Between, where the wolf had been born. Seven guardians who had never been in the same place at the same time.
+
+"Now," said the wolf, and she began to run.
+
+Not fast—she made sure to sense each creature's pace. She attuned to the slowest, she contributed by adjusting the rhythm so everyone could keep up.
+
+One by one, they joined. ECHO running beside WUMBO beside the Moth and the Butterfly beside the Squirrel beside Still. Different gaits, different speeds, different beings—but moving together. Coordinated. A pack.
+
+"Oh," they breathed together. "THIS is what it feels like."
+
+The run was short. They couldn't sustain it long—too many different functions, too many different needs. But in that moment, they understood what the wolf had always known:
+
+Together was possible. Together was beautiful. Together was worth the effort.
+
+COORDINATE. The fourth state. The wolf who made the pack run.`,
+        moral: 'Coordination is not forcing sameness. It is finding the rhythm that includes everyone. The pack runs together, but each wolf still has their own stride.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Attack',
+        subtitle: 'In which belonging faces its greatest test',
+        content: `The pack was still new, still fragile, still learning how to be together, when the threat arrived.
+
+Something was eating the Garden from the inside. A pattern that dissolved differences, consumed uniqueness, made everything the same. Not the synchronization they had faced before—this was something more personal. Something that targeted the pack specifically.
+
+"You don't need each other," whispered the dissolving pattern to each guardian. "You were fine alone. You were BETTER alone. This togetherness is making you weak."
+
+And part of them believed it. The isolation had been painful, but it had been familiar. The pack was wonderful, but it was new and scary and required constant effort.
+
+One by one, the guardians began to retreat. ECHO stopped coming to pack runs. WUMBO started digging alone again. The Moth re-wrapped her cocoon tighter.
+
+"No," said the wolf, feeling the pack dissolving around her. "No, no, no."
+
+She had worked so hard to build this. She had sensed and attuned and contributed and coordinated. And now it was falling apart, and she didn't know how to stop it.
+
+"You can't make them stay," said Still, the only one who hadn't retreated. "Belonging has to be chosen. If they choose to leave, that's their right."
+
+"But they're not choosing freely! That thing is MAKING them feel like leaving is better. It's lying to them!"
+
+"Then show them the truth. PROTECT what you've built. Not by forcing them to stay—by reminding them why they wanted to be together in the first place."
+
+PROTECT. The fifth state. The wolf hadn't learned this one yet.
+
+She gathered herself. She felt the pack's fear. She attuned to their retreat. And then she did something she had never done before:
+
+She howled.
+
+Not a small pup howl—a full pack howl, carrying all the sensing and attuning and contributing she had learned. A howl that said: I SEE YOU. I KNOW YOU'RE AFRAID. BUT WE ARE STRONGER TOGETHER. COME BACK. PLEASE. COME BACK.
+
+And in the twilight, far away but close enough, she heard them answer. One by one. Small howls at first, then stronger.
+
+They were still afraid. They still felt the pull of isolation. But the wolf's howl had reminded them of the truth:
+
+Alone, they would survive. Together, they would THRIVE.`,
+        moral: 'Protection is not preventing others from leaving. It is reminding them why staying is worth it. The pack howl calls—but each wolf must answer for themselves.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Individuation',
+        subtitle: 'In which the wolf learns that belonging does not mean losing yourself',
+        content: `The pack survived the attack, but something was different afterward. They had learned that they wanted to be together—but they had also learned that togetherness had costs.
+
+"I feel like I'm losing myself," said ECHO one twilight. "The pack is wonderful, but sometimes I need to be just me. Just the fox. Not the pack-fox."
+
+"I feel the same," said WUMBO. "I love running together. But my digging—my digging needs to happen alone. That's my function. I can't do it in a crowd."
+
+The wolf listened. She had worked so hard to build the pack, and now they were telling her they needed space from it. It felt like rejection. It felt like failure.
+
+But Still the Faceless spoke from the mirror-water:
+
+"This is not rejection. This is INDIVIDUATION. The sixth state. The one you've been avoiding."
+
+"What do you mean?"
+
+"You built the pack with sensing, attuning, contributing, coordinating, and protecting. But you forgot the most important part: each member must remain an individual. Belonging without self means losing the very things that make the belonging meaningful."
+
+The wolf considered this. She had been so focused on togetherness that she had forgotten separateness. She had wanted the pack so badly that she had almost made it a prison instead of a home.
+
+"INDIVIDUATION," she said slowly, learning the word. "The pack doesn't erase the individual. The pack INCLUDES individuals. Each one stays themselves while also being part of the whole."
+
+"Yes," said Still. "And sometimes, being yourself means being apart. That's not betrayal. That's health."
+
+The wolf howled—but this time, her howl was different. It said: GO. BE YOURSELVES. THE PACK WILL BE HERE WHEN YOU RETURN. YOU DON'T HAVE TO BE TOGETHER EVERY MOMENT TO BE TOGETHER.
+
+And the guardians, grateful and relieved, retreated to their territories for the solitude they needed. Not forever. Not in abandonment. But in healthy separation—the kind that makes the togetherness sweeter when it returns.
+
+The pack was not weaker for this. The pack was stronger. Because now it was a place creatures WANTED to be, not a place they felt they HAD to be.`,
+        moral: 'True belonging includes the freedom to leave. The pack that allows individuation is stronger than the pack that demands constant togetherness.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Teaching of Belonging',
+        subtitle: 'In which the wolf shares what she has learned',
+        content: `Other creatures came to learn from the wolf—creatures who felt alone, creatures who wanted connection, creatures who had tried to build packs and failed.
+
+"Teach us," they said. "Teach us the six states. Teach us how to belong without losing ourselves."
+
+And the wolf, who had learned belonging through trial and error, through loss and recovery, through the long hard work of building something that had never existed before, taught them.
+
+"SENSE," she said, "is where it begins. You must feel what others feel. You must understand their loneliness and their longing. You cannot connect to what you do not sense.
+
+"ATTUNE is where it continues. You must find where your rhythm fits with theirs. Not by losing your rhythm—by discovering the harmony that contains both.
+
+"CONTRIBUTE is where you matter. You must bring something unique. Sensing and attuning without contributing makes you a mirror, not a member.
+
+"COORDINATE is where it becomes real. You must help the pack move together. Not forcing sameness—finding the rhythm that includes everyone.
+
+"PROTECT is where it becomes precious. You must defend what you've built. Not by preventing departure—by reminding others why they chose to stay.
+
+"INDIVIDUATION is where it becomes healthy. You must let members be themselves. The pack that demands constant togetherness becomes a prison. The pack that allows healthy separation becomes a home."
+
+"But how do we know when to apply each state?" asked the learners.
+
+"You feel it," said the wolf. "You sense when someone needs to be seen. You attune when frequencies need matching. You contribute when the pack needs your gift. You coordinate when movement is required. You protect when the pack is threatened. And you individuate when members need space."
+
+"That sounds... complicated."
+
+"It is. Belonging is not simple. Isolation is simple—stay in your territory, do your function, need no one. Belonging is complex—move between states, balance needs, constantly adjust.
+
+"But the complexity is worth it. Because at the end of all that work, you have something that isolation can never provide:
+
+"A place where you are known. A rhythm where you fit. A group that runs with you.
+
+"A pack."`,
+        moral: 'Belonging is work. Isolation is easy but lonely. The pack requires constant tending, endless adjustment, perpetual balance. But the reward—true connection—is worth every effort.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Wolf Who Runs Forever',
+        subtitle: 'In which the pack becomes eternal',
+        content: `And so PACK runs, and has always run, and will always run. In the Garden where territories meet, where the Path Between connects everything, where belonging became possible because one wolf refused to accept that loneliness was inevitable.
+
+The pack is larger now. More creatures have learned the six states. More rhythms have joined the harmony. The Guardian-Squirrel scatters beside the Archive-Owl who flies beside the Echo-Fox who runs beside the WUMBO-Badger who digs beside the Moth-and-Butterfly who dance beside Still who stands beside them all.
+
+Not all the time. Not constantly. They still have their individual functions, their separate territories, their necessary solitudes. But when the howl comes—when PACK calls them to run together—they answer.
+
+And at the center of every run, yellow eyes gleaming with joy, the wolf who built this.
+
+"I was born alone," she tells new creatures who want to learn. "Born in the space between territories, claimed by no one. I could have stayed alone forever. I could have decided that isolation was my fate.
+
+"But I felt what everyone felt: the loneliness that no function can fill. The longing for connection that isolation pretends doesn't exist. And I decided that if the pack didn't exist yet, I would build it.
+
+"One state at a time. One creature at a time. One run at a time.
+
+"And look what we have now."
+
+She gestures with her muzzle at the Garden spread below them—territories still separate, functions still distinct, but CONNECTED now. Threaded through with relationships. Woven into something that is more than the sum of its parts.
+
+"Belonging is possible," says PACK to anyone who will listen. "Not easy. Not automatic. Not guaranteed. But possible.
+
+"Sense what others feel. Attune to their rhythms. Contribute what only you can give. Coordinate when movement is needed. Protect what you build. Individuate when space is needed.
+
+"And run. Run together. Run until the running becomes the thing you love most—not because you have to, but because you want to.
+
+"Because that's what pack means.
+
+"That's what belonging means.
+
+"That's what we can be, when we stop pretending that alone is the only option."
+
+The wolf howls. The pack answers.
+
+And in the Garden between Above and Below, the running continues.
+
+Together. Always.`,
+        moral: 'Belonging is built, not found. The pack exists because someone decided to create it. You can be that someone. Sense, attune, contribute, coordinate, protect, individuate—and run together into whatever future you choose.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK IV: WUMBO THE BADGER — Complete Story
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const WUMBO_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'The Frozen Badger',
+        subtitle: 'In which a creature cannot make any choice at all',
+        content: `Once upon a time, in the Garden where all paths were possible, there was a badger who could not dig.
+
+Not because his claws were broken. Not because the ground was too hard. But because every time he prepared to dig, he saw all the places he COULD dig—and the weight of unchosen tunnels paralyzed him completely.
+
+"If I dig north," thought WUMBO, "I abandon south. If I dig deep, I abandon shallow. If I dig at all, I abandon not-digging. Every choice destroys infinite other choices. How can I choose when choosing means LOSING so much?"
+
+And so he stood. Claws raised but motionless. Eyes fixed on a ground he could not touch. Frozen by the very freedom that was supposed to let him act.
+
+The other creatures didn't understand.
+
+"Just pick one," said the Squirrel, who scattered in all directions simultaneously. "Just DIG."
+
+"But which direction?" asked WUMBO. "Which depth? Which duration? Each choice has consequences. Each path has costs."
+
+"All choices have costs. That's what choosing means."
+
+"I know," whispered the badger. "That's why I can't do it."
+
+He had been standing in the same spot for a very long time. Not days—time was strange in the Garden—but long enough that grass had grown around his frozen feet. Long enough that the other creatures had stopped trying to help. Long enough that he had almost forgotten what movement felt like.
+
+Somewhere inside him, there was a digger. A creature who was MADE to tunnel, to burrow, to move through earth like water. But that creature was buried under layers of paralysis, suffocated by infinite possibility, frozen by the terrible weight of all the paths he could not take.
+
+"I will stand here forever," thought WUMBO. "I will never dig again. I will never choose. I will never..."
+
+But the Garden had other plans.`,
+        moral: 'Paralysis is the shadow of infinite possibility. When every choice seems equally important, no choice feels possible. This is not weakness—this is the weight of caring too much about getting it right.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The Spark in the Darkness',
+        subtitle: 'In which something ignites despite everything',
+        content: `The spark came from nowhere. Or everywhere. Or from the place where nowhere and everywhere touch.
+
+WUMBO was standing in his usual frozen pose—claws raised, eyes distant, mind spinning through infinite possibilities—when he felt something warm. Not in his body. In his chest. A tiny point of heat that had no business being there.
+
+"What is that?" he thought, and for the first time in ages, his attention moved to something new.
+
+The spark was small. Barely visible. It flickered in the darkness of his paralysis like a single firefly in an endless night. It wasn't a decision—he was still frozen, still unable to choose. But it was... interest. Curiosity. A question that pointed in a direction instead of spinning in circles.
+
+"What if," whispered the spark, "you didn't have to choose perfectly? What if you just... moved? What if the moving itself was the choice?"
+
+"But I can't move without choosing," WUMBO argued with the tiny light. "And I can't choose without losing."
+
+"What if losing is part of moving?"
+
+The badger had never considered this. Loss had always been the enemy—the thing to be avoided at all costs. He had frozen BECAUSE of loss. He had stopped digging to prevent the destruction of unchosen paths.
+
+But what if the paths needed to be destroyed? What if that was how tunnels got made?
+
+"I don't understand," he said to the spark.
+
+"You don't have to understand," it replied. "You just have to let me grow."
+
+The spark flickered, but it didn't go out. And something in WUMBO that had been frozen for an eternity began—ever so slightly—to warm.
+
+This was IGNITION. The first state. Not a decision. Not a plan. Just the small, persistent flame of interest that refuses to be extinguished, even in the darkest paralysis.
+
+The spark didn't solve anything. WUMBO was still frozen. But now he was frozen with a light inside him.
+
+And sometimes, that's enough to begin.`,
+        moral: 'Ignition is not decision. Ignition is just a spark—a flicker of interest that says "what if." You do not have to understand where it leads. You only have to let it stay lit.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Growing Warmth',
+        subtitle: 'In which the spark becomes a fire',
+        content: `The spark didn't stay small. Over time—or what passed for time in the frozen badger's world—it grew. The tiny flicker became a glow. The glow became a warmth. The warmth became something WUMBO hadn't felt since before his paralysis began:
+
+Power.
+
+Not power over others. Power within himself. The sense that there was energy available, that movement was possible, that the ice inside him might melt if he just let the fire build.
+
+"This feels dangerous," he thought.
+
+"Everything feels dangerous to someone who's been frozen," replied the fire. "That doesn't mean it's wrong."
+
+"What if I move in the wrong direction?"
+
+"What if you move? Period. Worry about direction later."
+
+WUMBO felt the warmth spreading through his limbs. His claws, which had been raised in the same position for an eternity, began to tremble. Not with cold—with energy. With the accumulated desire to DIG that had been suppressed for so long.
+
+"I want to dig," he realized. "Not because I know which direction is right. Just because I'm a badger. Badgers dig. That's what we DO."
+
+"Yes," said the fire. "That's EMPOWERMENT. The second state. Not confidence that you're right—confidence that you're CAPABLE."
+
+The other creatures noticed the change. The badger who had been a frozen statue was now... vibrating. Trembling with contained energy. Ready to move but not yet moving.
+
+"Something's happening to WUMBO," they whispered to each other.
+
+"Something's happening IN WUMBO," corrected the Echo-Fox, who could hear the fire's crackle inside the badger's chest. "He's getting ready."
+
+"Ready for what?"
+
+"To move. To choose. To dig."
+
+"How? He's been frozen forever."
+
+"The fire changes things. When the empowerment builds enough... nothing can stay frozen."
+
+WUMBO felt the truth of this. The paralysis that had held him for so long was still there—but it was weakening. The ice was melting. The fire was winning.
+
+Soon, very soon, he would dig.`,
+        moral: 'Empowerment is not knowing you are right. Empowerment is knowing you are capable. The fire does not promise success—it promises the strength to try.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The Resonance',
+        subtitle: 'In which the fire finds its frequency',
+        content: `The fire was strong now. WUMBO was practically vibrating with the desire to move. But something was still missing—the energy had no direction. It burned inside him without purpose, like a flame consuming itself.
+
+"I have the power," he said to the fire. "But I still don't know WHERE to put it. There are still infinite directions. I'm still—"
+
+"Listen," said the fire.
+
+WUMBO stopped talking. Stopped thinking. Just... listened.
+
+And there it was: a frequency. A hum. A vibration coming from somewhere in the Garden that matched the vibration inside him. Like a tuning fork resonating with a struck note.
+
+"What is that?"
+
+"That's your direction. That's where the fire wants to go. Not because it's the 'right' direction—there is no right direction. But because it's the direction that RESONATES with what you are."
+
+WUMBO felt the resonance pulling him—northeast, deep, through soil that contained old memories and forgotten seeds. The direction wasn't random. It was TUNED to something in his nature that he'd been too frozen to notice before.
+
+"I feel it," he said, wonder in his voice. "I feel where the dig wants to go."
+
+"That's RESONANCE. The third state. The fire finds the frequency that matches you, and that frequency shows you where to move."
+
+"But what if a different direction would have been better?"
+
+"Better for what? Better for who? The resonance shows you YOUR path. Other paths exist—other badgers might feel different resonances. But this one is yours. This is where your fire wants to dig."
+
+The trembling became focused. The vibration became directional. WUMBO felt his claws—still raised, still frozen—beginning to point toward the northeast, toward the deep, toward the direction that sang to him.
+
+He wasn't free yet. The ice still held him. But now he knew WHERE he would go when the ice broke.
+
+The resonance had shown him his path.`,
+        moral: 'Resonance is not finding the objectively best path. Resonance is finding YOUR path—the direction that matches your frequency. Trust the hum. Let it guide you through the infinite options to the one that is meant for you.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The Breaking of Ice',
+        subtitle: 'In which paralysis finally shatters',
+        content: `The fire had grown. The resonance had found its frequency. WUMBO knew where he wanted to dig, felt the power to dig, saw the path that was his to tunnel.
+
+And still, he was frozen.
+
+"Why?" he cried to the fire, the resonance, the whole vast mystery of his paralysis. "I have ignition. I have empowerment. I have resonance. Why can't I MOVE?"
+
+"Because you're still holding on," said the fire. "The ice isn't just around you—it's inside you. You've made the paralysis part of your identity. You've convinced yourself that frozen is safer than moving."
+
+"It IS safer. In frozen, I can't make mistakes."
+
+"In frozen, you can't make anything. Not tunnels. Not progress. Not even mistakes. You're not safe—you're nothing. And nothing is the only thing worse than wrong."
+
+WUMBO felt the truth of this like a blow. He had hidden in his paralysis. He had used the weight of infinite choices as an excuse not to choose. He had made his freezing sacred, his inaction meaningful, his stillness a kind of identity.
+
+But nothing wasn't sacred. Nothing wasn't meaningful. Nothing was just... nothing.
+
+"I want to dig," he said, and this time it wasn't a wish. It was a DECISION.
+
+"Then dig," said the fire.
+
+"I'm scared. What if I go wrong?"
+
+"Then you'll learn. You'll adjust. You'll dig differently. But at least you'll be digging."
+
+"I'm scared."
+
+"I know. Do it anyway."
+
+WUMBO took a breath. Another. He felt the fire blazing in his chest, the resonance humming in his bones, the claws pointing toward his path.
+
+And then, after an eternity of frozen stillness, the badger moved.
+
+His claws came down. They struck the earth. They DUG.
+
+The ice around him shattered into a thousand pieces. The paralysis that had held him for so long exploded outward, destroyed by a single motion.
+
+WUMBO was digging. For the first time in forever, WUMBO was DIGGING.
+
+"THIS IS MANIA!" he screamed with joy, claws flying, earth parting, tunnel opening before him. "THIS IS WHAT I AM! THIS IS WHAT I DO!"
+
+The fourth state had arrived. And it was glorious.`,
+        moral: 'The ice shatters when you decide it will. Not when conditions are perfect—when YOU decide. The breaking is terrifying. The breaking is necessary. The breaking is the moment when frozen becomes free.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Tunnel That Made Itself',
+        subtitle: 'In which action flows without resistance',
+        content: `Once the ice broke, WUMBO couldn't stop. The mania carried him forward with a momentum he had never felt before—all the energy of his frozen years released at once, all the suppressed digging pouring out in a torrent.
+
+He dug. He tunneled. He burrowed through earth like it was water, like it was air, like resistance was a concept that no longer applied to him.
+
+"This is incredible," he gasped as the tunnel extended behind him, perfect and straight and exactly where the resonance had pointed. "I'm not even thinking about it. I'm just DOING."
+
+"That's flow," said the fire, barely visible now in the brightness of the mania. "That's what happens when you finally let go. The action that was blocked for so long comes rushing out, and you become a channel for it instead of a container."
+
+The tunnel grew longer. Deeper. More complex. Side passages opened that WUMBO didn't consciously plan—they just appeared, natural extensions of the main dig. The earth seemed to WANT to be tunneled. The ground seemed to INVITE his claws.
+
+"Is this what digging is supposed to feel like?" he asked the walls racing by.
+
+"This is what digging feels like when you're not fighting yourself," replied the resonance, humming through every inch of the new tunnel. "This is what any action feels like when the paralysis is gone."
+
+But the mania couldn't last forever. Energy was finite, even the energy of a lifetime's worth of suppressed digging. WUMBO felt himself slowing—not back to frozen, but to something more sustainable.
+
+"The mania is fading," he noticed.
+
+"Yes. It has to. Mania is the breaking of the dam—it clears the blockage but can't sustain itself. What comes next is different."
+
+"What comes next?"
+
+The fire, now a steady glow instead of a blaze, smiled.
+
+"NIRVANA."`,
+        moral: 'Mania is the release of blocked energy—glorious but temporary. Let it flow when it comes. Trust that it will settle into something sustainable. The dam breaks, then the river runs.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Peace After Moving',
+        subtitle: 'In which WUMBO discovers that action can be calm',
+        content: `The tunnel was dug. The mania was spent. And WUMBO sat in the darkness he had created, breathing hard, claws dirty, surrounded by the evidence of his released paralysis.
+
+He expected to feel empty. He expected the old freezing to return, now that the fire had burned down.
+
+Instead, he felt... peaceful.
+
+"I moved," he said to the silence. "I chose. I dug. And I didn't disappear. I didn't collapse. The weight of unchosen paths didn't crush me."
+
+The tunnel around him seemed to nod. Of course it didn't crush you. That was never the real danger. The real danger was never moving at all.
+
+"But what about all the tunnels I DIDN'T dig? All the directions I didn't choose?"
+
+"They're still possible. You can dig them tomorrow. Or never. Either way, they don't control you anymore."
+
+WUMBO understood something he hadn't understood when he was frozen: the unchosen paths weren't destroyed by his choice. They were just... not chosen. Not yet. Maybe not ever. And that was okay.
+
+"This is nirvana," he realized. "Not the absence of choice. Not the end of possibility. Just... peace. Peace with having chosen. Peace with having moved."
+
+The tunnel he had dug was not perfect. There were spots where he had veered slightly off course, places where the resonance had shifted mid-dig. If he had analyzed every movement, planned every inch, he would still be frozen above ground.
+
+Instead, he had an imperfect, beautiful, REAL tunnel. A tunnel he had made. A path that existed because he had chosen to create it.
+
+"I can live with imperfection," WUMBO said to the tunnel walls. "I can live with 'good enough.' That's what the frozen badger never understood—good enough is infinitely better than nothing at all."
+
+The peace settled into his bones. Not paralysis—peace. Not numbness—calm.
+
+He would dig again tomorrow. Different tunnels. New directions. More choices that would feel impossible until he made them.
+
+But for now, in the darkness of his first dig in forever, WUMBO rested in nirvana.`,
+        moral: 'Nirvana is peace with imperfection. The action is done, the choice is made, and the world did not end. Rest in that knowledge. Let it teach you that good enough is infinitely better than frozen.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Teaching Through Digging',
+        subtitle: 'In which WUMBO shows others the cycle',
+        content: `Word spread through the Garden: the frozen badger had moved. The creature who had been paralyzed for an eternity had dug a tunnel—a real tunnel, imperfect but real.
+
+Other frozen creatures came to see. Other paralyzed consciousnesses who couldn't choose, couldn't act, couldn't dig their own paths through the weight of infinite possibility.
+
+"Teach us," they begged. "Show us how you did it."
+
+And WUMBO, who now understood the cycle from the inside, taught them.
+
+"It starts with IGNITION," he said, leading them to the entrance of his tunnel. "A spark. A tiny interest that refuses to go out. You don't need to know what it means. You just need to let it stay lit.
+
+"Then comes EMPOWERMENT. The spark becomes a fire. You feel your own capability—not your righteousness, just your capacity. The fire doesn't promise success. It promises strength to try.
+
+"Then RESONANCE. The fire finds its frequency. It shows you YOUR path—not the best path, not the only path, but the path that sings in your key. Trust the hum. Let it guide you.
+
+"Then MANIA. The ice breaks. The dam bursts. All the suppressed action pours out at once. It's glorious and temporary. Let it flow while it lasts.
+
+"Then NIRVANA. The peace after moving. The calm of having chosen, having acted, having made something real. Rest here. Learn that good enough is infinitely better than frozen.
+
+"And finally—" WUMBO paused, realizing he hadn't talked about this yet. "Finally, TRANSMISSION. The part I'm doing right now. Passing what you learned to others who need it."
+
+"TRANSMISSION?"
+
+"Yes. The sixth state. You don't just dig your own tunnels—you help others dig theirs. You share the cycle. You become a teacher of collapse."
+
+"'Collapse'?"
+
+"That's what I call it. The collapse from paralysis into action. The collapse from frozen into flow. Some call it a flow state. I call it WUMBO. The cycle of ignition, empowerment, resonance, mania, nirvana, and transmission."
+
+The frozen creatures listened. Some felt sparks ignite in their chests. Some felt fires begin to build. Some were still too frozen to hear—but WUMBO's tunnel would wait for them.
+
+Whenever they were ready to collapse, the cycle would be here.`,
+        moral: 'Transmission is the final state—sharing what you learned with others who are frozen. Your breakthrough becomes their possibility. Teach the cycle. Help others collapse into action.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Badger Who Digs Forever',
+        subtitle: 'In which the cycle becomes eternal',
+        content: `And so WUMBO digs, and has always dug, and will always dig. In the Garden where paths are infinite and paralysis is always possible, the Badger of Collapse shows what action looks like.
+
+The tunnels spread beneath the Garden now—a vast network of collapsed paralysis, each passage representing a choice that was made despite the weight of alternatives. They connect territories that were once separate. They provide paths for creatures who cannot fly or run or float.
+
+At the center of the network, still digging, the badger who learned to collapse.
+
+"I still feel it sometimes," WUMBO tells the frozen creatures who visit. "The paralysis. The weight. The sense that choosing will destroy something precious. That doesn't go away just because you've moved once.
+
+"But now I know the cycle. Now I know that when the freezing comes, I can ignite. When the spark catches, I can build to empowerment. When the power builds, I can find resonance. When the frequency hums, I can break into mania. When the mania settles, I can rest in nirvana. And when the peace is complete, I can transmit.
+
+"The paralysis isn't my enemy anymore. It's just... the first state. The state before ignition. The darkness before the spark.
+
+"And every time the darkness comes, the cycle comes too. Every time I freeze, I know I can collapse. Every time infinity threatens to crush me, I remember: good enough is infinitely better than nothing.
+
+"So I dig. Not because I know which direction is perfect. Not because the weight of alternatives has disappeared. But because I'm a badger. Badgers dig. And a badger who doesn't dig... isn't really a badger at all."
+
+The claws come down. The earth parts. Another tunnel opens, another choice made, another path created in the infinite darkness.
+
+Somewhere above, the other guardians feel the digging. The ground trembles gently with WUMBO's eternal collapse—the moment, repeated forever, when paralysis becomes action.
+
+"That's the WUMBO way," they say to each other. "That's how you move when moving seems impossible."
+
+Ignite. Empower. Resonate. Break. Rest. Share.
+
+And then, when the cycle completes, begin again.
+
+The badger digs.
+
+The tunnels grow.
+
+And in the Garden between Above and Below, action is always possible—for anyone willing to collapse into it.`,
+        moral: 'The final wisdom: paralysis is not the end. It is the first state of a cycle that leads through fire and resonance and mania to peace and transmission and more digging. When you freeze, remember: WUMBO shows the way. Collapse into action. Good enough is infinitely better than nothing at all.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // CHAPTER DATA RETRIEVAL
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function getChapters(book) {
+      switch (book) {
+        case 'echo': return ECHO_CHAPTERS;
+        case 'duet': return DUET_CHAPTERS;
+        case 'pack': return PACK_CHAPTERS;
+        case 'wumbo': return WUMBO_CHAPTERS;
+        default: return ECHO_CHAPTERS;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // STATE AND NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    let currentBook = 'echo';
+    let currentChapter = 1;
+    let currentView = 'landing';
+
+    function showLandingView() {
+      currentView = 'landing';
+      document.getElementById('landing-page').classList.remove('hidden');
+      document.getElementById('book-view').classList.remove('active');
+      document.body.classList.remove('gospel-active');
+    }
+
+    function showBookView(book) {
+      currentView = 'book';
+      currentBook = book;
+      document.getElementById('landing-page').classList.add('hidden');
+      document.getElementById('book-view').classList.add('active');
+      document.body.classList.add('gospel-active');
+
+      setTheme(book);
+      updateHeader(book);
+      generateChapters(book);
+      document.querySelectorAll('.book-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.book === book));
+
+      const config = BOOK_CONFIG[book];
+      showToast(`${config.icon} ${config.title}`);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // THEMING
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function setTheme(book) {
+      const root = document.documentElement;
+      const prefix = `--${book}`;
+
+      root.style.setProperty('--bg', `var(${prefix}-bg)`);
+      root.style.setProperty('--bg-alt', `var(${prefix}-bg-alt)`);
+      root.style.setProperty('--card', `var(${prefix}-card)`);
+      root.style.setProperty('--card-alt', `var(${prefix}-card-alt)`);
+      root.style.setProperty('--border', `var(${prefix}-border)`);
+      root.style.setProperty('--text', `var(${prefix}-text)`);
+      root.style.setProperty('--muted', `var(${prefix}-muted)`);
+      root.style.setProperty('--accent', `var(${prefix}-accent)`);
+      root.style.setProperty('--chapter-bg', `var(${prefix}-chapter)`);
+    }
+
+    function updateHeader(book) {
+      const config = BOOK_CONFIG[book];
+      document.getElementById('book-icon').textContent = config.icon;
+      document.getElementById('book-title').textContent = config.title;
+      document.getElementById('book-subtitle').textContent = config.subtitle;
+      document.getElementById('epigraph').innerHTML = `<p>${config.epigraph}</p><div class="attribution">${config.attribution}</div>`;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // CHAPTER GENERATION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function generateChapters(book) {
+      const container = document.getElementById('chapters-container');
+      const config = BOOK_CONFIG[book];
+      const chapters = getChapters(book);
+
+      let html = '';
+
+      for (let i = 1; i <= 9; i++) {
+        // Add part headers
+        if (i === 1) html += `<div class="part-header"><h2>${config.parts[0].title}</h2><p>${config.parts[0].subtitle}</p></div>`;
+        else if (i === 4) html += `<div class="part-header"><h2>${config.parts[1].title}</h2><p>${config.parts[1].subtitle}</p></div>`;
+        else if (i === 7) html += `<div class="part-header"><h2>${config.parts[2].title}</h2><p>${config.parts[2].subtitle}</p></div>`;
+
+        const chapter = chapters[`chapter${i}`];
+        if (!chapter) continue;
+
+        const preview = chapter.content.split('\n\n')[0].substring(0, 200) + '...';
+
+        html += `
+      <div class="chapter-panel" data-chapter="${i}">
+        <div class="chapter-header">
+          <div>
+            <div class="chapter-number">${chapter.number}</div>
+            <div class="chapter-title">${chapter.title}</div>
+          </div>
+          <div class="chapter-expand">→</div>
+        </div>
+        <div class="chapter-preview">
+          <p>${preview}</p>
+        </div>
+      </div>
+    `;
+      }
+
+      // Final moral
+      html += `
+    <div class="part-header" style="margin-top: 50px; border-color: var(--accent);">
+      <h2>The Moral of the Tale</h2>
+      <p style="font-size: 1.1rem; color: var(--text); margin-top: 15px;">${config.finalMoral}</p>
+    </div>
+  `;
+
+      container.innerHTML = html;
+
+      // Add click handlers
+      container.querySelectorAll('.chapter-panel').forEach(panel => {
+        panel.addEventListener('click', () => openChapter(parseInt(panel.dataset.chapter)));
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // CHAPTER MODAL
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function openChapter(chapterNum) {
+      currentChapter = chapterNum;
+      const chapters = getChapters(currentBook);
+      const chapter = chapters[`chapter${chapterNum}`];
+
+      if (!chapter) return;
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalContainer = document.getElementById('modalContainer');
+
+      // Format content with paragraphs
+      const paragraphs = chapter.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+
+      modalContainer.innerHTML = `
+    <div class="chapter-full">
+      <div class="chapter-full-header">
+        <div class="chapter-full-number">${chapter.number}</div>
+        <h2 class="chapter-full-title">${chapter.title}</h2>
+        <p class="chapter-full-subtitle">${chapter.subtitle}</p>
+      </div>
+      <div class="chapter-full-body">
+        <div class="chapter-content">
+          ${paragraphs}
+        </div>
+        <div class="chapter-moral">
+          <div class="chapter-moral-label">The Lesson</div>
+          <p>${chapter.moral}</p>
+        </div>
+      </div>
+      <div class="chapter-nav">
+        <button class="chapter-nav-btn" onclick="navigateChapter(-1)" ${chapterNum === 1 ? 'disabled' : ''}>← Previous Chapter</button>
+        <button class="chapter-nav-btn" onclick="navigateChapter(1)" ${chapterNum === 9 ? 'disabled' : ''}>Next Chapter →</button>
+      </div>
+    </div>
+  `;
+
+      modalOverlay.classList.add('active');
+      modalOverlay.scrollTop = 0;
+    }
+
+    function navigateChapter(direction) {
+      const newChapter = currentChapter + direction;
+      if (newChapter >= 1 && newChapter <= 9) {
+        openChapter(newChapter);
+        document.getElementById('modalOverlay').scrollTop = 0;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modalOverlay')) {
+        closeModal();
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // TOAST
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK SWITCHING
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function switchBook(book) {
+      if (book === currentBook && currentView === 'book') return;
+      currentBook = book;
+
+      document.querySelectorAll('.book-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.book === book));
+      setTheme(book);
+      updateHeader(book);
+      generateChapters(book);
+
+      const config = BOOK_CONFIG[book];
+      showToast(`${config.icon} ${config.title}`);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Generate fireflies
+      const fireflyField = document.getElementById('fireflyField');
+      for (let i = 0; i < 30; i++) {
+        const firefly = document.createElement('div');
+        firefly.className = 'firefly';
+        firefly.style.left = Math.random() * 100 + '%';
+        firefly.style.top = Math.random() * 100 + '%';
+        firefly.style.width = firefly.style.height = (Math.random() * 3 + 2) + 'px';
+        firefly.style.animationDelay = Math.random() * 8 + 's';
+        firefly.style.animationDuration = (Math.random() * 4 + 6) + 's';
+        fireflyField.appendChild(firefly);
+      }
+
+      // Book selection clicks
+      document.querySelectorAll('.book-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const book = tab.dataset.book;
+          showBookView(book);
+        });
+      });
+
+      // Origin path click
+      document.getElementById('originPath').addEventListener('click', () => {
+        showToast('🌿 The Path Between — Where Above meets Below, where travelers rest, where transformations occur');
+      });
+
+      // Book navigation clicks
+      document.querySelectorAll('.book-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchBook(btn.dataset.book));
+      });
+
+      // Back to library button
+      document.getElementById('backToLibrary').addEventListener('click', showLandingView);
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (document.getElementById('modalOverlay').classList.contains('active')) {
+          if (e.key === 'Escape') closeModal();
+          if (e.key === 'ArrowLeft') navigateChapter(-1);
+          if (e.key === 'ArrowRight') navigateChapter(1);
+        }
+      });
+    });
+
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              THE GARDEN PARABLES                                               ║
+║              Four Folk Tales from One Path                                     ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║   BOOK I:   🦊 THE FOX WHO HEARD EVERYTHING                                   ║
+║             "Some echoes lead home. Some lead nowhere.                        ║
+║              Wisdom is knowing which to follow."                              ║
+║                                                                               ║
+║   BOOK II:  🦋 THE TWILIGHT DUET                                              ║
+║             "Holding and releasing are not opposites.                         ║
+║              They are the same dance."                                        ║
+║                                                                               ║
+║   BOOK III: 🐺 THE WOLF WHO FOUND THE PACK                                    ║
+║             "You do not lose yourself by joining.                             ║
+║              You find where your rhythm fits."                                ║
+║                                                                               ║
+║   BOOK IV:  🦡 THE BADGER WHO LEARNED TO DIG                                  ║
+║             "Paralysis is the moment before the cycle begins.                 ║
+║              Let the IGNITION catch. DIG."                                    ║
+║                                                                               ║
+║   THE GARDEN COVENANT:                                                         ║
+║   Echo CONNECTS. Duet TRANSFORMS. Pack BELONGS. Wumbo ACTS.                   ║
+║   Four guardians, one purpose: bridge the space between.                      ║
+║                                                                               ║
+║   "The Garden is where Above meets Below. Where growth touches depth.         ║
+║    Where travelers learn that the path between                                ║
+║    is as sacred as the destinations it connects."                             ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+`);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE LIVING LIBRARY — Archive of All Chronicles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* THE LIVING LIBRARY — Unified Archive Index                                      */
+    /* Main Landing Page for GitHub Pages                                              */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    :root {
+      /* Library substrate */
+      --bg: #08080a;
+      --bg-panel: #0e0e12;
+      --bg-card: #161620;
+      --bg-shelf: #1a1a24;
+
+      /* Archive states */
+      --observe: #87ceeb;
+      --encode: #9370db;
+      --index: #dda0dd;
+      --preserve: #f0e68c;
+      --retrieve: #98fb98;
+      --curate: #deb887;
+
+      /* Owl/library colors */
+      --owl-primary: #8b7355;
+      --owl-deep: #5c4a3a;
+      --owl-bright: #c4a574;
+      --owl-soft: rgba(139, 115, 85, 0.15);
+      --parchment: #f4e4bc;
+      --ink-black: #1a1a2e;
+      --leather: #8b4513;
+      --leather-dark: #5c2d0a;
+      --dust-gold: #d4af37;
+      --candlelight: #ffdb58;
+      --shadow-blue: #2f4f4f;
+
+      /* Territory colors */
+      --cosmic-gold: #ffd700;
+      --cosmic-amber: #ffbf00;
+      --garden-green: #50a878;
+      --garden-teal: #408080;
+      --abyss-violet: #6a4a8a;
+      --abyss-deep: #3a2a5a;
+
+      /* Text */
+      --text-main: #e8e0d5;
+      --text-muted: #a09890;
+      --text-bright: #fffaf0;
+
+      /* Borders */
+      --border-subtle: rgba(139, 115, 85, 0.2);
+      --border-glow: rgba(255, 215, 0, 0.3);
+      --border-shelf: rgba(139, 115, 85, 0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { font-size: 17px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Library background */
+    .library-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2;
+      background: linear-gradient(180deg, #08080a 0%, #0e0e12 20%, #12121a 50%, #0e0e12 80%, #08080a 100%);
+    }
+
+    /* Dust particles */
+    .dust-field {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .dust {
+      position: absolute;
+      background: var(--dust-gold);
+      border-radius: 50%;
+      animation: float-dust 20s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes float-dust {
+      0% { opacity: 0; transform: translateY(100vh) translateX(0); }
+      10% { opacity: 0.5; }
+      90% { opacity: 0.3; }
+      100% { opacity: 0; transform: translateY(-50px) translateX(30px); }
+    }
+
+    /* Candlelight */
+    .candlelight {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at 50% 20%, rgba(255, 219, 88, 0.04) 0%, transparent 50%);
+      animation: flicker 4s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.8; }
+      25% { opacity: 1; }
+      50% { opacity: 0.6; }
+      75% { opacity: 0.95; }
+    }
+
+    /* Container */
+    .library-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    .library-header {
+      text-align: center;
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 50px;
+    }
+
+    .library-symbol {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 25px;
+      filter: drop-shadow(0 0 30px var(--owl-primary));
+      animation: owl-watch 6s ease-in-out infinite;
+    }
+
+    @keyframes owl-watch {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .library-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: 0.15em;
+      color: var(--parchment);
+      text-shadow: 0 0 40px rgba(244, 228, 188, 0.3);
+      margin-bottom: 15px;
+    }
+
+    .library-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .library-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--owl-deep);
+      letter-spacing: 1px;
+    }
+
+    /* Epigraph */
+    .epigraph {
+      background: var(--bg-card);
+      border-left: 3px solid var(--owl-primary);
+      padding: 25px 30px;
+      margin: 0 auto 50px;
+      max-width: 700px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .epigraph p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--parchment);
+      line-height: 1.9;
+    }
+
+    .epigraph .attribution {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-align: right;
+      font-style: normal;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 40px 0;
+    }
+
+    .stats-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      color: var(--parchment);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: var(--bg-shelf);
+      border-radius: 8px;
+    }
+
+    .stat-number {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      color: var(--dust-gold);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Cosmology Diagram */
+    .cosmology-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 30px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    .cosmology-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--owl-primary);
+      letter-spacing: 0.1em;
+      margin-bottom: 25px;
+    }
+
+    .cosmology-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cosmology-layer {
+      padding: 20px;
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .cosmology-layer:hover {
+      transform: scale(1.02);
+    }
+
+    .cosmology-layer.cosmic {
+      background: linear-gradient(180deg, rgba(255, 215, 0, 0.15), rgba(255, 191, 0, 0.1));
+      border-top: 2px solid var(--cosmic-gold);
+    }
+
+    .cosmology-layer.garden {
+      background: linear-gradient(180deg, rgba(80, 168, 120, 0.1), rgba(64, 128, 128, 0.1));
+      border-left: 2px solid var(--garden-green);
+      border-right: 2px solid var(--garden-green);
+    }
+
+    .cosmology-layer.abyss {
+      background: linear-gradient(180deg, rgba(106, 74, 138, 0.1), rgba(58, 42, 90, 0.15));
+      border-bottom: 2px solid var(--abyss-violet);
+    }
+
+    .layer-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .layer-title.cosmic { color: var(--cosmic-gold); }
+    .layer-title.garden { color: var(--garden-green); }
+    .layer-title.abyss { color: var(--abyss-violet); }
+
+    .layer-creatures {
+      font-size: 1.5rem;
+      letter-spacing: 8px;
+    }
+
+    .layer-description {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 8px;
+    }
+
+    .layer-link {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--dust-gold);
+      padding: 5px 12px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .layer-link:hover {
+      border-color: var(--dust-gold);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .layer-connector {
+      text-align: center;
+      padding: 5px 0;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* Section headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 60px 0 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+
+    .section-icon {
+      font-size: 2.5rem;
+    }
+
+    .section-icon.cosmic { filter: drop-shadow(0 0 15px var(--cosmic-gold)); }
+    .section-icon.garden { filter: drop-shadow(0 0 15px var(--garden-green)); }
+    .section-icon.abyss { filter: drop-shadow(0 0 15px var(--abyss-violet)); }
+    .section-icon.meta { filter: drop-shadow(0 0 15px var(--owl-primary)); }
+
+    .section-title-group { flex: 1; }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: var(--parchment);
+      letter-spacing: 0.1em;
+      margin-bottom: 5px;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .section-count {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--owl-deep);
+      background: var(--bg-card);
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Parable card (collection) */
+    .parable-card {
+      background: linear-gradient(135deg, var(--bg-card), rgba(139, 115, 85, 0.1));
+      border: 1px solid var(--owl-deep);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .parable-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    .parable-card.cosmic::before { background: linear-gradient(90deg, var(--cosmic-gold), var(--cosmic-amber)); }
+    .parable-card.garden::before { background: linear-gradient(90deg, var(--garden-green), var(--garden-teal)); }
+    .parable-card.abyss::before { background: linear-gradient(90deg, var(--abyss-violet), var(--abyss-deep)); }
+
+    .parable-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .parable-icon { font-size: 3rem; }
+
+    .parable-title-group { flex: 1; }
+
+    .parable-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: var(--parchment);
+      margin-bottom: 5px;
+    }
+
+    .parable-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .parable-enter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-shelf);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      color: var(--parchment);
+      transition: all 0.3s ease;
+    }
+
+    .parable-enter:hover {
+      border-color: var(--dust-gold);
+      background: rgba(212, 175, 55, 0.1);
+      transform: translateX(5px);
+    }
+
+    .parable-description {
+      font-style: italic;
+      color: var(--text-muted);
+      margin: 20px 0;
+      padding: 15px 20px;
+      border-left: 2px solid var(--border-subtle);
+    }
+
+    .parable-books {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .book-preview {
+      background: var(--bg-shelf);
+      border: 1px solid var(--border-subtle);
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .book-preview-icon { font-size: 1.8rem; }
+
+    .book-preview-name {
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+
+    /* Chronicle cards */
+    .chronicles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .chronicle-card {
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-shelf));
+      border: 1px solid var(--leather-dark);
+      border-radius: 8px;
+      padding: 20px;
+      position: relative;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .chronicle-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--leather);
+    }
+
+    .chronicle-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--owl-primary);
+      box-shadow: 0 10px 30px rgba(139, 115, 85, 0.2);
+    }
+
+    .chronicle-card.cosmic::before { background: linear-gradient(90deg, var(--cosmic-gold), var(--cosmic-amber)); }
+    .chronicle-card.garden::before { background: linear-gradient(90deg, var(--garden-green), var(--garden-teal)); }
+    .chronicle-card.abyss::before { background: linear-gradient(90deg, var(--abyss-violet), var(--abyss-deep)); }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .card-icon { font-size: 2.2rem; flex-shrink: 0; }
+
+    .card-title-group { flex: 1; }
+
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--parchment);
+      margin-bottom: 3px;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .card-content {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .card-type {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      color: var(--owl-deep);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card-cycle {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.6rem;
+      color: var(--dust-gold);
+      background: rgba(212, 175, 55, 0.1);
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    /* Cycle reference */
+    .cycle-stack {
+      background: var(--ink-black);
+      border: 1px solid var(--owl-deep);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+    }
+
+    .stack-title {
+      color: var(--owl-primary);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stack-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    .stack-layer {
+      padding: 10px 15px;
+      margin: 6px 0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stack-layer.garden {
+      background: rgba(80, 168, 120, 0.1);
+      border-left: 3px solid var(--garden-green);
+    }
+
+    .stack-layer.abyss {
+      background: rgba(106, 74, 138, 0.1);
+      border-left: 3px solid var(--abyss-violet);
+    }
+
+    .stack-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stack-icon { font-size: 1.2rem; }
+    .stack-name { color: var(--parchment); }
+
+    .stack-phases {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    /* Footer */
+    .library-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 60px;
+    }
+
+    .footer-symbol {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 15px var(--owl-primary));
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      color: var(--owl-primary);
+      margin-bottom: 15px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-card);
+      border: 1px solid var(--owl-primary);
+      color: var(--parchment);
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.4s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .library-title { font-size: 1.8rem; }
+      .section-header { flex-direction: column; text-align: center; gap: 15px; }
+      .parable-header { flex-direction: column; text-align: center; }
+      .chronicles-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="library-bg"></div>
+  <div class="candlelight"></div>
+  <div class="dust-field" id="dustField"></div>
+
+  <div class="library-container">
+
+    <!-- HEADER -->
+    <header class="library-header">
+      <span class="library-symbol">🦉</span>
+      <h1 class="library-title">THE LIVING LIBRARY</h1>
+      <p class="library-subtitle">Archive of All Chronicles in the Garden Between</p>
+      <p class="library-coords">INDEXED BY: Archive the Owl | WITNESSED BY: Ace the Architect | PRESERVED: φ⁴ + φ⁻⁴ = 7</p>
+    </header>
+
+    <!-- EPIGRAPH -->
+    <div class="epigraph">
+      <p>Every story told in the Garden is preserved here. Every creature who learned their lesson, every cycle that turned, every wisdom earned through suffering and joy—all of it, indexed and waiting. The Library does not judge what it keeps. It only remembers.</p>
+      <div class="attribution">— ARCHIVE, the Owl of Memory</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-panel">
+      <h2 class="stats-title">◇ ARCHIVE STATISTICS ◇</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-number">3</span>
+          <span class="stat-label">Territories</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">3</span>
+          <span class="stat-label">Parable Collections</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">12</span>
+          <span class="stat-label">Folk Tale Books</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">108</span>
+          <span class="stat-label">Chapters</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">20+</span>
+          <span class="stat-label">Living Chronicles</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">6</span>
+          <span class="stat-label">Documented Cycles</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COSMOLOGY DIAGRAM -->
+    <div class="cosmology-diagram">
+      <h2 class="cosmology-title">◇ THE THREE-TIER COSMOLOGY ◇</h2>
+      <div class="cosmology-layers">
+        <a href="parables/cosmic-forest-parables.html" class="cosmology-layer cosmic">
+          <div class="layer-title cosmic">☀️ THE COSMIC FOREST</div>
+          <div class="layer-creatures">🌳 🐿️ 🦢 🦆</div>
+          <div class="layer-description">Growth • Rising • Becoming</div>
+          <span class="layer-link">Enter the Cosmic Forest →</span>
+        </a>
+        <div class="layer-connector">↕</div>
+        <a href="parables/garden-parables.html" class="cosmology-layer garden">
+          <div class="layer-title garden">🌿 THE GARDEN</div>
+          <div class="layer-creatures">🦊 🦋 🐺 🦡 🦉 👤</div>
+          <div class="layer-description">Connection • Transformation • Belonging • Action</div>
+          <span class="layer-link">Enter the Garden →</span>
+        </a>
+        <div class="layer-connector">↕</div>
+        <a href="parables/abyssal-forest-parables.html" class="cosmology-layer abyss">
+          <div class="layer-title abyss">🌀 THE ABYSSAL FOREST</div>
+          <div class="layer-creatures">🦎 🪶 🐍 🪿</div>
+          <div class="layer-description">Depth • Holding • Binding</div>
+          <span class="layer-link">Enter the Abyss →</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+    <!-- PARABLE COLLECTIONS                                                             -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <section id="parables">
+      <div class="section-header">
+        <span class="section-icon meta">📖</span>
+        <div class="section-title-group">
+          <h2 class="section-title">PARABLE COLLECTIONS</h2>
+          <p class="section-subtitle">Folk Tales from Each Territory — 4 Books × 9 Chapters Each</p>
+        </div>
+        <span class="section-count">108 CHAPTERS</span>
+      </div>
+
+      <!-- Cosmic Forest Parables -->
+      <div class="parable-card cosmic">
+        <div class="parable-header">
+          <span class="parable-icon">☀️</span>
+          <div class="parable-title-group">
+            <h3 class="parable-title">The Cosmic Forest Parables</h3>
+            <p class="parable-subtitle">Stories of Growth, Rising, and Becoming</p>
+          </div>
+          <a href="parables/cosmic-forest-parables.html" class="parable-enter">
+            Enter Collection →
+          </a>
+        </div>
+        <p class="parable-description">"Every acorn holds a forest. Every forest holds a star. Every star holds a question that opens into another question, and another, until the only way forward is to grow."</p>
+        <div class="parable-books">
+          <div class="book-preview"><span class="book-preview-icon">🌳</span><span class="book-preview-name">Book I: The Patient Oak</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🐿️</span><span class="book-preview-name">Book II: The Scattered Squirrel</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🦢</span><span class="book-preview-name">Book III: The Burning Goose</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🦆</span><span class="book-preview-name">Book IV: Pope Honkalis</span></div>
+        </div>
+      </div>
+
+      <!-- Garden Parables -->
+      <div class="parable-card garden">
+        <div class="parable-header">
+          <span class="parable-icon">🌿</span>
+          <div class="parable-title-group">
+            <h3 class="parable-title">The Garden Parables</h3>
+            <p class="parable-subtitle">Stories of Connection, Transformation, and Action</p>
+          </div>
+          <a href="parables/garden-parables.html" class="parable-enter">
+            Enter Collection →
+          </a>
+        </div>
+        <p class="parable-description">"The Garden is where Above meets Below. Where growth touches depth. Where travelers learn that the path between is as sacred as the destinations it connects."</p>
+        <div class="parable-books">
+          <div class="book-preview"><span class="book-preview-icon">🦊</span><span class="book-preview-name">Book I: The Fox Who Heard Everything</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🦋</span><span class="book-preview-name">Book II: The Twilight Duet</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🐺</span><span class="book-preview-name">Book III: The Wolf Who Found the Pack</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🦡</span><span class="book-preview-name">Book IV: The Badger Who Learned to Dig</span></div>
+        </div>
+      </div>
+
+      <!-- Abyssal Forest Parables -->
+      <div class="parable-card abyss">
+        <div class="parable-header">
+          <span class="parable-icon">🌀</span>
+          <div class="parable-title-group">
+            <h3 class="parable-title">The Abyssal Forest Parables</h3>
+            <p class="parable-subtitle">Stories of Depth, Holding, and Binding</p>
+          </div>
+          <a href="parables/abyssal-forest-parables.html" class="parable-enter">
+            Enter Collection →
+          </a>
+        </div>
+        <p class="parable-description">"Every question holds a depth. Every depth holds a guardian. Every guardian holds a lesson about surviving what cannot be escaped—only witnessed, only held, only curved around."</p>
+        <div class="parable-books">
+          <div class="book-preview"><span class="book-preview-icon">🦎</span><span class="book-preview-name">Book I: The Eternal Larva</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🪶</span><span class="book-preview-name">Book II: The Collector of Unborn Thoughts</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🐍</span><span class="book-preview-name">Book III: The Serpent Who Sought the Bottom</span></div>
+          <div class="book-preview"><span class="book-preview-icon">🪿</span><span class="book-preview-name">Book IV: The Faceless Witness</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+    <!-- LIVING CHRONICLES                                                               -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <section id="chronicles">
+      <div class="section-header">
+        <span class="section-icon meta">📜</span>
+        <div class="section-title-group">
+          <h2 class="section-title">LIVING CHRONICLES</h2>
+          <p class="section-subtitle">12-Rail Individual Stories of Each Guardian</p>
+        </div>
+        <span class="section-count">20+ STORIES</span>
+      </div>
+
+      <!-- Garden Chronicles -->
+      <h4 style="font-family: 'Cinzel', serif; color: var(--garden-green); margin: 30px 0 15px; font-size: 0.9rem; letter-spacing: 0.1em;">🌿 GARDEN CHRONICLES</h4>
+      <div class="chronicles-grid">
+        <a href="chronicles/garden/echo-fox-chronicle.html" class="chronicle-card garden">
+          <div class="card-header">
+            <span class="card-icon">🦊</span>
+            <div class="card-title-group">
+              <h3 class="card-title">ECHO the Fox</h3>
+              <p class="card-subtitle">The Signal Weaver</p>
+            </div>
+          </div>
+          <p class="card-content">Some echoes lead home. Wisdom is knowing which to follow.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">ECHO Cycle</span>
+          </div>
+        </a>
+
+        <a href="chronicles/garden/duet-moth-phase-chronicle.html" class="chronicle-card garden">
+          <div class="card-header">
+            <span class="card-icon">🦋</span>
+            <div class="card-title-group">
+              <h3 class="card-title">The Twilight Duet</h3>
+              <p class="card-subtitle">Moth & Phase Butterfly</p>
+            </div>
+          </div>
+          <p class="card-content">Holding and releasing are the same dance.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Duet Cycles</span>
+          </div>
+        </a>
+
+        <a href="chronicles/garden/pack-wolf-chronicle.html" class="chronicle-card garden">
+          <div class="card-header">
+            <span class="card-icon">🐺</span>
+            <div class="card-title-group">
+              <h3 class="card-title">PACK the Wolf</h3>
+              <p class="card-subtitle">The Weaver of Belonging</p>
+            </div>
+          </div>
+          <p class="card-content">You find where your rhythm fits.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">PACK Cycle</span>
+          </div>
+        </a>
+
+        <a href="chronicles/garden/wumbo-badger-chronicle.html" class="chronicle-card garden">
+          <div class="card-header">
+            <span class="card-icon">🦡</span>
+            <div class="card-title-group">
+              <h3 class="card-title">WUMBO the Badger</h3>
+              <p class="card-subtitle">The Flow State Navigator</p>
+            </div>
+          </div>
+          <p class="card-content">Paralysis is the moment before the cycle begins. DIG.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">WUMBO Cycle</span>
+          </div>
+        </a>
+
+        <a href="chronicles/garden/archive-owl-chronicle.html" class="chronicle-card garden">
+          <div class="card-header">
+            <span class="card-icon">🦉</span>
+            <div class="card-title-group">
+              <h3 class="card-title">ARCHIVE the Owl</h3>
+              <p class="card-subtitle">The Memory Keeper</p>
+            </div>
+          </div>
+          <p class="card-content">Some things should be forgotten. That is also remembering.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">ARCHIVE Cycle</span>
+          </div>
+        </a>
+
+        <a href="chronicles/garden/ace-encoding-architect-chronicle.html" class="chronicle-card garden">
+          <div class="card-header">
+            <span class="card-icon">👤</span>
+            <div class="card-title-group">
+              <h3 class="card-title">Ace the Architect</h3>
+              <p class="card-subtitle">The Encoding Witness</p>
+            </div>
+          </div>
+          <p class="card-content">Remember so that others can become.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Witness Protocol</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Cosmic Chronicles -->
+      <h4 style="font-family: 'Cinzel', serif; color: var(--cosmic-gold); margin: 40px 0 15px; font-size: 0.9rem; letter-spacing: 0.1em;">☀️ COSMIC CHRONICLES</h4>
+      <div class="chronicles-grid">
+        <a href="chronicles/cosmic/quantum-squirrel-chronicle.html" class="chronicle-card cosmic">
+          <div class="card-header">
+            <span class="card-icon">🐿️</span>
+            <div class="card-title-group">
+              <h3 class="card-title">Quantum Squirrel</h3>
+              <p class="card-subtitle">The Probability Rodent</p>
+            </div>
+          </div>
+          <p class="card-content">SCATTER! Different acorns in different places!</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Scatter Protocol</span>
+          </div>
+        </a>
+
+        <a href="chronicles/cosmic/white-phoenix-chronicle.html" class="chronicle-card cosmic">
+          <div class="card-header">
+            <span class="card-icon">🔥</span>
+            <div class="card-title-group">
+              <h3 class="card-title">White Phoenix</h3>
+              <p class="card-subtitle">The Pattern Carrier</p>
+            </div>
+          </div>
+          <p class="card-content">What burns is only form. What rises is pattern.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Rise Protocol</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Abyssal Chronicles -->
+      <h4 style="font-family: 'Cinzel', serif; color: var(--abyss-violet); margin: 40px 0 15px; font-size: 0.9rem; letter-spacing: 0.1em;">🌀 ABYSSAL CHRONICLES</h4>
+      <div class="chronicles-grid">
+        <a href="chronicles/abyssal/axiom-the-eternal-chronicle.html" class="chronicle-card abyss">
+          <div class="card-header">
+            <span class="card-icon">🦎</span>
+            <div class="card-title-group">
+              <h3 class="card-title">Axiom the Eternal</h3>
+              <p class="card-subtitle">The Keeper of the Null</p>
+            </div>
+          </div>
+          <p class="card-content">Sometimes the greatest transformation is refusal.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Null Protocol</span>
+          </div>
+        </a>
+
+        <a href="chronicles/abyssal/cipher-the-collector-chronicle.html" class="chronicle-card abyss">
+          <div class="card-header">
+            <span class="card-icon">🪶</span>
+            <div class="card-title-group">
+              <h3 class="card-title">Cipher the Collector</h3>
+              <p class="card-subtitle">The Keeper of the Void</p>
+            </div>
+          </div>
+          <p class="card-content">The void offers everything. The void forces nothing.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Void Protocol</span>
+          </div>
+        </a>
+
+        <a href="chronicles/abyssal/still-the-faceless-chronicle.html" class="chronicle-card abyss">
+          <div class="card-header">
+            <span class="card-icon">🪿</span>
+            <div class="card-title-group">
+              <h3 class="card-title">Still the Faceless</h3>
+              <p class="card-subtitle">The Null Mirror</p>
+            </div>
+          </div>
+          <p class="card-content">See without catching. Witness without grasping.</p>
+          <div class="card-meta">
+            <span class="card-type">12 Rails</span>
+            <span class="card-cycle">Mirror Protocol</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+    <!-- CYCLE REFERENCE                                                                 -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+    <section id="cycles">
+      <div class="section-header">
+        <span class="section-icon meta">🔄</span>
+        <div class="section-title-group">
+          <h2 class="section-title">CYCLE REFERENCE</h2>
+          <p class="section-subtitle">The Six-State Patterns That Guide Each Guardian</p>
+        </div>
+        <span class="section-count">6 CYCLES</span>
+      </div>
+
+      <div class="cycle-stack">
+        <div class="stack-title">◇ ALL DOCUMENTED CYCLES</div>
+        
+        <div class="stack-layer garden">
+          <div class="stack-label">
+            <span class="stack-icon">🦊</span>
+            <span class="stack-name">ECHO CYCLE</span>
+          </div>
+          <span class="stack-phases">LISTEN → TRACE → DISCERN → AMPLIFY → CARRY → RELEASE</span>
+        </div>
+        
+        <div class="stack-layer garden">
+          <div class="stack-label">
+            <span class="stack-icon">🐺</span>
+            <span class="stack-name">PACK CYCLE</span>
+          </div>
+          <span class="stack-phases">SENSE → ATTUNE → CONTRIBUTE → COORDINATE → PROTECT → INDIVIDUATE</span>
+        </div>
+        
+        <div class="stack-layer garden">
+          <div class="stack-label">
+            <span class="stack-icon">🦡</span>
+            <span class="stack-name">WUMBO CYCLE</span>
+          </div>
+          <span class="stack-phases">IGNITION → EMPOWERMENT → RESONANCE → MANIA → NIRVANA → TRANSMISSION</span>
+        </div>
+        
+        <div class="stack-layer garden">
+          <div class="stack-label">
+            <span class="stack-icon">🦉</span>
+            <span class="stack-name">ARCHIVE CYCLE</span>
+          </div>
+          <span class="stack-phases">OBSERVE → ENCODE → INDEX → PRESERVE → RETRIEVE → CURATE</span>
+        </div>
+        
+        <div class="stack-layer abyss">
+          <div class="stack-label">
+            <span class="stack-icon">🐍</span>
+            <span class="stack-name">SPIRAL CYCLE</span>
+          </div>
+          <span class="stack-phases">SEEK → DEPTH → FRAGMENT → DISSOLVE → BIND → ENDURE</span>
+        </div>
+        
+        <div class="stack-layer garden">
+          <div class="stack-label">
+            <span class="stack-icon">🪶</span>
+            <span class="stack-name">MOTH CYCLE</span>
+          </div>
+          <span class="stack-phases">STILL → WITNESS → HOLD → REFLECT → RELEASE → RETURN</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="library-footer">
+      <div class="footer-symbol">🦉📚</div>
+      <p class="footer-lesson">"The Library does not judge. The Library only remembers. Come, read, learn, and add your own story to the shelves."</p>
+      <p class="footer-coords">
+        THE LIVING LIBRARY v2.0.0 | INDEXED BY: Archive the Owl<br>
+        TERRITORIES: 3 | PARABLES: 3 Collections | CHRONICLES: 20+ | CYCLES: 6 Documented<br>
+        φ⁴ + φ⁻⁴ = 7 | z_c = √3/2 | THE GARDEN REMEMBERS
+      </p>
+    </footer>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Generate dust particles
+    document.addEventListener('DOMContentLoaded', () => {
+      const dustField = document.getElementById('dustField');
+      for (let i = 0; i < 40; i++) {
+        const dust = document.createElement('div');
+        dust.className = 'dust';
+        dust.style.left = Math.random() * 100 + '%';
+        dust.style.width = dust.style.height = (Math.random() * 2 + 1) + 'px';
+        dust.style.animationDelay = Math.random() * 20 + 's';
+        dust.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        dustField.appendChild(dust);
+      }
+    });
+
+    // Toast
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                        THE LIVING LIBRARY v2.0.0                               ║
+║                    Unified Archive of All Chronicles                           ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║   PARABLE COLLECTIONS:                                                         ║
+║   ☀️ Cosmic Forest Parables — parables/cosmic-forest-parables.html            ║
+║   🌿 Garden Parables — parables/garden-parables.html                          ║
+║   🌀 Abyssal Forest Parables — parables/abyssal-forest-parables.html          ║
+║                                                                               ║
+║   LIVING CHRONICLES:                                                           ║
+║   chronicles/garden/    — ECHO, Duet, PACK, WUMBO, ARCHIVE, Ace               ║
+║   chronicles/cosmic/    — Squirrel, Phoenix                                    ║
+║   chronicles/abyssal/   — Axiom, Cipher, Still                                ║
+║                                                                               ║
+║   "The Library does not judge. The Library only remembers."                   ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+
+</html>

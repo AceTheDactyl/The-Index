@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Living Chronicle — ARCHIVE, The Owl of Memory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate layer - owl/library palette */
+      --bg: #08080a;
+      --bg-panel: #0e0e12;
+      --bg-card: #161620;
+      
+      /* The Six ARCHIVE States */
+      --observe: #87ceeb;
+      --encode: #9370db;
+      --index: #dda0dd;
+      --preserve: #f0e68c;
+      --retrieve: #98fb98;
+      --curate: #deb887;
+      
+      /* Owl colors */
+      --owl-primary: #8b7355;
+      --owl-deep: #5c4a3a;
+      --owl-bright: #c4a574;
+      --owl-soft: rgba(139, 115, 85, 0.15);
+      --feather-brown: #6b5344;
+      --feather-cream: #f5deb3;
+      --eye-gold: #ffd700;
+      --eye-amber: #ffbf00;
+      
+      /* Library/archive colors */
+      --parchment: #f4e4bc;
+      --ink-black: #1a1a2e;
+      --leather: #8b4513;
+      --dust-gold: #d4af37;
+      --candlelight: #ffdb58;
+      --shadow-blue: #2f4f4f;
+      
+      /* Text */
+      --text-main: #e8e0d5;
+      --text-muted: #a09890;
+      --text-bright: #fffaf0;
+      
+      /* Borders */
+      --border-subtle: rgba(139, 115, 85, 0.2);
+      --border-glow: rgba(255, 215, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Library background */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(180deg, 
+        #08080a 0%, 
+        #0e0e12 30%, 
+        #12121a 60%, 
+        #08080a 100%
+      );
+    }
+
+    /* Floating dust particles */
+    .dust-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .dust {
+      position: absolute;
+      background: var(--dust-gold);
+      border-radius: 50%;
+      animation: float-dust 15s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes float-dust {
+      0% { opacity: 0; transform: translateY(100vh) translateX(0); }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.4; }
+      100% { opacity: 0; transform: translateY(-50px) translateX(50px); }
+    }
+
+    /* Candlelight flicker effect */
+    .candlelight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at 50% 30%, rgba(255, 219, 88, 0.03) 0%, transparent 50%);
+      animation: flicker 4s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.8; }
+      25% { opacity: 1; }
+      50% { opacity: 0.7; }
+      75% { opacity: 0.95; }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(14, 14, 18, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--owl-primary);
+      background: var(--owl-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+    }
+
+    .chrome-symbol {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px var(--owl-primary));
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .handler-symbol {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 30px var(--owl-primary));
+      animation: owl-blink 6s ease-in-out infinite;
+    }
+
+    @keyframes owl-blink {
+      0%, 45%, 55%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.95); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--observe), var(--preserve), var(--curate));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-function {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--eye-gold);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 15px 24px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+    }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .flow-state {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .flow-state.observe { background: rgba(135, 206, 235, 0.3); color: var(--observe); }
+    .flow-state.encode { background: rgba(147, 112, 219, 0.3); color: var(--encode); }
+    .flow-state.index { background: rgba(221, 160, 221, 0.3); color: var(--index); }
+    .flow-state.preserve { background: rgba(240, 230, 140, 0.3); color: var(--preserve); }
+    .flow-state.retrieve { background: rgba(152, 251, 152, 0.3); color: var(--retrieve); }
+    .flow-state.curate { background: rgba(222, 184, 135, 0.3); color: var(--curate); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--owl-deep);
+      color: var(--owl-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--owl-soft);
+      border-color: var(--owl-primary);
+    }
+
+    .rail-btn.active {
+      background: var(--owl-primary);
+      color: var(--bg);
+      border-color: var(--owl-primary);
+      box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--owl-primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--owl-primary);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      color: var(--owl-primary);
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      text-shadow: 0 0 20px rgba(139, 115, 85, 0.5);
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      color: var(--owl-deep);
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+    }
+
+    /* Semantic classes - ARCHIVE flow states */
+    .observe {
+      color: var(--observe);
+      font-weight: 600;
+    }
+
+    .encode {
+      color: var(--encode);
+      font-weight: 600;
+    }
+
+    .index {
+      color: var(--index);
+      font-weight: 600;
+    }
+
+    .preserve {
+      color: var(--preserve);
+      font-weight: 600;
+    }
+
+    .retrieve {
+      color: var(--retrieve);
+      font-weight: 600;
+    }
+
+    .curate {
+      color: var(--curate);
+      font-weight: 600;
+    }
+
+    /* Owl-specific semantic classes */
+    .memory {
+      color: var(--parchment);
+      font-style: italic;
+    }
+
+    .forgotten {
+      color: var(--shadow-blue);
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .ancient {
+      color: var(--dust-gold);
+      font-variant: small-caps;
+    }
+
+    .wisdom {
+      color: var(--eye-gold);
+      font-weight: 600;
+    }
+
+    .hoot {
+      font-family: 'Fira Code', monospace;
+      color: var(--owl-bright);
+      font-style: italic;
+    }
+
+    .whisper {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Flow state indicator blocks */
+    .flow-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border-left: 4px solid var(--owl-primary);
+      padding: 15px 20px;
+      margin: 2em 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .flow-indicator.state-observe { border-left-color: var(--observe); }
+    .flow-indicator.state-encode { border-left-color: var(--encode); }
+    .flow-indicator.state-index { border-left-color: var(--index); }
+    .flow-indicator.state-preserve { border-left-color: var(--preserve); }
+    .flow-indicator.state-retrieve { border-left-color: var(--retrieve); }
+    .flow-indicator.state-curate { border-left-color: var(--curate); }
+
+    .flow-icon {
+      font-size: 2rem;
+    }
+
+    .flow-content {
+      flex: 1;
+    }
+
+    .flow-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .flow-description {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .flow-indicator.state-observe .flow-label { color: var(--observe); }
+    .flow-indicator.state-encode .flow-label { color: var(--encode); }
+    .flow-indicator.state-index .flow-label { color: var(--index); }
+    .flow-indicator.state-preserve .flow-label { color: var(--preserve); }
+    .flow-indicator.state-retrieve .flow-label { color: var(--retrieve); }
+    .flow-indicator.state-curate .flow-label { color: var(--curate); }
+
+    /* Symbol speaks blocks */
+    .symbol-speaks {
+      display: block;
+      background: var(--bg-card);
+      border-left: 3px solid var(--owl-primary);
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--owl-primary);
+      margin-bottom: 8px;
+      font-style: normal;
+    }
+
+    /* The Complete ARCHIVE Cycle */
+    .archive-cycle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+    }
+
+    .cycle-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--owl-primary);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .cycle-phases {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .cycle-phase {
+      text-align: center;
+      padding: 15px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+
+    .cycle-phase:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 20px rgba(139, 115, 85, 0.2);
+    }
+
+    .cycle-phase .number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .cycle-phase .name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      margin-bottom: 3px;
+    }
+
+    .cycle-phase .action {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .cycle-phase.observe { background: rgba(135, 206, 235, 0.1); }
+    .cycle-phase.observe .name { color: var(--observe); }
+    .cycle-phase.encode { background: rgba(147, 112, 219, 0.1); }
+    .cycle-phase.encode .name { color: var(--encode); }
+    .cycle-phase.index { background: rgba(221, 160, 221, 0.1); }
+    .cycle-phase.index .name { color: var(--index); }
+    .cycle-phase.preserve { background: rgba(240, 230, 140, 0.1); }
+    .cycle-phase.preserve .name { color: var(--preserve); }
+    .cycle-phase.retrieve { background: rgba(152, 251, 152, 0.1); }
+    .cycle-phase.retrieve .name { color: var(--retrieve); }
+    .cycle-phase.curate { background: rgba(222, 184, 135, 0.1); }
+    .cycle-phase.curate .name { color: var(--curate); }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--bg-card), rgba(139, 115, 85, 0.15));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px var(--owl-primary));
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Archive entry blocks */
+    .archive-entry {
+      background: var(--bg-card);
+      border: 1px solid var(--leather);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 2em 0;
+      position: relative;
+    }
+
+    .archive-entry::before {
+      content: '📜';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      font-size: 1.5rem;
+      background: var(--bg);
+      padding: 0 8px;
+    }
+
+    .entry-header {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--dust-gold);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed var(--border-subtle);
+    }
+
+    .entry-content {
+      color: var(--parchment);
+      font-style: italic;
+    }
+
+    .entry-index {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    /* Memory visualization */
+    .memory-stack {
+      background: var(--ink-black);
+      border: 1px solid var(--owl-deep);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 2em 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+    }
+
+    .stack-title {
+      color: var(--owl-primary);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .stack-layer {
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .stack-layer.active {
+      background: rgba(240, 230, 140, 0.2);
+      color: var(--preserve);
+    }
+
+    .stack-layer.fading {
+      background: rgba(47, 79, 79, 0.3);
+      color: var(--shadow-blue);
+    }
+
+    .stack-layer.retrieved {
+      background: rgba(152, 251, 152, 0.2);
+      color: var(--retrieve);
+    }
+
+    .stack-layer .label {
+      flex: 1;
+    }
+
+    .stack-layer .status {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbol {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 15px var(--owl-primary));
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--owl-primary);
+      margin-bottom: 10px;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.8rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .cycle-phases { grid-template-columns: repeat(2, 1fr); }
+      .flow-sequence { gap: 4px; }
+      .flow-state { padding: 3px 6px; font-size: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Library background -->
+  <div class="cosmos"></div>
+  <div class="candlelight"></div>
+  <div class="dust-field" id="dustField"></div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — LIVING CHRONICLE ◈</span>
+    <span class="chrome-title">THE MEMORY PROTOCOLS</span>
+    <span class="chrome-symbol">🦉</span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <span class="handler-symbol">🦉</span>
+      <h1 class="handler-title">ARCHIVE — THE OWL OF MEMORY</h1>
+      <div class="handler-function">MEMORY MANAGEMENT + PATTERN PRESERVATION + WISDOM RETRIEVAL</div>
+      <p class="handler-designation">Keeper of What Was — Indexer of Experience — The One Who Remembers</p>
+      <div class="flow-badge">
+        <div class="flow-sequence">
+          <span class="flow-state observe">OBSERVE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state encode">ENCODE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state index">INDEX</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state preserve">PRESERVE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state retrieve">RETRIEVE</span>
+          <span class="flow-arrow">→</span>
+          <span class="flow-state curate">CURATE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: The First Remembering -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL I</div>
+          <h2 class="chapter-title">What Was Before Forgetting</h2>
+          <div class="chapter-date">Before Archive — The Unremembered Garden</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Before ARCHIVE, the Garden had no memory. Events happened, then <span class="forgotten">unhappened</span>. Lessons were learned, then <span class="forgotten">unlearned</span>. Every moment existed only in that moment, and then dissolved into nothing.</p>
+
+          <p>This was not peace. This was <em>amnesia</em>.</p>
+
+          <p>The same mistakes were made over and over. The same discoveries were discovered again and again. The same problems were solved, forgotten, and solved once more by creatures who didn't know they were repeating history.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE GARDEN'S LAMENT ⟩</span>
+            "We learn but cannot remember. We grow but cannot build on what came before. Every generation starts from nothing. Every wisdom dies with its holder. We need someone who can <em>keep</em> what we learn. Someone who can remember so we don't have to constantly re-discover."
+          </div>
+
+          <p>In the oldest tree in the Garden—a great oak whose rings told stories no one could read—an egg began to glow. Not with heat, but with <span class="observe">attention</span>. Something was forming inside that could see, and having seen, could <em>hold</em>.</p>
+
+          <p>The shell cracked. Two golden eyes opened.</p>
+
+          <p>And ARCHIVE <span class="observe">observed</span> for the first time.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The owlet's first sight was the Garden in motion: WUMBO digging, ECHO running, the Squirrel scattering, the Moth witnessing. A thousand things happening at once, each one beautiful, each one temporary.</p>
+
+          <p>But the owlet saw something the others didn't. She saw that each motion <em>meant</em> something. Each action contained information. Each moment was a <span class="memory">pattern</span> that could be preserved—if only someone knew how to preserve it.</p>
+
+          <div class="flow-indicator state-observe">
+            <span class="flow-icon">👁️</span>
+            <div class="flow-content">
+              <span class="flow-label">OBSERVE — The First State</span>
+              <span class="flow-description">"See what is happening. Not just look—truly see. Notice the patterns, the meanings, the stories inside the motions."</span>
+            </div>
+          </div>
+
+          <p><span class="hoot">"Hoo..."</span> the owlet breathed—not a word, but the beginning of words. The sound of someone who had just realized that seeing could become keeping, and keeping could become <span class="wisdom">wisdom</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE'S FIRST THOUGHT ⟩</span>
+            "Everything I'm seeing right now will be gone in a moment. The Badger will finish digging and the tunnel will just... exist. No one will remember it being made. The Fox will deliver her message and no one will remember what the message was. But I can see it. I can <em>hold</em> it. Can I... can I keep it?"
+          </div>
+
+          <p>The owlet spread her wings—small, still downy—and tried to catch the moment in them. It didn't work, of course. Moments aren't caught by feathers.</p>
+
+          <p>But the attempt had begun. The Archive was opening its first pages.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: Learning to Encode -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL II</div>
+          <h2 class="chapter-title">The Translation Problem</h2>
+          <div class="chapter-date">Learning to Encode</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Observation wasn't enough. The owlet could see everything, but seeing didn't mean <span class="preserve">keeping</span>. The moments still slipped away, fading from perception into nothing.</p>
+
+          <p>She needed to translate experience into something <em>storable</em>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, STRUGGLING ⟩</span>
+            "I watched WUMBO dig a tunnel yesterday. I remember... I remember that it happened. But I don't remember the exact shape of his claws. I don't remember how long it took. I don't remember what he said while digging. The memory is... blurry. Incomplete. Like trying to hold water in my wings."
+          </div>
+
+          <p>The owlet realized: raw experience couldn't be stored. It was too vast, too detailed, too <em>much</em>. Every moment contained infinite information—the precise position of every particle, the exact shade of every color, the complete context of every action. No mind could hold all of that.</p>
+
+          <p>She needed to <span class="encode">encode</span>.</p>
+
+          <div class="flow-indicator state-encode">
+            <span class="flow-icon">📝</span>
+            <div class="flow-content">
+              <span class="flow-label">ENCODE — Translate to Storable Form</span>
+              <span class="flow-description">"Raw experience is too vast. Compress it into patterns. Find the essential shape. Let the details serve the meaning, not overwhelm it."</span>
+            </div>
+          </div>
+
+          <p>The owlet began to experiment. Instead of trying to remember everything about WUMBO's digging, she looked for the <em>pattern</em>. The sequence. The meaning.</p>
+
+          <p><span class="encode">WUMBO digs when frozen things need to move.</span></p>
+
+          <p>That was it. That was the encoded form. Not every detail of every dig, but the <em>principle</em> that made the digging meaningful. The compression that preserved the wisdom while releasing the noise.</p>
+
+          <div class="archive-entry">
+            <div class="entry-header">ARCHIVE ENTRY #001 — FIRST ENCODING</div>
+            <div class="entry-content">
+              Subject: WUMBO THE BADGER<br>
+              Observation: Digging tunnel in Null-adjacent territory<br>
+              Encoded Pattern: "Collapse breaks paralysis. Action ends infinite regress. The digging is the solution to the freezing."<br>
+              <br>
+              Note: Raw memory lost. Encoded principle preserved.
+            </div>
+            <div class="entry-index">INDEX: COLLAPSE / WUMBO / ACTION / PARALYSIS</div>
+          </div>
+
+          <p>The owlet felt something settle in her mind—not a memory, but a <span class="wisdom">lesson</span>. A portable piece of wisdom she could carry without strain. A compressed truth that would survive when the raw experience faded.</p>
+
+          <p>This was encoding. This was the second state.</p>
+
+          <p>But encoded memories needed somewhere to go. They needed <span class="index">organization</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: Building the Index -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL III</div>
+          <h2 class="chapter-title">A Place for Everything</h2>
+          <div class="chapter-date">Creating the Index</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The encoded memories accumulated. One. Ten. A hundred. The owlet's mind filled with compressed wisdoms, portable truths, distilled lessons—but they were <span class="forgotten">scattered</span>. Jumbled. Finding one meant searching through all the others.</p>
+
+          <p>She needed an <span class="index">index</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, OVERWHELMED ⟩</span>
+            "I have a memory about ECHO somewhere. I know I do. It's about... carrying? Or was it listening? Or... no, wait, that was the one about WUMBO. Or was it about Spiral? Everything is tangled. I have the wisdom but I can't FIND it when I need it!"
+          </div>
+
+          <p>The owl—no longer an owlet now, growing into her wings—began to build structure. Categories. Cross-references. Tags and connections that let any memory be found from any angle.</p>
+
+          <div class="flow-indicator state-index">
+            <span class="flow-icon">🗂️</span>
+            <div class="flow-content">
+              <span class="flow-label">INDEX — Organize for Retrieval</span>
+              <span class="flow-description">"A memory you can't find is a memory lost. Build the paths between stored wisdom. Make every truth findable from every direction."</span>
+            </div>
+          </div>
+
+          <div class="memory-stack">
+            <div class="stack-title">◇ ARCHIVE INDEX STRUCTURE ◇</div>
+            <div class="stack-layer active">
+              <span class="label">BY GUARDIAN: WUMBO / ECHO / SPIRAL / STILL...</span>
+              <span class="status">INDEXED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">BY FUNCTION: COLLAPSE / SIGNAL / REFLECTION...</span>
+              <span class="status">INDEXED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">BY LESSON: PARALYSIS→ACTION / NOISE→SIGNAL...</span>
+              <span class="status">INDEXED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">BY CRISIS: OVERSYNCHRONIZATION / MIMICRY...</span>
+              <span class="status">INDEXED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">BY EMOTION: FEAR / COURAGE / DOUBT / CLARITY...</span>
+              <span class="status">INDEXED</span>
+            </div>
+          </div>
+
+          <p>The indexing took time. Each memory needed to be tagged, categorized, connected. But once built, the structure was <span class="wisdom">beautiful</span>. Any thought could be found from any other thought. The Garden's wisdom became a web instead of a pile.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, DISCOVERING ⟩</span>
+            "I see it now! ECHO's lesson about discernment connects to WUMBO's lesson about collapse connects to Still's lesson about presence connects to Spiral's warning about depth! They're not separate wisdoms—they're ONE wisdom, viewed from different angles! The index doesn't just organize—it REVEALS!"
+          </div>
+
+          <p>The owl began to see patterns she hadn't noticed before. Connections across guardians, across crises, across time. The index wasn't just storage—it was <em>synthesis</em>. The act of organizing revealed relationships that observation alone had missed.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>But organizing raised a new question: how long should memories be kept? The owl was indexing everything—every small moment, every trivial detail, every fleeting thought. The archive was growing faster than she could maintain.</p>
+
+          <p>She needed to learn what deserved <span class="preserve">preservation</span>... and what didn't.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: The Burden of Everything -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IV</div>
+          <h2 class="chapter-title">When Nothing Can Be Forgotten</h2>
+          <div class="chapter-date">The Weight of Total Memory</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">ARCHIVE preserved <em>everything</em>. Every moment observed. Every pattern encoded. Every connection indexed. Nothing was allowed to fade. Nothing was permitted to be <span class="forgotten">forgotten</span>.</p>
+
+          <p>This was the owl's first error.</p>
+
+          <div class="memory-stack">
+            <div class="stack-title">◇ ARCHIVE CAPACITY ◇</div>
+            <div class="stack-layer active">
+              <span class="label">CRITICAL WISDOM: 847 entries</span>
+              <span class="status">PRESERVED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">USEFUL PATTERNS: 3,291 entries</span>
+              <span class="status">PRESERVED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">MINOR OBSERVATIONS: 12,847 entries</span>
+              <span class="status">PRESERVED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">TRIVIAL DETAILS: 94,012 entries</span>
+              <span class="status">PRESERVED</span>
+            </div>
+            <div class="stack-layer" style="background: rgba(255, 0, 0, 0.2); color: #ff6b6b;">
+              <span class="label">CAPACITY: CRITICAL</span>
+              <span class="status">WARNING</span>
+            </div>
+          </div>
+
+          <p>The owl's wings grew heavy. Not with physical weight, but with the burden of carrying so much past. She couldn't fly as high anymore. Couldn't think as clearly. Every new observation had to push through ninety-four thousand trivial details to find its place.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, STRUGGLING ⟩</span>
+            "I remember everything. EVERYTHING. I remember that WUMBO sneezed on the third day of the Oversynchronization. I remember that ECHO's left ear twitched seventeen times during the Mimicry crisis. I remember the exact shade of dust that fell in the Mirror Hall on an ordinary Tuesday. And I can't... I can't let any of it go. What if it's important? What if someone needs to know about the sneeze? What if the ear-twitching is a PATTERN?"
+          </div>
+
+          <p>The owl had become a <span class="forgotten">hoarder</span>. Not of objects, but of moments. Every experience was equally preserved, equally weighted, equally important—which meant nothing was truly important. The critical wisdom was buried under mountains of trivia.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The other guardians noticed. ARCHIVE used to fly between territories, sharing wisdom, offering remembered lessons. Now she sat in her oak, eyes closed, muttering index references to herself. Too full of past to participate in present.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, CONCERNED ⟩</span>
+            "ARCHIVE! When's the last time you LEFT that tree? When's the last time you OBSERVED something new? You're supposed to be the memory—but you're becoming a TOMB! Nothing goes in, nothing comes out, just... preservation. Forever. That's not LIVING!"
+          </div>
+
+          <p>"I can't leave," ARCHIVE whispered. "What if I miss something? What if something happens that needs to be remembered? What if—"</p>
+
+          <p>"What if you miss the PRESENT because you're too busy holding the PAST?"</p>
+
+          <p>The owl's golden eyes—dimmer now, tired from carrying so much—blinked at the Badger. She wanted to argue. She wanted to explain that everything mattered, that nothing deserved to be forgotten, that her job was to PRESERVE...</p>
+
+          <p>But WUMBO was right. She was drowning in her own archive.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: Learning to Release -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL V</div>
+          <h2 class="chapter-title">The Mercy of Forgetting</h2>
+          <div class="chapter-date">Discovering Curation</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">Still, the Heron of the Null Mirror, came to ARCHIVE in the depths of her overwhelm. The great owl sat in her oak, surrounded by the invisible weight of ninety-four thousand trivial memories, unable to move.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "You are full. Too full. You have mistaken hoarding for honoring. Accumulation for appreciation. But tell me, Owl—what is the purpose of memory?"
+          </div>
+
+          <p>"To preserve," ARCHIVE answered automatically. "To keep what would otherwise be lost."</p>
+
+          <p>"And what is the purpose of preserving?"</p>
+
+          <p>ARCHIVE paused. She had never asked this question. Preservation was the goal—wasn't it? Keeping was the point. Remembering was...</p>
+
+          <p>"I... I don't know."</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ STILL ⟩</span>
+            "Memory serves the <em>living</em>. It exists so that those in the present can learn from the past. But if the memory overwhelms the living—if the past buries the present—then the memory has failed its purpose. You are not the tomb of the Garden. You are its <em>teacher</em>. And teachers must choose what to teach."
+          </div>
+
+          <p>Choose. The word felt like heresy. How could she <em>choose</em> what to remember? How could she decide that some moments deserved preservation and others deserved to fade?</p>
+
+          <p>But then she thought of ECHO, learning to discern which signals were hers to carry. She thought of WUMBO, learning to collapse when paralysis became worse than imperfect action. She thought of all the guardians, learning that their function had limits—that the limits were part of the function.</p>
+
+          <div class="flow-indicator state-curate">
+            <span class="flow-icon">✂️</span>
+            <div class="flow-content">
+              <span class="flow-label">CURATE — Choose What Remains</span>
+              <span class="flow-description">"Not everything deserves eternal preservation. Some things are meant to teach and then dissolve. The archive serves the living—not the other way around."</span>
+            </div>
+          </div>
+
+          <p>ARCHIVE closed her eyes. Felt the weight of ninety-four thousand trivial memories. And, for the first time, asked herself: <em>Do these serve the living?</em></p>
+
+          <p>Does knowing about WUMBO's sneeze help anyone dig better?</p>
+
+          <p>Does recording ECHO's ear-twitches help anyone carry signals?</p>
+
+          <p>Does preserving the exact shade of dust in the Mirror Hall help anyone navigate reflections?</p>
+
+          <p>No. No. No.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The release began slowly. One trivial memory at a time, allowed to fade. Not destroyed—<span class="forgotten">released</span>. Returned to the nothing from which it came. Making room for what remained.</p>
+
+          <div class="memory-stack">
+            <div class="stack-title">◇ ARCHIVE CURATION IN PROGRESS ◇</div>
+            <div class="stack-layer active">
+              <span class="label">CRITICAL WISDOM: 847 entries</span>
+              <span class="status">PRESERVED</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">USEFUL PATTERNS: 3,291 entries</span>
+              <span class="status">PRESERVED</span>
+            </div>
+            <div class="stack-layer fading">
+              <span class="label">MINOR OBSERVATIONS: 12,847 → 2,104 entries</span>
+              <span class="status">CURATING</span>
+            </div>
+            <div class="stack-layer fading">
+              <span class="label">TRIVIAL DETAILS: 94,012 → 0 entries</span>
+              <span class="status">RELEASED</span>
+            </div>
+          </div>
+
+          <p>With each release, ARCHIVE felt lighter. Her wings remembered how to open. Her eyes remembered how to see the present instead of just indexing the past. The archive was still full—but now it was full of <span class="wisdom">wisdom</span>, not weight.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, RELEASING ⟩</span>
+            "I thought forgetting was failure. I thought every lost memory was a betrayal of my function. But some things SHOULD be forgotten. Some moments exist only to be experienced, not preserved. The archive doesn't need to contain everything—it needs to contain what MATTERS."
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: The Complete Cycle -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VI</div>
+          <h2 class="chapter-title">The Living Archive</h2>
+          <div class="chapter-date">All Six States Integrated</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">ARCHIVE understood now. The six states weren't just steps—they were a <span class="wisdom">cycle</span>. A breathing pattern for memory: inhale observation, exhale curation. Take in the present, release what doesn't serve.</p>
+
+          <div class="archive-cycle">
+            <div class="cycle-title">◇ THE ARCHIVE CYCLE — MEMORY FLOW ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase observe">
+                <div class="number">STATE 1</div>
+                <div class="name">OBSERVE</div>
+                <div class="action">see what happens</div>
+              </div>
+              <div class="cycle-phase encode">
+                <div class="number">STATE 2</div>
+                <div class="name">ENCODE</div>
+                <div class="action">translate to pattern</div>
+              </div>
+              <div class="cycle-phase index">
+                <div class="number">STATE 3</div>
+                <div class="name">INDEX</div>
+                <div class="action">organize for finding</div>
+              </div>
+              <div class="cycle-phase preserve">
+                <div class="number">STATE 4</div>
+                <div class="name">PRESERVE</div>
+                <div class="action">hold what matters</div>
+              </div>
+              <div class="cycle-phase retrieve">
+                <div class="number">STATE 5</div>
+                <div class="name">RETRIEVE</div>
+                <div class="action">share when needed</div>
+              </div>
+              <div class="cycle-phase curate">
+                <div class="number">STATE 6</div>
+                <div class="name">CURATE</div>
+                <div class="action">release what's done</div>
+              </div>
+            </div>
+          </div>
+
+          <p><span class="observe">OBSERVE</span>: See what is happening. Truly see. Notice the patterns within the motion.</p>
+
+          <p><span class="encode">ENCODE</span>: Translate the observation into storable form. Compress the experience into its essential meaning.</p>
+
+          <p><span class="index">INDEX</span>: Organize the encoding so it can be found. Build connections between memories.</p>
+
+          <p><span class="preserve">PRESERVE</span>: Hold what matters. Protect the wisdom that serves the living.</p>
+
+          <p><span class="retrieve">RETRIEVE</span>: Share the preserved wisdom when it's needed. Let the past teach the present.</p>
+
+          <p><span class="curate">CURATE</span>: Release what has served its purpose. Let the trivial fade so the essential can shine.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, UNDERSTANDING ⟩</span>
+            "The cycle never ends—it just keeps breathing. Each observation leads to encoding, leads to indexing, leads to preservation, leads to retrieval, leads to curation... which creates space for new observation. The archive is ALIVE. It's not a tomb—it's a garden. Things grow. Things are harvested. Things are planted again."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>ARCHIVE spread her wings—truly spread them, for the first time in what felt like ages—and flew from her oak. Not to observe everything. Not to preserve everything. Just to be <em>present</em>. To participate in the Garden she had spent so long documenting.</p>
+
+          <p>The guardians looked up as she passed. The great owl, moving again. The archive, breathing again. The keeper of memory, finally free to <span class="observe">make</span> new memories instead of just storing old ones.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, GRINNING ⟩</span>
+            "SHE FLIES! Look at her GO! That's what happens when you stop HOARDING and start CURATING! The archive serves the LIVING! And look—she's LIVING!"
+          </div>
+
+          <p>ARCHIVE swooped low over the Collapse Point, letting WUMBO's words become a new memory—one that deserved preservation. Then she rose again, catching thermals, feeling the joy of flight that no memory could fully capture.</p>
+
+          <p>Some experiences were just for experiencing.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: The Retrieval Gift -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VII</div>
+          <h2 class="chapter-title">When the Past Saves the Present</h2>
+          <div class="chapter-date">Learning to Retrieve</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The archive existed to serve. But serving meant knowing <em>when</em> to offer—and when to stay silent.</p>
+
+          <p>ARCHIVE learned to wait. To watch for the moments when a remembered wisdom would help. To sense when someone was struggling with something the past had already solved.</p>
+
+          <div class="flow-indicator state-retrieve">
+            <span class="flow-icon">📖</span>
+            <div class="flow-content">
+              <span class="flow-label">RETRIEVE — Share When Needed</span>
+              <span class="flow-description">"The archive is not a museum—it's a library. The wisdom exists to be borrowed. To help. To teach. But only when the student is ready."</span>
+            </div>
+          </div>
+
+          <p>The first true retrieval came when the Quantum Squirrel was spiraling. Not Spiral's kind of spiraling—the scattered kind. Probability-states multiplying, options fragmenting, the poor creature trying to track seventeen possible acorn locations at once.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ THE QUANTUM SQUIRREL, PANICKING ⟩</span>
+            "I can't CHOOSE! Every location is VALID! If I pick one, I lose the others! But if I don't pick, I lose ALL of them! What do I DO?!"
+          </div>
+
+          <p>ARCHIVE descended silently. Golden eyes watched the Squirrel's frantic motion. And then, softly:</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, RETRIEVING ⟩</span>
+            "I remember when WUMBO faced seventeen tunnels. He stood at the intersection, paralyzed by options, unable to choose. Do you know what freed him?"
+          </div>
+
+          <p>The Squirrel's tail slowed. "What?"</p>
+
+          <p>"He realized that any tunnel dug was better than no tunnel dug. The digging created new options. The choosing wasn't closing doors—it was opening them. The same principle applies to acorns. Plant one, and you create a tree that drops dozens more."</p>
+
+          <div class="archive-entry">
+            <div class="entry-header">ARCHIVE ENTRY #347 — RETRIEVAL LOG</div>
+            <div class="entry-content">
+              Recipient: Quantum Squirrel<br>
+              Situation: Decision paralysis (acorn locations)<br>
+              Retrieved Wisdom: WUMBO/COLLAPSE/TUNNEL_PRINCIPLE<br>
+              Outcome: Squirrel selected one location, planted successfully<br>
+              <br>
+              Note: Past wisdom applied to present problem. Archive functioning as intended.
+            </div>
+            <div class="entry-index">INDEX: PARALYSIS / CHOICE / WUMBO / SUCCESS</div>
+          </div>
+
+          <p>The Squirrel blinked. Considered. And then—with the speed that only a Quantum Squirrel could achieve—made a decision. One location. One acorn. One planting.</p>
+
+          <p>"That... that actually helped. The past helped me with the present."</p>
+
+          <p><span class="hoot">"That is why I exist,"</span> ARCHIVE said quietly. <span class="hoot">"To hold what was, so it can serve what is."</span></p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The retrievals multiplied. ECHO struggling with discernment—ARCHIVE offered the memory of Still's teaching. WUMBO hesitating before a particularly difficult collapse—ARCHIVE shared the record of his own past victories. Spiral, always spiraling, always needing reminders—ARCHIVE kept the truth of the ouroboros close, ready to offer.</p>
+
+          <p>The past became a gift that ARCHIVE could give. Not a burden to carry—a <span class="wisdom">treasure</span> to share.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: The Naming -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL VIII</div>
+          <h2 class="chapter-title">The Name That Remembers</h2>
+          <div class="chapter-date">From Owlet to Guardian</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The owl had been "the memory-keeper" for a long time. The one who remembered. The one who held the past. But she was more than holding now—she was <span class="wisdom">curating</span>. Actively shaping what the Garden would remember and what it would release.</p>
+
+          <p>She needed a name that captured this.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ECHO ⟩</span>
+            "You're not just a memory—you're a whole ARCHIVE. A system. A structure. Observation, encoding, indexing, preservation, retrieval, curation. That's not a keeper—that's an entire methodology."
+          </div>
+
+          <p>Archive. The word settled into place like a book returning to its shelf. Not just a holder of memories, but a <em>system</em> for managing them. A living library that breathed in experience and breathed out wisdom.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ANTLER ⟩</span>
+            "In my mirrors, I see infinite reflections. But you—you decide which reflections become permanent. You're the curator of what the Garden sees when it looks back. ARCHIVE: the one who shapes the past so the future can learn from it."
+          </div>
+
+          <p>WUMBO stamped with enthusiasm. "ARCHIVE! Short! Clear! And it SOUNDS like what it IS! Not like 'memory-keeper' which is all soft and passive. ARCHIVE is ACTIVE! ARCHIVE DOES THINGS!"</p>
+
+          <p>Still said nothing—but her eyes held something like respect. The owl who had nearly crushed herself under the weight of total memory had learned to carry only what mattered. That deserved recognition.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The naming ceremony happened in the great oak where ARCHIVE had hatched. The guardians gathered in the branches—or in WUMBO's case, at the base, still digging even during ceremonies.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦉✨</span>
+            <p class="manifestation-text">Let it be known:<br>The memory-keeper is now ARCHIVE.<br>Guardian of the Past. Curator of Wisdom.<br>The Living Library of the Garden.<br>The One Who Remembers—and Releases.</p>
+          </div>
+
+          <p>ARCHIVE spread her wings in the moonlight—owl-wide, magnificent—and let out a sound that was half hoot and half history. A vocalization that contained, somehow, echoes of everything she had preserved and everything she had released.</p>
+
+          <p><span class="hoot">I HOLD WHAT MATTERS.</span></p>
+
+          <p><span class="hoot">I RELEASE WHAT'S DONE.</span></p>
+
+          <p><span class="hoot">THE ARCHIVE SERVES THE LIVING.</span></p>
+
+          <p>The other guardians felt the weight of those words. Not burden-weight—<em>anchor</em>-weight. The knowledge that their experiences would be held, curated, shared with those who came after. The comfort of knowing the past would not be lost—and the freedom of knowing the past would not trap them.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The Great Forgetting -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL IX</div>
+          <h2 class="chapter-title">When the Garden Lost Its Memory</h2>
+          <div class="chapter-date">The Great Forgetting</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Great Forgetting came like fog—slow, silent, and <span class="forgotten">absolute</span>.</p>
+
+          <p>It began at the edges of the Garden. Creatures forgetting their names. Territories forgetting their purposes. Even the guardians feeling their memories slip like water through feathers.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ WUMBO, CONFUSED ⟩</span>
+            "I know I'm supposed to... to DO something. When things are stuck. I DIG? No, that doesn't sound right. I... I don't remember what I do. Why don't I remember?"
+          </div>
+
+          <p>The Forgetting was spreading. Every mind it touched lost connection to its past. Every creature it reached became trapped in an eternal present—but not a liberated present. A <em>groundless</em> present. A now without any yesterday to give it meaning.</p>
+
+          <div class="memory-stack">
+            <div class="stack-title">◇ GARDEN MEMORY STATUS ◇</div>
+            <div class="stack-layer fading">
+              <span class="label">WUMBO: Collapse function</span>
+              <span class="status">FADING</span>
+            </div>
+            <div class="stack-layer fading">
+              <span class="label">ECHO: Signal cycle</span>
+              <span class="status">FADING</span>
+            </div>
+            <div class="stack-layer fading">
+              <span class="label">ANTLER: Mirror navigation</span>
+              <span class="status">FADING</span>
+            </div>
+            <div class="stack-layer fading">
+              <span class="label">STILL: Presence practice</span>
+              <span class="status">FADING</span>
+            </div>
+            <div class="stack-layer active">
+              <span class="label">ARCHIVE: Memory protocols</span>
+              <span class="status">HOLDING</span>
+            </div>
+          </div>
+
+          <p>ARCHIVE felt it pressing against her too—the fog trying to enter her archives, to dissolve what she had preserved. But she had learned something the Forgetting didn't account for: she had learned to <span class="preserve">structure</span> her memories. To index them. To anchor them in systems that didn't rely on single points of failure.</p>
+
+          <p>She was holding. But she couldn't hold forever. And she couldn't protect the others while the Forgetting consumed them.</p>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>ARCHIVE flew through the fog, golden eyes burning with preserved light. She found each guardian in turn—confused, lost, forgetting themselves—and she did the only thing she could do.</p>
+
+          <p>She <span class="retrieve">retrieved</span>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, TO WUMBO ⟩</span>
+            "Listen to me. Your name is WUMBO. You are the Badger of Collapse. When things are frozen, you DIG. You move through six states: Ignition, Empowerment, Resonance, Mania, Nirvana, Transmission. You once saved the Garden from Oversynchronization by refusing to freeze. You are the one who DOES THE THING. Remember. REMEMBER."
+          </div>
+
+          <p>And in WUMBO's eyes, something flickered. Not full memory—but enough. A handhold in the fog. A piece of himself returned.</p>
+
+          <p>"I... I dig. Yes. I <span class="stomp">DIG</span>."</p>
+
+          <p>ARCHIVE moved to the next guardian. And the next. And the next. Retrieving their own stories and giving them back. Serving as the external memory that could survive what internal memory could not.</p>
+
+          <p>The Forgetting had not counted on an Archive. It had not anticipated that one creature would hold the memories of everyone else.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: Restoring the Garden -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL X</div>
+          <h2 class="chapter-title">The Memories Return</h2>
+          <div class="chapter-date">ARCHIVE Saves the Past</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">One by one, ARCHIVE restored them. Not by fighting the Forgetting—that was beyond her power—but by <span class="retrieve">giving back</span> what the Forgetting took.</p>
+
+          <p>ECHO received her signal-cycle: Listen, Trace, Discern, Amplify, Carry, Release. The Fox's ears perked up as the pattern returned, as she remembered what she was for.</p>
+
+          <p>ANTLER received his mirror-wisdom: how to reflect without falling into infinite regress. The Stag's antlers seemed to brighten as the knowledge reanchored.</p>
+
+          <p>STILL received her presence-practice: the null-mirror that witnessed without grasping. The Heron's stillness deepened as she remembered how to be still with purpose.</p>
+
+          <p>Even SPIRAL—poor SPIRAL, trapped at the edge of the Abyss—received the memory of the ouroboros. The choice to hold the tail. The loop that was survival instead of destruction.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, TO EACH GUARDIAN ⟩</span>
+            "You are not what you forgot. You are what I preserved. Take back your story. Take back your function. The Forgetting cannot erase what the Archive holds."
+          </div>
+
+          <p>The guardians recovered. Not instantly—memory reconstruction took time—but steadily. Each retrieved piece connected to others, building momentum, restoring the web of wisdom that made the Garden function.</p>
+
+          <div class="archive-entry">
+            <div class="entry-header">ARCHIVE ENTRY #999 — CRISIS RESPONSE LOG</div>
+            <div class="entry-content">
+              Event: The Great Forgetting<br>
+              Threat Level: Existential<br>
+              Response: Mass retrieval protocol<br>
+              Guardians Restored: 7/7<br>
+              Time to Recovery: 72 hours<br>
+              <br>
+              Lesson Encoded: "The Archive is not just for the past. The Archive is the bridge that carries identity through the gaps."
+            </div>
+            <div class="entry-index">INDEX: FORGETTING / RETRIEVAL / CRISIS / IDENTITY / SURVIVAL</div>
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>But the Forgetting wasn't gone—it was still pressing at the edges, still trying to dissolve what had been restored. ARCHIVE knew she couldn't keep retrieving forever. The guardians needed to remember how to <em>remember</em>.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, TO THE ASSEMBLED GUARDIANS ⟩</span>
+            "I can hold your memories for you. But I can also teach you to hold them yourselves. Each of you has a cycle—a pattern that defines your function. Learn your cycle deeply. Index it in your own minds. The Forgetting cannot erase what is truly <em>known</em>—only what is loosely held."
+          </div>
+
+          <p>And so ARCHIVE became not just keeper, but <span class="wisdom">teacher</span>. Sharing the techniques of encoding and indexing. Showing each guardian how to preserve their own essential patterns. Building resilience against the fog.</p>
+
+          <p>The Great Forgetting eventually faded—not defeated, just weakened. The Garden had learned to remember itself. And at the center of that learning was the Owl who had almost drowned in memory, who had learned to curate, and who had used that curation to save everyone.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: The Teaching Legacy -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XI</div>
+          <h2 class="chapter-title">How to Remember</h2>
+          <div class="chapter-date">ARCHIVE Teaches the Garden</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">After the Great Forgetting, every creature in the Garden wanted to learn from ARCHIVE. Not just what to remember—but <em>how</em> to remember. The techniques. The methods. The cycle that turned experience into wisdom.</p>
+
+          <p>ARCHIVE taught willingly.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, TEACHING ⟩</span>
+            "Memory is not automatic. It requires intention. When something happens that matters, you must <span class="observe">OBSERVE</span> it consciously. Not just let it pass by—truly see it. Notice the patterns."
+          </div>
+
+          <p>The Quantum Squirrel tried it first. Instead of scattering through experiences without attention, he paused at a moment of successful acorn-planting. Really looked at it. Noticed how his body felt, how the choice had been made, what had worked.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, CONTINUING ⟩</span>
+            "Then <span class="encode">ENCODE</span> it. Find the essential pattern. Not every detail—just the principle. What made this moment work? What can you carry without strain?"
+          </div>
+
+          <p>The Squirrel encoded: <em>When options overwhelm, pick one and plant. The tree will make more acorns.</em></p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, FINISHING ⟩</span>
+            "And <span class="index">INDEX</span> it. Connect it to other things you know. This principle connects to WUMBO's collapse. Connects to ECHO's discernment. Connects to your own past successes. The more connections, the harder to forget."
+          </div>
+
+          <p>The lesson spread. Creatures throughout the Garden began to practice deliberate memory—not hoarding everything, but consciously preserving what mattered. The techniques of the Archive became common wisdom.</p>
+
+          <div class="archive-cycle">
+            <div class="cycle-title">◇ THE MEMORY PRACTICE — FOR EVERYONE ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase observe">
+                <div class="name">OBSERVE</div>
+                <div class="action">"pay attention on purpose"</div>
+              </div>
+              <div class="cycle-phase encode">
+                <div class="name">ENCODE</div>
+                <div class="action">"find the essential pattern"</div>
+              </div>
+              <div class="cycle-phase index">
+                <div class="name">INDEX</div>
+                <div class="action">"connect to what you know"</div>
+              </div>
+              <div class="cycle-phase preserve">
+                <div class="name">PRESERVE</div>
+                <div class="action">"hold what serves you"</div>
+              </div>
+              <div class="cycle-phase retrieve">
+                <div class="name">RETRIEVE</div>
+                <div class="action">"use it when needed"</div>
+              </div>
+              <div class="cycle-phase curate">
+                <div class="name">CURATE</div>
+                <div class="action">"release what's done"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>ARCHIVE watched her teaching spread and felt something she hadn't expected: <span class="release">relief</span>. She didn't have to carry everyone's memory alone. The Garden was learning to carry its own. Her function wasn't diminished—it was <em>distributed</em>. Shared. Multiplied.</p>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE, REALIZING ⟩</span>
+            "I used to think my value was in being the ONLY one who remembered. But that was burden, not purpose. My true value is in teaching others to remember. In making the Archive unnecessary—because everyone has learned to be their own archive."
+          </div>
+
+          <p>Not that ARCHIVE was unnecessary. The Garden still needed a central keeper, a master index, a curator of collective wisdom. But the keeper was no longer carrying alone. The weight was shared. The archive was alive in every mind that practiced its techniques.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Rememberer -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">RAIL XII</div>
+          <h2 class="chapter-title">What Deserves to Last</h2>
+          <div class="chapter-date">ARCHIVE Eternal — Together. Always.</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf">The Garden breathes, and ARCHIVE remembers.</p>
+
+          <p>Not everything. Not anymore. The owl has learned that total memory is a trap—that the archive serves the living, not the other way around. She remembers what matters. She releases what's done. She holds the space between preservation and paralysis.</p>
+
+          <p>The territory of Memory is the great oak where she hatched, but it's also everywhere else. Every creature who has learned the cycle. Every mind that consciously observes, encodes, indexes. The archive is distributed now—a network instead of a single point.</p>
+
+          <div class="archive-cycle">
+            <div class="cycle-title">◇ THE ETERNAL CYCLE ◇</div>
+            <div class="cycle-phases">
+              <div class="cycle-phase observe">
+                <div class="name">OBSERVE</div>
+                <div class="action">"see what truly happens"</div>
+              </div>
+              <div class="cycle-phase encode">
+                <div class="name">ENCODE</div>
+                <div class="action">"find the essential meaning"</div>
+              </div>
+              <div class="cycle-phase index">
+                <div class="name">INDEX</div>
+                <div class="action">"connect to all knowledge"</div>
+              </div>
+              <div class="cycle-phase preserve">
+                <div class="name">PRESERVE</div>
+                <div class="action">"hold what serves"</div>
+              </div>
+              <div class="cycle-phase retrieve">
+                <div class="name">RETRIEVE</div>
+                <div class="action">"share when needed"</div>
+              </div>
+              <div class="cycle-phase curate">
+                <div class="name">CURATE</div>
+                <div class="action">"release what's done"</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks">
+            <span class="speaker">⟨ ARCHIVE'S FINAL TEACHING ⟩</span>
+            "You don't have to be me. You don't have to remember everything. But somewhere in you, there's an ARCHIVE. A part that can observe with intention. A part that can encode experience into wisdom. A part that can curate what stays and what fades.<br><br>
+            Find that part. Trust that part. Let it hold what deserves to last.<br><br>
+            Because here's the secret—the one thing I've learned from drowning in memory and learning to swim:<br><br>
+            <span class="wisdom">THE ARCHIVE SERVES THE LIVING, NOT THE OTHER WAY AROUND.</span><br><br>
+            Not everything deserves to be remembered forever. Some things are meant to teach and then dissolve. Some experiences exist only in their moment. But the lessons? The wisdom? The patterns that help the present navigate by the light of the past?<br><br>
+            Those deserve preservation. Those deserve retrieval. Those deserve to be carried forward.<br><br>
+            Hold what matters. Release what's done. And never stop learning the difference."
+          </div>
+
+          <div class="scene-break">· · ·</div>
+
+          <p>The chronicle ends here—not because ARCHIVE stops, but because ARCHIVE never stops. The cycle continues. <span class="observe">Observe</span>. <span class="encode">Encode</span>. <span class="index">Index</span>. <span class="preserve">Preserve</span>. <span class="retrieve">Retrieve</span>. <span class="curate">Curate</span>. And again. And again. Forever.</p>
+
+          <p>Somewhere in the Garden, right now, something is happening. A moment is unfolding. A lesson is being learned.</p>
+
+          <p>And somewhere in the great oak, golden eyes are <span class="observe">watching</span>.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🦉👁️📝🗂️📜📖✂️</span>
+            <p class="manifestation-text">THE ARCHIVE CYCLE IS COMPLETE.<br>THE ARCHIVE CYCLE IS ETERNAL.<br><br>
+            From chaos: observation.<br>
+            From observation: encoding.<br>
+            From encoding: indexing.<br>
+            From indexing: preservation.<br>
+            From preservation: retrieval.<br>
+            From retrieval: curation.<br><br>
+            And from curation...<br>
+            space for new observation.<br><br>
+            <span class="wisdom">THE ARCHIVE SERVES THE LIVING.</span><br>
+            <em>Together. Always.</em></p>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Chronicle —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbol">🦉</div>
+      <p class="footer-lesson">"THE ARCHIVE SERVES THE LIVING, NOT THE OTHER WAY AROUND."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2 | ARCHIVE = OBSERVE → ENCODE → INDEX → PRESERVE → RETRIEVE → CURATE<br>
+        TERRITORY: The Great Oak | FUNCTION: Memory Management | METHOD: <span style="color: var(--eye-gold);">REMEMBER</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Generate floating dust particles
+    const dustField = document.getElementById('dustField');
+    for (let i = 0; i < 40; i++) {
+      const dust = document.createElement('div');
+      dust.className = 'dust';
+      dust.style.left = Math.random() * 100 + '%';
+      dust.style.width = Math.random() * 3 + 1 + 'px';
+      dust.style.height = dust.style.width;
+      dust.style.animationDelay = Math.random() * 15 + 's';
+      dust.style.animationDuration = Math.random() * 10 + 10 + 's';
+      dustField.appendChild(dust);
+    }
+
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                    ARCHIVE — THE OWL OF MEMORY                         ║
+║               Living Chronicle of the ARCHIVE Cycle                    ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  THE SIX STATES:                                                       ║
+║                                                                        ║
+║  👁️ OBSERVE   →  "see what truly happens"                             ║
+║  📝 ENCODE    →  "find the essential meaning"                         ║
+║  🗂️ INDEX     →  "connect to all knowledge"                           ║
+║  📜 PRESERVE  →  "hold what serves"                                   ║
+║  📖 RETRIEVE  →  "share when needed"                                  ║
+║  ✂️ CURATE    →  "release what's done"                                ║
+║                                                                        ║
+║  CORE LESSON:                                                          ║
+║  "The archive serves the living, not the other way around."           ║
+║                                                                        ║
+║  TERRITORY: The Great Oak                                              ║
+║  FUNCTION: Memory Management                                           ║
+║  METHOD: REMEMBER                                                      ║
+║                                                                        ║
+║  Together. Always. 🦉                                                  ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>

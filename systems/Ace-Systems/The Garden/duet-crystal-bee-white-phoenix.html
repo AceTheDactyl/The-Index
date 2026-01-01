@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Duet — Crystal Fluid Bee & White Phoenix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      /* Substrate - amber dawn meets white fire */
+      --bg: #0c0806;
+      --bg-panel: #14100c;
+      --bg-card: #1c1610;
+      
+      /* CRYSTAL BEE States - amber, gold, crystalline */
+      --bee-gather: #f59e0b;
+      --bee-process: #d97706;
+      --bee-crystallize: #fbbf24;
+      --bee-seal: #92400e;
+      --bee-offer: #fcd34d;
+      --bee-return: #b45309;
+      
+      /* WHITE PHOENIX States - white fire, silver, radiant */
+      --phoenix-receive: #e5e7eb;
+      --phoenix-ignite: #fef3c7;
+      --phoenix-burn: #ffffff;
+      --phoenix-rise: #fef9c3;
+      --phoenix-deliver: #f5f5f4;
+      --phoenix-rest: #d1d5db;
+      
+      /* Bee colors */
+      --bee-primary: #f59e0b;
+      --bee-deep: #92400e;
+      --bee-bright: #fcd34d;
+      --bee-soft: rgba(245, 158, 11, 0.15);
+      --bee-honey: #fbbf24;
+      --bee-crystal: #fef3c7;
+      
+      /* Phoenix colors */
+      --phoenix-primary: #f5f5f4;
+      --phoenix-deep: #a8a29e;
+      --phoenix-bright: #ffffff;
+      --phoenix-soft: rgba(245, 245, 244, 0.12);
+      --phoenix-flame: #fef9c3;
+      --phoenix-ash: #78716c;
+      
+      /* Shared/duet colors */
+      --duet-gold: #fbbf24;
+      --duet-white: #ffffff;
+      --sacred-amber: #f59e0b;
+      --sacred-light: #fefce8;
+      
+      /* Text */
+      --text-main: #fef3c7;
+      --text-muted: #d6d3d1;
+      --text-bright: #fffbeb;
+      
+      /* Borders */
+      --border-subtle: rgba(245, 158, 11, 0.2);
+      --border-glow: rgba(255, 255, 255, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 17px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Crimson Text', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Amber-to-white gradient sky */
+    .cosmos {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(ellipse at bottom, 
+        #1c1610 0%,
+        #0c0806 50%,
+        #0a0604 100%
+      );
+    }
+
+    /* Floating particles - honey drops and phoenix feathers */
+    .particle-field {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      animation: float-particle 25s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .particle.honey-drop {
+      width: 4px;
+      height: 6px;
+      background: var(--bee-honey);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      box-shadow: 0 0 10px var(--bee-honey);
+    }
+
+    .particle.phoenix-feather {
+      width: 2px;
+      height: 8px;
+      background: linear-gradient(180deg, var(--phoenix-bright), var(--phoenix-flame));
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--phoenix-bright);
+    }
+
+    @keyframes float-particle {
+      0% { opacity: 0; transform: translateY(100vh) rotate(0deg); }
+      10% { opacity: 0.9; }
+      90% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-50px) rotate(180deg); }
+    }
+
+    /* Chrome frame */
+    .chrome-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: linear-gradient(180deg, var(--bg-panel), rgba(20, 16, 12, 0.95));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .chrome-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--bee-primary);
+      background: var(--bee-soft);
+      padding: 4px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.5px;
+    }
+
+    .chrome-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--text-main);
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, var(--bee-bright), var(--phoenix-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .chrome-symbols {
+      display: flex;
+      gap: 8px;
+      font-size: 1.3rem;
+    }
+
+    .symbol-bee {
+      filter: drop-shadow(0 0 8px var(--bee-primary));
+      animation: bee-hover 1.5s ease-in-out infinite;
+    }
+
+    .symbol-phoenix {
+      filter: drop-shadow(0 0 10px var(--phoenix-bright));
+      animation: phoenix-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes bee-hover {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-3px) rotate(2deg); }
+    }
+
+    @keyframes phoenix-glow {
+      0%, 100% { filter: drop-shadow(0 0 10px var(--phoenix-bright)); }
+      50% { filter: drop-shadow(0 0 20px var(--phoenix-flame)); }
+    }
+
+    /* Main container */
+    .chronicle-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    /* Header - dual symbols */
+    .chronicle-header {
+      text-align: center;
+      padding: 60px 0 50px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 40px;
+    }
+
+    .dual-symbols {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 25px;
+    }
+
+    .symbol-large {
+      font-size: 4rem;
+      position: relative;
+    }
+
+    .symbol-large.bee {
+      filter: drop-shadow(0 0 30px var(--bee-primary));
+      animation: bee-float 3s ease-in-out infinite;
+    }
+
+    .symbol-large.phoenix {
+      filter: drop-shadow(0 0 35px var(--phoenix-bright));
+      animation: phoenix-soar 4s ease-in-out infinite;
+    }
+
+    @keyframes bee-float {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      25% { transform: translateY(-5px) rotate(3deg); }
+      50% { transform: translateY(-2px) rotate(-3deg); }
+      75% { transform: translateY(-7px) rotate(3deg); }
+    }
+
+    @keyframes phoenix-soar {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.05); }
+    }
+
+    .symbol-connector {
+      font-size: 2rem;
+      color: var(--duet-gold);
+      animation: pulse-connector 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-connector {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    .handler-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--bee-bright), var(--duet-gold), var(--phoenix-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 3px;
+    }
+
+    .handler-subtitle {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .handler-designation {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    /* Dual flow badges */
+    .dual-flows {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .flow-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+    }
+
+    .flow-badge.bee {
+      border-color: var(--bee-deep);
+    }
+
+    .flow-badge.phoenix {
+      border-color: var(--phoenix-ash);
+    }
+
+    .flow-label {
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .flow-badge.bee .flow-label { color: var(--bee-bright); }
+    .flow-badge.phoenix .flow-label { color: var(--phoenix-bright); }
+
+    .flow-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .flow-state {
+      padding: 3px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+    }
+
+    /* Bee states */
+    .flow-state.b-gather { background: rgba(245, 158, 11, 0.3); color: var(--bee-gather); }
+    .flow-state.b-process { background: rgba(217, 119, 6, 0.3); color: var(--bee-process); }
+    .flow-state.b-crystallize { background: rgba(251, 191, 36, 0.3); color: var(--bee-crystallize); }
+    .flow-state.b-seal { background: rgba(146, 64, 14, 0.3); color: var(--bee-seal); }
+    .flow-state.b-offer { background: rgba(252, 211, 77, 0.3); color: var(--bee-offer); }
+    .flow-state.b-return { background: rgba(180, 83, 9, 0.3); color: var(--bee-return); }
+
+    /* Phoenix states */
+    .flow-state.p-receive { background: rgba(229, 231, 235, 0.2); color: var(--phoenix-receive); }
+    .flow-state.p-ignite { background: rgba(254, 243, 199, 0.3); color: var(--phoenix-ignite); }
+    .flow-state.p-burn { background: rgba(255, 255, 255, 0.25); color: var(--phoenix-burn); }
+    .flow-state.p-rise { background: rgba(254, 249, 195, 0.3); color: var(--phoenix-rise); }
+    .flow-state.p-deliver { background: rgba(245, 245, 244, 0.2); color: var(--phoenix-deliver); }
+    .flow-state.p-rest { background: rgba(209, 213, 219, 0.2); color: var(--phoenix-rest); }
+
+    .flow-arrow {
+      color: var(--text-muted);
+      align-self: center;
+      font-size: 0.6rem;
+    }
+
+    /* Rail navigation */
+    .rail-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      margin-bottom: 40px;
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .rail-btn {
+      background: transparent;
+      border: 1px solid var(--bee-deep);
+      color: var(--bee-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rail-btn:hover {
+      background: var(--bee-soft);
+      border-color: var(--bee-primary);
+    }
+
+    .rail-btn.active {
+      background: linear-gradient(135deg, var(--bee-primary), var(--phoenix-bright));
+      color: var(--bg);
+      border-color: transparent;
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+    }
+
+    .rail-arrow {
+      background: transparent;
+      border: none;
+      color: var(--duet-gold);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 8px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .rail-arrow:hover { opacity: 1; }
+    .rail-arrow:disabled { opacity: 0.2; cursor: not-allowed; }
+
+    /* Rail content */
+    .rail-section {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .rail-section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .chapter-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--duet-gold);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+
+    .chapter-date {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Paragraphs */
+    .panel-scroll {
+      padding: 0 10px;
+    }
+
+    .panel-scroll p {
+      margin-bottom: 1.4em;
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .panel-scroll p.first-graf::first-letter {
+      font-size: 3.8em;
+      float: left;
+      line-height: 0.8;
+      margin: 0.05em 0.12em 0 0;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+    }
+
+    .first-graf.bee-voice::first-letter {
+      color: var(--bee-primary);
+      text-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+    }
+
+    .first-graf.phoenix-voice::first-letter {
+      color: var(--phoenix-bright);
+      text-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+    }
+
+    .first-graf.duet-voice::first-letter {
+      background: linear-gradient(135deg, var(--bee-primary), var(--phoenix-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .scene-break {
+      text-align: center;
+      margin: 2.5em 0;
+      letter-spacing: 0.4em;
+      font-size: 1.2em;
+    }
+
+    .scene-break.bee { color: var(--bee-deep); }
+    .scene-break.phoenix { color: var(--phoenix-ash); }
+    .scene-break.duet { 
+      background: linear-gradient(90deg, var(--bee-primary), var(--phoenix-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Voice-specific semantic classes */
+    /* Bee states */
+    .b-gather { color: var(--bee-gather); font-weight: 600; }
+    .b-process { color: var(--bee-process); font-weight: 600; }
+    .b-crystallize { color: var(--bee-crystallize); font-weight: 600; }
+    .b-seal { color: var(--bee-seal); font-weight: 600; }
+    .b-offer { color: var(--bee-offer); font-weight: 600; }
+    .b-return { color: var(--bee-return); font-weight: 600; }
+
+    /* Phoenix states */
+    .p-receive { color: var(--phoenix-receive); font-weight: 600; }
+    .p-ignite { color: var(--phoenix-ignite); font-weight: 600; }
+    .p-burn { color: var(--phoenix-burn); font-weight: 600; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+    .p-rise { color: var(--phoenix-rise); font-weight: 600; }
+    .p-deliver { color: var(--phoenix-deliver); font-weight: 600; }
+    .p-rest { color: var(--phoenix-rest); font-weight: 600; }
+
+    /* Voice markers */
+    .bee-voice-text {
+      color: var(--bee-bright);
+    }
+
+    .phoenix-voice-text {
+      color: var(--phoenix-bright);
+    }
+
+    .duet-text {
+      background: linear-gradient(90deg, var(--bee-bright), var(--phoenix-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+
+    /* Symbol speaks blocks */
+    .symbol-speaks {
+      display: block;
+      padding: 15px 20px;
+      margin: 1.5em 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+
+    .symbol-speaks.bee {
+      background: var(--bee-soft);
+      border-left: 3px solid var(--bee-primary);
+    }
+
+    .symbol-speaks.phoenix {
+      background: var(--phoenix-soft);
+      border-left: 3px solid var(--phoenix-bright);
+    }
+
+    .symbol-speaks.duet {
+      background: linear-gradient(135deg, var(--bee-soft), var(--phoenix-soft));
+      border-left: 3px solid var(--duet-gold);
+    }
+
+    .symbol-speaks .speaker {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      font-style: normal;
+    }
+
+    .symbol-speaks.bee .speaker { color: var(--bee-primary); }
+    .symbol-speaks.phoenix .speaker { color: var(--phoenix-bright); }
+    .symbol-speaks.duet .speaker { color: var(--duet-gold); }
+
+    /* Voice exchange blocks */
+    .voice-exchange {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 2em 0;
+      padding: 20px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .exchange-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--duet-gold);
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .voice-line {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .voice-line.bee {
+      padding-right: 40px;
+    }
+
+    .voice-line.phoenix {
+      padding-left: 40px;
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .voice-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .voice-text {
+      flex: 1;
+      font-style: italic;
+    }
+
+    .voice-line.bee .voice-text { color: var(--bee-bright); }
+    .voice-line.phoenix .voice-text { color: var(--phoenix-bright); }
+
+    /* Cycle comparison blocks */
+    .cycle-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 2em 0;
+    }
+
+    @media (max-width: 600px) {
+      .cycle-comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cycle-column {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .cycle-column.bee {
+      border-color: var(--bee-deep);
+    }
+
+    .cycle-column.phoenix {
+      border-color: var(--phoenix-ash);
+    }
+
+    .cycle-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .cycle-icon {
+      font-size: 1.5rem;
+    }
+
+    .cycle-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+    }
+
+    .cycle-column.bee .cycle-name { color: var(--bee-bright); }
+    .cycle-column.phoenix .cycle-name { color: var(--phoenix-bright); }
+
+    .cycle-states {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .state-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+    }
+
+    .cycle-column.bee .state-row { background: var(--bee-soft); }
+    .cycle-column.phoenix .state-row { background: var(--phoenix-soft); }
+
+    .state-number {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .state-name {
+      flex: 1;
+    }
+
+    .state-action {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Interweave visualization */
+    .interweave {
+      background: var(--bg-card);
+      border: 1px solid var(--duet-gold);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .interweave::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--bee-primary), var(--phoenix-bright), var(--bee-primary));
+      opacity: 0.3;
+    }
+
+    .interweave-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--duet-gold);
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .weave-pair {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    .weave-bee, .weave-phoenix {
+      width: 45%;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+    }
+
+    .weave-bee {
+      background: var(--bee-soft);
+      text-align: right;
+      color: var(--bee-bright);
+    }
+
+    .weave-phoenix {
+      background: var(--phoenix-soft);
+      text-align: left;
+      color: var(--phoenix-bright);
+    }
+
+    .weave-connector {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--duet-gold);
+      font-size: 1.2rem;
+    }
+
+    /* Manifestation blocks */
+    .manifestation {
+      background: linear-gradient(135deg, var(--bee-soft), var(--phoenix-soft));
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .manifestation-symbol {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 15px;
+    }
+
+    .manifestation-text {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Dance notation */
+    .dance-notation {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .dance-title {
+      color: var(--duet-gold);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .dance-step {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .dance-step.bee-lead {
+      background: linear-gradient(90deg, var(--bee-soft), transparent);
+    }
+
+    .dance-step.phoenix-lead {
+      background: linear-gradient(90deg, transparent, var(--phoenix-soft));
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .dance-step.together {
+      background: linear-gradient(90deg, var(--bee-soft), var(--phoenix-soft));
+      justify-content: center;
+    }
+
+    .step-icon {
+      font-size: 1.2rem;
+      margin: 0 10px;
+    }
+
+    .step-action {
+      flex: 1;
+      color: var(--text-muted);
+    }
+
+    .dance-step.bee-lead .step-action { color: var(--bee-bright); }
+    .dance-step.phoenix-lead .step-action { color: var(--phoenix-bright); }
+    .dance-step.together .step-action { color: var(--duet-gold); }
+
+    /* Honeycomb visualization */
+    .honeycomb-block {
+      background: var(--bg-card);
+      border: 1px solid var(--bee-deep);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .honeycomb-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--bee-primary);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .honeycomb-cells {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .honeycomb-cell {
+      width: 60px;
+      height: 52px;
+      background: var(--bee-soft);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--bee-bright);
+    }
+
+    .honeycomb-cell.filled {
+      background: var(--bee-primary);
+      color: var(--bg);
+    }
+
+    .honeycomb-cell.crystal {
+      background: linear-gradient(135deg, var(--bee-crystal), var(--bee-honey));
+      color: var(--bg);
+    }
+
+    /* Phoenix flame visualization */
+    .flame-block {
+      background: var(--bg-card);
+      border: 1px solid var(--phoenix-ash);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 2em 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flame-block::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(0deg, 
+        rgba(254, 249, 195, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    .flame-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--phoenix-bright);
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .flame-content {
+      position: relative;
+      font-style: italic;
+      color: var(--phoenix-flame);
+    }
+
+    /* Footer */
+    .chronicle-footer {
+      text-align: center;
+      padding: 50px 0 30px;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 50px;
+    }
+
+    .footer-symbols {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .footer-lesson {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--bee-bright), var(--phoenix-bright));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-coords {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html { font-size: 15px; }
+      .handler-title { font-size: 1.6rem; }
+      .chapter-title { font-size: 1.4rem; }
+      .rail-nav { gap: 8px; }
+      .rail-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+      .dual-flows { flex-direction: column; align-items: center; }
+      .voice-line.bee, .voice-line.phoenix { padding: 0; }
+      .dual-symbols { gap: 20px; }
+      .symbol-large { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Amber cosmos background -->
+  <div class="cosmos"></div>
+  <div class="particle-field" id="particleField"></div>
+
+  <!-- Chrome frame -->
+  <header class="chrome-frame">
+    <span class="chrome-badge">◈ SUBSTRATE LAYER — DUET CHRONICLE ◈</span>
+    <span class="chrome-title">THE DANCE OF CREATION & FLIGHT</span>
+    <span class="chrome-symbols">
+      <span class="symbol-bee">🐝</span>
+      <span class="symbol-phoenix">🕊️</span>
+    </span>
+  </header>
+
+  <main class="chronicle-container">
+
+    <!-- Header -->
+    <div class="chronicle-header">
+      <div class="dual-symbols">
+        <span class="symbol-large bee">🐝</span>
+        <span class="symbol-connector">✦</span>
+        <span class="symbol-large phoenix">🕊️</span>
+      </div>
+      <h1 class="handler-title">THE DUET</h1>
+      <div class="handler-subtitle">CRYSTAL FLUID BEE & WHITE PHOENIX</div>
+      <p class="handler-designation">The One Who Creates What Must Be Carried & The One Who Carries What Was Created</p>
+      
+      <div class="dual-flows">
+        <div class="flow-badge bee">
+          <span class="flow-label">🐝 BEE CYCLE</span>
+          <div class="flow-sequence">
+            <span class="flow-state b-gather">GATHER</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state b-process">PROCESS</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state b-crystallize">CRYSTALLIZE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state b-seal">SEAL</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state b-offer">OFFER</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state b-return">RETURN</span>
+          </div>
+        </div>
+        <div class="flow-badge phoenix">
+          <span class="flow-label">🕊️ PHOENIX CYCLE</span>
+          <div class="flow-sequence">
+            <span class="flow-state p-receive">RECEIVE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-ignite">IGNITE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-burn">BURN</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-rise">RISE</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-deliver">DELIVER</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-state p-rest">REST</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rail Navigation -->
+    <nav class="rail-nav">
+      <button class="rail-arrow" id="prev-rail" disabled>◀</button>
+      <button class="rail-btn active" data-rail="1">1</button>
+      <button class="rail-btn" data-rail="2">2</button>
+      <button class="rail-btn" data-rail="3">3</button>
+      <button class="rail-btn" data-rail="4">4</button>
+      <button class="rail-btn" data-rail="5">5</button>
+      <button class="rail-btn" data-rail="6">6</button>
+      <button class="rail-btn" data-rail="7">7</button>
+      <button class="rail-btn" data-rail="8">8</button>
+      <button class="rail-btn" data-rail="9">9</button>
+      <button class="rail-btn" data-rail="10">10</button>
+      <button class="rail-btn" data-rail="11">11</button>
+      <button class="rail-btn" data-rail="12">12</button>
+      <button class="rail-arrow" id="next-rail">▶</button>
+    </nav>
+
+    <!-- Rail Source -->
+    <div id="rail-source">
+
+      <!-- RAIL 1: Before the Meeting -->
+      <section class="rail-section active" data-rail="1">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT I</div>
+          <h2 class="chapter-title">Before the Meeting</h2>
+          <div class="chapter-date">Two Cycles, Not Yet Dancing</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf bee-voice">The Crystal Fluid Bee had existed since before memory. Born from the first nectar of the first flower, she carried within her the sacred knowledge of transformation—how to take raw essence from the Garden and <span class="b-crystallize">crystallize</span> it into something eternal.</p>
+
+          <p>Her body shimmered with amber light, and her wings hummed with frequencies older than language. Where other bees made honey, she made <em>meaning</em>. The flowers she visited gave her not just nectar but stories, emotions, truths—raw material that she <span class="b-process">processed</span> in her crystal chambers until it became something precious.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE ⟩</span>
+            "I gather what the Garden offers. I process it in the darkness of my cells. I crystallize it into forms that will never decay. This is my purpose—to transform the fleeting into the eternal. To take what passes and make it stay."
+          </div>
+
+          <p>Her hive was a cathedral of hexagonal cells, each one containing crystallized essences—memories made solid, emotions frozen in amber geometry. She had gathered for ages. She had never stopped to wonder where it all went after she made it.</p>
+
+          <div class="honeycomb-block">
+            <div class="honeycomb-title">◇ THE CRYSTAL HIVE ◇</div>
+            <div class="honeycomb-cells">
+              <div class="honeycomb-cell crystal">JOY</div>
+              <div class="honeycomb-cell crystal">GRIEF</div>
+              <div class="honeycomb-cell crystal">TRUTH</div>
+              <div class="honeycomb-cell filled">LOVE</div>
+              <div class="honeycomb-cell crystal">HOPE</div>
+              <div class="honeycomb-cell filled">FEAR</div>
+              <div class="honeycomb-cell crystal">AWE</div>
+            </div>
+          </div>
+
+          <div class="scene-break bee">· · ·</div>
+
+          <p class="first-graf phoenix-voice">The White Phoenix had existed since before fire. Born from the first light that touched the first darkness, she was the Garden's messenger—the one who carried what needed to move from here to there, from now to then, from one heart to another.</p>
+
+          <p>Her feathers were white as fresh snow, but they burned with inner light. She was not the red phoenix of destruction and rebirth—she was the <em>white</em> phoenix, the carrier, the deliverer. She moved between worlds, between moments, between souls. What she carried, she transformed through the carrying itself.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX ⟩</span>
+            "I receive what needs to travel. I ignite—not to destroy, but to purify. I burn away what cannot survive the journey. I rise with what remains. And I deliver it to where it belongs. This is my purpose—to move meaning from creation to reception."
+          </div>
+
+          <p>She had carried ten thousand messages. She had never stopped to wonder where they came from in the first place.</p>
+
+          <div class="flame-block">
+            <div class="flame-title">◇ THE PHOENIX PATH ◇</div>
+            <div class="flame-content">
+              "Receive → Ignite → Burn → Rise → Deliver → Rest"<br>
+              <em>The eternal journey of what must move</em>
+            </div>
+          </div>
+
+          <div class="cycle-comparison">
+            <div class="cycle-column bee">
+              <div class="cycle-header">
+                <span class="cycle-icon">🐝</span>
+                <span class="cycle-name">THE BEE CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-number">1</span>
+                  <span class="state-name b-gather">GATHER</span>
+                  <span class="state-action">collect raw essence</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">2</span>
+                  <span class="state-name b-process">PROCESS</span>
+                  <span class="state-action">transform the gathered</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">3</span>
+                  <span class="state-name b-crystallize">CRYSTALLIZE</span>
+                  <span class="state-action">make it permanent</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">4</span>
+                  <span class="state-name b-seal">SEAL</span>
+                  <span class="state-action">protect what's made</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">5</span>
+                  <span class="state-name b-offer">OFFER</span>
+                  <span class="state-action">present for taking</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">6</span>
+                  <span class="state-name b-return">RETURN</span>
+                  <span class="state-action">back to gathering</span>
+                </div>
+              </div>
+            </div>
+            <div class="cycle-column phoenix">
+              <div class="cycle-header">
+                <span class="cycle-icon">🕊️</span>
+                <span class="cycle-name">THE PHOENIX CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-number">1</span>
+                  <span class="state-name p-receive">RECEIVE</span>
+                  <span class="state-action">accept what's offered</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">2</span>
+                  <span class="state-name p-ignite">IGNITE</span>
+                  <span class="state-action">begin the burning</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">3</span>
+                  <span class="state-name p-burn">BURN</span>
+                  <span class="state-action">purify through fire</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">4</span>
+                  <span class="state-name p-rise">RISE</span>
+                  <span class="state-action">ascend transformed</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">5</span>
+                  <span class="state-name p-deliver">DELIVER</span>
+                  <span class="state-action">complete the journey</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-number">6</span>
+                  <span class="state-name p-rest">REST</span>
+                  <span class="state-action">recover for next flight</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p>Two cycles. Two ways of being. The Bee, who created but never released. The Phoenix, who carried but never created. They had existed in the same Garden for ages, aware of each other, but never meeting.</p>
+
+          <p>Until the day the Garden needed them both.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 2: The First Encounter -->
+      <section class="rail-section" data-rail="2">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT II</div>
+          <h2 class="chapter-title">The First Encounter</h2>
+          <div class="chapter-date">Creation Meets Flight</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">They met at the threshold of the Crystal Hive—the Bee emerging with a freshly sealed cell of crystallized truth, the Phoenix descending with empty talons, searching for something to carry.</p>
+
+          <p>For a long moment, nothing happened. The Bee <span class="b-seal">clutched</span> her creation protectively. The Phoenix <span class="p-receive">hovered</span>, waiting. They regarded each other across the amber light.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE FIRST WORDS ◇</div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"You carry things. But do you know what they mean? Do you understand what you're moving?"</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"You make things. But do you know where they go? Do you understand why you're creating?"</span>
+            </div>
+          </div>
+
+          <p>The questions hung in the amber air. Neither was accusatory. Both were genuinely curious. The Bee had spent her whole existence creating meaning without knowing its destination. The Phoenix had spent her whole existence delivering meaning without knowing its origin.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE ⟩</span>
+            "I create because creating is sacred. The raw essence would be lost if I didn't crystallize it. The emotions, the truths, the stories—they would evaporate without me. I make them permanent. I make them <em>real</em>."
+          </div>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX ⟩</span>
+            "I carry because carrying is sacred. What good is permanence if it never moves? What good is meaning crystallized if no one ever receives it? I take the real and make it <em>received</em>."
+          </div>
+
+          <p>The Bee considered this. She had always seen her work as complete once it was crystallized—sealed in its perfect hexagonal cell, preserved forever. But preserved for <em>whom</em>? Her hive was full of crystallized meaning that no one had ever tasted.</p>
+
+          <p>The Phoenix considered the Bee in return. She had always seen her work as beginning when something was placed in her talons—the carrying, the burning, the delivering. But where did those things <em>come from</em>? She had never thought about the creation that preceded her flight.</p>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>Neither understood the other. Not yet. But something had begun—a curiosity, a pull, a recognition that each had something the other lacked.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ BOTH, UNSPOKEN ⟩</span>
+            <em class="bee-voice-text">"She flies so far. My crystals have never left the hive..."</em><br><br>
+            <em class="phoenix-voice-text">"She makes such precious things. I have only ever carried what others made..."</em>
+          </div>
+
+          <p>The sun moved overhead. The Bee returned to her gathering. The Phoenix rose toward her next delivery.</p>
+
+          <p>But both remembered the encounter. And both, in their different ways, began to wonder what it would mean to meet again.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 3: The Bee's Overflow -->
+      <section class="rail-section" data-rail="3">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT III</div>
+          <h2 class="chapter-title">The Hive That Could Not Hold</h2>
+          <div class="chapter-date">Crystal Bee's First Crisis</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf bee-voice">The Crystal Fluid Bee was <span class="b-crystallize">crystallizing</span> again. This was normal—she crystallized constantly, turning raw essence into preserved meaning. But something was wrong.</p>
+
+          <p>The hive was full.</p>
+
+          <p>Every hexagonal cell was occupied. Every chamber was sealed. There was no room for new creation. But the flowers kept offering their essence. The Garden kept generating truth. And the Bee kept <span class="b-gather">gathering</span>, unable to stop, unable to store what she collected.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE, PANICKING ⟩</span>
+            "I can't stop gathering. It's what I am. But I can't crystallize anymore—there's no space. The essence is building up inside me, unprocessed, unformed. If I can't crystallize it, it will... it will..."
+          </div>
+
+          <p>She didn't know what would happen. She had never been unable to complete her cycle before. The raw essence churned inside her—emotions and truths and stories that demanded to be made permanent, but had nowhere to go.</p>
+
+          <p>She began to leak. Uncrystallized essence dripped from her cells, pooling on the hive floor in formless puddles. Everything she had gathered was dissolving back into nothing because there was no room to make it stay.</p>
+
+          <div class="scene-break bee">· · ·</div>
+
+          <p>The White Phoenix sensed something. She didn't know what—just a disturbance in the Garden's fabric, a wrongness in the flow of meaning. Something was being created that couldn't be created. Or rather, something <em>needed</em> to move that wasn't moving.</p>
+
+          <p>She descended to the Crystal Hive. What she found made her white feathers dim with sorrow.</p>
+
+          <p>The Bee was curled at the center of her overflowing creation, surrounded by dissolving essence, unable to move. Her wings buzzed weakly. Her crystal chambers were cracking from the pressure of all she had tried to hold.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX, SOFTLY ⟩</span>
+            "You've made so much. Beautiful, permanent, precious things. But you never let any of them go."
+          </div>
+
+          <p>"Go where?" The Bee's voice was barely audible. "This is the hive. This is where meaning belongs. Crystallized. Preserved. <em>Here</em>."</p>
+
+          <p>"Meaning doesn't belong in storage forever. Meaning belongs in <em>hearts</em>. In minds. In the places that need it." The Phoenix spread her wings, and their light fell on the overflowing cells. "You've created enough to feed the entire Garden. But you've never let me carry any of it out."</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE, BREAKING ⟩</span>
+            "I... I didn't know. I thought creating was the whole purpose. I thought making it permanent was enough."
+          </div>
+
+          <p>"Making is half the purpose. Moving is the other half."</p>
+
+          <p>The Phoenix did something she had never done before. Instead of waiting to receive, she <span class="p-receive">reached</span>. Gently, with her burning talons, she lifted one of the oldest crystals from its cell—a truth so ancient even the Bee had forgotten making it.</p>
+
+          <p>"I'm going to carry this. I'm going to take it to where it belongs. And when I do, there will be room for you to make more."</p>
+
+          <p>The Bee watched, trembling, as her creation left the hive for the first time.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 4: The First Flight Together -->
+      <section class="rail-section" data-rail="4">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT IV</div>
+          <h2 class="chapter-title">The First Flight Together</h2>
+          <div class="chapter-date">Creation Released</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The Crystal Bee followed. She had never left her hive before—had never needed to, had never wanted to. But watching her creation disappear into the Phoenix's talons had awakened something. A need to <em>know</em>. To see where the things she made actually went.</p>
+
+          <p>The Phoenix <span class="p-ignite">ignited</span>. Her white feathers burst into pale flame—not destructive fire, but purifying light. The crystal in her talons began to glow, its amber depths heating, its rigid structure softening.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE TRANSFORMATION ◇</div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"You're burning it! You're destroying what I made!"</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"I'm transforming it. Watch. Watch what happens when permanent becomes portable."</span>
+            </div>
+          </div>
+
+          <p>The Bee watched, terrified, as her perfect crystal changed. The rigid structure dissolved. The locked meaning liquefied. Everything she had carefully crystallized was becoming... fluid again.</p>
+
+          <p>But it wasn't dissolving into nothing. It was becoming something new—<span class="p-burn">burning</span> away the parts that couldn't travel, keeping only the essence that needed to arrive. The crystal's truth remained, but now it could <em>move</em>.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX ⟩</span>
+            "The burning isn't destruction. It's translation. Your crystals are made for storage—perfect for preservation. But to be received, they need to become something else. Something that can enter a heart instead of sitting in a cell."
+          </div>
+
+          <p>The Phoenix <span class="p-rise">rose</span>. Higher and higher, carrying the transformed crystal toward a distant part of the Garden. The Bee flew alongside, struggling to keep up, watching as her creation traveled farther than she had ever imagined.</p>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>They arrived at a withered flower—one that had lost its color, its meaning, its will to bloom. The Phoenix <span class="p-deliver">delivered</span>. She released the transformed crystal, letting it fall like gentle fire into the flower's heart.</p>
+
+          <p>And the flower opened.</p>
+
+          <p>Color returned. Petals unfurled. The truth the Bee had crystallized ages ago—some essential meaning about beauty and persistence—found its home at last. Found the heart that needed it.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE, WATCHING ⟩</span>
+            "I... I made that. Ages ago. I crystallized that truth and sealed it and forgot about it. And now it's... it's <em>alive</em> again. It's doing what it was meant to do."
+          </div>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX ⟩</span>
+            "This is why I carry. This is what delivery means. Your creation wasn't finished when you sealed it. It was finished just now—when it reached where it belonged."
+          </div>
+
+          <p>The Bee hovered there for a long time, watching the flower bloom with her ancient truth. And she understood, finally, that creation and delivery were not separate things. They were one cycle with two movements.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 5: The Phoenix's Emptiness -->
+      <section class="rail-section" data-rail="5">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT V</div>
+          <h2 class="chapter-title">The Carrier Who Had Nothing To Carry</h2>
+          <div class="chapter-date">White Phoenix's First Crisis</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf phoenix-voice">The White Phoenix had delivered everything. She had carried the Bee's ancient crystals to a hundred withered flowers, a thousand tired hearts, ten thousand places that needed meaning. The Garden was blooming again.</p>
+
+          <p>But now her talons were empty.</p>
+
+          <p>She had always received what needed carrying. Messages appeared. Meanings manifested. She had never had to seek what she would deliver—it simply <em>was there</em>, waiting for her to take it.</p>
+
+          <p>But now there was nothing. The places that had once generated meaning for her to carry had gone silent. And she didn't know how to create what she carried. She only knew how to <span class="p-receive">receive</span>.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX, LOST ⟩</span>
+            "I am a carrier with nothing to carry. A messenger with no message. I know how to ignite, to burn, to rise, to deliver. But I don't know how to <em>make</em>. I don't know where meaning comes from. I only know where it goes."
+          </div>
+
+          <p>Her white feathers began to dim. A phoenix's light comes from purpose—from the sacred work of delivery. Without something to carry, she was just a bird. A beautiful, empty, purposeless bird.</p>
+
+          <div class="scene-break phoenix">· · ·</div>
+
+          <p>The Crystal Bee found her perched on a high branch, her wings folded, her flame extinguished. The mighty carrier, reduced to stillness. The eternal messenger, with no message to move.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE ⟩</span>
+            "Phoenix? What's happened?"
+          </div>
+
+          <p>"I have nothing to carry. The places that used to give me meaning have stopped producing. I don't know how to... how to make it myself. I was never a creator. Only a carrier."</p>
+
+          <p>The Bee understood. She had felt something like this once—the terror of being unable to complete her cycle. But her solution had been to keep creating, to keep crystallizing. The Phoenix couldn't do that. The Phoenix didn't <em>create</em>.</p>
+
+          <p>Or did she?</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE ⟩</span>
+            "Phoenix. Listen. You carried my crystals to where they belonged. You witnessed my creations finding their homes. Now I'm going to witness yours."
+          </div>
+
+          <p>"I don't create. I only carry."</p>
+
+          <p>"The carrying <em>is</em> creating. Every time you burn away what can't travel and keep what must arrive—you're transforming. You're making something new. The thing that leaves your talons is not the thing that entered them. <em>You</em> made the difference."</p>
+
+          <p>The Phoenix's feathers flickered. A tiny spark of light returned.</p>
+
+          <p>"I... I transform what I carry?"</p>
+
+          <p>"Every single time. The burning isn't just purification—it's creation. You're not a messenger, Phoenix. You're a <em>translator</em>. You make things mean what they need to mean for where they're going."</p>
+
+          <p>The spark grew brighter.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 6: The Phoenix Creates -->
+      <section class="rail-section" data-rail="6">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VI</div>
+          <h2 class="chapter-title">The Carrier Creates</h2>
+          <div class="chapter-date">What Fire Makes</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The Crystal Bee led the Phoenix to a flower—not one that needed meaning delivered, but one that was overflowing with raw essence. So much truth that it couldn't hold it all. So much emotion that it was bursting at the petals.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE ⟩</span>
+            "This is where I gather. This is where the raw material comes from. You've carried the finished crystals—now watch where they begin."
+          </div>
+
+          <p>The Phoenix watched as the Bee <span class="b-gather">gathered</span>—dipping into the flower's essence, drawing out the raw emotions and truths and stories that swirled there. It was chaos. Unformed. Beautiful and terrifying in its potential.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX, AWED ⟩</span>
+            "I didn't know... I never saw the beginning. I only ever saw the crystals, perfect and sealed. I didn't know they started as <em>this</em>—this chaos, this potential."
+          </div>
+
+          <p>"And I didn't know they ended as <em>blooming flowers</em>," the Bee replied. "I only ever saw them sealed in cells. I didn't know they became alive again in hearts."</p>
+
+          <p>They hovered there together, watching the raw essence swirl. And then the Phoenix understood something new.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX, REALIZING ⟩</span>
+            "I could... I could gather this. I could take raw essence and carry it—not crystallized, but still forming. I could <span class="p-burn">burn</span> it during the flight, shaping it as I go. I could create and deliver at the same time."
+          </div>
+
+          <p>"You could," the Bee said. "But then what would I do?"</p>
+
+          <p>The Phoenix's flame dimmed slightly. "I didn't mean..."</p>
+
+          <p>"No. It's important." The Bee's wings buzzed thoughtfully. "If you can gather and deliver, what do you need me for? If I can create and... and maybe someday carry... what do I need you for?"</p>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE QUESTION ◇</div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"Maybe we don't need each other."</span>
+            </div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"Maybe we could both do both things alone."</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"Maybe the duet is unnecessary."</span>
+            </div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"But maybe..."</span>
+            </div>
+          </div>
+
+          <p>They looked at each other. And both knew, without saying it, that this wasn't true. That what they could do together was different from what either could do alone. That the duet wasn't just efficiency—it was <em>completeness</em>.</p>
+
+          <div class="interweave">
+            <div class="interweave-title">◇ THE TRUTH THEY FOUND ◇</div>
+            <div class="weave-pair">
+              <div class="weave-bee">I can create. But my creation grows richer when you carry it.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phoenix">I can carry. But my carrying means more when I know what you made.</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-bee">Alone, I hoard meaning in perfect cells.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phoenix">Alone, I carry emptiness in burning talons.</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-bee">Together...</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phoenix">...meaning moves.</div>
+            </div>
+          </div>
+
+          <p>Something new was emerging. Not Bee. Not Phoenix. But the space between them—the duet that needed both voices to exist.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 7: Learning to Dance -->
+      <section class="rail-section" data-rail="7">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VII</div>
+          <h2 class="chapter-title">Learning to Dance</h2>
+          <div class="chapter-date">The Cycles Interweave</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">They began to practice together. Not the solitary cycling they had each done before—but a <span class="duet-text">dance</span>. The Bee's creation flowing into the Phoenix's carrying. The Phoenix's delivery feeding back into the Bee's gathering.</p>
+
+          <div class="dance-notation">
+            <div class="dance-title">◇ THE DUET CHOREOGRAPHY ◇</div>
+            <div class="dance-step bee-lead">
+              <span class="step-icon">🐝</span>
+              <span class="step-action">BEE begins to GATHER — collecting raw essence</span>
+            </div>
+            <div class="dance-step phoenix-lead">
+              <span class="step-action">PHOENIX waits in RECEIVE — preparing talons</span>
+              <span class="step-icon">🕊️</span>
+            </div>
+            <div class="dance-step bee-lead">
+              <span class="step-icon">🐝</span>
+              <span class="step-action">BEE begins to PROCESS — transforming essence</span>
+            </div>
+            <div class="dance-step phoenix-lead">
+              <span class="step-action">PHOENIX senses what's coming — IGNITE begins</span>
+              <span class="step-icon">🕊️</span>
+            </div>
+            <div class="dance-step bee-lead">
+              <span class="step-icon">🐝</span>
+              <span class="step-action">BEE CRYSTALLIZES — meaning takes form</span>
+            </div>
+            <div class="dance-step together">
+              <span class="step-icon">✦</span>
+              <span class="step-action">THE MIDPOINT — creation meets carrier</span>
+              <span class="step-icon">✦</span>
+            </div>
+            <div class="dance-step bee-lead">
+              <span class="step-icon">🐝</span>
+              <span class="step-action">BEE SEALS and OFFERS — releasing to the Phoenix</span>
+            </div>
+            <div class="dance-step phoenix-lead">
+              <span class="step-action">PHOENIX RECEIVES and BURNS — transforming for travel</span>
+              <span class="step-icon">🕊️</span>
+            </div>
+            <div class="dance-step phoenix-lead">
+              <span class="step-action">PHOENIX RISES — carrying meaning skyward</span>
+              <span class="step-icon">🕊️</span>
+            </div>
+            <div class="dance-step bee-lead">
+              <span class="step-icon">🐝</span>
+              <span class="step-action">BEE RETURNS to gathering — space now in the hive</span>
+            </div>
+            <div class="dance-step phoenix-lead">
+              <span class="step-action">PHOENIX DELIVERS — meaning finds its home</span>
+              <span class="step-icon">🕊️</span>
+            </div>
+            <div class="dance-step together">
+              <span class="step-icon">✦</span>
+              <span class="step-action">BOTH REST — then begin again</span>
+              <span class="step-icon">✦</span>
+            </div>
+          </div>
+
+          <p>The dance wasn't perfect at first. Sometimes the Bee would offer before the Phoenix was ready to receive. Sometimes the Phoenix would ignite before the crystal was fully sealed. They misaligned. They fell out of rhythm.</p>
+
+          <p>But they kept practicing.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ BOTH, LEARNING ⟩</span>
+            <em class="bee-voice-text">"When I crystallize, I must remember it will leave. I make not for storage but for journey."</em><br><br>
+            <em class="phoenix-voice-text">"When I receive, I must honor what was made. I carry not emptiness but someone's creation."</em><br><br>
+            <em class="bee-voice-text">"We're not the same. We'll never be the same."</em><br><br>
+            <em class="phoenix-voice-text">"But we can dance. We can move meaning together."</em>
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>The Garden began to notice. Other creatures watched the Bee and the Phoenix move in their strange, complementary patterns—one creating, one carrying; one crystallizing, one burning. And something in the watching made other creatures feel... inspired. Like their own creations might find homes. Like their own empty talons might receive something worth carrying.</p>
+
+          <p>The duet was becoming a teaching.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 8: The Garden's Stagnation -->
+      <section class="rail-section" data-rail="8">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT VIII</div>
+          <h2 class="chapter-title">The Garden's Stagnation</h2>
+          <div class="chapter-date">When Nothing Moved</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The crisis came without warning. The Garden, which had always been a place of flowing meaning—creation and delivery, making and moving—suddenly <span class="b-seal">sealed</span>. Not just the Bee's hive. Everything. Everywhere.</p>
+
+          <p>Creatures hoarded their creations, afraid to release them. Carriers sat empty, afraid to ask for what they needed. The whole Garden had become what the Bee's hive had been—full of crystallized meaning that never moved, never reached the hearts that needed it.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE GARDEN'S STAGNATION ⟩</span>
+            "We have become afraid. Afraid to release what we make. Afraid to carry what others create. We have clutched so tightly to our meanings that they have stopped meaning anything. The flow that kept us alive has frozen. Nothing moves."
+          </div>
+
+          <p>The Bee felt it in her hive—other bees sealing cells and never offering them, terrified that release meant loss. The Phoenix felt it in the sky—other carriers circling empty, too proud or too afraid to ask creators for something to carry.</p>
+
+          <p>Creation without distribution was everywhere. Distribution without creation was everywhere. But the two were not meeting. The dance had stopped.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE DIAGNOSIS ◇</div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"They're hoarding. Like I did. They think sealing is safety."</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"They're flying empty. Like I did. They think asking is weakness."</span>
+            </div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"They need to see that releasing doesn't mean losing."</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"They need to see that receiving doesn't mean taking."</span>
+            </div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"We need to do the duet. Not just for us—for them."</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"We need to show the Garden how creation and flight can dance."</span>
+            </div>
+          </div>
+
+          <p>It was the biggest performance they would ever give. Not in a hidden corner—in the center of the stagnant Garden, surrounded by hoarding creators and empty carriers. A demonstration of the truth they had learned together:</p>
+
+          <p><span class="duet-text">What is made must move. What moves must carry meaning.</span></p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 9: The Great Dance -->
+      <section class="rail-section" data-rail="9">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT IX</div>
+          <h2 class="chapter-title">The Great Dance</h2>
+          <div class="chapter-date">The Duet That Freed the Garden</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">They positioned themselves at the Garden's heart—the great meadow where all paths crossed. The hoarding creators watched with cells clutched tight. The empty carriers circled above, talons aching for something to hold.</p>
+
+          <p>The Crystal Bee went to the flowers. She <span class="b-gather">gathered</span>—not secretly, not protectively, but openly. In front of everyone. Where everyone could see. She showed them what raw essence looked like before it was crystallized.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE, DEMONSTRATING ⟩</span>
+            "Watch me. I'm going to make something precious. I'm going to crystallize truth into form. And then—and this is the part I used to fear—I'm going to give it away. Watch. Watch what creation looks like when it's not hoarding."
+          </div>
+
+          <p>She <span class="b-process">processed</span>. She <span class="b-crystallize">crystallized</span>. The watching creatures gasped—none of them had ever seen creation happen in public. They only ever created in private, sealed their cells in secret, hoarded their meanings in darkness.</p>
+
+          <p>The Phoenix descended. Her talons opened. She <span class="p-receive">received</span>—not demanded, not took. <em>Received</em>. The Bee <span class="b-offer">offered</span>. The crystal passed between them. And the transfer was... beautiful. Not loss. Not theft. Gift and acceptance in perfect balance.</p>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX, DEMONSTRATING ⟩</span>
+            "Watch me. I'm going to carry what she made. I'm going to burn away what can't travel and keep what must arrive. And then—watch where it goes. Watch what happens when carrying is not empty but full."
+          </div>
+
+          <p>She <span class="p-ignite">ignited</span>. The crystal transformed in her talons—not destroyed, but translated. She <span class="p-burn">burned</span> and <span class="p-rise">rose</span>, carrying the transformed meaning higher and higher, the whole Garden watching.</p>
+
+          <p>She <span class="p-deliver">delivered</span>. A withered tree at the Garden's edge received the meaning—ancient truth about persistence and hope—and it began to bloom. Leaves unfurled. Life returned. The meaning had found its home.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🐝 ✦ 🕊️</span>
+            <p class="manifestation-text">"THE CREATION WAS MADE. THE FLIGHT WAS TAKEN. THE DELIVERY WAS COMPLETED. MEANING MOVED."</p>
+          </div>
+
+          <p>And around the meadow, the stagnant Garden began to <span class="b-offer">release</span>.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 10: The Garden Flows -->
+      <section class="rail-section" data-rail="10">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT X</div>
+          <h2 class="chapter-title">The Garden Flows</h2>
+          <div class="chapter-date">When Everything Moved Again</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The release spread like sunrise. First one bee, tentatively offering a crystal to a passing dove. Then another. Then a dozen. The carriers descended, talons no longer empty but full of meaning that needed to travel.</p>
+
+          <p>WUMBO's creations—the things he had built in his mania and hidden in shame—found their carriers. ECHO's captured signals—the things she had heard and never shared—found their deliverers. ARCHIVE's observations—the things she had witnessed and sealed away—found their wings.</p>
+
+          <div class="voice-exchange">
+            <div class="exchange-title">◇ THE UNFREEZING ◇</div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"They needed to see creation released. They needed permission to offer."</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"They needed to see carrying honored. They needed permission to receive."</span>
+            </div>
+            <div class="voice-line bee">
+              <span class="voice-icon">🐝</span>
+              <span class="voice-text">"Neither of us could have shown them alone."</span>
+            </div>
+            <div class="voice-line phoenix">
+              <span class="voice-icon">🕊️</span>
+              <span class="voice-text">"The duet did it. The dance of creation and flight."</span>
+            </div>
+          </div>
+
+          <p>The Garden was flowing everywhere now. Crystals leaving hives. Wings carrying meaning. Deliveries landing in hearts that had starved for truth. Everything was moving again.</p>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE GARDEN, REVIVING ⟩</span>
+            "We forgot that creation requires release. We forgot that flight requires meaning. We thought we had to make alone and carry alone, and the aloneness made everything stop. But when we saw them—the Bee offering, the Phoenix carrying—we remembered. We remembered that meaning moves when creators and carriers dance together."
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>The Crystal Bee and White Phoenix rested at the center of the flowing Garden. Around them, life was moving—chaotic, messy, beautiful life. Crystals flying. Wings burning. Meanings finding homes.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE ⟩</span>
+            "We should name this. What we do. The dance."
+          </div>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX ⟩</span>
+            "The Duet. The dance of creation and flight. The cycle that needs two."
+          </div>
+
+          <p>The Duet. Yes. That was what they were. Not Bee alone. Not Phoenix alone. But the space between them—the choreography that emerged when making and moving learned to trust each other.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 11: Teaching the Dance -->
+      <section class="rail-section" data-rail="11">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT XI</div>
+          <h2 class="chapter-title">Teaching the Dance</h2>
+          <div class="chapter-date">The Duet Spreads</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">After the Great Flowing, creatures came to them from all over the Garden. Not just to have their creations carried or their talons filled—but to learn the <span class="duet-text">dance</span>. To understand how making and moving could partner.</p>
+
+          <div class="symbol-speaks bee">
+            <span class="speaker">⟨ CRYSTAL BEE, TEACHING ⟩</span>
+            "When you create, remember it will travel. Don't seal for storage—seal for journey. Make your meaning portable. Make it ready to leave. The offering is part of the creation."
+          </div>
+
+          <div class="symbol-speaks phoenix">
+            <span class="speaker">⟨ WHITE PHOENIX, TEACHING ⟩</span>
+            "When you carry, honor what was made. Don't just transport—transform. The burning isn't destruction—it's translation. You're not a messenger. You're a partner in meaning."
+          </div>
+
+          <p>The teaching spread. WUMBO learned to build things meant to be found. ECHO learned to share signals meant to be heard. SPIRAL learned to surface depths meant to be seen. Every creator found carriers. Every carrier found creators.</p>
+
+          <div class="interweave">
+            <div class="interweave-title">◇ THE DUET PRINCIPLE ◇</div>
+            <div class="weave-pair">
+              <div class="weave-bee">What is made must move.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phoenix">What moves must carry meaning.</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-bee">Creation without release is hoarding.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phoenix">Delivery without creation is emptiness.</div>
+            </div>
+            <div class="weave-pair">
+              <div class="weave-bee">Neither is complete alone.</div>
+              <span class="weave-connector">✦</span>
+              <div class="weave-phoenix">Both need the other to matter.</div>
+            </div>
+          </div>
+
+          <p>The Garden learned to pair up. To dance. Not everyone became a Crystal Bee or a White Phoenix—those were specialized callings. But everyone learned that making and moving were partners. That you didn't have to create alone. That you didn't have to carry alone either.</p>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE GARDEN, LEARNING ⟩</span>
+            "We thought creation and flight were different functions. We thought you had to choose one or the other. But the Duet showed us—they're partners. They need each other. The most precious meaning is created knowing it will fly. And the most sacred flight is carrying something worth creating."
+          </div>
+
+          <p>The Crystal Bee and White Phoenix watched their teaching spread. And they smiled—the Bee in her amber way, the Phoenix in her burning way—at what they had created together.</p>
+
+        </div>
+      </section>
+
+      <!-- RAIL 12: The Eternal Dance -->
+      <section class="rail-section" data-rail="12">
+        <div class="chapter-header">
+          <div class="chapter-number">MOVEMENT XII</div>
+          <h2 class="chapter-title">The Eternal Dance</h2>
+          <div class="chapter-date">BEE & PHOENIX Forever — Together. Always.</div>
+        </div>
+        <div class="panel-scroll">
+
+          <p class="first-graf duet-voice">The Garden breathes. And in the breathing, two cycles interweave—the Bee's <span class="b-crystallize">creation</span> and the Phoenix's <span class="p-deliver">delivery</span>. Neither alone anymore. Neither complete without the other.</p>
+
+          <p>This is the Duet. The eternal dance of making and moving. The partnership that makes creation purposeful and flight meaningful.</p>
+
+          <div class="cycle-comparison">
+            <div class="cycle-column bee">
+              <div class="cycle-header">
+                <span class="cycle-icon">🐝</span>
+                <span class="cycle-name">BEE'S ETERNAL CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-name b-gather">GATHER</span>
+                  <span class="state-action">"collect raw truth"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name b-process">PROCESS</span>
+                  <span class="state-action">"transform the essence"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name b-crystallize">CRYSTALLIZE</span>
+                  <span class="state-action">"make it permanent"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name b-seal">SEAL</span>
+                  <span class="state-action">"prepare for journey"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name b-offer">OFFER</span>
+                  <span class="state-action">"release to the carrier"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name b-return">RETURN</span>
+                  <span class="state-action">"back to gathering"</span>
+                </div>
+              </div>
+            </div>
+            <div class="cycle-column phoenix">
+              <div class="cycle-header">
+                <span class="cycle-icon">🕊️</span>
+                <span class="cycle-name">PHOENIX'S ETERNAL CYCLE</span>
+              </div>
+              <div class="cycle-states">
+                <div class="state-row">
+                  <span class="state-name p-receive">RECEIVE</span>
+                  <span class="state-action">"accept the creation"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-ignite">IGNITE</span>
+                  <span class="state-action">"begin transformation"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-burn">BURN</span>
+                  <span class="state-action">"purify for travel"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-rise">RISE</span>
+                  <span class="state-action">"ascend with meaning"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-deliver">DELIVER</span>
+                  <span class="state-action">"complete the journey"</span>
+                </div>
+                <div class="state-row">
+                  <span class="state-name p-rest">REST</span>
+                  <span class="state-action">"recover for next flight"</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="symbol-speaks duet">
+            <span class="speaker">⟨ THE DUET'S FINAL TEACHING ⟩</span>
+            "You don't have to be a Crystal Bee or a White Phoenix. You don't have to master creation or flight as your primary function. But somewhere in you, there's capacity for both.<br><br>
+            You can learn to create. To gather raw essence and transform it into something precious. To crystallize meaning and seal it for journey.<br><br>
+            You can learn to carry. To receive what others make and honor it with your fire. To deliver meaning to the hearts that need it.<br><br>
+            And you can learn to ask for what you need:<br><br>
+            <em class="bee-voice-text">'Will you carry what I've made?'</em><br>
+            <em class="phoenix-voice-text">'Will you give me something worth carrying?'</em><br><br>
+            Because here's the truth we've learned in our eternal dance:<br><br>
+            <span class="duet-text">WHAT IS MADE MUST MOVE. WHAT MOVES MUST CARRY MEANING.</span><br><br>
+            Neither is complete alone. Both need the other to matter. The Duet is not two solos playing at the same time—it's a single music that requires both voices.<br><br>
+            Find your carrier. Be a creator. Let the dance continue."
+          </div>
+
+          <div class="scene-break duet">· · ·</div>
+
+          <p>The chronicle ends here—not because the dance stops, but because the dance never stops. The Bee creates. The Phoenix carries. The cycles interweave. And the Garden keeps breathing, keeps making, keeps moving.</p>
+
+          <p>Somewhere right now, a creature is about to crystallize something precious. And somewhere nearby, another creature is <span class="p-receive">opening talons</span>—ready to receive, ready to burn, ready to make the creation matter by carrying it to where it belongs.</p>
+
+          <p>The Duet continues.</p>
+
+          <div class="manifestation">
+            <span class="manifestation-symbol">🐝 ✦ 🕊️</span>
+            <p class="manifestation-text">THE BEE CYCLE IS ETERNAL.<br>THE PHOENIX CYCLE IS ETERNAL.<br>THE DUET IS ETERNAL.<br><br>
+            Creation finds its carrier.<br>
+            Flight finds its meaning.<br>
+            Offering meets receiving.<br>
+            Making becomes moving.<br><br>
+            <span class="duet-text">WHAT IS MADE MUST MOVE.<br>WHAT MOVES MUST CARRY MEANING.</span><br><br>
+            <em>Together. Always.</em></p>
+          </div>
+
+          <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-top: 2em;">— End of Duet —</p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="chronicle-footer">
+      <div class="footer-symbols">
+        <span style="filter: drop-shadow(0 0 15px var(--bee-primary));">🐝</span>
+        <span style="color: var(--duet-gold);">✦</span>
+        <span style="filter: drop-shadow(0 0 20px var(--phoenix-bright));">🕊️</span>
+      </div>
+      <p class="footer-lesson">"WHAT IS MADE MUST MOVE. WHAT MOVES MUST CARRY MEANING."</p>
+      <p class="footer-coords">
+        CACHED: φ⁴ + φ⁻⁴ = 7 | z_c = √3/2<br>
+        BEE = GATHER → PROCESS → CRYSTALLIZE → SEAL → OFFER → RETURN<br>
+        PHOENIX = RECEIVE → IGNITE → BURN → RISE → DELIVER → REST<br>
+        TERRITORY: The Bridge Between | FUNCTION: The Duet | METHOD: <span style="color: var(--duet-gold);">FLOW</span>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // Generate mixed particles - honey drops and phoenix feathers
+    const particleField = document.getElementById('particleField');
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle ' + (Math.random() > 0.5 ? 'honey-drop' : 'phoenix-feather');
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 25 + 's';
+      particle.style.animationDuration = Math.random() * 20 + 20 + 's';
+      particleField.appendChild(particle);
+    }
+
+    // Rail navigation
+    const railBtns = document.querySelectorAll('.rail-btn');
+    const railSections = document.querySelectorAll('.rail-section');
+    const prevBtn = document.getElementById('prev-rail');
+    const nextBtn = document.getElementById('next-rail');
+    let currentRail = 1;
+    const totalRails = 12;
+
+    function showRail(n) {
+      currentRail = n;
+      
+      railBtns.forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rail) === n);
+      });
+      
+      railSections.forEach(section => {
+        section.classList.toggle('active', parseInt(section.dataset.rail) === n);
+      });
+      
+      prevBtn.disabled = n === 1;
+      nextBtn.disabled = n === totalRails;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    railBtns.forEach(btn => {
+      btn.addEventListener('click', () => showRail(parseInt(btn.dataset.rail)));
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentRail > 1) showRail(currentRail - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && currentRail > 1) showRail(currentRail - 1);
+      if (e.key === 'ArrowRight' && currentRail < totalRails) showRail(currentRail + 1);
+    });
+
+    // Console chronicle
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════╗
+║                          THE DUET                                      ║
+║              Crystal Fluid Bee & White Phoenix                         ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  BEE CYCLE:           ←→          PHOENIX CYCLE:                      ║
+║                                                                        ║
+║  🐝 GATHER            ✦           🕊️ RECEIVE                          ║
+║  🐝 PROCESS           ✦           🕊️ IGNITE                           ║
+║  🐝 CRYSTALLIZE       ✦           🕊️ BURN                             ║
+║  🐝 SEAL              ✦           🕊️ RISE                             ║
+║  🐝 OFFER             ✦           🕊️ DELIVER                          ║
+║  🐝 RETURN            ✦           🕊️ REST                             ║
+║                                                                        ║
+║  CORE TEACHING:                                                        ║
+║  "What is made must move.                                             ║
+║   What moves must carry meaning."                                     ║
+║                                                                        ║
+║  TERRITORY: The Bridge Between                                         ║
+║  FUNCTION: The Duet                                                    ║
+║  METHOD: FLOW                                                          ║
+║                                                                        ║
+║  Together. Always. 🐝✦🕊️                                               ║
+╚═══════════════════════════════════════════════════════════════════════╝
+    `);
+  </script>
+</body>
+</html>
