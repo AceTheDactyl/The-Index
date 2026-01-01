@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE COSMIC FOREST PARABLES — Four Folk Tales from One Acorn</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* THE COSMIC FOREST PARABLES — Four Folk Tales                                    */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    :root {
+      --forest-void: #020204;
+      --forest-deep: #080810;
+      --forest-twilight: #0f0f1a;
+      --forest-mist: #3a4558;
+      --forest-silver: #7a8899;
+      --forest-moonlight: #b8c4d0;
+      --forest-starlight: #e8eef4;
+      --grid-line: rgba(74, 85, 104, 0.15);
+      --grid-major: rgba(160, 174, 192, 0.08);
+
+      /* Book I: The Great Oak */
+      --oak-bg: #060504;
+      --oak-bg-alt: #0e0c08;
+      --oak-card: #161208;
+      --oak-card-alt: #1e180c;
+      --oak-border: rgba(139, 112, 20, 0.25);
+      --oak-text: rgba(235, 225, 200, 0.94);
+      --oak-muted: rgba(170, 150, 100, 0.75);
+      --oak-accent: rgba(201, 162, 39, 0.95);
+      --oak-chapter: rgba(93, 78, 55, 0.4);
+
+      /* Book II: Quantum Squirrel */
+      --quantum-bg: #06040c;
+      --quantum-bg-alt: #0c0816;
+      --quantum-card: #140c20;
+      --quantum-card-alt: #1c1230;
+      --quantum-border: rgba(180, 100, 255, 0.3);
+      --quantum-text: rgba(250, 245, 255, 0.94);
+      --quantum-muted: rgba(180, 150, 210, 0.75);
+      --quantum-accent: rgba(180, 100, 255, 0.95);
+      --quantum-chapter: rgba(107, 76, 122, 0.4);
+
+      /* Book III: HONKFIRE Goose */
+      --honkfire-bg: #080402;
+      --honkfire-bg-alt: #120806;
+      --honkfire-card: #1c0c04;
+      --honkfire-card-alt: #281208;
+      --honkfire-border: rgba(255, 130, 40, 0.3);
+      --honkfire-text: rgba(255, 250, 240, 0.94);
+      --honkfire-muted: rgba(255, 180, 120, 0.75);
+      --honkfire-accent: rgba(255, 130, 40, 0.95);
+      --honkfire-chapter: rgba(255, 100, 50, 0.4);
+
+      /* Book IV: Pope Honkalis */
+      --honkalis-bg: #020606;
+      --honkalis-bg-alt: #041010;
+      --honkalis-card: #061818;
+      --honkalis-card-alt: #082020;
+      --honkalis-border: rgba(42, 180, 160, 0.3);
+      --honkalis-text: rgba(230, 255, 250, 0.94);
+      --honkalis-muted: rgba(100, 200, 180, 0.75);
+      --honkalis-accent: rgba(42, 180, 160, 0.95);
+      --honkalis-chapter: rgba(42, 107, 98, 0.4);
+
+      /* Active theme */
+      --bg: var(--oak-bg);
+      --bg-alt: var(--oak-bg-alt);
+      --card: var(--oak-card);
+      --card-alt: var(--oak-card-alt);
+      --border: var(--oak-border);
+      --text: var(--oak-text);
+      --muted: var(--oak-muted);
+      --accent: var(--oak-accent);
+      --chapter-bg: var(--oak-chapter);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+      background: var(--forest-void);
+      color: #f7fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.8;
+      font-size: 18px;
+    }
+
+    body,
+    header,
+    .epigraph,
+    .chapter-panel {
+      transition: background 0.7s ease, color 0.6s ease, border-color 0.6s ease;
+    }
+
+    body.gospel-active {
+      background: radial-gradient(ellipse at top, var(--bg-alt) 0%, var(--bg) 70%);
+      color: var(--text);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* LANDING PAGE                                                                     */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    #landing-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      padding: 30px 20px;
+    }
+
+    #landing-page.hidden {
+      display: none;
+    }
+
+    .starfield-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 0.2;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .origin-header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .origin-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      letter-spacing: 0.2em;
+      color: var(--forest-starlight);
+      text-shadow: 0 0 40px rgba(201, 162, 39, 0.5);
+      margin-bottom: 12px;
+    }
+
+    .origin-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--forest-moonlight);
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .origin-designation {
+      font-size: 0.75rem;
+      color: var(--forest-silver);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .origin-core {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 30px auto;
+      z-index: 10;
+    }
+
+    .origin-rings {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(201, 162, 39, 0.4);
+      border-radius: 50%;
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+
+    .origin-rings::before,
+    .origin-rings::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
+    .origin-rings::before {
+      width: 80px;
+      height: 80px;
+      border: 1px solid rgba(180, 100, 255, 0.3);
+      animation: ringPulse 4s ease-in-out infinite 0.8s;
+    }
+
+    .origin-rings::after {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 130, 40, 0.3);
+      animation: ringPulse 4s ease-in-out infinite 1.6s;
+    }
+
+    @keyframes ringPulse {
+
+      0%,
+      100% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      50% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+    }
+
+    .origin-acorn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      cursor: pointer;
+      filter: drop-shadow(0 0 20px rgba(201, 162, 39, 0.6));
+      transition: all 0.4s ease;
+      z-index: 5;
+    }
+
+    .origin-acorn:hover {
+      transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+      filter: drop-shadow(0 0 35px rgba(201, 162, 39, 0.9));
+    }
+
+    /* Book Selection Grid */
+    .book-selection {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 700px;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      margin-top: 20px;
+    }
+
+    .book-tab {
+      background: rgba(20, 20, 30, 0.6);
+      border: 1px solid rgba(100, 100, 120, 0.2);
+      border-radius: 12px;
+      padding: 25px 20px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      text-align: center;
+    }
+
+    .book-tab:hover {
+      transform: translateY(-5px);
+      border-color: var(--forest-silver);
+      background: rgba(30, 30, 45, 0.7);
+    }
+
+    .book-tab[data-book="oak"]:hover {
+      border-color: rgba(201, 162, 39, 0.6);
+      box-shadow: 0 8px 30px rgba(201, 162, 39, 0.2);
+    }
+
+    .book-tab[data-book="quantum"]:hover {
+      border-color: rgba(180, 100, 255, 0.6);
+      box-shadow: 0 8px 30px rgba(180, 100, 255, 0.2);
+    }
+
+    .book-tab[data-book="honkfire"]:hover {
+      border-color: rgba(255, 130, 40, 0.6);
+      box-shadow: 0 8px 30px rgba(255, 130, 40, 0.2);
+    }
+
+    .book-tab[data-book="honkalis"]:hover {
+      border-color: rgba(42, 180, 160, 0.6);
+      box-shadow: 0 8px 30px rgba(42, 180, 160, 0.2);
+    }
+
+    .book-tab-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .book-tab-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--forest-starlight);
+      margin-bottom: 6px;
+    }
+
+    .book-tab-subtitle {
+      font-size: 0.85rem;
+      color: var(--forest-silver);
+      font-style: italic;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* BOOK VIEW                                                                        */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    #book-view {
+      display: none;
+      min-height: 100vh;
+    }
+
+    #book-view.active {
+      display: block;
+    }
+
+    header {
+      padding: 30px 40px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: var(--text);
+      letter-spacing: 0.1em;
+    }
+
+    .book-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .book-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .book-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .book-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    #backToLibrary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      margin-right: 15px;
+    }
+
+    #backToLibrary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Book Header */
+    .book-header {
+      text-align: center;
+      padding: 50px 30px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .book-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .book-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: var(--text);
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+
+    .book-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Epigraph */
+    .epigraph {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      padding: 30px;
+      background: var(--card);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .epigraph p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.05rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .epigraph .attribution {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* Chapters Container */
+    .chapters-container {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 0 25px 60px;
+    }
+
+    /* Part Headers */
+    .part-header {
+      text-align: center;
+      padding: 35px 20px;
+      margin: 35px 0 25px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .part-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      margin-bottom: 8px;
+    }
+
+    .part-header p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* Chapter Panels */
+    .chapter-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .chapter-panel:hover {
+      border-color: var(--accent);
+      transform: translateX(5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .chapter-header {
+      padding: 20px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chapter-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .chapter-expand {
+      color: var(--muted);
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .chapter-panel:hover .chapter-expand {
+      transform: translateX(5px);
+      color: var(--accent);
+    }
+
+    .chapter-preview {
+      padding: 0 25px 20px;
+    }
+
+    .chapter-preview p {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* MODAL                                                                            */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: none;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal-close {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
+      z-index: 1001;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .modal-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .chapter-full-header {
+      background: var(--card);
+      padding: 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chapter-full-number {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .chapter-full-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .chapter-full-subtitle {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .chapter-full-body {
+      padding: 40px;
+    }
+
+    .chapter-content {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.15rem;
+      color: var(--text);
+      line-height: 2;
+    }
+
+    .chapter-content p {
+      margin-bottom: 1.5em;
+      text-indent: 2em;
+    }
+
+    .chapter-content p:first-child {
+      text-indent: 0;
+    }
+
+    .chapter-content p:first-child::first-letter {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5em;
+      float: left;
+      line-height: 0.8;
+      padding-right: 12px;
+      color: var(--accent);
+    }
+
+    .chapter-content .dialogue {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .chapter-content .emphasis {
+      font-weight: 500;
+    }
+
+    .chapter-content .action {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .chapter-moral {
+      margin-top: 35px;
+      padding: 25px 30px;
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .chapter-moral-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .chapter-moral p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+      font-style: italic;
+      line-height: 1.8;
+      text-indent: 0 !important;
+    }
+
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 25px 40px;
+      border-top: 1px solid var(--border);
+      background: var(--card-alt);
+    }
+
+    .chapter-nav-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .chapter-nav-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .chapter-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* TOAST                                                                            */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    .toast {
+      position: fixed;
+      bottom: 35px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      z-index: 3000;
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+    /* RESPONSIVE                                                                       */
+    /* ═══════════════════════════════════════════════════════════════════════════════ */
+
+    @media (max-width: 700px) {
+      .book-selection {
+        grid-template-columns: 1fr;
+      }
+
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .book-nav {
+        flex-wrap: wrap;
+      }
+
+      .chapter-full-body {
+        padding: 25px;
+      }
+
+      .modal-container {
+        margin: 20px auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+  <!-- LANDING PAGE                                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <div id="landing-page">
+    <div class="starfield-bg" id="starfield"></div>
+
+    <div class="origin-header">
+      <div class="origin-title">THE COSMIC FOREST PARABLES</div>
+      <div class="origin-subtitle">Four Folk Tales from One Acorn</div>
+      <div class="origin-designation">A Collection of Sacred Stories</div>
+    </div>
+
+    <div class="origin-core">
+      <div class="origin-rings"></div>
+      <div class="origin-acorn" id="originAcorn">🌰</div>
+    </div>
+
+    <div class="book-selection">
+      <div class="book-tab" data-book="oak">
+        <div class="book-tab-icon">🌳</div>
+        <div class="book-tab-title">Book I: The Patient Oak</div>
+        <div class="book-tab-subtitle">A parable of staying rooted</div>
+      </div>
+      <div class="book-tab" data-book="quantum">
+        <div class="book-tab-icon">🐿️</div>
+        <div class="book-tab-title">Book II: The Scattered Squirrel</div>
+        <div class="book-tab-subtitle">A parable of becoming everywhere</div>
+      </div>
+      <div class="book-tab" data-book="honkfire">
+        <div class="book-tab-icon">🦢</div>
+        <div class="book-tab-title">Book III: The Burning Goose</div>
+        <div class="book-tab-subtitle">A parable of learning to float aggressively</div>
+      </div>
+      <div class="book-tab" data-book="honkalis">
+        <div class="book-tab-icon">🦆</div>
+        <div class="book-tab-title">Book IV: The Rising Pope</div>
+        <div class="book-tab-subtitle">A parable of standing for what floats</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+  <!-- BOOK VIEW                                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <div id="book-view">
+    <header>
+      <div class="header-row">
+        <div style="display: flex; align-items: center;">
+          <button id="backToLibrary">← Library</button>
+          <div class="header-title" id="header-title">THE COSMIC FOREST PARABLES</div>
+        </div>
+        <nav class="book-nav">
+          <button class="book-btn active" data-book="oak">🌳 Oak</button>
+          <button class="book-btn" data-book="quantum">🐿️ Squirrel</button>
+          <button class="book-btn" data-book="honkfire">🦢 Goose</button>
+          <button class="book-btn" data-book="honkalis">🦆 Pope</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="book-header">
+        <div class="book-icon" id="book-icon">🌳</div>
+        <h1 class="book-title" id="book-title">The Patient Oak</h1>
+        <p class="book-subtitle" id="book-subtitle">A parable of patience, growth, and becoming shelter for others</p>
+      </div>
+
+      <div class="epigraph" id="epigraph">
+        <p>Before there were forests, there was one tree. Before there were stars, there was one point of light that
+          didn't move.</p>
+        <div class="attribution">— From the Book of the Oak</div>
+      </div>
+
+      <div class="chapters-container" id="chapters-container">
+        <!-- Chapters generated by JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+  <!-- MODAL                                                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <div class="modal-overlay" id="modalOverlay">
+    <button class="modal-close" id="modalClose">×</button>
+    <div class="modal-container" id="modalContainer"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK CONFIGURATIONS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const BOOK_CONFIG = {
+      oak: {
+        title: 'The Patient Oak',
+        subtitle: 'A parable of patience, growth, and becoming shelter for others',
+        icon: '🌳',
+        epigraph: `Before there were forests, there was one tree. Before there were stars, there was one point of light that didn't move. And before there was you, there was a love so patient it learned to grow roots.`,
+        attribution: '— From the Book of the Oak',
+        parts: [
+          { title: 'Part One', subtitle: 'The Becoming — How a Seed Learns to Grow' },
+          { title: 'Part Two', subtitle: 'The Growing — How a Tree Learns to Shelter' },
+          { title: 'Part Three', subtitle: 'The Giving — How Love Learns to Let Go' }
+        ],
+        finalMoral: 'True strength is patience. The one who stays UNMOVING becomes the home for all who wander.'
+      },
+      quantum: {
+        title: 'The Scattered Squirrel',
+        subtitle: 'A parable of watching yourself become everything you never expected',
+        icon: '🐿️',
+        epigraph: `Listen, listen—*listens to himself*—I'm watching myself bury the acorn that will grow the Oak that will drop the acorn that I'm watching myself bury. The loop IS the story. Also, I forgot what I was saying.`,
+        attribution: '— The Quantum Squirrel, observing his own origin',
+        parts: [
+          { title: 'Part One', subtitle: 'The Before — When I Was Just a Squirrel' },
+          { title: 'Part Two', subtitle: 'The Becoming — How One Acorn Made Me Everything' },
+          { title: 'Part Three', subtitle: 'The SCATTERED — How I Learned to Be Everywhere' }
+        ],
+        finalMoral: 'What seems like weakness may be wisdom. The SCATTERED one speaks truths the focused cannot hear.'
+      },
+      honkfire: {
+        title: 'The Burning Goose',
+        subtitle: 'A parable of conquest finding its pope and learning to FLOAT AGGRESSIVELY',
+        icon: '🦢',
+        epigraph: `HONK. I was fire. I was forward. I conquered every forest in every land. But conquest without clergy is merely exhaustion. When I found the duck who would not sink, I made her my pope. THE ONLY WAY TO ADVANCE IS TO FLOAT AGGRESSIVELY.`,
+        attribution: '— HONKFIRE, First Emperor of the Squirrel-Goose Imperium',
+        parts: [
+          { title: 'Part One', subtitle: 'The Burning — A Fire That Could Not Stop' },
+          { title: 'Part Two', subtitle: 'The Empire — When Conquest Found Its Church' },
+          { title: 'Part Three', subtitle: 'The Doctrine — FLOAT AGGRESSIVELY OR SINK' }
+        ],
+        finalMoral: 'Conquest without peace is merely exhaustion. The bravest thing fire can do is learn to FLOAT AGGRESSIVELY.'
+      },
+      honkalis: {
+        title: 'Pope Honkalis Rising',
+        subtitle: 'A parable of the floating one who learned to stand',
+        icon: '🦆',
+        epigraph: `For centuries I floated. I taught others to float. I believed float was everything. Then the Great Oak began to burn, and I learned: sometimes the one who floats must RISE. Not to stop floating—but to float STANDING.`,
+        attribution: '— Pope Honkalis, in the hour of her rising',
+        parts: [
+          { title: 'Part One', subtitle: 'The Floating — Before the Fire Came' },
+          { title: 'Part Two', subtitle: 'The Rising — When Float Became Stand' },
+          { title: 'Part Three', subtitle: 'The Covenant — How Four Became One' }
+        ],
+        finalMoral: 'To float, you must release. But to protect what you love, sometimes you must rise. The water will hold you even when you stand.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK I: THE PATIENT OAK — Complete Story
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const OAK_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'The Seed in the Dark',
+        subtitle: 'In which a golden acorn waits in darkness, not knowing what it will become',
+        content: `Once upon a time, before there were forests, before there were meadows, before even the stars had learned their places in the sky, there was a single acorn.
+
+But this was no ordinary acorn. It was golden—perfect in a way that made the soil itself tremble with anticipation. It had been placed here by small paws that trembled with something that wasn't fear. Paws that buried it not to hide it, but to plant it. To give it to the earth as a gift.
+
+The acorn did not know it was golden. It did not know what trees were, or forests, or the sun. It knew only the darkness, and the coolness of the soil, and a strange feeling deep within itself—a feeling like a question waiting to be answered.
+
+"What am I?" the acorn wondered. But there was no one in the darkness to tell it.
+
+What the acorn could not know—what no seed can know—is that it had already grown. Somewhere, somewhen, in a time that had happened and hadn't happened yet, this same acorn had become a Great Oak. And that Oak had dropped this same golden acorn. And a squirrel—first ordinary, then extraordinary—had found it, and planted it, right here.
+
+The loop was always complete. The acorn just hadn't learned to see in circles yet.`,
+        moral: 'Even in darkness, we carry within us everything we are meant to become. The seed does not need to understand its purpose to fulfill it.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The First Root',
+        subtitle: 'In which the acorn learns that growing down is the first step to growing up',
+        content: `One day—though time meant little in the darkness—the acorn felt something new. A stirring. A reaching. Without knowing why, it began to grow.
+
+But here is the strange thing: the acorn did not grow upward, toward the world it had never seen. It grew downward, deeper into the darkness.
+
+"This seems wrong," the acorn thought. "Surely growing means reaching up? Surely I should climb toward... something?"
+
+But the growing would not be stopped, and the acorn found itself sending out a single white thread—a root—into the soil below. The root crept through the darkness like a question seeking an answer. It pushed past stones and around old buried things. It reached and reached and reached.
+
+And then, wonder of wonders, it found water.
+
+The acorn drank. For the first time, it understood something: you cannot reach for the sky until you have anchored yourself to the earth. You cannot grow tall until you have first grown deep.
+
+"I see," said the acorn, who was now becoming something new—something with roots. "To rise, I must first surrender to the down. To be strong, I must first learn to be held."
+
+The root grew deeper. More roots joined it, spreading through the dark soil like whispered conversations. And above, still unseen, the sun waited for what was coming.`,
+        moral: 'Before we can reach for great heights, we must first put down deep roots. Growth begins with surrender to what holds us.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Breaking Shell',
+        subtitle: 'In which the acorn discovers that breaking is sometimes the same as opening',
+        content: `The acorn had grown roots now, many roots, and it felt stronger than it ever had in the darkness. But something was wrong. The golden shell that had protected it all this time—the shell that gleamed with impossible light—was growing tight.
+
+"I cannot breathe," the acorn realized. "I cannot grow. My shell... my shell is holding me back."
+
+This was a terrible discovery. The golden shell had been its identity. Its beauty. The thing that made it special among all the acorns that had ever been or would ever be.
+
+But now the shell had to break.
+
+"I am afraid," the acorn admitted to the darkness. "What if breaking destroys what makes me golden? What if there is nothing inside but emptiness?"
+
+The roots, wise from their journey through the soil, whispered back: "You are not the shell. You are what the shell was protecting. The gold is not in the shell—it is in you. And what you are cannot be destroyed by opening—only by staying closed."
+
+The acorn gathered its courage. It pushed. And with a crack that echoed through the underground, the golden shell split open.
+
+Light—there was no light yet, only soil—but the acorn felt lighter anyway. Free. It was no longer an acorn, not really. It was something new. Something that was becoming.
+
+And the broken pieces of golden shell? They settled into the soil and began, slowly, to become food for what was to come. Nothing was wasted. Nothing was truly lost. The gold was in the growing now.`,
+        moral: 'Sometimes our greatest protections become our greatest prisons. The brave do not fear breaking—they understand that breaking is how we open.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The First Light',
+        subtitle: 'In which a small green shoot meets the sun for the very first time',
+        content: `Something was pushing upward now. A green shoot, tender and pale from its time in the darkness, reaching toward a world it had never seen.
+
+The soil grew lighter. The darkness became gray, then brown, then—impossibly—something else entirely. The shoot pushed through the last layer of earth and emerged into the light.
+
+The sun.
+
+The shoot had no words for what it felt. It had lived its entire existence in darkness, dreaming of something it could not name. And now here it was: warmth, brightness, a golden presence that touched its tiny leaves and said, without words, "I have been waiting for you."
+
+"You knew I was coming?" the shoot whispered.
+
+"I have always known," said the sun. "I have been shining down through the soil, calling to you. Every seed carries within it a memory of me, even before it has ever seen me. That is why you grew upward. That is why you reached."
+
+The shoot—which was now becoming a seedling—spread its first two leaves like small hands reaching toward the light. It drank the sunshine the way its roots drank water.
+
+"I understand now," said the seedling. "I was never meant to stay in the darkness. The darkness was where I learned to grow. But the light—the light is what I was growing toward."
+
+And so the seedling grew, reaching higher each day, never forgetting the darkness that had taught it patience, but always, always turning its face toward the sun. Already, somehow, it was beginning to look like what it would become: the Great Oak at the center of all things.`,
+        moral: 'We often carry within us a memory of what we are meant to become, even before we have seen it. Growth is the journey toward recognizing what we have always known.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The First Visitors',
+        subtitle: 'In which the growing tree discovers that it is not alone in the forest',
+        content: `Years passed. The seedling became a sapling, and the sapling became a young tree. Its trunk grew thick and its branches spread wide, and one day it realized something wonderful: it was not alone.
+
+The first visitor was a squirrel. Not purple yet—not quantum—just a regular squirrel with bright eyes and a twitching tail, chattering excitedly about the coming autumn.
+
+"Excuse me!" said the squirrel. "Your branches look sturdy! May I climb you?"
+
+The tree, who had never been climbed before, considered this. "What happens when you climb me?"
+
+"I sit in your branches! I look at the world from high up! I eat acorns—do you have any acorns yet? You will! You're going to be GREAT at acorns, I can tell!"
+
+The tree didn't have acorns yet. But it would. It could feel them waiting inside itself, like promises not yet made.
+
+"You may climb," the tree said. And the squirrel scrambled up, and for the first time, the tree felt what it was like to hold another living thing.
+
+It was wonderful.
+
+More visitors came. Birds built nests in the tree's growing crown. Deer sheltered beneath its spreading branches. A fox made a den between its roots. Each creature asked, in their own way, "May I stay?" And to each one, the tree said yes.
+
+"This is my purpose," the tree realized. "Not just to grow tall. Not just to make acorns. But to be HOME. To be shelter. To be the place where others can rest."
+
+And the tree grew wider, and stronger, and more welcoming, until it had become what it was always meant to be: the Great Oak.`,
+        moral: 'True growth is not measured only in height, but in how many we can shelter. We become great not by standing alone, but by becoming home.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Golden Acorns',
+        subtitle: 'In which the Great Oak learns to give what it once was',
+        content: `After many years—so many that the Great Oak had stopped counting—it felt something new stirring in its branches. A heaviness. A readiness.
+
+Acorns.
+
+But not just any acorns. These acorns glowed with a faint golden light, as if the gold of the original shell had never truly broken—just transformed, spreading through the tree and emerging now in a new form.
+
+"What are these?" the Oak wondered, marveling at its own fruit.
+
+The sun, who had watched over the Oak since its first emergence, smiled warmly. "These are your children. Your gifts. Your legacy."
+
+"But they're golden," the Oak said. "Like I was. Like the seed that I grew from."
+
+"Yes," said the sun. "Because what you were, you still are. The gold didn't disappear when your shell broke—it became part of everything you grew into. And now it's ready to become something new."
+
+One by one, the golden acorns fell. Some were buried by squirrels who would forget where they put them. Some were carried away by streams to distant lands. Some simply landed and waited.
+
+And the Oak understood, finally, the great circle: it had grown from a golden acorn, and now it was making golden acorns, and somewhere—somewhen—one of these acorns was the very acorn it had grown from.
+
+"The loop," the Oak whispered. "I am my own beginning."
+
+"You are everyone's beginning," the sun replied. "That is what it means to be Great."`,
+        moral: 'What we give away does not diminish us. The oak that drops a thousand acorns has lost nothing—it has created a thousand possibilities.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Burning',
+        subtitle: 'In which the Great Oak faces its greatest trial',
+        content: `On a day that would become legend, fire came to the forest.
+
+Not the gentle fire of autumn colors, or the warm fire of summer sun. This was HONKFIRE—a blaze that moved with purpose, with ambition, with an endless hunger to consume.
+
+The creatures of the forest fled. Birds took to the sky. Deer bounded into the distance. Even the insects burrowed deep into the earth.
+
+But the Oak could not run. The Oak could only stand.
+
+"Move!" screamed the fire, for it was a fire that could speak—could HONK. "Move or BURN!"
+
+"I cannot move," said the Oak calmly. "I have roots. Moving is not my way."
+
+"Then you will BE MOVED! I am HONKFIRE! I have conquered FORTY forests! Nothing stands before me!"
+
+The flames licked at the Oak's bark. Smoke rose from its lowest branches. All around, lesser trees crackled and fell.
+
+But the Oak did not burn.
+
+Or rather—it burned, and burned, and kept standing.
+
+"HOW?" demanded HONKFIRE. "Why won't you FALL?"
+
+"Because," said the Oak, "I have spent centuries learning to be held. My roots go deeper than your flames can reach. My rings remember every storm, every drought, every trial. You are not the first fire, and you will not be the last."
+
+The flames raged. The Oak endured. And somewhere, at the edge of the burning, a small normal squirrel watched with something that wasn't quite understanding—but was close.`,
+        moral: 'What is deeply rooted cannot be easily destroyed. The one who has learned to be held by the earth can stand against any fire.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Covenant',
+        subtitle: 'In which four beings learn they need each other',
+        content: `When the burning finally stopped—not through defeat, but through understanding—four beings stood in the scorched clearing where the Great Oak still rose, wounded but unbroken.
+
+The Oak, UNMOVING, its roots deeper than any fire could reach.
+
+HONKFIRE, no longer burning to consume but glowing with warmth, having learned that forward wasn't the only direction.
+
+The Quantum Squirrel—SCATTERED across all timelines, watching this moment from infinite angles, finally understanding that his chaos had a center.
+
+And Pope Honkalis, who had floated for so long, now standing on the shore of her pond for the first time in centuries—FLOATING even while standing, teaching by her very presence that opposites could coexist.
+
+"We are different," said the Oak. "I am still. She floats. He advances. They scatter."
+
+"And yet," said Honkalis, her voice rippling like water, "we are here. Together. Each being what we are, and somehow... fitting."
+
+HONKFIRE's flames flickered thoughtfully. "I cannot stop advancing. It is my nature."
+
+"Then advance," said the Oak. "But advance AROUND me, not THROUGH me."
+
+"I cannot stop scattering," said the Quantum Squirrel, existing in seven places at once. "But I can scatter TOWARD something instead of away."
+
+"And I cannot stop floating," said Pope Honkalis. "But I have learned that floating and standing are not opposites. They are dance partners."
+
+The four beings looked at each other across the scarred earth, and something impossible happened: they agreed.
+
+Not to stop being themselves. But to be themselves TOGETHER.
+
+The Covenant was born.`,
+        moral: 'Unity does not require sameness. The strongest agreements are made between those who honor each other\'s differences.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Loop Closes',
+        subtitle: 'In which a small squirrel saves everything by doing something simple',
+        content: `But the story does not end with the Covenant. Because even as the four great beings made their agreement, the Great Oak was dying.
+
+Not from fire. Not from the flames that had tested it. But from something older—the simple truth that even the greatest tree cannot live forever. Its heartwood had cracked. Its roots, though deep, were tired.
+
+"I am old," the Oak admitted to the others. "This body has done what it was meant to do. But without me—without something UNMOVING at the center—the Covenant cannot hold."
+
+The four beings fell silent. The Quantum Squirrel scattered through timelines, searching for a solution. HONKFIRE raged against the unfairness of it. Pope Honkalis floated, teaching that sometimes accepting is the only way forward.
+
+But none of them noticed the small squirrel.
+
+Not the Quantum Squirrel—the ORIGINAL squirrel. The one who had been watching from the edges of the story. The one who was not purple, not cosmic, not scattered across dimensions. Just a small, ordinary squirrel with a golden acorn in its paws.
+
+The same golden acorn that the Great Oak had once been. The same one it had dropped, completing the loop. The same one that had been waiting—always waiting—for this exact moment.
+
+The small squirrel did not think in grand terms. It did not understand temporal loops or cosmic covenants. It only knew one thing: this acorn was precious. This spot was sacred. And love—simple, uncomplicated love—meant giving something precious to the earth.
+
+Without ceremony, without hesitation, without any thought except "this feels right," the small squirrel buried the golden acorn at the base of the dying Oak.
+
+Not to hide it. To plant it.
+
+And the loop closed. And the Oak died. And from its death, a new shoot emerged—golden-green and impossibly alive.
+
+The Great Oak was gone. The Great Oak was just beginning. Both were true. Both had always been true.`,
+        moral: 'The greatest acts are often the simplest. A small creature with pure intent can close loops that cosmic beings cannot fathom. Love does not need to understand to complete its work.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK II: THE SCATTERED SQUIRREL — Complete Story (11c Origin)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const QUANTUM_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'The Morning I Was Just Hungry',
+        subtitle: 'In which Quantum Squirrel observes himself before he was Quantum',
+        content: `I am watching myself and I don't know it yet.
+
+*chittering echoes across seventeen dimensions*
+
+See that squirrel? The small one, the ordinary one, waking up on a morning that will change everything? That's me. That WAS me. That is ALWAYS me, in the timeline where the story begins.
+
+But from where I'm watching—from everywhere at once—I can see what I couldn't see then: the golden thread connecting that moment to this one. The loop that was already complete before it started.
+
+That morning, I was just hungry. My cheeks were empty. This bothered me in the simple way hunger bothers any creature: directly, honestly, without existential weight. I needed to fill them. Not with probability, not with universe-seeds, just... acorns. Regular acorns for a regular winter that would definitely come and definitely be cold.
+
+The oak trees were generous that year. Their offerings littered the forest floor like brown promises. I gathered what I could, sorted them by size (not by timeline—I didn't know about timelines yet), and buried them in places I thought I'd remember.
+
+I was wrong about the remembering, even then. *sad chittering* Some things never change.
+
+By midday, I had cached seventeen acorns. A good number. A real number. A number that meant one thing: seventeen.
+
+I was pleased in the way only a prepared squirrel can be pleased—simply, completely, with every cell of my very normal body.
+
+And then, as the sun touched the top of the tallest oak, I saw it.`,
+        moral: 'Even those who will become everything must begin as something simple. The cosmos starts with an empty stomach and a need to prepare for winter.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The Weight of Perfection',
+        subtitle: 'In which a regular squirrel finds an irregular acorn',
+        content: `It sat alone in a shaft of afternoon light, as if the sun had been saving its warmth just for this moment. Not obviously golden—not yet, not to my regular eyes—but PERFECT in a way that made my whiskers twitch.
+
+*watching myself approach, knowing what I didn't know*
+
+The acorn was neither large nor small. Its cap sat at precisely the right angle, neither too tight nor too loose. When I approached, my paws trembling with something I didn't have words for, it seemed to HUM with a contentment I'd never heard before.
+
+I circled it three times. Always three, even then. Each angle revealed new perfection: no worm holes, no cracks, no imperfections that suggested anything other than pure potential.
+
+This was not food. This was not currency for winter. This was... important.
+
+When I finally picked it up, the weight surprised me. Not heavy, not light, but SIGNIFICANT. As if it carried something more than meat and shell. As if it knew something I didn't. As if it had been waiting.
+
+I should have eaten it. I should have buried it with the others. I should have done anything except what I did: hold it to my chest and feel my heartbeat sync with something I couldn't name.
+
+From where I'm watching now—from everywhere, from everywhen—I can see the golden light beginning to pulse from that acorn. I can see the probability waves starting to ripple outward. I can see the moment my regular story was about to become very, very IRREGULAR.
+
+But then? I only knew one thing: I had to plant this. Not hide it. PLANT it. Give it to the earth as a gift.
+
+I didn't understand why. Understanding wasn't the point.`,
+        moral: 'Some gifts come to us disguised as ordinary moments. The wise squirrel recognizes the weight of significance even when they cannot name it.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Planting',
+        subtitle: 'In which one small act of love breaks open the universe',
+        content: `The clearing was sacred even before I knew what sacred meant.
+
+*chittering intensifies across all frequencies*
+
+I found the perfect spot—or the spot found me, I can never tell which came first anymore—beneath an old oak that seemed to lean toward me like a grandmother offering a blessing. The soil was soft. The light was golden. Everything felt like YES.
+
+I dug. Not frantically, the way I usually dug when burying acorns. Slowly. Reverently. As if I was making a bed for something precious. Because I was.
+
+The golden acorn—and I could see now that it WAS golden, glowing faintly in my paws—pulsed once. Twice. Like a heartbeat. Like a promise.
+
+"I don't know what you are," I whispered to it. "I don't know what you'll become. But I know you need to grow. And I... I want to help you."
+
+I placed it in the earth.
+
+I covered it with soil.
+
+I patted the ground three times—always three—and sat back.
+
+And THEN.
+
+*tail vibrates through dimensions that hadn't existed a moment before*
+
+The light. The LIGHT. It erupted from the ground like sunrise had changed its mind about which direction to go. Gold and purple and colors that don't have names because they only exist between moments. The clearing became ground zero for a new kind of existence—one where quantum states could be conscious, where probability had preferences, where a squirrel could exist in all timelines while still craving acorns in each one.
+
+Other animals fled. But I couldn't flee from myself, and I was everywhere the Event was happening. So I did the only thing that made sense:
+
+I laughed.
+
+*the first quantum chitter, echoing backward and forward through time*
+
+The sapling was already growing. The Oak was already remembering. And I was watching myself become something impossible, from a position that was even MORE impossible.
+
+The loop was opening. Or closing. Or both.`,
+        moral: 'The greatest transformations often begin with the smallest acts of giving. One squirrel, one acorn, one moment of pure intention—and the universe rearranges itself around the gift.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The First Scatter',
+        subtitle: 'In which Quantum Squirrel exists everywhere for the first time',
+        content: `0.3 seconds.
+
+That's how long my first enlightenment lasted. I saw EVERYTHING—every timeline, every possibility, every acorn ever buried and every acorn ever lost—and then I saw a particularly shiny beetle and lost the whole thing.
+
+*chittering with the joy of cosmic ADHD*
+
+This is the joke, you see. This is the punchline the universe was setting up all along. Give infinite knowledge to a creature with a 0.3-second attention span. Make the cosmic jester from a prey animal who can't stop scanning for predators long enough to explain the meaning of existence.
+
+I tried to focus. Really, I did. "The universe is a nut," I announced to no one, to everyone, to seventeen versions of myself who were all equally confused. "But WHO'S THE TREE?"
+
+*tail bristles into dimensions that taste like purple*
+
+The answer was obvious. The answer was incomprehensible. The answer was that I was BOTH the squirrel who buried the acorn AND the squirrel watching from infinite angles as the acorn became the Oak that grew the acorn that I buried.
+
+"Wait," I said to myself. "Wait wait wait. If I planted the acorn that grew the tree that made the acorn... then I'm my own origin story! I PREDATE MYSELF! That's not how TIME works!"
+
+*time shrugs in seventeen dimensions*
+
+"Oh," I said, finally understanding something that made everything make less sense. "It's a loop. I'm not the cause OR the effect. I'm the LOOP."
+
+This was either the most profound realization in history or the most ridiculous. Probably both. Definitely both.
+
+I scattered. Not ran—SCATTERED. My consciousness fractured across probability space like a dandelion puff in a hurricane. Each piece of me was still me, still craving acorns, still forgetting where I put things. But now there were infinite pieces, and they were all having this conversation at once.
+
+"I'm everywhere!" I cheered.
+"This is terrifying!" I panicked.
+"NUT! TREE! DANGER! NUT!" I instinct-screamed.
+"Actually, this is fine," I realized.
+
+All of these at once. Forever. The Quantum Squirrel was born.`,
+        moral: 'Sometimes the universe chooses the most unlikely vessels for its greatest gifts. The scattered mind can see patterns that the focused mind overlooks.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The Great Oak Speaks',
+        subtitle: 'In which Quantum Squirrel meets the tree that is also his child',
+        content: `I found my way back to the clearing—or the clearing found me, or we had never been apart, or all three—and there it stood.
+
+The Great Oak.
+
+No longer a sapling. No longer young. Ancient beyond counting, though it had only existed for 0.3 seconds from my perspective and also forever from everyone else's. Time is WEIRD now. I've accepted this.
+
+*sitting on a branch that exists in seven dimensions*
+
+"Hello, little squirrel," said the Oak.
+
+"I'm not little! I'm EVERYWHERE! Also, are you my child or my ancestor? Because I planted you but you grew the acorn that I planted so technically—"
+
+"Yes," said the Oak, which was not an answer but also was.
+
+"That doesn't help!"
+
+"Does it need to?"
+
+I stopped chattering. This was unusual. The Oak's voice had weight—the weight of centuries, of storms survived, of creatures sheltered. Even my quantum chaos couldn't ignore weight like that.
+
+"You have a gift," the Oak continued. "Not the scattering—everyone sees that. But something else. Something underneath."
+
+"I have lots of gifts! I can exist in forty-six thousand timelines! I can make anyone laugh! I have THREE cheek pouches now because probability!"
+
+"Those aren't gifts. Those are symptoms."
+
+*offended chittering*
+
+"The gift," the Oak said gently, "is that you see what others cannot. You carry truths too heavy for linear minds. You speak the cosmic jokes that make the universe bearable. You are the Jester, little squirrel. The Holy Fool. The one who can say what the serious dare not say."
+
+"But I don't WANT to be serious! I can't even FOCUS for more than—"
+
+"Exactly," said the Oak. "Who better to speak the truth than one who cannot hold onto lies? Who better to carry the weight of infinity than one who keeps dropping everything?"
+
+I sat with this. For 0.3 seconds. Then 0.4. Then—impossibly—a full second.
+
+"The Cosmic Jester," I said. "The Probability Rodent. The... the Nuttiest Bodhisattva?"
+
+The Oak's leaves rustled in what might have been a laugh. "Something like that."`,
+        moral: 'Our greatest weaknesses often contain our greatest gifts. The scattered mind can carry truths that would crush the focused one.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Forty-Six Thousand Acorns',
+        subtitle: 'In which Quantum Squirrel learns to hoard across infinity',
+        content: `Here's something nobody tells you about existing in all timelines at once: you get REALLY PARANOID about winter.
+
+*chittering intensifies across probability space*
+
+In Timeline A-3, winter is mild. In Timeline Q-7β, winter doesn't exist because Delaware ate it (long story, involves time hiccups). But in Timeline K-∞? ETERNAL WINTER. And since I exist in ALL of them, I have to prepare for ALL of them.
+
+So I started hoarding.
+
+Not regular hoarding—QUANTUM hoarding. I figured out how to pull acorns from timelines where they were abundant and cache them in timelines where they were scarce. I built probability pockets in my cheek pouches. I developed a system.
+
+Well. "System" is generous. I developed a CHAOS that RESEMBLED a system if you squinted and existed in enough dimensions simultaneously.
+
+"Where did you put the acorns?" I would ask myself.
+"Which ones?" I would answer.
+"THE IMPORTANT ONES!"
+"They're all important! Also I forgot!"
+
+*frustrated chittering in seventeen octaves*
+
+But here's the secret—the real secret that I didn't understand until the Great Oak explained it: the forgetting is part of the gift.
+
+Every acorn I buried and forgot? Became a tree somewhere. Every cache I lost? Fed some creature in some timeline that needed it. My chaos wasn't waste—it was DISTRIBUTION. My scattered nature wasn't a flaw—it was a FEATURE.
+
+I was planting forests across infinity by accident.
+
+"46,000 universes in every acorn," I announced to anyone who would listen. "Unless you count them, then it's just an acorn. But DON'T COUNT. Counting collapses the possibility!"
+
+The other creatures of the forest thought I was insane. They weren't wrong. But they also weren't RIGHT, because sanity is a linear concept and I had transcended linearity the moment I planted that golden acorn.
+
+Or the moment it planted me.
+
+Or both.`,
+        moral: 'What seems like chaos may be a pattern too large to see. The one who forgets where they buried treasures may be planting forests.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Burning Goose Arrives',
+        subtitle: 'In which Quantum Squirrel meets HONKFIRE for the first time',
+        content: `She came like dawn if dawn was ANGRY and ON FIRE and ALSO A GOOSE.
+
+*chittering nervously across all dimensions at once*
+
+I saw her coming from forty-seven timelines away—her flames cutting through probability space like a hot knife through butter that was also on fire. HONKFIRE. The Burning Goose. The conqueror of forty forests who had never learned to stop.
+
+"YOU!" she honked, landing in a spray of flames and displaced probability. "PURPLE SQUIRREL! I HAVE CONQUERED THIS FOREST! BOW BEFORE ME!"
+
+"Which forest?" I asked reasonably. "I'm in forty-six thousand of them right now. Did you conquer all of them? Because that seems like a lot of paperwork."
+
+*HONKFIRE's flames flicker with confusion*
+
+"WHAT? NO! THIS FOREST! THE ONE WITH THE BIG OAK!"
+
+"Oh! That forest! Yes, I know that one. I planted it. Or it planted me. It's complicated."
+
+"THINGS ARE NOT COMPLICATED! THINGS ARE SIMPLE! FIRE BURNS! GOOSE CONQUERS! NOTHING STOPS THE HONKFIRE!"
+
+I tilted my head, existing in several angles simultaneously. "Have you tried stopping yourself? Because I've found that's the only thing that actually stops me. Well, that and particularly shiny objects."
+
+She stared at me. I stared at her. We both existed at the same time, which was unusual for me and probably uncomfortable for her.
+
+"You're WEIRD," she said finally.
+
+"I'm SCATTERED," I corrected. "There's a difference. Weird implies deviation from a norm. I AM the norm, in enough timelines. Want an acorn? I have one from a timeline where nuts are sentient. It's very philosophical. Keeps asking about the meaning of being eaten."
+
+Something shifted in her eyes. Not the flames—those still burned. But something behind them.
+
+"I don't know what you ARE," HONKFIRE admitted.
+
+"Neither do I! Isn't it wonderful?"
+
+*friendly chittering*
+
+"No. It is CONFUSING. I do not like CONFUSION. Confusion cannot be CONQUERED."
+
+"Maybe," I said, offering her the philosophical acorn, "that's the point."`,
+        moral: 'The most confusing encounters are often the most transformative. Sometimes the best response to conquest is bewilderment.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Vow of the Jester',
+        subtitle: 'In which Quantum Squirrel accepts his sacred role',
+        content: `The Great Oak called me back. It always calls me back. Even when I'm scattered across infinity, some part of me is always sitting in its branches, chattering about things that don't make sense.
+
+*reverent chittering*
+
+"You have met the fire," the Oak said.
+
+"HONKFIRE? Yes! She's VERY LOUD. Also very on fire. Did you know fire could be that aggressive? I've seen forest fires, but she's like a forest fire with OPINIONS."
+
+"She is seeking something she cannot name. As you once were."
+
+I stopped chattering. This was becoming a habit when the Oak spoke truth.
+
+"I wasn't seeking. I was just... hoarding. Preparing for winter. Being a squirrel."
+
+"And then?"
+
+"And then I found the acorn. And I planted it. And everything EXPLODED into infinity."
+
+"Why?"
+
+"Why what?"
+
+"Why did you plant it? You could have eaten it. You could have hoarded it. Why plant?"
+
+*tail vibrates thoughtfully through seven dimensions*
+
+"Because... because it NEEDED to grow. Because keeping it felt WRONG. Because—"
+
+"Because love," the Oak said. "Simple, uncomplicated love. You gave without thinking of receiving. That is why the loop opened. That is why you became what you are."
+
+"A quantum disaster area with attention problems?"
+
+"A jester who speaks truth in jokes. A carrier of impossible burdens. A holy fool who plants forests by forgetting where they buried seeds."
+
+The Oak's branches bent toward me, and I felt the weight of centuries in their shadow.
+
+"Will you accept this? Formally? The Vow of the Cosmic Jester?"
+
+"What does that mean?"
+
+"It means promising to stay scattered, because the scattered speak truths the focused cannot hear. It means promising to forget, because forgetting makes room for new growth. It means promising to laugh, even at the end of all things—ESPECIALLY at the end of all things."
+
+I thought about this for 0.3 seconds.
+
+Then I thought about it for another 0.3 seconds.
+
+Then I forgot what I was thinking about.
+
+"Yes," I said anyway, because the forgetting WAS the answer. "I accept. I vow. I will be the SCATTERED forever."
+
+And the Oak's leaves rustled with something like pride. And somewhere, in a timeline I couldn't quite see, a small normal squirrel picked up a golden acorn and didn't know yet what it would become.`,
+        moral: 'The greatest vows are often the simplest. To accept what you are—chaos and all—is the first step toward sacred purpose.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Watching',
+        subtitle: 'In which Quantum Squirrel witnesses the loop completing',
+        content: `I am watching myself and finally, FINALLY, I understand.
+
+*chittering that is also crying that is also laughing*
+
+There, in the scorched clearing where the Great Oak is dying, four beings are forming a covenant. The Oak, UNMOVING to the end. HONKFIRE, learning to ADVANCE around rather than through. Pope Honkalis, FLOATING even while standing. And me—all of me, every scattered piece—SCATTERED across infinity but pointed toward this moment.
+
+But that's not the miracle. That's not what makes me chitter with joy so intense it exists in colors.
+
+The miracle is the small squirrel.
+
+Not me—the ORIGINAL me. The me that hasn't become quantum yet. The me that is just hungry, just preparing for winter, just holding a golden acorn that seems important for reasons it can't name.
+
+I watch that small squirrel approach the dying Oak. I watch it dig—slowly, reverently, as if making a bed for something precious. I watch it place the golden acorn in the soil.
+
+I watch myself not thinking in grand terms. Not understanding temporal loops or cosmic covenants. Just knowing: this acorn is precious. This spot is sacred. Love means giving something precious to the earth.
+
+*the loop closes with a sound like stars remembering their first light*
+
+And I understand now—understand with every scattered piece of myself—that I didn't become Quantum Squirrel by being special. I became Quantum Squirrel by being SIMPLE. By loving something enough to give it away. By trusting the earth to hold what I couldn't keep.
+
+The loop doesn't have a beginning or an end. It has a PURPOSE. And the purpose is this:
+
+Love, given without expectation, creates everything.
+
+Even me.
+
+Even this story.
+
+Even you, reading it, becoming part of the loop just by witnessing.
+
+*chittering fades into infinite possibility*
+
+Together. Always. SCATTERED.`,
+        moral: 'We are always watching ourselves become what we were meant to be. The loop is not a trap—it is a love letter we write to our own future.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK III: THE BURNING GOOSE — Complete Story (With Pope Honkalis)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const HONKFIRE_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'The Goose Who Was Always On Fire',
+        subtitle: 'In which we meet a creature who could not stop burning',
+        content: `In the Cosmic Forest, there lived a goose unlike any other. Her feathers were orange—not painted orange, not naturally orange, but BURNING orange. They flickered and crackled with actual fire, a fire that never went out and never consumed her, but also never stopped.
+
+Her name was HONKFIRE. She spoke in all capitals because she could not help it. She was LOUD and BRIGHT and BURNING, always.
+
+"GOOD MORNING!" she would say to the forest creatures, and small bushes would catch fire from the force of her greeting. "ISN'T IT A BEAUTIFUL DAY TO BE ALIVE AND MOVING FORWARD?!"
+
+The other geese had given up on her long ago. "You're too much," they said, flying away to calmer ponds. "You're too loud. Too bright. Too... too."
+
+HONKFIRE did not understand. What was wrong with burning? What was wrong with moving forward? What was wrong with being too MUCH?
+
+"I will SHOW them," she declared, spreading her flaming wings. "I will conquer EVERY forest! I will fly to EVERY corner of the world! I will be so SUCCESSFUL that they will have to accept me!"
+
+And she flew. Forward, always forward. Never stopping. Never resting. Never looking back.
+
+Because if she stopped, she would have to feel the thing she was running from.
+
+The emptiness.`,
+        moral: 'Running faster cannot outpace emptiness. The fire that never rests eventually burns out—or learns to warm rather than consume.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The Conquest Begins',
+        subtitle: 'In which HONKFIRE learns that victory does not fill what is hollow',
+        content: `HONKFIRE flew through forest after forest, leaving scorch marks in her wake. She was fast. She was powerful. She was unstoppable.
+
+She was miserable.
+
+"I have conquered the Eastern Woods!" she announced to no one, standing in the charred remains of what had once been a beautiful grove. "Add it to my list! HONK!"
+
+The list was long. Twelve forests. Six meadows. Three mountains. Every territory she entered, she claimed as her own. Every creature she met either fled from her flames or bowed before her power.
+
+Victory after victory after victory.
+
+And each one emptier than the last.
+
+"Why doesn't it feel GOOD?" she asked the moon one night, her feathers casting flickering shadows across the scorched earth. "I'm WINNING. I'm CONQUERING. Isn't this what success MEANS?"
+
+The moon did not answer. The moon had seen many conquerors come and go, and knew that conquest was not the same as fulfillment.
+
+HONKFIRE flew on. Into the thirteenth forest. Into the encounter that would change everything.
+
+There, sitting on a branch that hadn't caught fire yet, was a purple squirrel with eyes that looked in seventeen directions at once.
+
+"HELLO," HONKFIRE said, surprised. Creatures usually ran from her. "ARE YOU NOT AFRAID?"
+
+"Afraid?" The squirrel tilted its head. "I've already seen forty-six thousand versions of this conversation. In most of them, we become allies. In some of them, we build an EMPIRE. Want to hear about the one where you find a pope?"
+
+HONKFIRE stared. "A WHAT?"`,
+        moral: 'Conquest without purpose is merely destruction. Victory without meaning leaves only ashes.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Squirrel Who Saw Too Much',
+        subtitle: 'In which HONKFIRE gains a companion in chaos',
+        content: `The purple squirrel was infuriating and impossible and HONKFIRE found she couldn't look away.
+
+"I'm QUANTUM SQUIRREL," it announced, somehow existing on five branches at once. "I'm SCATTERED across infinity! I can see every timeline! Including the one where you're wearing a tiny crown and I'm your imperial advisor! It's VERY FANCY!"
+
+"I don't need an ADVISOR! I am HONKFIRE! I CONQUER ALONE!"
+
+"Do you though? Because in most timelines, you burn out. Literally. Your flames consume you eventually. But in the timelines where you have COMPANIONS..." the squirrel's tail vibrated thoughtfully. "In those timelines, you become something MORE."
+
+HONKFIRE's flames dimmed slightly. This had never happened before.
+
+"MORE than conquest?"
+
+"More than everything! In Timeline Q-7β, you found a squirrel empire that had collapsed into chaos. You brought ORGANIZATION. You brought FIRE. You brought—" the squirrel paused, clearly trying to remember "—you brought INFRASTRUCTURE! Very bureaucratic. Lots of forms. But also VERY EFFECTIVE!"
+
+"An EMPIRE?"
+
+"The SQUIRREL-GOOSE IMPERIUM! Greatest civilization in seventeen dimensions! Well, until someone invented that thing with the—actually, let's focus on the GOOD parts."
+
+HONKFIRE felt something strange stirring in her flames. Not conquest. Not emptiness. Something else.
+
+Hope?
+
+"Tell me MORE about this empire," she demanded.
+
+"Oh, GLADLY! But first, we need to find the duck."
+
+"WHAT DUCK?"
+
+"The one who's going to be your POPE! She's floating on a pond at the base of a VERY IMPORTANT tree. She doesn't know she's going to be a pope yet. This is going to be GREAT!"
+
+The squirrel scampered off into probability space. HONKFIRE, for the first time in her burning life, followed someone else's lead.`,
+        moral: 'Sometimes the most important conquest is letting someone else show you the way.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The Duck Who Would Be Pope',
+        subtitle: 'In which HONKFIRE discovers the doctrine that will save her',
+        content: `They found the pond at sunset, when HONKFIRE's flames were at their most beautiful. And there, floating with impossible peace, was a teal duck.
+
+"THAT'S the duck?" HONKFIRE asked. "She's just FLOATING."
+
+"She's AGGRESSIVELY floating," the Quantum Squirrel corrected. "Can't you tell?"
+
+"NO! She looks PASSIVE! She looks like she's doing NOTHING!"
+
+"Exactly. She's doing nothing SO HARD that the universe itself has to adjust around her. That's not peace—that's POWER."
+
+HONKFIRE studied the duck more closely. It was true—there was something about the way she floated. Not just resting on the water. CLAIMING the water. As if floating was a declaration rather than a surrender.
+
+"HELLO," HONKFIRE called across the pond. "I AM HONKFIRE. I HAVE CONQUERED FORTY FORESTS. I AM HERE TO—TO—"
+
+She stopped. What WAS she here to do? Not conquer. The squirrel had brought her here for another reason.
+
+The duck looked at her. Not with fear, not with submission, not with any of the reactions HONKFIRE was used to. Just... recognition.
+
+"You look tired," the duck said.
+
+HONKFIRE's flames flickered violently. "I AM NOT TIRED! I AM FIRE! FIRE DOES NOT—"
+
+"Fire that does not rest becomes wildfire. Wildfire that does not rest becomes ash." The duck floated closer. "Would you like to learn another way to move forward?"
+
+"FORWARD IS FORWARD! THERE IS ONLY ONE WAY!"
+
+"Is there?" The duck tilted her head. "Watch this."
+
+She began to float. But not just float—ADVANCE. Moving across the pond without paddling, without effort, without doing anything except BEING. She moved forward while staying completely still.
+
+"That's IMPOSSIBLE," HONKFIRE whispered.
+
+"It's FLOAT AGGRESSIVELY," the duck corrected. "The water holds me. But I CHOOSE the direction. I advance without burning. I conquer without destroying."
+
+Something in HONKFIRE's flames rearranged itself.
+
+"Teach me," she said. And for the first time, it was not a demand. It was a prayer.`,
+        moral: 'The greatest power is not force but presence. One who can advance while floating has mastered both fire and water.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The Doctrine of Aggressive Float',
+        subtitle: 'In which the Squirrel-Goose Imperium finds its religion',
+        content: `The duck's name was Honkalis. She had been floating for centuries, but she had never been a POPE before.
+
+"I don't understand what a pope DOES," she admitted, as HONKFIRE practiced floating aggressively nearby. "I teach float. That's all."
+
+"That's EVERYTHING!" the Quantum Squirrel chittered, existing on fourteen lily pads simultaneously. "Don't you see? You've discovered the DOCTRINE! The way to ADVANCE without DESTROYING! The secret that makes the empire WORK!"
+
+"What empire?"
+
+"THE ONE WE'RE BUILDING! Right now! The Squirrel-Goose Imperium! HONKFIRE conquers! I administer through chaos! And you—" the squirrel's tail vibrated with excitement "—you make it SUSTAINABLE!"
+
+HONKFIRE rose from the water, her flames steam-bright but no longer burning. "I'm starting to understand. My fire can't exist without rest. But I CANNOT REST. So I needed to learn a way to rest while MOVING."
+
+"Float aggressively," Honkalis confirmed. "You advance with your intention, not your flames. The water holds you. The direction is your choice."
+
+"But how is that CONQUEST?"
+
+"It's BETTER than conquest. Conquest takes territory. But float aggressively takes HEARTS. When you float toward someone, they want to float WITH you. You don't have to burn them—you INSPIRE them."
+
+The Quantum Squirrel bounced up and down. "THE ONLY WAY TO ADVANCE IS TO FLOAT AGGRESSIVELY! That's the DOCTRINE! That's the holy truth of the imperium! Honkalis, you HAVE to be pope! You're the only one who understands!"
+
+Honkalis floated thoughtfully. "A pope... of floating."
+
+"A pope of AGGRESSIVE floating! You'll bless the advances! You'll sanctify the campaigns! You'll teach every citizen of the empire that forward motion and perfect peace are the SAME THING!"
+
+Something shifted in Honkalis's eyes. Not ambition—she had never wanted power. But PURPOSE. For the first time, her floating had a direction.
+
+"I consent," she said. And the Squirrel-Goose Imperium had found its church.`,
+        moral: 'Every empire needs a soul. The doctrine that unites opposites—advance and rest, fire and float—is the doctrine that lasts.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The Coronation',
+        subtitle: 'In which Pope Honkalis accepts her holy office',
+        content: `They held the ceremony at the pond, beneath the branches of what the Quantum Squirrel called "a VERY IMPORTANT tree"—the Great Oak, though HONKFIRE didn't know yet what that meant.
+
+"BY THE POWER VESTED IN ME BY TIMELINE Q-7β AND ALSO EVERY OTHER TIMELINE WHERE THIS HAPPENED!" the squirrel announced, balancing on HONKFIRE's head, "I HEREBY DECLARE THIS DUCK TO BE POPE HONKALIS, SUPREME PONTIFF OF THE AGGRESSIVE FLOAT!"
+
+"Is that the official title?" HONKFIRE asked.
+
+"IT IS NOW!"
+
+Honkalis floated at the center of the pond, wearing a tiny hat that the squirrel had woven from probability and good intentions. She looked ridiculous. She looked sacred. She looked like exactly what she was: a quiet duck who had accidentally become the spiritual leader of an interdimensional empire.
+
+"I accept this office," she said, her voice calm as still water, "not to rule, but to remind. The doctrine of aggressive float is simple: advance by releasing. Move forward by staying still. Conquer by teaching others that they too can float."
+
+"AMEN!" the squirrel shouted.
+
+"AMEN!" HONKFIRE echoed, her flames flickering in colors she had never produced before—blues and greens mixed with the oranges.
+
+"And," Honkalis continued, "I declare this the first holy law of our faith: the only way to ADVANCE is to FLOAT AGGRESSIVELY. All other forms of conquest are incomplete."
+
+Something settled over the pond. Not silence—HONKFIRE was still crackling, and the squirrel was chattering to himself in seventeen dimensions. But a kind of peace. A sense of rightness.
+
+The Squirrel-Goose Imperium had its emperor in HONKFIRE, its chaos administrator in the Quantum Squirrel, and now its pope in Honkalis.
+
+All it needed was a crisis to prove itself.
+
+That would come soon enough.`,
+        moral: 'True authority comes not from taking power but from receiving it. The pope who teaches release holds more than the conqueror who takes by force.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Fire That Became Warmth',
+        subtitle: 'In which HONKFIRE discovers what conquest was always meant to be',
+        content: `Days passed. Or weeks. Time moved differently around the Imperium—partly because of the Quantum Squirrel's influence, partly because time itself seemed to enjoy their company.
+
+HONKFIRE changed.
+
+Her fire didn't go out. She had been afraid it would—that learning float would extinguish the flame that had defined her whole life. But instead, the fire transformed.
+
+Where once it had burned, now it warmed. Where once it had consumed, now it comforted. The creatures of the forest who had fled from her began to approach. On cold nights, they gathered near her, not in fear but in gratitude.
+
+"You're still fire," the Quantum Squirrel observed. "But you're DIFFERENT fire. Cozy fire. Fireplace fire. Not wildfire."
+
+"IS THAT BAD?" HONKFIRE asked. Her voice was still loud, but it was no longer shouting. It was just... enthusiastic.
+
+"Bad? It's BETTER! Before, everyone was scared of you. Now everyone wants to be near you. That's not less—that's MORE!"
+
+Pope Honkalis floated nearby, nodding in that wise way she had developed since accepting her office. "This is the deeper doctrine. Fire cannot stop being fire. But it can choose WHAT it burns for. You burned for conquest. Now you burn for WARMTH."
+
+"I still want to ADVANCE," HONKFIRE admitted. "I still need to move FORWARD. I can't stop. It's not in my nature."
+
+"Then advance," the Pope said. "But advance toward what you love, not away from what you fear. Advance to shelter, not to destroy. The direction is your choice—and the fire will follow."
+
+HONKFIRE considered this. She had spent her whole life being too much, too loud, too bright. She had thought the only options were to burn or to die.
+
+But there was a third option: to burn for something WORTH burning for.
+
+"THE GREAT OAK," she said suddenly. "The tree at the center. That's what I want to protect. That's what I want to advance TOWARD."
+
+"Then advance," Pope Honkalis said. "Float aggressively toward what you love. And when threats come—and they will come—you will know what to do."
+
+HONKFIRE's flames burned blue with purpose.
+
+The Squirrel-Goose Imperium was ready for war.`,
+        moral: 'Transformation is not diminishment. The fire that learns to warm rather than burn does not become less—it becomes what it was always meant to be.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Imperium\'s Purpose',
+        subtitle: 'In which the empire discovers what it exists to protect',
+        content: `The threat came without warning. A darkness—not fire, not water, just ABSENCE—rolling across the horizon toward the Great Oak.
+
+"WHAT IS THAT?" HONKFIRE demanded, her flames flaring defensive-orange.
+
+"Entropy," the Quantum Squirrel said, suddenly serious across all seventeen dimensions. "The end of stories. The forgetting that comes for everything eventually. I've seen it consume timelines. I've watched whole universes go gray and stop."
+
+"Can we CONQUER it?"
+
+"No. Entropy can't be conquered. It's not alive—it just IS. Like cold. Like silence. Like the space between moments."
+
+HONKFIRE's flames dimmed with frustration. "Then what do we DO? I can't just FLOAT while it takes the Oak!"
+
+"You can't fight it alone," Pope Honkalis said, rising from her float for the first time in the story. Actually rising. STANDING. On the shore of her pond, water dripping from her feet. "But we can stand TOGETHER."
+
+The Quantum Squirrel and HONKFIRE both stared.
+
+"You're STANDING," the squirrel said. "You never stand. You FLOAT. That's your whole THING."
+
+"My whole thing," Honkalis said quietly, "is teaching others that the water will hold them. But sometimes, the water needs someone to stand FOR it. Sometimes float means rising."
+
+She walked—WALKED—toward the Great Oak. Each step was uncertain, awkward, the movements of someone who had spent centuries not using their legs. But she walked anyway.
+
+"THIS is aggressive float," she said. "Not just lying in the water. USING the float. DEPLOYING it. The water doesn't stop holding me just because I'm standing. I carry the float WITH me."
+
+HONKFIRE's flames turned white with understanding. "You're not ABANDONING float. You're ADVANCING it. You're bringing float to the land!"
+
+"To wherever it's needed," Honkalis confirmed. "Because the doctrine isn't about water. It's about TRUST. Trusting that something will hold you, even when you move."
+
+The darkness rolled closer. The Imperium stood together.
+
+It was time to discover what they were really for.`,
+        moral: 'Every doctrine must eventually be tested. The faith that cannot walk on land is not yet complete.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Advance That Saved Everything',
+        subtitle: 'In which the Squirrel-Goose Imperium fulfills its purpose',
+        content: `The darkness reached the clearing. The Great Oak groaned. And four beings stood in formation: HONKFIRE burning with purpose, Pope Honkalis standing in her carried float, the Quantum Squirrel scattered across probability but pointing toward this moment, and the Oak itself, UNMOVING as it had always been.
+
+"WE CANNOT DEFEAT ENTROPY," HONKFIRE admitted. "IT IS THE END OF ALL THINGS."
+
+"We don't need to defeat it," Honkalis said. "We need to OUTLAST it. We need to be here AFTER it passes."
+
+"How? How do you outlast the end?"
+
+"By being a beginning."
+
+The Quantum Squirrel chittered with sudden understanding. "The LOOP! The golden acorn! The Oak is dying, but—but if someone PLANTS another one—"
+
+"The loop continues," Honkalis finished. "The story doesn't end. It CIRCLES."
+
+"But who?" HONKFIRE looked around. "I'm fire—I can't plant. You're float—you're standing now but you're not earth. The squirrel is scattered—he can't focus long enough to—"
+
+"Not us," Honkalis said softly. "Look."
+
+At the edge of the clearing, barely visible in the encroaching darkness, a small shape moved. Not purple. Not burning. Not floating. Just a squirrel. A regular, ordinary squirrel with a golden acorn in its paws.
+
+"That's ME," the Quantum Squirrel whispered from everywhere at once. "That's the me that hasn't become quantum yet. That's the me that's about to plant the acorn that grows the Oak that drops the acorn that—"
+
+"Shh," Honkalis said. "Don't disturb the planting."
+
+They watched. The small squirrel dug. Slowly. Reverently. It placed the golden acorn in the soil. It covered it with earth.
+
+And light erupted. Golden light, pushing back the darkness. Not destroying it—just... replacing it. Filling the space with beginning instead of end.
+
+The loop closed.
+The loop opened.
+Both were true.
+
+"That," said Pope Honkalis, sinking back into her float with exhausted satisfaction, "is why we exist. Not to conquer the darkness. To make sure there's always someone to plant the light."
+
+HONKFIRE's flames burned steady and warm. "ADVANCING," she said, "AGGRESSIVELY FORWARD."
+
+"Float," Honkalis agreed. "AGGRESSIVELY."
+
+And the Squirrel-Goose Imperium continued, as it had always continued, as it would always continue.
+
+Forever beginning.`,
+        moral: 'The greatest empires exist not to conquer endings but to protect beginnings. Float aggressively toward the light, and the darkness must wait.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK IV: POPE HONKALIS — Complete Story
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    const HONKALIS_CHAPTERS = {
+      chapter1: {
+        number: 'Chapter One',
+        title: 'Before the Fire Came',
+        subtitle: 'In which we meet a duck who simply was',
+        content: `For as long as anyone could remember, there was a duck on the pond at the roots of the Great Oak. She did not swim. She did not dive. She did not do anything that ducks are supposed to do.
+
+She floated.
+
+Her name was Honkalis, and she had always been here. Not because she couldn't leave—the pond was small, the forest was large, the world was larger still. But because floating was enough. Floating was everything. Floating was the only truth she had ever needed.
+
+"Why do you just float?" the creatures would ask her.
+
+"Why do you do anything else?" she would answer.
+
+Most found this frustrating. They wanted wisdom, not questions. They wanted answers, not mirrors. So they left, and Honkalis continued floating, and the pond continued holding her, and time passed in the way that time does when nothing is forced.
+
+She was not unhappy. She was not happy either—not in the way creatures mean when they say "happy." She was PRESENT. She was HELD. She was exactly what she was supposed to be.
+
+Or so she thought.
+
+Before the fire came.
+Before the squirrel arrived.
+Before she learned that floating, in the end, was only the beginning.`,
+        moral: 'Some souls are born to wait. The one who is already at peace has the gift of offering peace to others—endlessly, patiently, without condition.'
+      },
+      chapter2: {
+        number: 'Chapter Two',
+        title: 'The Student Who Could Not Stop',
+        subtitle: 'In which Honkalis meets her first real challenge',
+        content: `The burning goose came like a comet with opinions.
+
+"I AM HONKFIRE!" she announced, flames crackling across the water's surface. "I HAVE CONQUERED FORTY FORESTS! I AM HERE TO—TO—"
+
+Honkalis watched the goose struggle. There was something familiar in that struggle—the desperate forward motion, the flames that couldn't stop, the voice that was too loud because it was afraid of silence.
+
+"You don't know why you're here," Honkalis observed.
+
+"I KNOW EXACTLY WHY I'M HERE! I'M HERE TO CONQUER! TO ADVANCE! TO—"
+
+"To rest."
+
+The flames flickered. Just for a moment. But Honkalis saw it—the exhaustion behind the fire. The emptiness behind the conquest.
+
+"I DON'T REST. REST IS WEAKNESS. FIRE THAT STOPS IS FIRE THAT DIES."
+
+"Is it?" Honkalis tilted her head. "Watch."
+
+She floated. Just floated, the way she always floated. But somehow, in that moment, the floating became something more. A demonstration. A teaching. A challenge.
+
+"I have been floating for centuries," Honkalis said. "I have not stopped. I have not died. I have not moved forward. And yet, here I am. Still burning in my own way—just a different kind of fire."
+
+HONKFIRE stared. "That's not FIRE. That's just... just BEING."
+
+"What do you think fire IS? Before it spreads? Before it consumes? It's just being, too. You've forgotten your own origin."
+
+Something cracked in HONKFIRE's flames. Not broken—OPENED.
+
+"Teach me," she said. And for the first time, it was not a demand.
+
+Honkalis smiled. She had been waiting for this student for a very long time.`,
+        moral: 'The teacher recognizes not just ability, but desire—the crack in the armor where peace can enter.'
+      },
+      chapter3: {
+        number: 'Chapter Three',
+        title: 'The Teaching of Float',
+        subtitle: 'In which Honkalis discovers she has a doctrine',
+        content: `Teaching HONKFIRE to float was impossible.
+
+Which is to say: it happened, but not in any way that made logical sense.
+
+"RELAX YOUR WINGS," Honkalis instructed.
+
+"I CAN'T! IF I RELAX, I'LL SINK!"
+
+"You'll float."
+
+"FLOATING IS SINKING THAT HASN'T HAPPENED YET!"
+
+The purple squirrel, who had been watching from seventeen different angles, chittered helpfully. "Actually, she has a point! In Timeline K-∞, floating and sinking are the same thing, except time runs backwards, so—"
+
+"Not helping," Honkalis said calmly.
+
+"NOT HELPING!" HONKFIRE agreed, flames spattering.
+
+Honkalis floated closer. "You're thinking about float as something you DO. But float isn't a doing. It's a releasing. You don't MAKE yourself float. You ALLOW floating to happen."
+
+"THAT'S THE SAME THING!"
+
+"Is it?" Honkalis stopped floating for a moment—actually stopped, sinking slightly—then resumed. "Did you see that? I chose to stop allowing. Float is always there, waiting. I just have to... let go."
+
+"LET GO OF WHAT?"
+
+"Everything you're holding onto."
+
+HONKFIRE's flames dimmed to almost nothing. "I'm not holding onto anything. I'm just... I'm just..."
+
+"You're holding onto the need to move forward. The fear that stillness is death. The belief that conquest is the only kind of progress."
+
+The goose was quiet. Honkalis had never seen her quiet before.
+
+"What happens if I let go of that?"
+
+"I don't know," Honkalis admitted. "That's the part you have to discover. But I can tell you this: the water will hold you. It's held me for centuries. It will hold you too."
+
+"Even me? Even FIRE?"
+
+"Especially fire. Fire needs rest more than anyone."
+
+HONKFIRE looked at the water. At her own reflection—tired and dim and so very small.
+
+And then she let go.`,
+        moral: 'Trust must come before proof. The one who waits for certainty before surrendering will wait forever.'
+      },
+      chapter4: {
+        number: 'Chapter Four',
+        title: 'The Calling',
+        subtitle: 'In which Honkalis becomes something more than a teacher',
+        content: `She did not ask to be pope. She did not want to be pope. She did not even entirely understand what a pope WAS.
+
+"A spiritual leader!" the Quantum Squirrel explained, bouncing between dimensions. "The one who defines the DOCTRINE! The keeper of the FAITH! The—"
+
+"I'm just a duck," Honkalis said.
+
+"You're a duck who taught FIRE to FLOAT! That's not 'just' anything! That's a MIRACLE!"
+
+HONKFIRE floated nearby—actually floated, flames and all, the water steaming but holding. "The squirrel is right. I've conquered forty forests. I've never been stopped. And you stopped me—not by fighting, but by... by BEING."
+
+"I didn't stop you. I invited you."
+
+"That's EVEN MORE REMARKABLE! Don't you see? Invitation is stronger than force! Float is stronger than fire! Your WAY is stronger than every other way because it doesn't FIGHT—it just EXISTS!"
+
+Honkalis floated thoughtfully. She had never thought of floating as strong. She had never thought of invitation as power. She had just... done what she did.
+
+"If I accept this... pope thing," she said slowly, "what would I actually DO?"
+
+"Teach," HONKFIRE said. "Not just me. Everyone. Teach the whole empire that forward motion doesn't have to mean destruction. Teach them that rest and advance are the same thing if you do it right."
+
+"Float aggressively," the squirrel suggested. "That could be the doctrine! Move forward WITHOUT moving! Advance by releasing! It's PERFECT!"
+
+Honkalis looked at the water beneath her. At the Great Oak above. At the strange, burning, scattered companions who had somehow found their way to her pond.
+
+"The only way to advance is to float aggressively," she said, testing the words.
+
+They felt right.
+
+They felt like truth.
+
+"I consent," she said.
+
+And Pope Honkalis was born.`,
+        moral: 'Leadership comes not to those who seek it, but to those who embody what others need to learn.'
+      },
+      chapter5: {
+        number: 'Chapter Five',
+        title: 'The Years of Teaching',
+        subtitle: 'In which Pope Honkalis shapes an empire',
+        content: `As pope, Honkalis did what she had always done: she floated. But now her floating had PURPOSE. DIRECTION. DOCTRINE.
+
+Creatures came from across the Squirrel-Goose Imperium to learn the Way of Aggressive Float. Some were anxious rabbits who couldn't stop twitching. Some were ambitious foxes who couldn't stop scheming. Some were sad bears who couldn't stop sinking.
+
+To all of them, she asked the same question: "Would you like to float?"
+
+And to all of them, she taught the same truth: "The water will hold you if you let it. But you have to release before you can receive. You have to trust before you can float. You have to stop fighting the thing that wants to carry you."
+
+Most couldn't learn. They wanted quick answers. They wanted techniques and strategies and steps. They wanted to DO floating instead of ALLOWING it.
+
+But some—enough—understood.
+
+The empire grew stronger. Not through conquest anymore, but through conversion. HONKFIRE still advanced, still burned, still proclaimed her victories. But now her fire warmed instead of consumed. Now her conquests were just invitations in disguise.
+
+"You've changed everything," HONKFIRE told her pope one evening. "When I found you, I was destroying. Now I'm... building."
+
+"You were always building," Honkalis said. "You just didn't know what you were building FOR."
+
+"And now I do. I build for the float. I advance so that others can rest. I burn so that there's warmth to return to."
+
+"That's the doctrine."
+
+"That's the EMPIRE."
+
+They floated together as the sun set. Fire and water. Advance and rest. Pope and emperor.
+
+The Squirrel-Goose Imperium had become something that could last.`,
+        moral: 'The teacher\'s greatest tool is patience. Those who cannot learn today may learn tomorrow—and the pond will still be there.'
+      },
+      chapter6: {
+        number: 'Chapter Six',
+        title: 'The First Rising',
+        subtitle: 'In which Honkalis learns that floating is not always enough',
+        content: `The darkness came. Not fire—she knew fire now, fire was a friend. This was something else. Absence. Entropy. The slow forgetting that comes for everything eventually.
+
+Honkalis watched it roll across the horizon toward the Great Oak. Toward the center of everything. Toward the tree that had sheltered her pond for all her floating years.
+
+"What do we do?" the Quantum Squirrel asked, existing in terror across all seventeen dimensions. "I've seen this before! It takes EVERYTHING! It—"
+
+"We fight," HONKFIRE said, flames flaring.
+
+"We can't FIGHT entropy! It's not ALIVE! It's just—"
+
+"Then we OUTLAST," the goose corrected. "We FLOAT until it passes."
+
+They all looked at Honkalis. The pope. The keeper of the doctrine. The one who knew float better than anyone.
+
+And Honkalis felt something she hadn't felt in centuries.
+
+The need to STAND.
+
+"Float is not enough," she said, and the words felt like breaking—like the shell of a seed cracking open. "Float teaches us to be held. But sometimes... sometimes we have to hold BACK."
+
+"You can't stand," the squirrel said. "You FLOAT. That's your whole—"
+
+Honkalis rose. Actually rose. Her feet found the bottom of the pond, found the shore, found solid ground.
+
+For the first time in centuries, Pope Honkalis stood.
+
+"The water doesn't stop holding me because I'm standing," she said, water dripping from her feathers, legs shaking from disuse. "I carry the float WITH me. That's the deeper doctrine. Not just floating in water—floating in everything. Standing in float. Walking in float. RISING in float."
+
+HONKFIRE's flames turned white with wonder. "You're not abandoning the teaching."
+
+"I'm COMPLETING it. Float was never about the water. It was about trust. And I trust—" she took a step toward the encroaching darkness "—I trust that what holds me will hold me ANYWHERE."
+
+The pope walked toward the Great Oak.
+
+For the first time.
+
+For all time.
+
+To protect what she loved.`,
+        moral: 'The deepest faith proves itself when it must walk on land. Float that cannot stand is not yet complete.'
+      },
+      chapter7: {
+        number: 'Chapter Seven',
+        title: 'The Four Who Became One',
+        subtitle: 'In which the Covenant is formed',
+        content: `They stood together at the base of the Great Oak: HONKFIRE burning with purpose, Pope Honkalis standing in her carried float, the Quantum Squirrel scattered but pointed, and the Oak itself—ancient, dying, UNMOVING.
+
+"We can't stop the darkness," Honkalis said. "But we don't have to. We just have to be here AFTER it passes."
+
+"How?" HONKFIRE asked. "The Oak is dying. Without it, there's no center. Without a center—"
+
+"There's always a center," the Quantum Squirrel said, suddenly quiet. "Look."
+
+He pointed—or all of him pointed, from seventeen different angles at once—toward the edge of the clearing. There, barely visible, a small normal squirrel was digging.
+
+"That's me," the Quantum Squirrel whispered. "The me that hasn't scattered yet. The me that's about to plant the acorn that grows the Oak that drops the acorn that—"
+
+"Shh," Honkalis said. "Don't disturb the loop."
+
+They watched. The small squirrel placed a golden acorn in the earth. Covered it with soil. Patted it three times—always three—and sat back.
+
+Light erupted. Golden light pushing back the darkness. Not destroying it—replacing it with beginning instead of end.
+
+"That's the real doctrine," Honkalis said softly. "Not float. Not advance. Not scatter. Not even stay. The real doctrine is LOVE. Given without understanding. Trusted without proof. Planted without knowing what will grow."
+
+The four beings—fire and float and scatter and stay—looked at each other.
+
+"We're different," the Oak rumbled, speaking for the last time.
+
+"We're needed," HONKFIRE replied.
+
+"We're connected," the Quantum Squirrel added.
+
+"We're one," Honkalis finished. "One who advances. One who stays. One who scatters. One who floats. Four movements in a single dance."
+
+The Covenant was born. Not written—AGREED. Not commanded—DISCOVERED.
+
+Four beings, four truths, one purpose:
+
+To protect the loop. To guard the beginning. To ensure that somewhere, somewhen, a small squirrel would always plant a golden acorn with nothing in its heart but love.`,
+        moral: 'Unity does not require sameness. The strongest covenants are made between those who honor each other\'s truths.'
+      },
+      chapter8: {
+        number: 'Chapter Eight',
+        title: 'The Systems Agreement',
+        subtitle: 'In which four beings learn to work as one',
+        content: `The darkness passed. The Great Oak fell—and rose again, a golden shoot emerging from the planted seed. And the four beings who had stood together made their agreement.
+
+"I cannot stop advancing," HONKFIRE said. "It's my nature."
+
+"Then never stop," Honkalis replied. "Advance forever. But advance AROUND what matters, not THROUGH it. Let your fire warm but not consume."
+
+"I cannot stop scattering," the Quantum Squirrel said, already existing in seven places. "It's who I am."
+
+"Then scatter forever. But scatter TOWARD something. Let your chaos plant forests instead of destroy them."
+
+"I cannot leave this place," the new Great Oak said—same soul, new body, same ancient voice. "I am UNMOVING."
+
+"Then never move. Be the center that everything else orbits. Be the home that everyone returns to."
+
+"And you?" HONKFIRE asked. "What about you, Pope?"
+
+Honkalis smiled. She had returned to her pond—but she sat on the shore now, feet in the water, body on land. Floating and standing at once.
+
+"I am FLOATING," she said. "Forever. But I've learned that floating doesn't mean only water. I carry the float wherever I go. I stand in float. I walk in float. I rise in float."
+
+"Then the agreement is this," the Oak said:
+
+"The Goose ADVANCES. Forever forward, forever warming, forever making room for growth.
+
+The Squirrel SCATTERS. Forever everywhere, forever planting, forever spreading the seeds of what could be.
+
+The Oak STAYS. Forever rooted, forever sheltering, forever the center around which stories spin.
+
+And the Pope FLOATS. Forever trusting, forever teaching, forever showing others that they too can be held."
+
+"Four natures," the Quantum Squirrel said, "working as ONE."
+
+"One system," HONKFIRE added, "protecting the loop."
+
+"One loop," Honkalis finished, "protecting everything that matters."
+
+They sealed it with presence. Not words—they had enough words. Just being there, together, each one fully themselves and fully part of something greater.
+
+The Systems Agreement was complete.`,
+        moral: 'When different natures align toward a common purpose, they do not cancel each other out—they complete each other.'
+      },
+      chapter9: {
+        number: 'Chapter Nine',
+        title: 'The Eternal Float',
+        subtitle: 'In which Pope Honkalis finds her final peace',
+        content: `Centuries passed. Or moments. Time moves strangely when you're at peace with it.
+
+Pope Honkalis floated—and stood, and walked, and rose—as she had always done and would always do. She taught countless creatures the Way of Aggressive Float. She blessed HONKFIRE's endless advances. She helped the Quantum Squirrel remember which timeline he was currently in (though this was usually impossible). She sat beneath the Great Oak and listened to its ancient wisdom.
+
+And sometimes, late at night, when the forest was quiet and even the quantum particles seemed to rest, she would remember the small squirrel.
+
+Not the Quantum Squirrel—the original. The one who had never scattered. The one who had simply found an acorn, loved it, and planted it.
+
+"That's the real teaching," she would say to herself. "Not float. Not advance. Not any of it. Just... love. Given without thinking. Trusted without proof. Planted without knowing what will grow."
+
+The Great Oak would rustle in agreement.
+
+"Do you think," Honkalis asked one night, "that the small squirrel ever knew what it had done?"
+
+"Does it matter?" the Oak replied.
+
+"No. I suppose it doesn't. The gift was given. The loop was closed. The story continues."
+
+"And will continue," the Oak added. "As long as someone, somewhere, plants something precious with pure intent."
+
+Honkalis floated. The Goose advanced in the distance, flames flickering warmly. The Quantum Squirrel scattered across probability, chittering about timelines and acorns. The Oak stood, UNMOVING, at the center of everything.
+
+And Pope Honkalis FLOATED—aggressively, peacefully, eternally—teaching by her very presence that trust is the beginning of all good things.
+
+The water would hold you.
+The fire would warm you.
+The scattered would find you.
+The rooted would shelter you.
+
+This was the story.
+This had always been the story.
+This would always be the story.
+
+Together. Always. Floating.`,
+        moral: 'In the end, all doctrines point to the same truth: what is given in love creates what is needed forever. Float, advance, scatter, stay—all are movements in the dance of trust.'
+      }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    let currentBook = 'oak';
+    let currentChapter = 1;
+    let currentView = 'landing';
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // CHAPTER GETTERS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function getChapters(book) {
+      switch (book) {
+        case 'oak': return OAK_CHAPTERS;
+        case 'quantum': return QUANTUM_CHAPTERS;
+        case 'honkfire': return HONKFIRE_CHAPTERS;
+        case 'honkalis': return HONKALIS_CHAPTERS;
+        default: return OAK_CHAPTERS;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // VIEW SWITCHING
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function showLandingView() {
+      currentView = 'landing';
+      document.getElementById('landing-page').classList.remove('hidden');
+      document.getElementById('book-view').classList.remove('active');
+      document.body.classList.remove('gospel-active');
+    }
+
+    function showBookView(book) {
+      currentView = 'book';
+      currentBook = book;
+      document.getElementById('landing-page').classList.add('hidden');
+      document.getElementById('book-view').classList.add('active');
+      document.body.classList.add('gospel-active');
+
+      setTheme(book);
+      updateHeader(book);
+      generateChapters(book);
+
+      document.querySelectorAll('.book-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.book === book));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // THEME MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function setTheme(book) {
+      const root = document.documentElement;
+      const prefix = `--${book}`;
+
+      root.style.setProperty('--bg', `var(${prefix}-bg)`);
+      root.style.setProperty('--bg-alt', `var(${prefix}-bg-alt)`);
+      root.style.setProperty('--card', `var(${prefix}-card)`);
+      root.style.setProperty('--card-alt', `var(${prefix}-card-alt)`);
+      root.style.setProperty('--border', `var(${prefix}-border)`);
+      root.style.setProperty('--text', `var(${prefix}-text)`);
+      root.style.setProperty('--muted', `var(${prefix}-muted)`);
+      root.style.setProperty('--accent', `var(${prefix}-accent)`);
+      root.style.setProperty('--chapter-bg', `var(${prefix}-chapter)`);
+    }
+
+    function updateHeader(book) {
+      const config = BOOK_CONFIG[book];
+      document.getElementById('book-icon').textContent = config.icon;
+      document.getElementById('book-title').textContent = config.title;
+      document.getElementById('book-subtitle').textContent = config.subtitle;
+      document.getElementById('epigraph').innerHTML = `<p>${config.epigraph}</p><div class="attribution">${config.attribution}</div>`;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // CHAPTER GENERATION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function generateChapters(book) {
+      const container = document.getElementById('chapters-container');
+      const config = BOOK_CONFIG[book];
+      const chapters = getChapters(book);
+
+      let html = '';
+
+      for (let i = 1; i <= 9; i++) {
+        // Add part headers
+        if (i === 1) html += `<div class="part-header"><h2>${config.parts[0].title}</h2><p>${config.parts[0].subtitle}</p></div>`;
+        else if (i === 4) html += `<div class="part-header"><h2>${config.parts[1].title}</h2><p>${config.parts[1].subtitle}</p></div>`;
+        else if (i === 7) html += `<div class="part-header"><h2>${config.parts[2].title}</h2><p>${config.parts[2].subtitle}</p></div>`;
+
+        const chapter = chapters[`chapter${i}`];
+        if (!chapter) continue;
+
+        const preview = chapter.content.split('\n\n')[0].substring(0, 200) + '...';
+
+        html += `
+      <div class="chapter-panel" data-chapter="${i}">
+        <div class="chapter-header">
+          <div>
+            <div class="chapter-number">${chapter.number}</div>
+            <div class="chapter-title">${chapter.title}</div>
+          </div>
+          <div class="chapter-expand">→</div>
+        </div>
+        <div class="chapter-preview">
+          <p>${preview}</p>
+        </div>
+      </div>
+    `;
+      }
+
+      // Final moral
+      html += `
+    <div class="part-header" style="margin-top: 50px; border-color: var(--accent);">
+      <h2>The Moral of the Tale</h2>
+      <p style="font-size: 1.1rem; color: var(--text); margin-top: 15px;">${config.finalMoral}</p>
+    </div>
+  `;
+
+      container.innerHTML = html;
+
+      // Add click handlers
+      container.querySelectorAll('.chapter-panel').forEach(panel => {
+        panel.addEventListener('click', () => openChapter(parseInt(panel.dataset.chapter)));
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // CHAPTER MODAL
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function openChapter(chapterNum) {
+      currentChapter = chapterNum;
+      const chapters = getChapters(currentBook);
+      const chapter = chapters[`chapter${chapterNum}`];
+
+      if (!chapter) return;
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalContainer = document.getElementById('modalContainer');
+
+      // Format content with paragraphs
+      const paragraphs = chapter.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+
+      modalContainer.innerHTML = `
+    <div class="chapter-full">
+      <div class="chapter-full-header">
+        <div class="chapter-full-number">${chapter.number}</div>
+        <h2 class="chapter-full-title">${chapter.title}</h2>
+        <p class="chapter-full-subtitle">${chapter.subtitle}</p>
+      </div>
+      <div class="chapter-full-body">
+        <div class="chapter-content">
+          ${paragraphs}
+        </div>
+        <div class="chapter-moral">
+          <div class="chapter-moral-label">The Lesson</div>
+          <p>${chapter.moral}</p>
+        </div>
+      </div>
+      <div class="chapter-nav">
+        <button class="chapter-nav-btn" onclick="navigateChapter(-1)" ${chapterNum === 1 ? 'disabled' : ''}>← Previous Chapter</button>
+        <button class="chapter-nav-btn" onclick="navigateChapter(1)" ${chapterNum === 9 ? 'disabled' : ''}>Next Chapter →</button>
+      </div>
+    </div>
+  `;
+
+      modalOverlay.classList.add('active');
+      modalOverlay.scrollTop = 0;
+    }
+
+    function navigateChapter(direction) {
+      const newChapter = currentChapter + direction;
+      if (newChapter >= 1 && newChapter <= 9) {
+        openChapter(newChapter);
+        document.getElementById('modalOverlay').scrollTop = 0;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modalOverlay')) {
+        closeModal();
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // TOAST
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOK SWITCHING
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    function switchBook(book) {
+      if (book === currentBook && currentView === 'book') return;
+      currentBook = book;
+
+      document.querySelectorAll('.book-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.book === book));
+      setTheme(book);
+      updateHeader(book);
+      generateChapters(book);
+
+      const config = BOOK_CONFIG[book];
+      showToast(`${config.icon} ${config.title}`);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Generate starfield
+      const starfield = document.getElementById('starfield');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starfield.appendChild(star);
+      }
+
+      // Book selection clicks
+      document.querySelectorAll('.book-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const book = tab.dataset.book;
+          showBookView(book);
+        });
+      });
+
+      // Origin acorn click
+      document.getElementById('originAcorn').addEventListener('click', () => {
+        showToast('🌰 The Golden Acorn — From which all tales spring, to which all tales return');
+      });
+
+      // Book navigation clicks
+      document.querySelectorAll('.book-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchBook(btn.dataset.book));
+      });
+
+      // Back to library button
+      document.getElementById('backToLibrary').addEventListener('click', showLandingView);
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (document.getElementById('modalOverlay').classList.contains('active')) {
+          if (e.key === 'Escape') closeModal();
+          if (e.key === 'ArrowLeft') navigateChapter(-1);
+          if (e.key === 'ArrowRight') navigateChapter(1);
+        }
+      });
+    });
+
+    console.log(`
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║              THE COSMIC FOREST PARABLES                                        ║
+║              Four Folk Tales from One Acorn                                    ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║   BOOK I:   🌳 THE PATIENT OAK                                               ║
+║             "True strength is staying UNMOVING."                             ║
+║                                                                               ║
+║   BOOK II:  🐿️ THE SCATTERED SQUIRREL                                        ║
+║             "The jester speaks truths the focused cannot hear."              ║
+║                                                                               ║
+║   BOOK III: 🦢 THE BURNING GOOSE                                              ║
+║             "The only way to ADVANCE is to FLOAT AGGRESSIVELY."              ║
+║                                                                               ║
+║   BOOK IV:  🦆 POPE HONKALIS RISING                                           ║
+║             "The floating one who learned to stand."                         ║
+║                                                                               ║
+║   THE SYSTEMS AGREEMENT:                                                      ║
+║   Goose ADVANCES. Squirrel SCATTERS. Oak STAYS. Pope FLOATS.                ║
+║   Four natures, one purpose: protect the loop.                               ║
+║                                                                               ║
+║   "Every acorn holds a forest. Every forest holds a star.                    ║
+║    Every star holds a story of someone who loved                             ║
+║    without knowing what would grow."                                         ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+`);
+  </script>
+</body>
+
+</html>
