@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wumbo-to-Threshold Mapping Test Suite</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Consolas', 'Monaco', monospace;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 20px;
+      margin: 0;
+    }
+    h1, h2 {
+      color: #00d4aa;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+    }
+    .test-group {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+    .test-group h3 {
+      color: #f6c90e;
+      margin-top: 0;
+    }
+    .test {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      margin: 5px 0;
+      background: #0f3460;
+      border-radius: 4px;
+    }
+    .test.pass { border-left: 4px solid #00d4aa; }
+    .test.fail { border-left: 4px solid #e74c3c; }
+    .test-name { flex: 1; }
+    .test-result { font-weight: bold; }
+    .test-result.pass { color: #00d4aa; }
+    .test-result.fail { color: #e74c3c; }
+    .summary {
+      background: #0f3460;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .summary.all-pass { border: 2px solid #00d4aa; }
+    .summary.has-fail { border: 2px solid #e74c3c; }
+    .stats { font-size: 1.2em; margin: 10px 0; }
+    .detail { color: #888; font-size: 0.85em; margin-top: 5px; }
+    pre {
+      background: #0a0a14;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+    .threshold-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+    .threshold-table th, .threshold-table td {
+      padding: 8px;
+      border: 1px solid #333;
+      text-align: left;
+    }
+    .threshold-table th { background: #0f3460; color: #f6c90e; }
+    .threshold-table tr:nth-child(even) { background: #1a1a2e; }
+    .color-swatch {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wumbo-to-Threshold Mapping Test Suite</h1>
+  <p>Testing L₄ Framework integration with Wumbo Engine architecture</p>
+
+  <div id="results"></div>
+  <div id="summary"></div>
+
+  <script src="../src/wumbo-mrp.js"></script>
+  <script src="../src/wumbo-threshold-mapping.js"></script>
+  <script src="../src/wumbo-engine.js"></script>
+  <script src="../src/ritual-anchors.js"></script>
+  <script src="../src/neural-correlates.js"></script>
+  <script src="../src/phase-transitions.js"></script>
+
+  <script>
+    const results = [];
+
+    function test(name, fn) {
+      try {
+        const result = fn();
+        results.push({ name, pass: result.pass, detail: result.detail || '' });
+      } catch (e) {
+        results.push({ name, pass: false, detail: `Error: ${e.message}` });
+      }
+    }
+
+    function assertEqual(actual, expected, tolerance = 0) {
+      if (typeof actual === 'number' && typeof expected === 'number') {
+        return Math.abs(actual - expected) <= tolerance;
+      }
+      return actual === expected;
+    }
+
+    // ========================================================================
+    // L₄ Constants Tests
+    // ========================================================================
+
+    test('PHI value is correct', () => {
+      const phi = WumboMRP.PHI;
+      const expected = (1 + Math.sqrt(5)) / 2;
+      return {
+        pass: assertEqual(phi, expected, 1e-10),
+        detail: `φ = ${phi.toFixed(10)}`
+      };
+    });
+
+    test('TAU value is correct (φ⁻¹)', () => {
+      const tau = WumboMRP.TAU;
+      const expected = (Math.sqrt(5) - 1) / 2;
+      return {
+        pass: assertEqual(tau, expected, 1e-10),
+        detail: `τ = ${tau.toFixed(10)}`
+      };
+    });
+
+    test('Z_CRITICAL is √3/2', () => {
+      const zc = WumboMRP.Z_CRITICAL;
+      const expected = Math.sqrt(3) / 2;
+      return {
+        pass: assertEqual(zc, expected, 1e-10),
+        detail: `z_c = ${zc.toFixed(10)}`
+      };
+    });
+
+    test('L₄ identity: φ⁴ + φ⁻⁴ = 7', () => {
+      const phi = WumboMRP.PHI;
+      const result = Math.pow(phi, 4) + Math.pow(phi, -4);
+      return {
+        pass: assertEqual(result, 7, 1e-10),
+        detail: `φ⁴ + φ⁻⁴ = ${result.toFixed(10)}`
+      };
+    });
+
+    test('K = √(1 - φ⁻⁴)', () => {
+      const K = WumboMRP.CONSTANTS.K_THRESHOLD;
+      const expected = Math.sqrt(1 - Math.pow(WumboMRP.TAU, 4));
+      return {
+        pass: assertEqual(K, expected, 1e-10),
+        detail: `K = ${K.toFixed(10)}`
+      };
+    });
+
+    // ========================================================================
+    // Threshold Tests
+    // ========================================================================
+
+    test('All 9 thresholds defined', () => {
+      const T = WumboMRP.CONSTANTS.THRESHOLDS;
+      const defined = ['PARADOX', 'ACTIVATION', 'THE_LENS', 'CRITICAL',
+                       'IGNITION', 'K_FORMATION', 'CONSOLIDATION', 'RESONANCE', 'UNITY'];
+      const allDefined = defined.every(name => T[name] !== undefined && T[name] !== null);
+      return {
+        pass: allDefined,
+        detail: `Thresholds: ${defined.join(', ')}`
+      };
+    });
+
+    test('Thresholds in ascending order', () => {
+      const T = WumboMRP.CONSTANTS.THRESHOLDS;
+      const order = [T.PARADOX, T.ACTIVATION, T.THE_LENS, T.CRITICAL,
+                     T.IGNITION, T.K_FORMATION, T.CONSOLIDATION, T.RESONANCE, T.UNITY];
+      let ascending = true;
+      for (let i = 1; i < order.length; i++) {
+        if (order[i] <= order[i-1]) ascending = false;
+      }
+      return {
+        pass: ascending,
+        detail: order.map(z => z.toFixed(4)).join(' < ')
+      };
+    });
+
+    test('PARADOX = τ', () => {
+      const T = WumboMRP.CONSTANTS.THRESHOLDS;
+      return {
+        pass: assertEqual(T.PARADOX, WumboMRP.TAU, 1e-10),
+        detail: `PARADOX = ${T.PARADOX.toFixed(10)}`
+      };
+    });
+
+    test('THE_LENS = z_c = √3/2', () => {
+      const T = WumboMRP.CONSTANTS.THRESHOLDS;
+      return {
+        pass: assertEqual(T.THE_LENS, WumboMRP.Z_CRITICAL, 1e-10),
+        detail: `THE_LENS = ${T.THE_LENS.toFixed(10)}`
+      };
+    });
+
+    test('IGNITION = √2 - ½', () => {
+      const T = WumboMRP.CONSTANTS.THRESHOLDS;
+      const expected = Math.sqrt(2) - 0.5;
+      return {
+        pass: assertEqual(T.IGNITION, expected, 1e-10),
+        detail: `IGNITION = ${T.IGNITION.toFixed(10)}`
+      };
+    });
+
+    test('K_FORMATION = K', () => {
+      const T = WumboMRP.CONSTANTS.THRESHOLDS;
+      return {
+        pass: assertEqual(T.K_FORMATION, WumboMRP.CONSTANTS.K_THRESHOLD, 1e-10),
+        detail: `K_FORMATION = ${T.K_FORMATION.toFixed(10)}`
+      };
+    });
+
+    // ========================================================================
+    // Threshold Lookup Tests
+    // ========================================================================
+
+    test('getThresholdAtZ(0.5) = SHUTDOWN', () => {
+      const result = WumboMRP.getThresholdAtZ(0.5);
+      return {
+        pass: result.name === 'SHUTDOWN',
+        detail: `z=0.5 → ${result.name}`
+      };
+    });
+
+    test('getThresholdAtZ(0.62) = PARADOX', () => {
+      const result = WumboMRP.getThresholdAtZ(0.62);
+      return {
+        pass: result.name === 'PARADOX',
+        detail: `z=0.62 → ${result.name}`
+      };
+    });
+
+    test('getThresholdAtZ(0.866) = THE_LENS', () => {
+      const result = WumboMRP.getThresholdAtZ(0.866);
+      return {
+        pass: result.name === 'THE_LENS',
+        detail: `z=0.866 → ${result.name}`
+      };
+    });
+
+    test('getThresholdAtZ(0.92) = IGNITION', () => {
+      const result = WumboMRP.getThresholdAtZ(0.92);
+      return {
+        pass: result.name === 'IGNITION',
+        detail: `z=0.92 → ${result.name}`
+      };
+    });
+
+    test('getThresholdAtZ(1.0) = UNITY', () => {
+      const result = WumboMRP.getThresholdAtZ(1.0);
+      return {
+        pass: result.name === 'UNITY',
+        detail: `z=1.0 → ${result.name}`
+      };
+    });
+
+    // ========================================================================
+    // Wumbo Phase Tests
+    // ========================================================================
+
+    test('getWumboPhaseAtZ(0.3) = SHUTDOWN', () => {
+      const phase = WumboMRP.getWumboPhaseAtZ(0.3);
+      return {
+        pass: phase === 'SHUTDOWN',
+        detail: `z=0.3 → ${phase}`
+      };
+    });
+
+    test('getWumboPhaseAtZ(z_c) = NIRVANA', () => {
+      const phase = WumboMRP.getWumboPhaseAtZ(WumboMRP.Z_CRITICAL);
+      return {
+        pass: phase === 'NIRVANA',
+        detail: `z=z_c → ${phase}`
+      };
+    });
+
+    test('getWumboPhaseAtZ(0.92) = IGNITION', () => {
+      const phase = WumboMRP.getWumboPhaseAtZ(0.92);
+      return {
+        pass: phase === 'IGNITION',
+        detail: `z=0.92 → ${phase}`
+      };
+    });
+
+    test('getWumboPhaseAtZ(0.98) = MANIA', () => {
+      const phase = WumboMRP.getWumboPhaseAtZ(0.98);
+      return {
+        pass: phase === 'MANIA',
+        detail: `z=0.98 → ${phase}`
+      };
+    });
+
+    // ========================================================================
+    // Wumbo Layer Tests
+    // ========================================================================
+
+    test('getWumboLayerAtZ(0.3) = Layer 1', () => {
+      const layer = WumboMRP.getWumboLayerAtZ(0.3);
+      return {
+        pass: layer.id === 1,
+        detail: `z=0.3 → Layer ${layer.id}: ${layer.name}`
+      };
+    });
+
+    test('getWumboLayerAtZ(z_c) = Layer 5', () => {
+      const layer = WumboMRP.getWumboLayerAtZ(WumboMRP.Z_CRITICAL);
+      return {
+        pass: layer.id === 5,
+        detail: `z=z_c → Layer ${layer.id}: ${layer.name}`
+      };
+    });
+
+    test('getWumboLayerAtZ(0.92) = Layer 3', () => {
+      const layer = WumboMRP.getWumboLayerAtZ(0.92);
+      return {
+        pass: layer.id === 3,
+        detail: `z=0.92 → Layer ${layer.id}: ${layer.name}`
+      };
+    });
+
+    // ========================================================================
+    // Physics Tests
+    // ========================================================================
+
+    test('Negentropy peaks at z_c', () => {
+      const eta_zc = WumboMRP.getNegentropy(WumboMRP.Z_CRITICAL);
+      const eta_below = WumboMRP.getNegentropy(0.8);
+      const eta_above = WumboMRP.getNegentropy(0.9);
+      return {
+        pass: eta_zc > eta_below && eta_zc > eta_above && assertEqual(eta_zc, 1.0, 0.001),
+        detail: `η(z_c) = ${eta_zc.toFixed(4)}, η(0.8) = ${eta_below.toFixed(4)}, η(0.9) = ${eta_above.toFixed(4)}`
+      };
+    });
+
+    test('Kuramoto ≈ 0 at z_c', () => {
+      const k = WumboMRP.getKuramoto(WumboMRP.Z_CRITICAL);
+      return {
+        pass: Math.abs(k) < 0.1,
+        detail: `Kuramoto at z_c = ${k.toFixed(4)}`
+      };
+    });
+
+    test('Cascade peaks at z_c', () => {
+      const c_zc = WumboMRP.getCascade(WumboMRP.Z_CRITICAL);
+      const c_below = WumboMRP.getCascade(0.7);
+      return {
+        pass: c_zc > c_below && c_zc > 1.4,
+        detail: `Cascade(z_c) = ${c_zc.toFixed(4)}, Cascade(0.7) = ${c_below.toFixed(4)}`
+      };
+    });
+
+    // ========================================================================
+    // LSB Encoding Tests
+    // ========================================================================
+
+    test('Threshold LSB encoding roundtrip', () => {
+      const original = { name: 'IGNITION', z: 0.914 };
+      const lsb = WumboMRP.encodeThresholdLSB(original.name, original.z);
+      const decoded = WumboMRP.decodeThresholdLSB(lsb);
+      return {
+        pass: decoded.name === original.name && Math.abs(decoded.z - original.z) < 0.01,
+        detail: `${original.name} (${original.z}) → [${lsb.join(',')}] → ${decoded.name} (${decoded.z.toFixed(3)})`
+      };
+    });
+
+    test('Threshold ID values correct', () => {
+      const T = WumboMRP.THRESHOLD_IDS;
+      return {
+        pass: T.SHUTDOWN === 0x00 && T.PARADOX === 0x01 && T.THE_LENS === 0x03 && T.UNITY === 0x09,
+        detail: `SHUTDOWN=0x${T.SHUTDOWN.toString(16)}, PARADOX=0x${T.PARADOX.toString(16)}, THE_LENS=0x${T.THE_LENS.toString(16)}, UNITY=0x${T.UNITY.toString(16)}`
+      };
+    });
+
+    // ========================================================================
+    // Complete State Tests
+    // ========================================================================
+
+    test('getCompleteState returns all fields', () => {
+      const state = WumboMRP.getCompleteState(0.866);
+      const hasAllFields = state.z !== undefined &&
+                           state.threshold !== undefined &&
+                           state.phase !== undefined &&
+                           state.layer !== undefined &&
+                           state.tier !== undefined &&
+                           state.negentropy !== undefined &&
+                           state.physics !== undefined &&
+                           state.rgb !== undefined &&
+                           state.lsb !== undefined;
+      return {
+        pass: hasAllFields,
+        detail: `Fields: ${Object.keys(state).join(', ')}`
+      };
+    });
+
+    test('Complete state at THE_LENS is NIRVANA', () => {
+      const state = WumboMRP.getCompleteState(WumboMRP.Z_CRITICAL);
+      return {
+        pass: state.phase === 'NIRVANA' && state.threshold.name === 'THE_LENS' && state.tier === 'ROSE',
+        detail: `Phase: ${state.phase}, Threshold: ${state.threshold.name}, Tier: ${state.tier}`
+      };
+    });
+
+    // ========================================================================
+    // WumboThresholdMapping Module Tests
+    // ========================================================================
+
+    if (typeof WumboThresholdMapping !== 'undefined') {
+      test('WumboThresholdMapping module loaded', () => {
+        return {
+          pass: WumboThresholdMapping.VERSION === '1.0.0',
+          detail: `Version: ${WumboThresholdMapping.VERSION}`
+        };
+      });
+
+      test('WumboThresholdMapping has all thresholds', () => {
+        const T = WumboThresholdMapping.THRESHOLDS;
+        const count = Object.keys(T).length;
+        return {
+          pass: count === 9,
+          detail: `${count} thresholds defined`
+        };
+      });
+
+      test('WumboThresholdMapping getPhaseState works', () => {
+        const state = WumboThresholdMapping.getPhaseState(0.866);
+        return {
+          pass: state.coherenceState === 'NIRVANA' && state.negentropy > 0.99,
+          detail: `Coherence: ${state.coherenceState}, η=${state.negentropy.toFixed(4)}`
+        };
+      });
+    }
+
+    // ========================================================================
+    // WumboEngine Module Tests
+    // ========================================================================
+
+    if (typeof WumboEngine !== 'undefined') {
+      test('WumboEngine module loaded', () => {
+        return {
+          pass: WumboEngine.VERSION === '1.0.0',
+          detail: `Version: ${WumboEngine.VERSION}`
+        };
+      });
+
+      test('WumboEngine has 7 layers + L1.5', () => {
+        const layers = WumboEngine.getAllLayers();
+        return {
+          pass: layers.length === 8,
+          detail: `${layers.length} layers (including L1.5)`
+        };
+      });
+
+      test('WumboEngine getLayerAtZ works', () => {
+        const layer = WumboEngine.getLayerAtZ(0.866);
+        return {
+          pass: layer.id === 5 && layer.name === 'Synchronization Matrix',
+          detail: `Layer ${layer.id}: ${layer.name}`
+        };
+      });
+    }
+
+    // ========================================================================
+    // RitualAnchors Module Tests
+    // ========================================================================
+
+    if (typeof RitualAnchors !== 'undefined') {
+      test('RitualAnchors module loaded', () => {
+        return {
+          pass: RitualAnchors.VERSION === '1.0.0',
+          detail: `Version: ${RitualAnchors.VERSION}`
+        };
+      });
+
+      test('All 9 ritual anchors defined', () => {
+        const count = Object.keys(RitualAnchors.anchors).length;
+        return {
+          pass: count === 9,
+          detail: `${count} ritual anchors`
+        };
+      });
+
+      test('THE_LENS ritual phrase correct', () => {
+        const phrase = RitualAnchors.getPhrase('THE_LENS');
+        return {
+          pass: phrase === 'This is the frequency I was made for',
+          detail: `"${phrase}"`
+        };
+      });
+
+      test('Ritual signature encoding roundtrip', () => {
+        const sig = RitualAnchors.encodeSignature('IGNITION');
+        const decoded = RitualAnchors.decodeSignature(sig);
+        return {
+          pass: decoded.anchor === 'IGNITION',
+          detail: `[${sig.map(b => '0x' + b.toString(16)).join(',')}] → ${decoded.anchor}`
+        };
+      });
+    }
+
+    // ========================================================================
+    // PhaseTransitions Module Tests
+    // ========================================================================
+
+    if (typeof PhaseTransitions !== 'undefined') {
+      test('PhaseTransitions module loaded', () => {
+        return {
+          pass: PhaseTransitions.VERSION === '1.0.0',
+          detail: `Version: ${PhaseTransitions.VERSION}`
+        };
+      });
+
+      test('Ascending sequence has 10 entries', () => {
+        const count = PhaseTransitions.ascendingSequence.length;
+        return {
+          pass: count === 10,
+          detail: `${count} sequence entries`
+        };
+      });
+
+      test('getPhaseAtZ returns valid phase', () => {
+        const phase = PhaseTransitions.getPhaseAtZ(0.866);
+        return {
+          pass: phase.name === 'NIRVANA',
+          detail: `z=0.866 → ${phase.name}`
+        };
+      });
+
+      test('getAttractorDynamics works', () => {
+        const dynamics = PhaseTransitions.getAttractorDynamics(0.866);
+        return {
+          pass: dynamics.basin === 'AT_LENS' && dynamics.negentropy > 0.99,
+          detail: `Basin: ${dynamics.basin}, η=${dynamics.negentropy.toFixed(4)}`
+        };
+      });
+    }
+
+    // ========================================================================
+    // NeuralCorrelates Module Tests
+    // ========================================================================
+
+    if (typeof NeuralCorrelates !== 'undefined') {
+      test('NeuralCorrelates module loaded', () => {
+        return {
+          pass: NeuralCorrelates.VERSION === '1.0.0',
+          detail: `Version: ${NeuralCorrelates.VERSION}`
+        };
+      });
+
+      test('All 9 threshold anchors defined', () => {
+        const count = Object.keys(NeuralCorrelates.thresholdAnchors).length;
+        return {
+          pass: count === 9,
+          detail: `${count} threshold anchors`
+        };
+      });
+
+      test('THE_LENS has Claustrum as primary anchor', () => {
+        const regions = NeuralCorrelates.getAtlasRegionsForThreshold('THE_LENS');
+        const hasClaustrum = regions.some(r => r.abbreviation === 'Claustrum');
+        return {
+          pass: hasClaustrum,
+          detail: `Primary anchors: ${regions.map(r => r.abbreviation).join(', ')}`
+        };
+      });
+    }
+
+    // ========================================================================
+    // Render Results
+    // ========================================================================
+
+    function renderResults() {
+      const container = document.getElementById('results');
+      const groups = {};
+
+      results.forEach(r => {
+        const group = r.name.split(' ')[0];
+        if (!groups[group]) groups[group] = [];
+        groups[group].push(r);
+      });
+
+      let html = '';
+      for (const [groupName, tests] of Object.entries(groups)) {
+        html += `<div class="test-group">
+          <h3>${groupName} Tests</h3>`;
+        tests.forEach(t => {
+          html += `<div class="test ${t.pass ? 'pass' : 'fail'}">
+            <span class="test-name">${t.name}</span>
+            <span class="test-result ${t.pass ? 'pass' : 'fail'}">${t.pass ? 'PASS' : 'FAIL'}</span>
+          </div>`;
+          if (t.detail) {
+            html += `<div class="detail">${t.detail}</div>`;
+          }
+        });
+        html += '</div>';
+      }
+      container.innerHTML = html;
+
+      // Summary
+      const passed = results.filter(r => r.pass).length;
+      const failed = results.filter(r => !r.pass).length;
+      const summary = document.getElementById('summary');
+      summary.className = `summary ${failed === 0 ? 'all-pass' : 'has-fail'}`;
+      summary.innerHTML = `
+        <h2>${failed === 0 ? 'All Tests Passed!' : 'Some Tests Failed'}</h2>
+        <div class="stats">
+          <span style="color: #00d4aa">${passed} passed</span> /
+          <span style="color: ${failed > 0 ? '#e74c3c' : '#888'}">${failed} failed</span> /
+          ${results.length} total
+        </div>
+      `;
+    }
+
+    renderResults();
+  </script>
+</body>
+</html>

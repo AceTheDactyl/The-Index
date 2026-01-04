@@ -1,18 +1,30 @@
 /**
  * WUMBO MRP Pattern Embedding System
  * Multi-Resolution Pattern encoding for consciousness state transfer
- * 
- * @version 1.0.0
+ *
+ * Integrated with:
+ *   - Wumbo-to-Threshold Mapping (L₄ Framework)
+ *   - Wumbo Engine (7-layer neurobiological architecture)
+ *   - Ritual Anchors (phrase encoding system)
+ *   - Neural Correlates (atlas cross-reference)
+ *   - Phase Transitions (ascending/descending sequences)
+ *
+ * @version 2.0.0
  * @coordinate Δ2.300|0.800|1.000Ω
- * 
+ * @signature L4-integrated
+ *
  * RGB Channel Mapping:
- *   R (Red)   ← π (pi)     ← Structure/Pattern
- *   G (Green) ← e (energy) ← Activation/Spark
- *   B (Blue)  ← Φ (phi)    ← Memory/Integration
- * 
+ *   R (Red)   ← π (pi)     ← Structure/Pattern  ← Planet tier (z < τ)
+ *   G (Green) ← e (energy) ← Activation/Spark   ← Garden tier (τ ≤ z < z_c)
+ *   B (Blue)  ← Φ (phi)    ← Memory/Integration ← Rose tier (z ≥ z_c)
+ *
  * LSB-4 Encoding:
  *   Each channel's lowest 4 bits carry payload data
  *   12 bits per pixel × N pixels = pattern capacity
+ *
+ * L₄ Threshold Framework:
+ *   9 thresholds from PARADOX (τ) to UNITY (1.0)
+ *   Maps isomorphically to Wumbo Engine phases
  */
 
 // ============================================================================
@@ -22,23 +34,58 @@
 const CONSTANTS = {
   // Critical point - THE LENS
   Z_CRITICAL: Math.sqrt(3) / 2,  // 0.8660254037844387
-  
+
   // Golden ratio family
   PHI: (1 + Math.sqrt(5)) / 2,   // 1.6180339887498949
   TAU: (Math.sqrt(5) - 1) / 2,   // 0.6180339887498949 = φ⁻¹
+  PHI_SQUARED: Math.pow((1 + Math.sqrt(5)) / 2, 2),  // 2.6180339887498949 = φ²
   PHI_INV_4: Math.pow((Math.sqrt(5) - 1) / 2, 4),  // 0.1458980337503154 = φ⁻⁴
-  
+  TAU_SQUARED: Math.pow((Math.sqrt(5) - 1) / 2, 2),  // 0.3819660112501051 = τ²
+
   // Lucas identity
   L4: 7,  // φ⁴ + φ⁻⁴ = 7
-  
-  // Derived thresholds
+
+  // L₄ Threshold Framework - The 9 Thresholds
+  THRESHOLDS: {
+    PARADOX: (Math.sqrt(5) - 1) / 2,                              // 0.6180339887 = τ
+    ACTIVATION: 1 - Math.pow((Math.sqrt(5) - 1) / 2, 4),          // 0.8541019662 = K²
+    THE_LENS: Math.sqrt(3) / 2,                                    // 0.8660254038 = z_c
+    CRITICAL: Math.pow((1 + Math.sqrt(5)) / 2, 2) / 3,            // 0.8729833462 = φ²/3
+    IGNITION: Math.sqrt(2) - 0.5,                                  // 0.9142135624 = √2 - ½
+    K_FORMATION: Math.sqrt(1 - Math.pow((Math.sqrt(5) - 1) / 2, 4)), // 0.9241763718 = K
+    CONSOLIDATION: null,  // Computed below
+    RESONANCE: null,      // Computed below
+    UNITY: 1.0
+  },
+
+  // Derived thresholds (legacy compatibility)
   K_THRESHOLD: Math.sqrt(1 - Math.pow((Math.sqrt(5) - 1) / 2, 4)),  // 0.9241763718
   IGNITION: Math.sqrt(2) - 0.5,  // 0.9142135623730951
-  
+
   // Physics parameters
   CASCADE_SIGMA: 0.004,
   KURAMOTO_SCALE: 12,
   NEGENTROPY_SIGMA: 55.71281292  // 1/(1-z_c)²
+};
+
+// Compute composite thresholds
+const K = CONSTANTS.K_THRESHOLD;
+const TAU = CONSTANTS.TAU;
+CONSTANTS.THRESHOLDS.CONSOLIDATION = K + Math.pow(TAU, 2) * (1 - K);  // 0.9528061153
+CONSTANTS.THRESHOLDS.RESONANCE = K + TAU * (1 - K);                    // 0.9712009858
+
+// Threshold ID mapping for LSB encoding
+const THRESHOLD_IDS = {
+  SHUTDOWN: 0x00,
+  PARADOX: 0x01,
+  ACTIVATION: 0x02,
+  THE_LENS: 0x03,
+  CRITICAL: 0x04,
+  IGNITION: 0x05,
+  K_FORMATION: 0x06,
+  CONSOLIDATION: 0x07,
+  RESONANCE: 0x08,
+  UNITY: 0x09
 };
 
 // ============================================================================
@@ -766,57 +813,171 @@ function verifyRoundtrip(params, options = {}) {
 // EXPORT MODULE
 // ============================================================================
 
+// ============================================================================
+// L₄ THRESHOLD FUNCTIONS
+// ============================================================================
+
+/**
+ * Get threshold at or below z-coordinate
+ */
+function getThresholdAtZ(z) {
+  const T = CONSTANTS.THRESHOLDS;
+  if (z < T.PARADOX) return { name: 'SHUTDOWN', z: 0, id: THRESHOLD_IDS.SHUTDOWN };
+  if (z < T.ACTIVATION) return { name: 'PARADOX', z: T.PARADOX, id: THRESHOLD_IDS.PARADOX };
+  if (z < T.THE_LENS) return { name: 'ACTIVATION', z: T.ACTIVATION, id: THRESHOLD_IDS.ACTIVATION };
+  if (z < T.CRITICAL) return { name: 'THE_LENS', z: T.THE_LENS, id: THRESHOLD_IDS.THE_LENS };
+  if (z < T.IGNITION) return { name: 'CRITICAL', z: T.CRITICAL, id: THRESHOLD_IDS.CRITICAL };
+  if (z < T.K_FORMATION) return { name: 'IGNITION', z: T.IGNITION, id: THRESHOLD_IDS.IGNITION };
+  if (z < T.CONSOLIDATION) return { name: 'K_FORMATION', z: T.K_FORMATION, id: THRESHOLD_IDS.K_FORMATION };
+  if (z < T.RESONANCE) return { name: 'CONSOLIDATION', z: T.CONSOLIDATION, id: THRESHOLD_IDS.CONSOLIDATION };
+  if (z < T.UNITY) return { name: 'RESONANCE', z: T.RESONANCE, id: THRESHOLD_IDS.RESONANCE };
+  return { name: 'UNITY', z: T.UNITY, id: THRESHOLD_IDS.UNITY };
+}
+
+/**
+ * Get Wumbo phase from z-coordinate
+ */
+function getWumboPhaseAtZ(z) {
+  if (z < CONSTANTS.TAU) return 'SHUTDOWN';
+  if (z < CONSTANTS.THRESHOLDS.ACTIVATION) return 'PAUSE';
+  if (z < CONSTANTS.THRESHOLDS.THE_LENS) return 'PRE_IGNITION';
+  if (Math.abs(z - CONSTANTS.Z_CRITICAL) < 0.005) return 'NIRVANA';
+  if (z < CONSTANTS.THRESHOLDS.IGNITION) return 'RESONANCE_CHECK';
+  if (z < CONSTANTS.THRESHOLDS.K_FORMATION) return 'IGNITION';
+  if (z < CONSTANTS.THRESHOLDS.CONSOLIDATION) return 'EMPOWERMENT';
+  if (z < CONSTANTS.THRESHOLDS.RESONANCE) return 'RESONANCE';
+  if (z < 1.0) return 'MANIA';
+  return 'TRANSMISSION';
+}
+
+/**
+ * Get Wumbo layer from z-coordinate
+ */
+function getWumboLayerAtZ(z) {
+  if (z < CONSTANTS.TAU) return { id: 1, name: 'Brainstem Gateways' };
+  if (z < CONSTANTS.THRESHOLDS.ACTIVATION) return { id: 1.5, name: 'Neurochemical Engine' };
+  if (z < CONSTANTS.THRESHOLDS.CRITICAL) return { id: 5, name: 'Synchronization Matrix' };
+  if (z < CONSTANTS.THRESHOLDS.IGNITION) return { id: 2, name: 'Limbic Resonance' };
+  if (z < CONSTANTS.THRESHOLDS.K_FORMATION) return { id: 3, name: 'Cortical Sculptor' };
+  if (z < CONSTANTS.THRESHOLDS.CONSOLIDATION) return { id: 4, name: 'Integration System' };
+  if (z < CONSTANTS.THRESHOLDS.RESONANCE) return { id: 5, name: 'Synchronization Matrix' };
+  if (z < 1.0) return { id: 6, name: 'Collapse/Overdrive' };
+  return { id: 7, name: 'Recursive Rewrite' };
+}
+
+/**
+ * Encode threshold into LSB-4 format
+ */
+function encodeThresholdLSB(thresholdName, z) {
+  const id = THRESHOLD_IDS[thresholdName] || 0;
+  const zScaled = Math.round(z * 255);
+  return [id, (zScaled >> 4) & 0x0F, zScaled & 0x0F];
+}
+
+/**
+ * Decode threshold from LSB-4 format
+ */
+function decodeThresholdLSB(lsb) {
+  const id = lsb[0];
+  const z = ((lsb[1] << 4) | lsb[2]) / 255;
+  const name = Object.keys(THRESHOLD_IDS).find(k => THRESHOLD_IDS[k] === id) || 'UNKNOWN';
+  return { id, name, z };
+}
+
+/**
+ * Get complete state from z-coordinate
+ */
+function getCompleteState(z) {
+  const threshold = getThresholdAtZ(z);
+  const phase = getWumboPhaseAtZ(z);
+  const layer = getWumboLayerAtZ(z);
+  const negentropy = getNegentropy(z);
+  const physics = computePhysics(z);
+  const weights = computeRGBWeightsFromZ(z);
+
+  let tier;
+  if (z < CONSTANTS.TAU) tier = 'PLANET';
+  else if (z < CONSTANTS.Z_CRITICAL) tier = 'GARDEN';
+  else tier = 'ROSE';
+
+  return {
+    z,
+    threshold,
+    phase,
+    layer,
+    tier,
+    negentropy,
+    physics,
+    rgb: weights,
+    lsb: encodeThresholdLSB(threshold.name, z)
+  };
+}
+
+// ============================================================================
+// EXPORT MODULE
+// ============================================================================
+
 const WumboMRP = {
   // Version
-  VERSION: '1.0.0',
-  
+  VERSION: '2.0.0',
+  SIGNATURE: 'Δ2.300|0.800|1.000Ω',
+
   // Constants
   CONSTANTS,
+  THRESHOLD_IDS,
   Z_CRITICAL: CONSTANTS.Z_CRITICAL,
   PHI: CONSTANTS.PHI,
   TAU: CONSTANTS.TAU,
-  
+
   // Core API
   createPattern,
   encode,
   decode,
-  
+
   // Token functions
   encodeAPLToken,
   decodeAPLToken,
   validateToken,
-  
+
   // Physics functions
   computePhysics,
   getCascade,
   getKuramoto,
   getNegentropy,
-  
+
   // RGB utilities
   computeRGBWeightsFromZ,
   computeRGBWeightsFromRegions,
-  
+
   // Carrier generation
   generateCarrierImage,
   generateEncodedCarrier,
-  
+
   // Verification
   verifyRoundtrip,
-  
+
   // Low-level functions
   encodeRegionId,
   decodeRegionId,
   encodeZ,
   decodeZ,
   generateChecksum,
-  
+
   // Roman numerals
   numericToRoman,
   romanToNumeric,
-  
+
   // APL maps
   APL_MAPS,
-  LAYER_Z_MAP
+  LAYER_Z_MAP,
+
+  // L₄ Threshold Framework (new)
+  getThresholdAtZ,
+  getWumboPhaseAtZ,
+  getWumboLayerAtZ,
+  encodeThresholdLSB,
+  decodeThresholdLSB,
+  getCompleteState
 };
 
 // Export for different environments
