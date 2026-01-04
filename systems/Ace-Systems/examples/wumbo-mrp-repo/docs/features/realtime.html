@@ -6,13 +6,25 @@
     <title>Real-Time Processing | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
-        .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .breadcrumb span { color: var(--text-muted); }
+        nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--text); }
+        .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
+        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
+        .sidebar-link.active { background: rgba(138, 180, 248, 0.15); color: var(--accent); }
+        .content { padding: 24px 32px; max-width: 900px; }
         h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent); }
         h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         h3 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
@@ -26,176 +38,130 @@
         .perf-table th { background: var(--bg-elevated); color: var(--accent); }
         .perf-table .fast { color: var(--green); }
         .perf-table .medium { color: var(--gold); }
-        .perf-table .slow { color: var(--red); }
+        .benchmark { background: var(--bg); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+        .benchmark-bar { height: 24px; background: var(--border); border-radius: 4px; margin: 0.5rem 0; position: relative; overflow: hidden; }
+        .benchmark-fill { height: 100%; border-radius: 4px; position: absolute; left: 0; top: 0; }
+        .benchmark-label { font-size: 0.85rem; display: flex; justify-content: space-between; }
         .phase-card { background: var(--bg-elevated); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border-left: 4px solid var(--border); }
         .phase-card.current { border-color: var(--green); }
         .phase-card.planned { border-color: var(--gold); }
         .phase-card h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
         .phase-card .status { font-size: 0.75rem; padding: 2px 6px; border-radius: 3px; }
         .phase-card .status.done { background: var(--green); color: #000; }
-        .phase-card .status.progress { background: var(--gold); color: #000; }
         .phase-card .status.planned { background: var(--border); color: var(--text); }
-        .benchmark { background: var(--bg); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
-        .benchmark-bar { height: 24px; background: var(--border); border-radius: 4px; margin: 0.5rem 0; position: relative; overflow: hidden; }
-        .benchmark-fill { height: 100%; border-radius: 4px; position: absolute; left: 0; top: 0; }
-        .benchmark-label { font-size: 0.85rem; display: flex; justify-content: space-between; }
-        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
         footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="breadcrumb">
-            <a href="../../index.html">WUMBO MRP</a>
-            <span> / </span>
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <span> / </span>
-            <span>Real-Time Processing</span>
-        </nav>
-
-        <div class="hero">
-            <h1>Real-Time Processing</h1>
-            <p style="font-size: 1.1rem; color: var(--text);">Encode and decode patterns in milliseconds. Perfect for live applications.</p>
-        </div>
-
-        <h2>Performance Targets</h2>
-        <table class="perf-table">
-            <thead>
-                <tr>
-                    <th>Operation</th>
-                    <th>Image Size</th>
-                    <th>Target</th>
-                    <th>Current</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Encode</td>
-                    <td>64×64</td>
-                    <td>&lt;5ms</td>
-                    <td class="fast">~2ms</td>
-                    <td class="fast">✓ Achieved</td>
-                </tr>
-                <tr>
-                    <td>Decode</td>
-                    <td>64×64</td>
-                    <td>&lt;10ms</td>
-                    <td class="fast">~5ms</td>
-                    <td class="fast">✓ Achieved</td>
-                </tr>
-                <tr>
-                    <td>Full Roundtrip</td>
-                    <td>64×64</td>
-                    <td>&lt;20ms</td>
-                    <td class="fast">~10ms</td>
-                    <td class="fast">✓ Achieved</td>
-                </tr>
-                <tr>
-                    <td>Physics Compute</td>
-                    <td>N/A</td>
-                    <td>&lt;1ms</td>
-                    <td class="fast">&lt;0.5ms</td>
-                    <td class="fast">✓ Achieved</td>
-                </tr>
-                <tr>
-                    <td>Encode</td>
-                    <td>256×256</td>
-                    <td>&lt;50ms</td>
-                    <td class="medium">~35ms</td>
-                    <td class="fast">✓ Achieved</td>
-                </tr>
-                <tr>
-                    <td>Decode</td>
-                    <td>256×256</td>
-                    <td>&lt;100ms</td>
-                    <td class="medium">~80ms</td>
-                    <td class="fast">✓ Achieved</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Benchmarks</h2>
-        <div class="benchmark">
-            <div class="benchmark-label">
-                <span>Encode 64×64</span>
-                <span style="color: var(--green);">2ms</span>
-            </div>
-            <div class="benchmark-bar">
-                <div class="benchmark-fill" style="width: 40%; background: var(--green);"></div>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <div class="nav-links">
+                <a href="../../index.html#overview">Overview</a>
+                <a href="../../index.html#modules">Modules</a>
+                <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
             </div>
         </div>
-        <div class="benchmark">
-            <div class="benchmark-label">
-                <span>Decode 64×64</span>
-                <span style="color: var(--green);">5ms</span>
-            </div>
-            <div class="benchmark-bar">
-                <div class="benchmark-fill" style="width: 50%; background: var(--green);"></div>
-            </div>
-        </div>
-        <div class="benchmark">
-            <div class="benchmark-label">
-                <span>Encode 256×256</span>
-                <span style="color: var(--gold);">35ms</span>
-            </div>
-            <div class="benchmark-bar">
-                <div class="benchmark-fill" style="width: 70%; background: var(--gold);"></div>
-            </div>
-        </div>
-        <div class="benchmark">
-            <div class="benchmark-label">
-                <span>Decode 256×256</span>
-                <span style="color: var(--gold);">80ms</span>
-            </div>
-            <div class="benchmark-bar">
-                <div class="benchmark-fill" style="width: 80%; background: var(--gold);"></div>
-            </div>
-        </div>
+    </nav>
 
-        <h2>Optimization Strategies</h2>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Modules</div>
+                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
+                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
+                <a href="limnus-atlas.html" class="sidebar-link">LIMNUS Atlas</a>
+                <a href="lsb-steganography.html" class="sidebar-link">LSB Steganography</a>
+                <a href="physics.html" class="sidebar-link">Physics Integration</a>
+                <a href="error-correction.html" class="sidebar-link">Error Correction</a>
+                <a href="apl-tokens.html" class="sidebar-link">APL 2.0 Tokens</a>
+                <a href="realtime.html" class="sidebar-link active">Real-Time Processing</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Documentation</div>
+                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
+                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
+                <a href="../API.md" class="sidebar-link">API Reference</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Examples</div>
+                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
+                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
+                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Related</div>
+                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
+                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
+            </div>
+        </aside>
 
-        <div class="phase-card current">
-            <h3>Phase 1: Current Implementation <span class="status done">DONE</span></h3>
-            <ul style="margin-left: 1.5rem; color: var(--text-muted);">
-                <li>TypedArray operations for pixel data</li>
-                <li>Minimal DOM access during processing</li>
-                <li>Pre-computed lookup tables for APL encoding</li>
-                <li>Inline physics calculations</li>
-            </ul>
-        </div>
+        <main class="content">
+            <div class="hero">
+                <h1>Real-Time Processing</h1>
+                <p style="font-size: 1.1rem; color: var(--text);">Encode and decode patterns in milliseconds. Perfect for live applications.</p>
+            </div>
 
-        <div class="phase-card planned">
-            <h3>Phase 2: Web Workers <span class="status planned">PLANNED</span></h3>
-            <ul style="margin-left: 1.5rem; color: var(--text-muted);">
-                <li>Offload encoding to dedicated worker thread</li>
-                <li>Non-blocking main thread during processing</li>
-                <li>Parallel decoding of redundant payloads</li>
-                <li>Message passing optimization</li>
-            </ul>
-        </div>
+            <h2>Performance Targets</h2>
+            <table class="perf-table">
+                <thead><tr><th>Operation</th><th>Image Size</th><th>Target</th><th>Current</th></tr></thead>
+                <tbody>
+                    <tr><td>Encode</td><td>64×64</td><td>&lt;5ms</td><td class="fast">~2ms ✓</td></tr>
+                    <tr><td>Decode</td><td>64×64</td><td>&lt;10ms</td><td class="fast">~5ms ✓</td></tr>
+                    <tr><td>Full Roundtrip</td><td>64×64</td><td>&lt;20ms</td><td class="fast">~10ms ✓</td></tr>
+                    <tr><td>Encode</td><td>256×256</td><td>&lt;50ms</td><td class="medium">~35ms ✓</td></tr>
+                    <tr><td>Decode</td><td>256×256</td><td>&lt;100ms</td><td class="medium">~80ms ✓</td></tr>
+                </tbody>
+            </table>
 
-        <div class="phase-card planned">
-            <h3>Phase 3: WebGL Acceleration <span class="status planned">PLANNED</span></h3>
-            <ul style="margin-left: 1.5rem; color: var(--text-muted);">
-                <li>GPU-based LSB embedding for large images</li>
-                <li>Shader-based physics computation</li>
-                <li>Parallel pixel processing</li>
-                <li>10-100× speedup for 1024×1024+ images</li>
-            </ul>
-        </div>
+            <h2>Benchmarks</h2>
+            <div class="benchmark">
+                <div class="benchmark-label"><span>Encode 64×64</span><span style="color: var(--green);">2ms</span></div>
+                <div class="benchmark-bar"><div class="benchmark-fill" style="width: 40%; background: var(--green);"></div></div>
+            </div>
+            <div class="benchmark">
+                <div class="benchmark-label"><span>Decode 64×64</span><span style="color: var(--green);">5ms</span></div>
+                <div class="benchmark-bar"><div class="benchmark-fill" style="width: 50%; background: var(--green);"></div></div>
+            </div>
+            <div class="benchmark">
+                <div class="benchmark-label"><span>Encode 256×256</span><span style="color: var(--gold);">35ms</span></div>
+                <div class="benchmark-bar"><div class="benchmark-fill" style="width: 70%; background: var(--gold);"></div></div>
+            </div>
 
-        <h2>Live Application Examples</h2>
+            <h2>Optimization Roadmap</h2>
 
-        <h3>Real-Time State Visualization</h3>
-        <pre><code>// Update at 30fps
+            <div class="phase-card current">
+                <h3>Phase 1: Current <span class="status done">DONE</span></h3>
+                <ul style="margin-left: 1.5rem; color: var(--text-muted);">
+                    <li>TypedArray operations for pixel data</li>
+                    <li>Pre-computed lookup tables for APL encoding</li>
+                    <li>Inline physics calculations</li>
+                </ul>
+            </div>
+
+            <div class="phase-card planned">
+                <h3>Phase 2: Web Workers <span class="status planned">PLANNED</span></h3>
+                <ul style="margin-left: 1.5rem; color: var(--text-muted);">
+                    <li>Offload encoding to dedicated worker thread</li>
+                    <li>Non-blocking main thread during processing</li>
+                </ul>
+            </div>
+
+            <div class="phase-card planned">
+                <h3>Phase 3: WebGL Acceleration <span class="status planned">PLANNED</span></h3>
+                <ul style="margin-left: 1.5rem; color: var(--text-muted);">
+                    <li>GPU-based LSB embedding for large images</li>
+                    <li>10-100× speedup for 1024×1024+ images</li>
+                </ul>
+            </div>
+
+            <h2>Live Application Example</h2>
+            <pre><code>// Update at 30fps
 function updateLoop() {
     const z = getSensorReading();  // ~1ms
-
-    // Compute physics (< 0.5ms)
-    const physics = WumboMRP.computePhysics(z);
-
-    // Update visualization
+    const physics = WumboMRP.computePhysics(z);  // < 0.5ms
     updateUI(physics);
 
     // Encode snapshot every 500ms
@@ -206,69 +172,11 @@ function updateLoop() {
     requestAnimationFrame(updateLoop);
 }</code></pre>
 
-        <h3>Streaming Encode</h3>
-        <pre><code>// Encode patterns as stream
-async function* encodeStream(zValues) {
-    for (const z of zValues) {
-        const pattern = WumboMRP.createPattern({ z });
-        const carrier = WumboMRP.generateEncodedCarrier({ z });
-        yield carrier.dataUrl;
-        await new Promise(r => setTimeout(r, 16));  // Yield to main thread
-    }
-}</code></pre>
-
-        <h3>Batch Processing</h3>
-        <pre><code>// Process multiple patterns in parallel (Phase 2)
-async function batchEncode(patterns) {
-    const workers = navigator.hardwareConcurrency || 4;
-    const chunks = splitArray(patterns, workers);
-
-    const results = await Promise.all(
-        chunks.map(chunk =>
-            workerPool.run('encode', chunk)
-        )
-    );
-
-    return results.flat();
-}</code></pre>
-
-        <h2>Memory Considerations</h2>
-        <table class="perf-table">
-            <thead>
-                <tr>
-                    <th>Image Size</th>
-                    <th>ImageData Size</th>
-                    <th>Working Memory</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>64×64</td>
-                    <td>16 KB</td>
-                    <td>~50 KB</td>
-                </tr>
-                <tr>
-                    <td>128×128</td>
-                    <td>64 KB</td>
-                    <td>~150 KB</td>
-                </tr>
-                <tr>
-                    <td>256×256</td>
-                    <td>256 KB</td>
-                    <td>~500 KB</td>
-                </tr>
-                <tr>
-                    <td>1024×1024</td>
-                    <td>4 MB</td>
-                    <td>~10 MB</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <footer>
-            <p><a href="apl-tokens.html">← APL Tokens</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="../ARCHITECTURE.md">Full Architecture →</a></p>
-            <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-        </footer>
+            <footer>
+                <p><a href="apl-tokens.html">← APL Tokens</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="../ARCHITECTURE.md">Full Architecture →</a></p>
+                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
+            </footer>
+        </main>
     </div>
 </body>
 </html>

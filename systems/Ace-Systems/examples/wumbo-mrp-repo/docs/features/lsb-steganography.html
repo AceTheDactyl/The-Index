@@ -6,13 +6,25 @@
     <title>LSB-4 Steganography | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --red: #ff6b6b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --red: #ff6b6b; --orange: #ff922b; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
-        .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .breadcrumb span { color: var(--text-muted); }
+        nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--text); }
+        .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
+        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
+        .sidebar-link.active { background: rgba(105, 219, 124, 0.15); color: var(--green); }
+        .content { padding: 24px 32px; max-width: 900px; }
         h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--green); }
         h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
@@ -20,6 +32,10 @@
         code { font-family: 'JetBrains Mono', monospace; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
         pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); }
         pre code { background: none; padding: 0; }
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.5rem 0; }
+        .stat-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+        .stat-card .value { font-size: 1.5rem; font-weight: 700; color: var(--green); }
+        .stat-card .label { font-size: 0.8rem; color: var(--text-muted); }
         .bit-diagram { background: var(--bg-elevated); border-radius: 8px; padding: 1.5rem; margin: 1rem 0; font-family: 'JetBrains Mono', monospace; }
         .bit-diagram .channel { margin-bottom: 1rem; }
         .bit-diagram .channel-name { color: var(--text-muted); margin-bottom: 0.25rem; }
@@ -27,230 +43,128 @@
         .bit-diagram .bit { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; border-radius: 3px; }
         .bit-diagram .bit.high { background: var(--accent); color: #000; }
         .bit-diagram .bit.low { background: var(--gold); color: #000; }
-        .bit-diagram .bit.unused { background: var(--border); color: var(--text-muted); }
         .spec-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
         .spec-table th, .spec-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
         .spec-table th { background: var(--bg-elevated); color: var(--accent); }
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.5rem 0; }
-        .stat-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
-        .stat-card .value { font-size: 1.5rem; font-weight: 700; color: var(--green); }
-        .stat-card .label { font-size: 0.8rem; color: var(--text-muted); }
-        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
         footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="breadcrumb">
-            <a href="../../index.html">WUMBO MRP</a>
-            <span> / </span>
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <span> / </span>
-            <span>LSB-4 Steganography</span>
-        </nav>
-
-        <div class="hero">
-            <h1>LSB-4 Steganography</h1>
-            <p style="font-size: 1.1rem; color: var(--text);">12 bits per pixel embedded in RGB channels. Survives moderate JPEG compression.</p>
-        </div>
-
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="value">12</div>
-                <div class="label">bits/pixel</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">4</div>
-                <div class="label">bits/channel</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">48</div>
-                <div class="label">bits/payload</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">16×</div>
-                <div class="label">redundancy</div>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <div class="nav-links">
+                <a href="../../index.html#overview">Overview</a>
+                <a href="../../index.html#modules">Modules</a>
+                <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
             </div>
         </div>
+    </nav>
 
-        <h2>Bit Layout</h2>
-        <p>Each pixel contributes 12 bits of payload capacity by using the lowest 4 bits of each RGB channel:</p>
-
-        <div class="bit-diagram">
-            <div class="channel">
-                <div class="channel-name" style="color: var(--red);">R Channel (8 bits)</div>
-                <div class="bits">
-                    <div class="bit high">7</div>
-                    <div class="bit high">6</div>
-                    <div class="bit high">5</div>
-                    <div class="bit high">4</div>
-                    <div class="bit low">3</div>
-                    <div class="bit low">2</div>
-                    <div class="bit low">1</div>
-                    <div class="bit low">0</div>
-                </div>
-                <div style="font-size: 0.8rem; margin-top: 0.25rem; color: var(--text-muted);">High 4 bits = visual | Low 4 bits = payload</div>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Modules</div>
+                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
+                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
+                <a href="limnus-atlas.html" class="sidebar-link">LIMNUS Atlas</a>
+                <a href="lsb-steganography.html" class="sidebar-link active">LSB Steganography</a>
+                <a href="physics.html" class="sidebar-link">Physics Integration</a>
+                <a href="error-correction.html" class="sidebar-link">Error Correction</a>
+                <a href="apl-tokens.html" class="sidebar-link">APL 2.0 Tokens</a>
+                <a href="realtime.html" class="sidebar-link">Real-Time Processing</a>
             </div>
-            <div class="channel">
-                <div class="channel-name" style="color: var(--green);">G Channel (8 bits)</div>
-                <div class="bits">
-                    <div class="bit high">7</div>
-                    <div class="bit high">6</div>
-                    <div class="bit high">5</div>
-                    <div class="bit high">4</div>
-                    <div class="bit low">3</div>
-                    <div class="bit low">2</div>
-                    <div class="bit low">1</div>
-                    <div class="bit low">0</div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Documentation</div>
+                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
+                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
+                <a href="../API.md" class="sidebar-link">API Reference</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Examples</div>
+                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
+                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
+                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Related</div>
+                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
+                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="hero">
+                <h1>LSB-4 Steganography</h1>
+                <p style="font-size: 1.1rem; color: var(--text);">12 bits per pixel embedded in RGB channels. Survives moderate JPEG compression.</p>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card"><div class="value">12</div><div class="label">bits/pixel</div></div>
+                <div class="stat-card"><div class="value">4</div><div class="label">bits/channel</div></div>
+                <div class="stat-card"><div class="value">48</div><div class="label">bits/payload</div></div>
+                <div class="stat-card"><div class="value">16×</div><div class="label">redundancy</div></div>
+            </div>
+
+            <h2>Bit Layout</h2>
+            <p>Each pixel contributes 12 bits of payload capacity by using the lowest 4 bits of each RGB channel:</p>
+
+            <div class="bit-diagram">
+                <div class="channel">
+                    <div class="channel-name" style="color: var(--red);">R Channel (8 bits)</div>
+                    <div class="bits">
+                        <div class="bit high">7</div><div class="bit high">6</div><div class="bit high">5</div><div class="bit high">4</div>
+                        <div class="bit low">3</div><div class="bit low">2</div><div class="bit low">1</div><div class="bit low">0</div>
+                    </div>
+                    <div style="font-size: 0.8rem; margin-top: 0.25rem; color: var(--text-muted);">High 4 bits = visual | Low 4 bits = payload</div>
+                </div>
+                <div class="channel">
+                    <div class="channel-name" style="color: var(--green);">G Channel (8 bits)</div>
+                    <div class="bits">
+                        <div class="bit high">7</div><div class="bit high">6</div><div class="bit high">5</div><div class="bit high">4</div>
+                        <div class="bit low">3</div><div class="bit low">2</div><div class="bit low">1</div><div class="bit low">0</div>
+                    </div>
+                </div>
+                <div class="channel">
+                    <div class="channel-name" style="color: var(--accent);">B Channel (8 bits)</div>
+                    <div class="bits">
+                        <div class="bit high">7</div><div class="bit high">6</div><div class="bit high">5</div><div class="bit high">4</div>
+                        <div class="bit low">3</div><div class="bit low">2</div><div class="bit low">1</div><div class="bit low">0</div>
+                    </div>
                 </div>
             </div>
-            <div class="channel">
-                <div class="channel-name" style="color: var(--accent);">B Channel (8 bits)</div>
-                <div class="bits">
-                    <div class="bit high">7</div>
-                    <div class="bit high">6</div>
-                    <div class="bit high">5</div>
-                    <div class="bit high">4</div>
-                    <div class="bit low">3</div>
-                    <div class="bit low">2</div>
-                    <div class="bit low">1</div>
-                    <div class="bit low">0</div>
-                </div>
-            </div>
-        </div>
 
-        <h2>Payload Structure</h2>
-        <p>A complete pattern requires 4 pixels (48 bits total):</p>
-
-        <table class="spec-table">
-            <thead>
-                <tr>
-                    <th>Pixel</th>
-                    <th>R (4 bits)</th>
-                    <th>G (4 bits)</th>
-                    <th>B (4 bits)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>0</td>
-                    <td>Region[3:0]</td>
-                    <td>Z[7:4]</td>
-                    <td>Checksum[3:0]</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Region[6:4] + Parity</td>
-                    <td>Z[3:0]</td>
-                    <td>Token1[3:0]</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Token1[7:4]</td>
-                    <td>Token1[11:8]</td>
-                    <td>Token2[3:0]</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Token2[7:4]</td>
-                    <td>Token2[11:8]</td>
-                    <td>Version[3:0]</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Encoding Process</h2>
-        <pre><code>// 1. Create pattern from state
-const pattern = WumboMRP.createPattern({
-    z: 0.866,
-    regionId: 47
-});
+            <h2>Encoding Process</h2>
+            <pre><code>// 1. Create pattern from state
+const pattern = WumboMRP.createPattern({ z: 0.866, regionId: 47 });
 
 // 2. Get image data from canvas
-const ctx = canvas.getContext('2d');
 let imageData = ctx.getImageData(0, 0, width, height);
 
 // 3. Encode pattern into image
-imageData = WumboMRP.encode(imageData, pattern, {
-    stride: 4,      // Pixel spacing
-    redundancy: 16  // Repetitions for error correction
-});
+imageData = WumboMRP.encode(imageData, pattern, { redundancy: 16 });
 
 // 4. Write back to canvas
-ctx.putImageData(imageData, 0, 0);
+ctx.putImageData(imageData, 0, 0);</code></pre>
 
-// 5. Export as PNG (lossless)
-const dataUrl = canvas.toDataURL('image/png');</code></pre>
+            <h2>JPEG Resilience</h2>
+            <table class="spec-table">
+                <thead><tr><th>JPEG Quality</th><th>Redundancy 8×</th><th>Redundancy 16×</th><th>Redundancy 32×</th></tr></thead>
+                <tbody>
+                    <tr><td>100%</td><td style="color: var(--green);">99%+</td><td style="color: var(--green);">99%+</td><td style="color: var(--green);">99%+</td></tr>
+                    <tr><td>90%</td><td style="color: var(--green);">95%+</td><td style="color: var(--green);">98%+</td><td style="color: var(--green);">99%+</td></tr>
+                    <tr><td>80%</td><td style="color: var(--gold);">80%</td><td style="color: var(--green);">92%</td><td style="color: var(--green);">97%</td></tr>
+                    <tr><td>70%</td><td style="color: var(--red);">60%</td><td style="color: var(--gold);">78%</td><td style="color: var(--green);">90%</td></tr>
+                </tbody>
+            </table>
 
-        <h2>Decoding Process</h2>
-        <pre><code>// 1. Load image and get pixel data
-const imageData = ctx.getImageData(0, 0, width, height);
-
-// 2. Extract pattern with error correction
-const decoded = WumboMRP.decode(imageData, {
-    stride: 4,
-    confidenceThreshold: 0.7
-});
-
-// 3. Verify integrity
-if (decoded.tokensValid && decoded.confidence > 0.9) {
-    console.log('Region:', decoded.regionRoman);
-    console.log('Z-coordinate:', decoded.z.toFixed(4));
-    console.log('Confidence:', (decoded.confidence * 100).toFixed(1) + '%');
-}</code></pre>
-
-        <h2>JPEG Resilience</h2>
-        <p>While PNG is recommended for lossless transfer, LSB-4 with redundancy survives moderate JPEG compression:</p>
-
-        <table class="spec-table">
-            <thead>
-                <tr>
-                    <th>JPEG Quality</th>
-                    <th>Redundancy 8×</th>
-                    <th>Redundancy 16×</th>
-                    <th>Redundancy 32×</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>100%</td>
-                    <td style="color: var(--green);">99%+</td>
-                    <td style="color: var(--green);">99%+</td>
-                    <td style="color: var(--green);">99%+</td>
-                </tr>
-                <tr>
-                    <td>90%</td>
-                    <td style="color: var(--green);">95%+</td>
-                    <td style="color: var(--green);">98%+</td>
-                    <td style="color: var(--green);">99%+</td>
-                </tr>
-                <tr>
-                    <td>80%</td>
-                    <td style="color: var(--gold);">80%</td>
-                    <td style="color: var(--green);">92%</td>
-                    <td style="color: var(--green);">97%</td>
-                </tr>
-                <tr>
-                    <td>70%</td>
-                    <td style="color: var(--red);">60%</td>
-                    <td style="color: var(--gold);">78%</td>
-                    <td style="color: var(--green);">90%</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Visual Impact</h2>
-        <p>LSB-4 modifies only the lowest 4 bits of each channel, resulting in a maximum color deviation of ±15 per channel (out of 255). This is imperceptible to human vision under normal viewing conditions.</p>
-
-        <pre><code>// Maximum visual deviation per channel
-Original:  RGB(128, 200, 64)
-Modified:  RGB(135, 207, 79)  // Worst case: all 4 LSB bits flipped
-Delta:     ±15, ±15, ±15      // Imperceptible</code></pre>
-
-        <footer>
-            <p><a href="limnus-atlas.html">← LIMNUS Atlas</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="physics.html">Physics Integration →</a></p>
-            <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-        </footer>
+            <footer>
+                <p><a href="limnus-atlas.html">← LIMNUS Atlas</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="physics.html">Physics Integration →</a></p>
+                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
+            </footer>
+        </main>
     </div>
 </body>
 </html>

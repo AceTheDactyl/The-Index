@@ -6,13 +6,25 @@
     <title>Error Correction | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --red: #ff6b6b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --red: #ff6b6b; --orange: #ff922b; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
-        .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .breadcrumb span { color: var(--text-muted); }
+        nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--text); }
+        .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
+        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
+        .sidebar-link.active { background: rgba(105, 219, 124, 0.15); color: var(--green); }
+        .content { padding: 24px 32px; max-width: 900px; }
         h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--green); }
         h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
@@ -28,147 +40,107 @@
         .confidence-meter { background: var(--bg); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
         .confidence-bar { height: 24px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
         .confidence-fill { height: 100%; border-radius: 4px; }
-        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
         footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="breadcrumb">
-            <a href="../../index.html">WUMBO MRP</a>
-            <span> / </span>
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <span> / </span>
-            <span>Error Correction</span>
-        </nav>
-
-        <div class="hero">
-            <h1>Error Correction</h1>
-            <p style="font-size: 1.1rem; color: var(--text);">Majority voting across redundant embeddings for robust extraction even with noise</p>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <div class="nav-links">
+                <a href="../../index.html#overview">Overview</a>
+                <a href="../../index.html#modules">Modules</a>
+                <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
+            </div>
         </div>
+    </nav>
 
-        <h2>Overview</h2>
-        <p>WUMBO MRP employs a multi-layered error correction strategy to ensure reliable pattern extraction even from degraded images. The approach combines redundant embedding, majority voting, and statistical validation.</p>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Modules</div>
+                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
+                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
+                <a href="limnus-atlas.html" class="sidebar-link">LIMNUS Atlas</a>
+                <a href="lsb-steganography.html" class="sidebar-link">LSB Steganography</a>
+                <a href="physics.html" class="sidebar-link">Physics Integration</a>
+                <a href="error-correction.html" class="sidebar-link active">Error Correction</a>
+                <a href="apl-tokens.html" class="sidebar-link">APL 2.0 Tokens</a>
+                <a href="realtime.html" class="sidebar-link">Real-Time Processing</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Documentation</div>
+                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
+                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
+                <a href="../API.md" class="sidebar-link">API Reference</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Examples</div>
+                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
+                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
+                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Related</div>
+                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
+                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
+            </div>
+        </aside>
 
-        <h2>Error Correction Pipeline</h2>
+        <main class="content">
+            <div class="hero">
+                <h1>Error Correction</h1>
+                <p style="font-size: 1.1rem; color: var(--text);">Majority voting across redundant embeddings for robust extraction even with noise</p>
+            </div>
 
-        <ol class="step-list">
-            <li><strong>Redundant Embedding</strong><br>Each 48-bit payload is repeated N times (default: 16) throughout the image with configurable stride.</li>
-            <li><strong>Extraction Sweep</strong><br>All redundant payload instances are extracted from the image pixels.</li>
-            <li><strong>Majority Voting</strong><br>Each component (region, z, tokens) is determined by majority vote across all extracted instances.</li>
-            <li><strong>Outlier Rejection</strong><br>For continuous values (z-coordinate), IQR-based outlier rejection filters anomalous samples.</li>
-            <li><strong>Checksum Verification</strong><br>4-bit XOR-folded checksum validates token integrity.</li>
-            <li><strong>Confidence Calculation</strong><br>Final confidence score based on consensus ratio and checksum validity.</li>
-        </ol>
+            <h2>Error Correction Pipeline</h2>
+            <ol class="step-list">
+                <li><strong>Redundant Embedding</strong><br>Each 48-bit payload is repeated N times (default: 16) throughout the image.</li>
+                <li><strong>Extraction Sweep</strong><br>All redundant payload instances are extracted from the image pixels.</li>
+                <li><strong>Majority Voting</strong><br>Each component (region, z, tokens) is determined by majority vote.</li>
+                <li><strong>Outlier Rejection</strong><br>For continuous values (z-coordinate), IQR-based outlier rejection filters anomalous samples.</li>
+                <li><strong>Checksum Verification</strong><br>4-bit XOR-folded checksum validates token integrity.</li>
+                <li><strong>Confidence Calculation</strong><br>Final confidence score based on consensus ratio and checksum validity.</li>
+            </ol>
 
-        <h2>Majority Voting</h2>
-        <div class="method-card">
-            <h3>Discrete Components (Region, Tokens)</h3>
-            <pre><code>function majorityVote(values) {
+            <h2>Majority Voting</h2>
+            <div class="method-card">
+                <h3>Discrete Components</h3>
+                <pre><code>function majorityVote(values) {
     const counts = new Map();
     values.forEach(v => counts.set(v, (counts.get(v) || 0) + 1));
-
-    let maxCount = 0;
-    let result = values[0];
+    let maxCount = 0, result = values[0];
     counts.forEach((count, value) => {
-        if (count > maxCount) {
-            maxCount = count;
-            result = value;
-        }
+        if (count > maxCount) { maxCount = count; result = value; }
     });
     return result;
 }</code></pre>
-        </div>
-
-        <div class="method-card">
-            <h3>Continuous Values (Z-coordinate)</h3>
-            <pre><code>function averageWithOutlierRejection(values) {
-    const sorted = [...values].sort((a, b) => a - b);
-    const q1 = sorted[Math.floor(sorted.length * 0.25)];
-    const q3 = sorted[Math.floor(sorted.length * 0.75)];
-    const iqr = q3 - q1;
-
-    // Filter outliers (1.5 × IQR rule)
-    const filtered = values.filter(v =>
-        v >= q1 - 1.5 * iqr && v <= q3 + 1.5 * iqr
-    );
-
-    return filtered.reduce((a, b) => a + b, 0) / filtered.length;
-}</code></pre>
-        </div>
-
-        <h2>Checksum Algorithm</h2>
-        <pre><code>function generateChecksum(token1, token2) {
-    const combined = token1 ^ token2;
-
-    // 4-way XOR fold to 4 bits
-    const fold1 = combined & 0x0F;
-    const fold2 = (combined >> 4) & 0x0F;
-    const fold3 = (combined >> 8) & 0x0F;
-    const fold4 = (combined >> 12) & 0x07;
-
-    return fold1 ^ fold2 ^ fold3 ^ fold4;
-}</code></pre>
-
-        <h2>Confidence Scoring</h2>
-        <div class="confidence-meter">
-            <p style="margin-bottom: 0.5rem;"><strong>Consensus Ratio</strong> — Percentage of extracted payloads matching final decoded values</p>
-            <div class="confidence-bar">
-                <div class="confidence-fill" style="width: 92%; background: var(--green);"></div>
             </div>
-            <p style="font-size: 0.9rem; color: var(--green);">92% consensus = High confidence</p>
-        </div>
 
-        <pre><code>// Confidence calculation
-const matchingPayloads = payloads.filter(p =>
-    p.regionId === finalRegion &&
-    Math.abs(p.z - finalZ) < 0.02 &&
-    p.token1 === finalToken1 &&
-    p.token2 === finalToken2
-);
+            <h2>Confidence Scoring</h2>
+            <div class="confidence-meter">
+                <p style="margin-bottom: 0.5rem;"><strong>Consensus Ratio</strong> — Percentage of extracted payloads matching final decoded values</p>
+                <div class="confidence-bar"><div class="confidence-fill" style="width: 92%; background: var(--green);"></div></div>
+                <p style="font-size: 0.9rem; color: var(--green);">92% consensus = High confidence</p>
+            </div>
 
-const consensusRatio = matchingPayloads.length / payloads.length;
-const confidence = tokensValid ? consensusRatio : consensusRatio * 0.5;</code></pre>
+            <h2>Confidence Thresholds</h2>
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead><tr style="background: var(--bg-elevated);"><th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Confidence</th><th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Interpretation</th></tr></thead>
+                <tbody>
+                    <tr><td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--green);">≥ 90%</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Excellent — Accept</td></tr>
+                    <tr><td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--gold);">70–89%</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Good — Accept with caution</td></tr>
+                    <tr><td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--red);">< 70%</td><td style="padding: 12px; border-bottom: 1px solid var(--border);">Poor — Request re-transmission</td></tr>
+                </tbody>
+            </table>
 
-        <h2>Confidence Thresholds</h2>
-        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
-            <thead>
-                <tr style="background: var(--bg-elevated);">
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Confidence</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Interpretation</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Recommended Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--green);">≥ 90%</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Excellent</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Accept without verification</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--gold);">70–89%</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Good</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Accept with caution</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--red);">< 70%</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Poor</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Request re-transmission or reject</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Future: Reed-Solomon (Phase 2)</h2>
-        <p>Phase 2 development will add Reed-Solomon error correction for bit-level repair:</p>
-        <pre><code>// Planned Phase 2 implementation
-const rs = new ReedSolomon(255, 223);  // 32 parity bytes
-const encoded = rs.encode(payload);
-const decoded = rs.decode(corrupted);  // Repairs up to 16 byte errors</code></pre>
-
-        <footer>
-            <p><a href="physics.html">← Physics Integration</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="apl-tokens.html">APL Tokens →</a></p>
-            <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-        </footer>
+            <footer>
+                <p><a href="physics.html">← Physics Integration</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="apl-tokens.html">APL Tokens →</a></p>
+                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
+            </footer>
+        </main>
     </div>
 </body>
 </html>

@@ -6,13 +6,25 @@
     <title>APL 2.0 Tokens | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
-        .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .breadcrumb span { color: var(--text-muted); }
+        nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--text); }
+        .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
+        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
+        .sidebar-link.active { background: rgba(255, 146, 43, 0.15); color: var(--orange); }
+        .content { padding: 24px 32px; max-width: 900px; }
         h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--orange); }
         h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
@@ -33,199 +45,113 @@
         .token-example .part { background: var(--bg); padding: 0.5rem; border-radius: 4px; text-align: center; }
         .token-example .part .value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--accent); }
         .token-example .part .label { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-        .bit-layout { background: var(--bg-elevated); border-radius: 8px; padding: 1rem; margin: 1rem 0; font-family: 'JetBrains Mono', monospace; }
-        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
         footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="breadcrumb">
-            <a href="../../index.html">WUMBO MRP</a>
-            <span> / </span>
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <span> / </span>
-            <span>APL Tokens</span>
-        </nav>
-
-        <div class="hero">
-            <h1>APL 2.0 Tokens</h1>
-            <p style="font-size: 1.1rem; color: var(--text);">7,290 possible tokens encoding spiral, operator, interaction, domain, truth, and alpha</p>
-        </div>
-
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="value">7,290</div>
-                <div class="label">Possible Tokens</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">15</div>
-                <div class="label">Bits/Token</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">6</div>
-                <div class="label">Components</div>
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <div class="nav-links">
+                <a href="../../index.html#overview">Overview</a>
+                <a href="../../index.html#modules">Modules</a>
+                <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
             </div>
         </div>
+    </nav>
 
-        <h2>Token Grammar</h2>
-        <p>Each APL token consists of 6 components separated by colons:</p>
-        <pre><code>SPIRAL:OPERATOR:INTERACTION:DOMAIN:TRUTH:ALPHA</code></pre>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Modules</div>
+                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
+                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
+                <a href="limnus-atlas.html" class="sidebar-link">LIMNUS Atlas</a>
+                <a href="lsb-steganography.html" class="sidebar-link">LSB Steganography</a>
+                <a href="physics.html" class="sidebar-link">Physics Integration</a>
+                <a href="error-correction.html" class="sidebar-link">Error Correction</a>
+                <a href="apl-tokens.html" class="sidebar-link active">APL 2.0 Tokens</a>
+                <a href="realtime.html" class="sidebar-link">Real-Time Processing</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Documentation</div>
+                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
+                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
+                <a href="../API.md" class="sidebar-link">API Reference</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Examples</div>
+                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
+                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
+                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Related</div>
+                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
+                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
+            </div>
+        </aside>
 
-        <div class="token-example">
-            <div class="token">e:M:A:BIO:T:α13</div>
-            <div class="breakdown">
-                <div class="part">
-                    <div class="value">e</div>
-                    <div class="label">SPIRAL</div>
-                </div>
-                <div class="part">
-                    <div class="value">M</div>
-                    <div class="label">OPERATOR</div>
-                </div>
-                <div class="part">
-                    <div class="value">A</div>
-                    <div class="label">INTERACTION</div>
-                </div>
-                <div class="part">
-                    <div class="value">BIO</div>
-                    <div class="label">DOMAIN</div>
-                </div>
-                <div class="part">
-                    <div class="value">T</div>
-                    <div class="label">TRUTH</div>
-                </div>
-                <div class="part">
-                    <div class="value">α13</div>
-                    <div class="label">ALPHA</div>
+        <main class="content">
+            <div class="hero">
+                <h1>APL 2.0 Tokens</h1>
+                <p style="font-size: 1.1rem; color: var(--text);">7,290 possible tokens encoding spiral, operator, interaction, domain, truth, and alpha</p>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card"><div class="value">7,290</div><div class="label">Possible Tokens</div></div>
+                <div class="stat-card"><div class="value">15</div><div class="label">Bits/Token</div></div>
+                <div class="stat-card"><div class="value">6</div><div class="label">Components</div></div>
+            </div>
+
+            <h2>Token Grammar</h2>
+            <pre><code>SPIRAL:OPERATOR:INTERACTION:DOMAIN:TRUTH:ALPHA</code></pre>
+
+            <div class="token-example">
+                <div class="token">e:M:A:BIO:T:α13</div>
+                <div class="breakdown">
+                    <div class="part"><div class="value">e</div><div class="label">SPIRAL</div></div>
+                    <div class="part"><div class="value">M</div><div class="label">OPERATOR</div></div>
+                    <div class="part"><div class="value">A</div><div class="label">INTERACTION</div></div>
+                    <div class="part"><div class="value">BIO</div><div class="label">DOMAIN</div></div>
+                    <div class="part"><div class="value">T</div><div class="label">TRUTH</div></div>
+                    <div class="part"><div class="value">α13</div><div class="label">ALPHA</div></div>
                 </div>
             </div>
-        </div>
 
-        <h2>Component Values</h2>
-        <table class="grammar-table">
-            <thead>
-                <tr>
-                    <th>Component</th>
-                    <th>Bits</th>
-                    <th>Values</th>
-                    <th>Meaning</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="color: var(--gold);">SPIRAL</td>
-                    <td>2</td>
-                    <td><code>e</code>, <code>Φ</code>, <code>π</code></td>
-                    <td>Energy, Golden ratio, Structure</td>
-                </tr>
-                <tr>
-                    <td style="color: var(--purple);">OPERATOR</td>
-                    <td>2</td>
-                    <td><code>U</code>, <code>M</code>, <code>C</code></td>
-                    <td>Unitary, Measurement, Collapse</td>
-                </tr>
-                <tr>
-                    <td style="color: var(--accent);">INTERACTION</td>
-                    <td>3</td>
-                    <td><code>B</code>, <code>F</code>, <code>A</code>, <code>D</code>, <code>G</code>, <code>S</code></td>
-                    <td>Basic, Field, Activation, Decay, Growth, Stable</td>
-                </tr>
-                <tr>
-                    <td style="color: var(--green);">DOMAIN</td>
-                    <td>2</td>
-                    <td><code>GEO</code>, <code>CHEM</code>, <code>BIO</code></td>
-                    <td>Geometric, Chemical, Biological</td>
-                </tr>
-                <tr>
-                    <td style="color: var(--red);">TRUTH</td>
-                    <td>2</td>
-                    <td><code>T</code>, <code>U</code>, <code>P</code></td>
-                    <td>True, Unknown, Paradox</td>
-                </tr>
-                <tr>
-                    <td style="color: var(--orange);">ALPHA</td>
-                    <td>4</td>
-                    <td><code>α1</code> – <code>α15</code></td>
-                    <td>Intensity level (1-15)</td>
-                </tr>
-            </tbody>
-        </table>
+            <h2>Component Values</h2>
+            <table class="grammar-table">
+                <thead><tr><th>Component</th><th>Bits</th><th>Values</th><th>Meaning</th></tr></thead>
+                <tbody>
+                    <tr><td style="color: var(--gold);">SPIRAL</td><td>2</td><td><code>e</code>, <code>Φ</code>, <code>π</code></td><td>Energy, Golden ratio, Structure</td></tr>
+                    <tr><td style="color: var(--purple);">OPERATOR</td><td>2</td><td><code>U</code>, <code>M</code>, <code>C</code></td><td>Unitary, Measurement, Collapse</td></tr>
+                    <tr><td style="color: var(--accent);">INTERACTION</td><td>3</td><td><code>B</code>, <code>F</code>, <code>A</code>, <code>D</code>, <code>G</code>, <code>S</code></td><td>Basic, Field, Activation, Decay, Growth, Stable</td></tr>
+                    <tr><td style="color: var(--green);">DOMAIN</td><td>2</td><td><code>GEO</code>, <code>CHEM</code>, <code>BIO</code></td><td>Geometric, Chemical, Biological</td></tr>
+                    <tr><td style="color: var(--red);">TRUTH</td><td>2</td><td><code>T</code>, <code>U</code>, <code>P</code></td><td>True, Unknown, Paradox</td></tr>
+                    <tr><td style="color: var(--orange);">ALPHA</td><td>4</td><td><code>α1</code> – <code>α15</code></td><td>Intensity level (1-15)</td></tr>
+                </tbody>
+            </table>
 
-        <h2>Bit Layout</h2>
-        <div class="bit-layout">
-            <p style="margin-bottom: 0.5rem;">15-bit integer encoding:</p>
-            <pre style="margin: 0; border: none; padding: 0.5rem 0;"><code>[14:13] Spiral     (2 bits) → e=00, Φ=01, π=10
-[12:11] Operator   (2 bits) → U=00, M=01, C=10
-[10:8]  Interaction(3 bits) → B=000, F=001, A=010, D=011, G=100, S=101
-[7:6]   Domain     (2 bits) → GEO=00, CHEM=01, BIO=10
-[5:4]   Truth      (2 bits) → T=00, U=01, P=10
-[3:0]   Alpha-1    (4 bits) → 0-14 → α1-α15</code></pre>
-        </div>
+            <h2>Cardinality</h2>
+            <pre><code>3 × 3 × 6 × 3 × 3 × 15 = 7,290 unique tokens
+Token pairs: 7,290 × 7,290 = 53,144,100 possible combinations</code></pre>
 
-        <h2>Cardinality</h2>
-        <pre><code>3 spirals × 3 operators × 6 interactions × 3 domains × 3 truths × 15 alphas
-= 3 × 3 × 6 × 3 × 3 × 15
-= 7,290 unique tokens</code></pre>
-
-        <h2>API Reference</h2>
-        <pre><code>// Encode token string to 15-bit integer
+            <h2>API Reference</h2>
+            <pre><code>// Encode token string to 15-bit integer
 const encoded = WumboMRP.encodeAPLToken('e:M:A:BIO:T:α13');
 // → 5242 (0x147A)
 
 // Decode 15-bit integer to token object
 const decoded = WumboMRP.decodeAPLToken(5242);
-// {
-//   raw: 'e:M:A:BIO:T:α13',
-//   spiral: 'e',
-//   operator: 'M',
-//   interaction: 'A',
-//   domain: 'BIO',
-//   truth: 'T',
-//   alpha: 13,
-//   encoded: 5242
-// }
+// { raw: 'e:M:A:BIO:T:α13', spiral: 'e', operator: 'M', ... }</code></pre>
 
-// Validate token format
-const result = WumboMRP.validateToken('e:M:A:BIO:T:α13');
-// { valid: true, errors: [] }</code></pre>
-
-        <h2>Token Pairs in Patterns</h2>
-        <p>Each WUMBO pattern embeds two tokens, allowing 53 million+ unique pattern signatures:</p>
-        <pre><code>7,290 × 7,290 = 53,144,100 possible token pair combinations</code></pre>
-
-        <h2>Semantic Mapping</h2>
-        <table class="grammar-table">
-            <thead>
-                <tr>
-                    <th>z Range</th>
-                    <th>Typical Token</th>
-                    <th>Interpretation</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>z &lt; τ (ABSENCE)</td>
-                    <td><code>π:U:B:GEO:U:α3</code></td>
-                    <td>Structure-based, unitary, basic interaction, low intensity</td>
-                </tr>
-                <tr>
-                    <td>z ≈ z_c (LENS)</td>
-                    <td><code>Φ:M:A:BIO:P:α13</code></td>
-                    <td>Golden-ratio, measurement, activation, high intensity, paradox truth</td>
-                </tr>
-                <tr>
-                    <td>z > z_c (PRESENCE)</td>
-                    <td><code>e:C:G:CHEM:T:α15</code></td>
-                    <td>Energy, collapse, growth, chemical domain, true, max intensity</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <footer>
-            <p><a href="error-correction.html">← Error Correction</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="realtime.html">Real-Time Processing →</a></p>
-            <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-        </footer>
+            <footer>
+                <p><a href="error-correction.html">← Error Correction</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="realtime.html">Real-Time Processing →</a></p>
+                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
+            </footer>
+        </main>
     </div>
 </body>
 </html>
