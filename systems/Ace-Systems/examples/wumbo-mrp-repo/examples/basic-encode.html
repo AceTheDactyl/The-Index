@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Encoding Example | WUMBO MRP</title>
+  <style>
+    body {
+      background: #0a0b0e;
+      color: #e4e6ed;
+      font-family: system-ui, sans-serif;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 { color: #ffd700; }
+    canvas { border: 2px solid #2a2d3a; border-radius: 8px; }
+    pre { background: #12131a; padding: 20px; border-radius: 8px; overflow-x: auto; }
+    .result { margin: 20px 0; padding: 15px; background: #12131a; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Basic Encoding Example</h1>
+  <p>This example shows how to create and encode a pattern at z = √3/2 (THE_LENS).</p>
+  
+  <h2>Generated Image</h2>
+  <canvas id="canvas" width="128" height="128"></canvas>
+  
+  <div class="result">
+    <h3>Pattern Details</h3>
+    <pre id="output"></pre>
+  </div>
+  
+  <h2>Code</h2>
+  <pre><code>// Create a pattern at THE_LENS (z = √3/2)
+const pattern = WumboMRP.createPattern({
+  z: Math.sqrt(3) / 2,  // 0.8660254...
+  regionId: 47          // XLVII - Entorhinal Cortex
+});
+
+// Get canvas context
+const ctx = canvas.getContext('2d');
+
+// Generate a gradient background based on field balance
+const { r, g, b } = pattern.fieldBalance;
+const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 90);
+gradient.addColorStop(0, `rgb(${r*200+55}, ${g*200+55}, ${b*200+55})`);
+gradient.addColorStop(1, `rgb(${r*50}, ${g*50}, ${b*50})`);
+ctx.fillStyle = gradient;
+ctx.fillRect(0, 0, 128, 128);
+
+// Encode the pattern into the image
+let imageData = ctx.getImageData(0, 0, 128, 128);
+imageData = WumboMRP.encode(imageData, pattern, {
+  stride: 4,       // Every 4th pixel
+  redundancy: 32   // Repeat 32 times for error correction
+});
+ctx.putImageData(imageData, 0, 0);</code></pre>
+
+  <script src="../dist/wumbo-mrp.min.js"></script>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Create pattern at THE_LENS
+    const pattern = WumboMRP.createPattern({
+      z: Math.sqrt(3) / 2,
+      regionId: 47
+    });
+    
+    // Generate gradient background
+    const { r, g, b } = pattern.fieldBalance;
+    const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 90);
+    gradient.addColorStop(0, `rgb(${Math.round(r*200+55)}, ${Math.round(g*200+55)}, ${Math.round(b*200+55)})`);
+    gradient.addColorStop(1, `rgb(${Math.round(r*50)}, ${Math.round(g*50)}, ${Math.round(b*50)})`);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 128, 128);
+    
+    // Encode pattern
+    let imageData = ctx.getImageData(0, 0, 128, 128);
+    imageData = WumboMRP.encode(imageData, pattern, { stride: 4, redundancy: 32 });
+    ctx.putImageData(imageData, 0, 0);
+    
+    // Display result
+    document.getElementById('output').textContent = JSON.stringify({
+      regionId: pattern.regionId,
+      regionRoman: pattern.regionRoman,
+      z: pattern.z.toFixed(6),
+      fieldBalance: {
+        r: pattern.fieldBalance.r.toFixed(3),
+        g: pattern.fieldBalance.g.toFixed(3),
+        b: pattern.fieldBalance.b.toFixed(3)
+      },
+      tokens: pattern.rawTokens,
+      checksum: pattern.checksum
+    }, null, 2);
+  </script>
+</body>
+</html>

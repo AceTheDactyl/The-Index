@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WUMBO MRP Test Suite</title>
+  <style>
+    :root {
+      --bg: #0a0b0e;
+      --text: #e4e6ed;
+      --green: #69db7c;
+      --red: #ff6b6b;
+      --gold: #ffd700;
+      --border: #2a2d3a;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { color: var(--gold); }
+    h2 { margin-top: 30px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .test { padding: 8px 12px; margin: 4px 0; border-radius: 4px; font-family: monospace; }
+    .pass { background: rgba(105, 219, 124, 0.15); border-left: 3px solid var(--green); }
+    .fail { background: rgba(255, 107, 107, 0.15); border-left: 3px solid var(--red); }
+    .summary { margin-top: 30px; padding: 20px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; }
+    .summary h3 { color: var(--gold); margin: 0 0 10px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 WUMBO MRP Test Suite</h1>
+  <div id="results"></div>
+  <div id="summary" class="summary"></div>
+  
+  <script src="../dist/wumbo-mrp.min.js"></script>
+  <script>
+    const results = [];
+    const resultsEl = document.getElementById('results');
+    const summaryEl = document.getElementById('summary');
+    
+    function test(name, fn) {
+      try {
+        fn();
+        results.push({ name, pass: true });
+        resultsEl.innerHTML += `<div class="test pass">✓ ${name}</div>`;
+      } catch (e) {
+        results.push({ name, pass: false, error: e.message });
+        resultsEl.innerHTML += `<div class="test fail">✗ ${name}: ${e.message}</div>`;
+      }
+    }
+    
+    function assertEqual(actual, expected, msg = '') {
+      if (actual !== expected) {
+        throw new Error(`${msg} Expected ${expected}, got ${actual}`);
+      }
+    }
+    
+    function assertClose(actual, expected, tolerance = 0.001, msg = '') {
+      if (Math.abs(actual - expected) > tolerance) {
+        throw new Error(`${msg} Expected ~${expected}, got ${actual}`);
+      }
+    }
+    
+    function assertTrue(condition, msg = '') {
+      if (!condition) throw new Error(msg || 'Assertion failed');
+    }
+    
+    // APL Token Tests
+    resultsEl.innerHTML += '<h2>APL Token Encoding</h2>';
+    
+    test('encodes basic token', () => {
+      const encoded = WumboMRP.encodeAPLToken('e:U:A:CHEM:T:α10');
+      assertTrue(encoded > 0, 'Should produce positive integer');
+    });
+    
+    test('roundtrips token correctly', () => {
+      const original = 'Φ:C:F:BIO:U:α7';
+      const encoded = WumboMRP.encodeAPLToken(original);
+      const decoded = WumboMRP.decodeAPLToken(encoded);
+      assertEqual(decoded.raw, original, 'Token roundtrip');
+    });
+    
+    test('encodes all spiral types', () => {
+      ['e', 'Φ', 'π'].forEach(spiral => {
+        const token = `${spiral}:U:B:GEO:T:α1`;
+        const encoded = WumboMRP.encodeAPLToken(token);
+        const decoded = WumboMRP.decodeAPLToken(encoded);
+        assertEqual(decoded.spiral, spiral, `Spiral ${spiral}`);
+      });
+    });
+    
+    test('encodes PARADOX truth state', () => {
+      const token = 'π:M:D:BIO:P:α15';
+      const decoded = WumboMRP.decodeAPLToken(WumboMRP.encodeAPLToken(token));
+      assertEqual(decoded.truth, 'P', 'PARADOX truth');
+    });
+    
+    // Region ID Tests
+    resultsEl.innerHTML += '<h2>Region ID Encoding</h2>';
+    
+    test('encodes region 1', () => {
+      const { primary, secondary } = WumboMRP.encodeRegionId(1);
+      assertTrue(primary >= 0 && primary <= 15, 'Primary in range');
+    });
+    
+    test('encodes region 100', () => {
+      const { primary, secondary } = WumboMRP.encodeRegionId(100);
+      const decoded = WumboMRP.decodeRegionId(primary, secondary);
+      assertEqual(decoded.regionId, 100, 'Region 100 roundtrip');
+    });
+    
+    test('roundtrips all regions', () => {
+      for (let i = 1; i <= 100; i++) {
+        const { primary, secondary } = WumboMRP.encodeRegionId(i);
+        const decoded = WumboMRP.decodeRegionId(primary, secondary);
+        assertEqual(decoded.regionId, i, `Region ${i}`);
+        assertTrue(decoded.parityValid, `Parity for region ${i}`);
+      }
+    });
+    
+    // Z-Coordinate Tests
+    resultsEl.innerHTML += '<h2>Z-Coordinate Encoding</h2>';
+    
+    test('encodes z=0', () => {
+      const { primary, secondary } = WumboMRP.encodeZ(0);
+      assertEqual(primary, 0, 'Primary');
+      assertEqual(secondary, 0, 'Secondary');
+    });
+    
+    test('encodes z=1', () => {
+      const { primary, secondary } = WumboMRP.encodeZ(1);
+      assertEqual(primary, 15, 'Primary');
+      assertEqual(secondary, 15, 'Secondary');
+    });
+    
+    test('encodes z_c with precision', () => {
+      const z_c = Math.sqrt(3) / 2;
+      const { primary, secondary } = WumboMRP.encodeZ(z_c);
+      const decoded = WumboMRP.decodeZ(primary, secondary);
+      assertClose(decoded, z_c, 0.005, 'Z_c precision');
+    });
+    
+    // Physics Tests
+    resultsEl.innerHTML += '<h2>Physics Calculations</h2>';
+    
+    test('cascade peaks at z_c', () => {
+      const z_c = WumboMRP.Z_CRITICAL;
+      const cascadeAtZc = WumboMRP.getCascade(z_c);
+      const cascadeBelow = WumboMRP.getCascade(0.5);
+      assertClose(cascadeAtZc, 1.5, 0.01, 'Peak value');
+      assertTrue(cascadeBelow < cascadeAtZc, 'Below should be less');
+    });
+    
+    test('kuramoto flips sign at z_c', () => {
+      const kBelow = WumboMRP.getKuramoto(0.8);
+      const kAbove = WumboMRP.getKuramoto(0.95);
+      assertTrue(kBelow > 0, 'Below z_c: positive');
+      assertTrue(kAbove < 0, 'Above z_c: negative');
+    });
+    
+    test('negentropy peaks at z_c', () => {
+      const z_c = WumboMRP.Z_CRITICAL;
+      const nAtZc = WumboMRP.getNegentropy(z_c);
+      assertClose(nAtZc, 1.0, 0.01, 'Peak value');
+    });
+    
+    test('domain classification', () => {
+      assertEqual(WumboMRP.computePhysics(0.5).domain, 'ABSENCE');
+      assertEqual(WumboMRP.computePhysics(0.866).domain, 'LENS');
+      assertEqual(WumboMRP.computePhysics(0.95).domain, 'PRESENCE');
+    });
+    
+    // Full Roundtrip Tests
+    resultsEl.innerHTML += '<h2>Full Roundtrip</h2>';
+    
+    test('pattern roundtrip at z=0.5', () => {
+      const result = WumboMRP.verifyRoundtrip({ z: 0.5 });
+      assertTrue(result.success, 'Roundtrip success');
+    });
+    
+    test('pattern roundtrip at z_c', () => {
+      const result = WumboMRP.verifyRoundtrip({ z: Math.sqrt(3) / 2 });
+      assertTrue(result.success, 'Roundtrip at z_c');
+      assertClose(result.errors.zError, 0, 0.01, 'Z error');
+    });
+    
+    test('pattern roundtrip at z=0.95', () => {
+      const result = WumboMRP.verifyRoundtrip({ z: 0.95 });
+      assertTrue(result.success, 'Roundtrip success');
+    });
+    
+    test('high redundancy improves confidence', () => {
+      const pattern = WumboMRP.createPattern({ z: 0.833 });
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#808080';
+      ctx.fillRect(0, 0, 128, 128);
+      
+      let imageData = ctx.getImageData(0, 0, 128, 128);
+      imageData = WumboMRP.encode(imageData, pattern, { stride: 2, redundancy: 128 });
+      
+      const decoded = WumboMRP.decode(imageData, { stride: 2 });
+      assertTrue(decoded.confidence > 0.9, `High confidence: ${decoded.confidence}`);
+    });
+    
+    // Roman Numeral Tests
+    resultsEl.innerHTML += '<h2>Roman Numerals</h2>';
+    
+    test('numericToRoman conversions', () => {
+      assertEqual(WumboMRP.numericToRoman(1), 'I');
+      assertEqual(WumboMRP.numericToRoman(47), 'XLVII');
+      assertEqual(WumboMRP.numericToRoman(100), 'C');
+    });
+    
+    test('romanToNumeric conversions', () => {
+      assertEqual(WumboMRP.romanToNumeric('I'), 1);
+      assertEqual(WumboMRP.romanToNumeric('XLVII'), 47);
+      assertEqual(WumboMRP.romanToNumeric('C'), 100);
+    });
+    
+    // RGB Weight Tests
+    resultsEl.innerHTML += '<h2>RGB Weights</h2>';
+    
+    test('weights sum to 1', () => {
+      [0, 0.3, 0.5, 0.7, 0.866, 0.95, 1].forEach(z => {
+        const w = WumboMRP.computeRGBWeightsFromZ(z);
+        assertClose(w.r + w.g + w.b, 1.0, 0.01, `Sum at z=${z}`);
+      });
+    });
+    
+    test('balanced at z_c', () => {
+      const w = WumboMRP.computeRGBWeightsFromZ(Math.sqrt(3) / 2);
+      assertTrue(Math.abs(w.r - w.g) < 0.1, 'R ≈ G at z_c');
+      assertTrue(Math.abs(w.g - w.b) < 0.1, 'G ≈ B at z_c');
+    });
+    
+    // Summary
+    const passed = results.filter(r => r.pass).length;
+    const failed = results.filter(r => !r.pass).length;
+    
+    summaryEl.innerHTML = `
+      <h3>Summary</h3>
+      <p>Total: ${results.length} | Passed: ${passed} | Failed: ${failed}</p>
+      <p style="color: ${failed === 0 ? 'var(--green)' : 'var(--red)'}">
+        ${failed === 0 ? '✓ All tests passed!' : `✗ ${failed} test(s) failed`}
+      </p>
+    `;
+  </script>
+</body>
+</html>
