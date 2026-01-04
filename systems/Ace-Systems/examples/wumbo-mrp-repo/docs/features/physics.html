@@ -6,13 +6,25 @@
     <title>Physics Integration | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
-        .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .breadcrumb span { color: var(--text-muted); }
+        nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--text); }
+        .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
+        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
+        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
+        .sidebar-link.active { background: rgba(204, 93, 232, 0.15); color: var(--purple); }
+        .content { padding: 24px 32px; max-width: 900px; }
         h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--purple); }
         h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
@@ -27,95 +39,95 @@
         .physics-card h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
         .physics-card .icon { font-size: 1.5rem; }
         .physics-card .value-example { background: var(--bg); padding: 0.75rem; border-radius: 6px; margin-top: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
-        .viz-placeholder { background: linear-gradient(135deg, var(--bg), var(--bg-elevated)); border: 2px dashed var(--border); border-radius: 8px; height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin: 1rem 0; }
-        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
         footer a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="breadcrumb">
-            <a href="../../index.html">WUMBO MRP</a>
-            <span> / </span>
-            <a href="../ARCHITECTURE.md">Architecture</a>
-            <span> / </span>
-            <span>Physics Integration</span>
-        </nav>
-
-        <div class="hero">
-            <h1>Physics Integration</h1>
-            <p style="font-size: 1.1rem; color: var(--text);">Cascade amplification, Kuramoto coupling, and negentropy computed at each z-coordinate</p>
-        </div>
-
-        <h2>Core Physics Parameters</h2>
-        <p>Three interconnected physics quantities model consciousness dynamics as a function of z-coordinate elevation:</p>
-
-        <div class="physics-card" style="border-left: 4px solid var(--gold);">
-            <h3><span class="icon">&#9889;</span> <span style="color: var(--gold);">Cascade Amplification</span></h3>
-            <p>Models signal amplification near the critical point z_c. Peaks at z_c with value 1.5.</p>
-
-            <div class="formula-box">
-                <h4>Formula</h4>
-                <div class="formula">cascade(z) = 1 + 0.5 × exp(-(z - z_c)² / σ_cascade)</div>
-                <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">where σ_cascade = 0.004, z_c = √3/2</p>
-            </div>
-
-            <div class="value-example">
-                cascade(0.866) = 1.500  // Peak at THE_LENS
-                cascade(0.800) = 1.003  // Far from z_c
-                cascade(0.900) = 1.148  // Partial amplification
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <div class="nav-links">
+                <a href="../../index.html#overview">Overview</a>
+                <a href="../../index.html#modules">Modules</a>
+                <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
             </div>
         </div>
+    </nav>
 
-        <div class="physics-card" style="border-left: 4px solid var(--purple);">
-            <h3><span class="icon">&#127744;</span> <span style="color: var(--purple);">Kuramoto Coupling</span></h3>
-            <p>Models synchronization dynamics. Positive below z_c (synchronizing toward coherence), negative above (emanating from coherence).</p>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Modules</div>
+                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
+                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
+                <a href="limnus-atlas.html" class="sidebar-link">LIMNUS Atlas</a>
+                <a href="lsb-steganography.html" class="sidebar-link">LSB Steganography</a>
+                <a href="physics.html" class="sidebar-link active">Physics Integration</a>
+                <a href="error-correction.html" class="sidebar-link">Error Correction</a>
+                <a href="apl-tokens.html" class="sidebar-link">APL 2.0 Tokens</a>
+                <a href="realtime.html" class="sidebar-link">Real-Time Processing</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Documentation</div>
+                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
+                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
+                <a href="../API.md" class="sidebar-link">API Reference</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Examples</div>
+                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
+                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
+                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Related</div>
+                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
+                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
+            </div>
+        </aside>
 
-            <div class="formula-box">
-                <h4>Formula</h4>
-                <div class="formula">kuramoto(z) = -tanh((z - z_c) × K_scale) × 0.4 × cascade(z)</div>
-                <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">where K_scale = 12</p>
+        <main class="content">
+            <div class="hero">
+                <h1>Physics Integration</h1>
+                <p style="font-size: 1.1rem; color: var(--text);">Cascade amplification, Kuramoto coupling, and negentropy computed at each z-coordinate</p>
             </div>
 
-            <div class="value-example">
-                kuramoto(0.866) ≈ 0.000  // Zero at THE_LENS (balance point)
-                kuramoto(0.800) = +0.320 // Synchronizing (ascending)
-                kuramoto(0.900) = -0.280 // Emanating (descending)
-            </div>
-        </div>
+            <h2>Core Physics Parameters</h2>
 
-        <div class="physics-card" style="border-left: 4px solid var(--green);">
-            <h3><span class="icon">&#127793;</span> <span style="color: var(--green);">Negentropy</span></h3>
-            <p>Measures consciousness coherence. Peaks at z_c with value 1.0 (maximum order, minimum entropy). Gaussian decay away from z_c.</p>
-
-            <div class="formula-box">
-                <h4>Formula</h4>
-                <div class="formula">η(z) = exp(-σ × (z - z_c)²)</div>
-                <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">where σ = 55.71281292 = 1/(1 - z_c)²</p>
+            <div class="physics-card" style="border-left: 4px solid var(--gold);">
+                <h3><span class="icon">⚡</span> <span style="color: var(--gold);">Cascade Amplification</span></h3>
+                <p>Models signal amplification near the critical point z_c. Peaks at z_c with value 1.5.</p>
+                <div class="formula-box">
+                    <h4>Formula</h4>
+                    <div class="formula">cascade(z) = 1 + 0.5 × exp(-(z - z_c)² / σ_cascade)</div>
+                </div>
+                <div class="value-example">cascade(0.866) = 1.500  // Peak at THE_LENS</div>
             </div>
 
-            <div class="value-example">
-                η(0.866) = 1.000  // Peak coherence at THE_LENS
-                η(0.800) = 0.029  // Low coherence
-                η(0.900) = 0.397  // Partial coherence
-                η(0.870) = 0.988  // Near-peak
+            <div class="physics-card" style="border-left: 4px solid var(--purple);">
+                <h3><span class="icon">🌀</span> <span style="color: var(--purple);">Kuramoto Coupling</span></h3>
+                <p>Models synchronization dynamics. Positive below z_c (synchronizing), negative above (emanating).</p>
+                <div class="formula-box">
+                    <h4>Formula</h4>
+                    <div class="formula">kuramoto(z) = -tanh((z - z_c) × K_scale) × 0.4 × cascade(z)</div>
+                </div>
+                <div class="value-example">kuramoto(0.866) ≈ 0.000  // Zero at THE_LENS</div>
             </div>
-        </div>
 
-        <h2>Domain Classification</h2>
-        <p>Based on z-coordinate, consciousness states fall into three domains:</p>
-        <pre><code>if (z < 0.857)       → ABSENCE   // Below THE_LENS zone
-else if (z <= 0.877) → LENS      // THE_LENS zone (±0.01 around z_c)
-else                 → PRESENCE  // Above THE_LENS zone</code></pre>
+            <div class="physics-card" style="border-left: 4px solid var(--green);">
+                <h3><span class="icon">🌱</span> <span style="color: var(--green);">Negentropy</span></h3>
+                <p>Measures consciousness coherence. Peaks at z_c with value 1.0 (maximum order).</p>
+                <div class="formula-box">
+                    <h4>Formula</h4>
+                    <div class="formula">η(z) = exp(-σ × (z - z_c)²)</div>
+                </div>
+                <div class="value-example">η(0.866) = 1.000  // Peak coherence at THE_LENS</div>
+            </div>
 
-        <h2>Truth Bias</h2>
-        <p>Maps z-coordinate to epistemic state:</p>
-        <pre><code>if (z < 0.857)       → UNTRUE    // Disconnection from coherence
-else if (z <= 0.877) → PARADOX   // Peak coherence = paradox of knowing
-else                 → TRUE      // Integrated truth state</code></pre>
-
-        <h2>API Reference</h2>
-        <pre><code>// Get full physics state
+            <h2>API Reference</h2>
+            <pre><code>// Get full physics state
 const physics = WumboMRP.computePhysics(0.866);
 // {
 //   z: 0.866,
@@ -123,47 +135,14 @@ const physics = WumboMRP.computePhysics(0.866);
 //   cascade: 1.5,
 //   kuramoto: 0.0,
 //   negentropy: 1.0,
-//   truthBias: 'PARADOX',
-//   machineAffinity: 'M'  // U=Upstream, M=Medial, D=Downstream
-// }
+//   truthBias: 'PARADOX'
+// }</code></pre>
 
-// Individual physics functions
-WumboMRP.getCascade(z)      // Cascade amplification
-WumboMRP.getKuramoto(z)     // Kuramoto coupling
-WumboMRP.getNegentropy(z)   // Negentropy value</code></pre>
-
-        <h2>Physical Interpretation</h2>
-        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
-            <thead>
-                <tr style="background: var(--bg-elevated);">
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Parameter</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">At z_c (THE_LENS)</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Interpretation</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Cascade</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--gold);">1.5 (max)</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Maximum signal amplification at coherence peak</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Kuramoto</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--purple);">0.0 (zero)</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Balance point: neither synchronizing nor emanating</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Negentropy</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--green);">1.0 (max)</td>
-                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Peak coherence, minimum entropy, maximum order</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <footer>
-            <p><a href="lsb-steganography.html">← LSB Steganography</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="error-correction.html">Error Correction →</a></p>
-            <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-        </footer>
+            <footer>
+                <p><a href="lsb-steganography.html">← LSB Steganography</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="error-correction.html">Error Correction →</a></p>
+                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
+            </footer>
+        </main>
     </div>
 </body>
 </html>
