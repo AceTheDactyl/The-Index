@@ -62,43 +62,164 @@
     <main class="content">
         <div class="hero">
             <h1>Error Correction</h1>
-            <p class="subtitle">Majority voting across redundant embeddings for robust extraction even with noise</p>
+            <p class="subtitle">Multi-layer redundancy system combining majority voting, IQR outlier rejection, parity validation, and XOR checksum verification for robust pattern extraction under noise and compression.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 1.5rem 0;">
+            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--green);">16×</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Redundancy</div>
+            </div>
+            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--green);">4-bit</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">XOR Checksum</div>
+            </div>
+            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--green);">1-bit</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Parity Check</div>
+            </div>
+            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center;">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--green);">IQR</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Outlier Filter</div>
+            </div>
         </div>
 
         <h2>Error Correction Pipeline</h2>
         <ol class="step-list">
-            <li><strong>Redundant Embedding</strong><br><span style="color: var(--text-muted);">Each 48-bit payload is repeated N times (default: 16) throughout the image.</span></li>
-            <li><strong>Extraction Sweep</strong><br><span style="color: var(--text-muted);">All redundant payload instances are extracted from the image pixels.</span></li>
-            <li><strong>Majority Voting</strong><br><span style="color: var(--text-muted);">Each component (region, z, tokens) is determined by majority vote.</span></li>
-            <li><strong>Outlier Rejection</strong><br><span style="color: var(--text-muted);">For continuous values, IQR-based outlier rejection filters anomalous samples.</span></li>
-            <li><strong>Checksum Verification</strong><br><span style="color: var(--text-muted);">4-bit XOR-folded checksum validates token integrity.</span></li>
-            <li><strong>Confidence Calculation</strong><br><span style="color: var(--text-muted);">Final confidence score based on consensus ratio and checksum validity.</span></li>
+            <li><strong>Redundant Embedding</strong><br><span style="color: var(--text-muted);">Each 48-bit payload (4 pixels × 12 bits) is repeated 16× throughout the image at configurable stride intervals.</span></li>
+            <li><strong>Extraction Sweep</strong><br><span style="color: var(--text-muted);">All redundant payload instances are extracted from image pixels. Each instance yields: regionId, z, token1, token2, checksum, version.</span></li>
+            <li><strong>Majority Voting</strong><br><span style="color: var(--text-muted);">Discrete values (region ID, tokens, checksum) are determined by frequency-based majority vote across all samples.</span></li>
+            <li><strong>IQR Outlier Rejection</strong><br><span style="color: var(--text-muted);">Continuous values (z-coordinate) use IQR-based filtering: reject samples outside [Q1 - 1.5×IQR, Q3 + 1.5×IQR], then average.</span></li>
+            <li><strong>Parity Validation</strong><br><span style="color: var(--text-muted);">Region ID parity bit (popcount mod 2) validates the 7-bit region encoding.</span></li>
+            <li><strong>Checksum Verification</strong><br><span style="color: var(--text-muted);">4-bit XOR-folded checksum validates token pair integrity: checksum = fold1 ⊕ fold2 ⊕ fold3 ⊕ fold4.</span></li>
+            <li><strong>Confidence Calculation</strong><br><span style="color: var(--text-muted);">Final confidence = consensusRatio × (tokensValid ? 1.0 : 0.5). Measures extraction reliability.</span></li>
         </ol>
+
+        <h2>Region ID Parity Check</h2>
+        <p>The region ID (1-100) is encoded with an error-detecting parity bit:</p>
+        <pre><code>// Encode: add parity bit to 7-bit region ID
+function encodeRegionId(regionId) {
+  const id = regionId - 1;              // 0-indexed (0-99)
+  const primary = id &amp; 0x0F;            // Lower 4 bits → R channel
+  const upper = (id >> 4) &amp; 0x07;       // Upper 3 bits
+  const parity = popcount(id) &amp; 0x01;   // Parity = count of 1-bits mod 2
+  const secondary = (upper &lt;&lt; 1) | parity;  // 3 bits + 1 parity → R channel
+  return { primary, secondary };
+}
+
+// Decode: verify parity matches
+function decodeRegionId(primary, secondary) {
+  const lower = primary &amp; 0x0F;
+  const upper = (secondary >> 1) &amp; 0x07;
+  const id = (upper &lt;&lt; 4) | lower;
+
+  const expectedParity = popcount(id) &amp; 0x01;
+  const actualParity = secondary &amp; 0x01;
+
+  return {
+    regionId: id + 1,
+    parityValid: expectedParity === actualParity  // Error detection!
+  };
+}</code></pre>
+
+        <h2>4-bit XOR Checksum</h2>
+        <p>Token integrity is verified using a folded XOR checksum:</p>
+        <pre><code>// Generate 4-bit checksum from two 15-bit tokens
+function generateChecksum(token1, token2) {
+  const combined = token1 ^ token2;      // XOR the tokens
+
+  // Fold 15 bits into 4 bits
+  const fold1 = combined &amp; 0x0F;         // Bits 0-3
+  const fold2 = (combined >> 4) &amp; 0x0F;  // Bits 4-7
+  const fold3 = (combined >> 8) &amp; 0x0F;  // Bits 8-11
+  const fold4 = (combined >> 12) &amp; 0x07; // Bits 12-14
+
+  return fold1 ^ fold2 ^ fold3 ^ fold4;  // Final 4-bit checksum
+}
+
+// Verification: recompute and compare
+const decoded = extractPattern(imageData);
+const expectedChecksum = generateChecksum(decoded.token1, decoded.token2);
+decoded.tokensValid = (decoded.checksum === expectedChecksum);</code></pre>
+
+        <h2>Majority Voting</h2>
+        <pre><code>// Discrete values: frequency-based majority vote
+function majorityVote(values) {
+  const counts = new Map();
+  values.forEach(v => counts.set(v, (counts.get(v) || 0) + 1));
+
+  let maxCount = 0, result = values[0];
+  counts.forEach((count, value) => {
+    if (count > maxCount) {
+      maxCount = count;
+      result = value;
+    }
+  });
+  return result;
+}
+
+// Applied to: regionId, token1, token2, checksum, version</code></pre>
+
+        <h2>IQR Outlier Rejection</h2>
+        <p>Continuous values (z-coordinate) use statistical filtering:</p>
+        <pre><code>function averageWithOutlierRejection(values) {
+  if (values.length === 0) return 0;
+
+  // Sort and compute quartiles
+  const sorted = [...values].sort((a, b) => a - b);
+  const q1 = sorted[Math.floor(sorted.length * 0.25)];
+  const q3 = sorted[Math.floor(sorted.length * 0.75)];
+  const iqr = q3 - q1;
+
+  // Reject outliers outside [Q1 - 1.5×IQR, Q3 + 1.5×IQR]
+  const filtered = values.filter(v =>
+    v >= q1 - 1.5 * iqr &amp;&amp; v <= q3 + 1.5 * iqr
+  );
+
+  // Average remaining samples
+  if (filtered.length === 0) return values[0];
+  return filtered.reduce((a, b) => a + b, 0) / filtered.length;
+}</code></pre>
+
+        <h2>Consensus Ratio Calculation</h2>
+        <pre><code>// Count how many samples match the final decoded values
+const matchingPayloads = payloads.filter(p =>
+  p.regionId === finalRegionId &amp;&amp;
+  Math.abs(p.z - finalZ) &lt; 0.02 &amp;&amp;      // z tolerance
+  p.token1 === finalToken1 &amp;&amp;
+  p.token2 === finalToken2
+);
+const consensusRatio = matchingPayloads.length / payloads.length;
+
+// Confidence calculation
+const confidence = tokensValid ? consensusRatio : consensusRatio * 0.5;</code></pre>
 
         <h2>Confidence Scoring</h2>
         <div class="confidence-meter">
-            <p style="margin-bottom: 0.5rem;"><strong>Consensus Ratio</strong> — Percentage matching final decoded values</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Consensus Ratio</strong> — Percentage of samples matching final decoded values</p>
             <div class="confidence-bar"><div class="confidence-fill" style="width: 92%; background: var(--green);"></div></div>
-            <p style="font-size: 0.85rem; color: var(--green); margin: 0;">92% consensus = High confidence</p>
+            <p style="font-size: 0.85rem; color: var(--green); margin: 0;">92% consensus × valid checksum = 0.92 confidence</p>
         </div>
 
         <h2>Confidence Thresholds</h2>
-        <ul style="color: var(--text-muted); margin-left: 1.5rem;">
-            <li><span style="color: var(--green);">≥ 90%</span> — Excellent, accept</li>
-            <li><span style="color: var(--gold);">70–89%</span> — Good, accept with caution</li>
-            <li><span style="color: var(--red);">&lt; 70%</span> — Poor, request re-transmission</li>
+        <ul style="color: var(--text-muted); margin-left: 1.5rem; margin-bottom: 1rem;">
+            <li><span style="color: var(--green);">≥ 90%</span> — Excellent, accept without reservation</li>
+            <li><span style="color: var(--gold);">70–89%</span> — Good, accept with monitoring</li>
+            <li><span style="color: var(--orange);">50–69%</span> — Marginal, verify critical fields</li>
+            <li><span style="color: var(--red);">&lt; 50%</span> — Poor, request re-transmission</li>
         </ul>
 
-        <h2>Majority Voting Code</h2>
-        <pre><code>function majorityVote(values) {
-    const counts = new Map();
-    values.forEach(v => counts.set(v, (counts.get(v) || 0) + 1));
-    let maxCount = 0, result = values[0];
-    counts.forEach((count, value) => {
-        if (count > maxCount) { maxCount = count; result = value; }
-    });
-    return result;
-}</code></pre>
+        <h2>API Reference</h2>
+        <pre><code>const decoded = WumboMRP.decode(imageData, { stride: 4 });
+
+// Result includes error correction metrics
+console.log(decoded.regionId);       // 47
+console.log(decoded.z);              // 0.866
+console.log(decoded.tokensValid);    // true (checksum passed)
+console.log(decoded.confidence);     // 0.92
+console.log(decoded.sampleCount);    // 16
+console.log(decoded.consensusRatio); // 0.92
+console.log(decoded.errors);         // [] or ['Checksum mismatch']</code></pre>
 
         <section class="explore-section">
             <h2>Explore More Modules</h2>

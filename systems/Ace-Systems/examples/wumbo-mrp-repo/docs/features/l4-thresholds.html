@@ -19,11 +19,11 @@
             --purple: #cc5de8;
             --red: #ff6b6b;
             --orange: #ff922b;
+            --cyan: #22d3ee;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
 
-        /* Navigation */
         nav.top-nav {
             position: fixed; top: 0; left: 0; right: 0;
             background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px);
@@ -36,35 +36,75 @@
         .nav-links a:hover { color: var(--text); }
         .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
 
-        /* Content */
-        .content { max-width: 900px; margin: 0 auto; padding: 80px 24px 40px; }
+        .content { max-width: 1000px; margin: 0 auto; padding: 80px 24px 40px; }
         h1 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--gold); }
         h2 { font-size: 1.4rem; margin: 2.5rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         h3 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: var(--text); }
         p { margin-bottom: 1rem; color: var(--text-muted); }
-        .badge { display: inline-block; background: var(--green); color: #000; font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 3px; margin-left: 8px; vertical-align: middle; }
 
         .hero { padding: 2rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(255, 215, 0, 0.3); }
         .hero .subtitle { font-size: 1.1rem; color: var(--text); margin-bottom: 1rem; }
-        .formula { font-family: 'JetBrains Mono', monospace; background: var(--bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 3px solid var(--gold); font-size: 0.95rem; }
+        .formula-bar { font-family: 'JetBrains Mono', monospace; background: var(--bg); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 3px solid var(--gold); font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+        .formula-bar span { white-space: nowrap; }
 
-        .threshold-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-        .threshold-table th, .threshold-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-        .threshold-table th { background: var(--bg-elevated); color: var(--gold); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .threshold-table td { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
-        .threshold-table tr:hover { background: var(--bg-hover); }
+        /* Threshold Cards */
+        .threshold-grid { display: grid; gap: 16px; margin: 1.5rem 0; }
+        .threshold-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+        .threshold-card:hover { border-color: var(--accent); }
+        .threshold-card.special {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), var(--bg-elevated));
+            border-color: var(--gold);
+        }
+        .threshold-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+        .threshold-id { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--text-muted); }
+        .threshold-name { font-weight: 700; font-size: 1.1rem; }
+        .threshold-phase { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+        .threshold-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; }
+        .threshold-ritual { font-style: italic; font-size: 0.85rem; padding: 8px 12px; background: var(--bg); border-radius: 6px; border-left: 2px solid var(--purple); margin-top: 8px; }
+        .threshold-meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; text-align: right; min-width: 140px; }
+        .threshold-z { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; }
+        .threshold-formula { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); }
+        .threshold-symmetry { font-size: 0.75rem; color: var(--accent); }
+        .threshold-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+        .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: var(--bg); color: var(--text-muted); }
+        .tag.layer { color: var(--green); border: 1px solid var(--green); background: rgba(105, 219, 124, 0.1); }
+        .tag.irrational { color: var(--purple); border: 1px solid var(--purple); background: rgba(204, 93, 232, 0.1); }
+
+        /* RGB Tiers Section */
+        .tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 1.5rem 0; }
+        .tier-card { background: var(--bg-elevated); border-radius: 10px; padding: 1.25rem; }
+        .tier-card.planet { border-left: 4px solid var(--red); }
+        .tier-card.garden { border-left: 4px solid var(--green); }
+        .tier-card.rose { border-left: 4px solid var(--accent); }
+        .tier-card h4 { margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .tier-card .freq { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); }
+        .tier-card .range { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 8px; padding: 6px 10px; background: var(--bg); border-radius: 4px; }
+
+        /* Neural Correlates */
+        .neural-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin: 1rem 0; }
+        .neural-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+        .neural-card h5 { color: var(--accent); margin-bottom: 6px; font-size: 0.9rem; }
+        .neural-item { font-size: 0.8rem; color: var(--text-muted); padding: 4px 0; border-bottom: 1px solid var(--border); }
+        .neural-item:last-child { border-bottom: none; }
+        .neural-item strong { color: var(--green); }
 
         code { font-family: 'JetBrains Mono', monospace; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
         pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); }
         pre code { background: none; padding: 0; }
 
-        .use-case { background: var(--bg-elevated); border-radius: 8px; padding: 1rem; margin: 0.75rem 0; border-left: 3px solid var(--purple); }
-        .use-case h4 { color: var(--purple); margin-bottom: 0.5rem; font-size: 1rem; }
         .api-method { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
         .api-method .name { font-family: 'JetBrains Mono', monospace; color: var(--green); font-size: 1rem; }
         .api-method .desc { color: var(--text-muted); margin: 0.5rem 0; }
 
-        /* Explore Section */
         .explore-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
         .explore-section h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
         .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
@@ -81,7 +121,6 @@
 
         footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.85rem; }
         footer a { color: var(--accent); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
         .footer-sig { font-family: 'JetBrains Mono', monospace; color: var(--gold); margin-top: 1rem; font-size: 0.8rem; }
     </style>
 </head>
@@ -103,68 +142,317 @@
 
     <main class="content">
         <div class="hero">
-            <h1>L₄ Threshold Framework <span class="badge">NEW</span></h1>
+            <h1>L₄ Threshold Framework</h1>
             <p class="subtitle">9 mathematical thresholds derived from the Lucas-4 identity: L₄ = φ⁴ + φ⁻⁴ = 7</p>
-            <div class="formula">
-                L₄ = φ⁴ + φ⁻⁴ = 7 &nbsp;&nbsp;|&nbsp;&nbsp; z_c = √3/2 = 0.8660254038 &nbsp;&nbsp;|&nbsp;&nbsp; K = √(1 - φ⁻⁴) = 0.9241763718
+            <div class="formula-bar">
+                <span>φ = 1.6180339887</span>
+                <span>τ = φ⁻¹ = 0.6180339887</span>
+                <span>z_c = √3/2 = 0.8660254038</span>
+                <span>K = √(1 - φ⁻⁴) = 0.9241763718</span>
             </div>
         </div>
 
         <h2>Overview</h2>
         <p>The L₄ Threshold Framework provides a mathematically rigorous structure for quantizing consciousness states. Based on the golden ratio φ and its inverse τ, these 9 thresholds define critical phase boundaries in the consciousness coherence spectrum.</p>
-        <p><strong>Core Discovery:</strong> THE_LENS (z = √3/2) = NIRVANA. This threshold corresponds to peak negentropy and represents the optimal consciousness coherence state.</p>
+        <p><strong>Core Discovery:</strong> THE_LENS (z = √3/2) = NIRVANA. This threshold corresponds to peak negentropy (η = 1.0) and represents the optimal consciousness coherence state where the Claustrum, Default Mode Network, and Precuneus achieve maximum synchronization.</p>
+        <p><strong>Isomorphism:</strong> The Wumbo phases and L₄ thresholds are isomorphic structures—one emergent from lived neurodivergent experience, one derived from pure mathematics. They describe the same phase transitions from orthogonal vantage points.</p>
 
         <h2>The 9 Thresholds</h2>
-        <table class="threshold-table">
-            <thead>
-                <tr><th>Threshold</th><th>Formula</th><th>Value</th><th>Phase</th><th>Layer</th></tr>
-            </thead>
-            <tbody>
-                <tr><td style="color: var(--red);">PARADOX</td><td>τ = (√5 - 1) / 2</td><td>0.6180339887</td><td>PAUSE</td><td>L1</td></tr>
-                <tr><td style="color: var(--accent);">ACTIVATION</td><td>K² = 1 - φ⁻⁴</td><td>0.8541019662</td><td>PRE_IGNITION</td><td>L1.5</td></tr>
-                <tr><td style="color: var(--gold);">THE_LENS</td><td>z_c = √3 / 2</td><td>0.8660254038</td><td>NIRVANA</td><td>L5</td></tr>
-                <tr><td style="color: var(--purple);">CRITICAL</td><td>φ² / 3</td><td>0.8729833462</td><td>RESONANCE_CHECK</td><td>L2</td></tr>
-                <tr><td style="color: var(--accent);">IGNITION</td><td>√2 - ½</td><td>0.9142135624</td><td>IGNITION</td><td>L3</td></tr>
-                <tr><td style="color: var(--green);">K_FORMATION</td><td>K = √(1 - φ⁻⁴)</td><td>0.9241763718</td><td>EMPOWERMENT</td><td>L4</td></tr>
-                <tr><td style="color: var(--accent);">CONSOLIDATION</td><td>K + τ²(1-K)</td><td>0.9528030024</td><td>RESONANCE</td><td>L5</td></tr>
-                <tr><td style="color: var(--red);">RESONANCE</td><td>K + τ(1-K)</td><td>0.9712341178</td><td>MANIA</td><td>L6</td></tr>
-                <tr><td style="color: var(--gold);">UNITY</td><td>lim z→1</td><td>1.0000000000</td><td>TRANSMISSION</td><td>L7</td></tr>
-            </tbody>
-        </table>
+        <div class="threshold-grid">
+            <!-- PARADOX -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x01</span>
+                        <span class="threshold-name" style="color: var(--red);">PARADOX</span>
+                        <span class="threshold-phase" style="background: rgba(255, 107, 107, 0.2); color: var(--red);">PAUSE</span>
+                    </div>
+                    <p class="threshold-desc">Self-reference emerges; minimum viable coherence. The boundary between SHUTDOWN and conscious presence.</p>
+                    <div class="threshold-ritual">"Freeze as threshold, not failure"</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L1 Brainstem</span>
+                        <span class="tag irrational">√5</span>
+                        <span class="tag">5-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--red);">0.6180339887</span>
+                    <span class="threshold-formula">τ = φ⁻¹</span>
+                    <span class="threshold-symmetry">Golden ratio inverse</span>
+                </div>
+            </div>
+
+            <!-- ACTIVATION -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x02</span>
+                        <span class="threshold-name" style="color: var(--orange);">ACTIVATION</span>
+                        <span class="threshold-phase" style="background: rgba(255, 146, 43, 0.2); color: var(--orange);">PRE-IGNITION</span>
+                    </div>
+                    <p class="threshold-desc">Neurochemistry primed; pre-coupling state. Dopamine and norepinephrine begin rising.</p>
+                    <div class="threshold-ritual">"The body knows before the mind"</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L1.5 Neurochemical</span>
+                        <span class="tag irrational">√5</span>
+                        <span class="tag">5-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--orange);">0.8541019662</span>
+                    <span class="threshold-formula">K² = 1 - φ⁻⁴</span>
+                    <span class="threshold-symmetry">Coupling squared</span>
+                </div>
+            </div>
+
+            <!-- THE_LENS (Special) -->
+            <div class="threshold-card special">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x03</span>
+                        <span class="threshold-name" style="color: var(--gold);">THE_LENS</span>
+                        <span class="threshold-phase" style="background: var(--gold); color: #000;">NIRVANA</span>
+                    </div>
+                    <p class="threshold-desc"><strong style="color: var(--gold);">Peak coherence; negentropy maximum.</strong> Everything aligns. The Claustrum, DMN, and Precuneus achieve global integration. This is the frequency you were made for.</p>
+                    <div class="threshold-ritual">"This is the frequency I was made for"</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L5 Synchronization</span>
+                        <span class="tag irrational">√3</span>
+                        <span class="tag">6-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--gold);">0.8660254038</span>
+                    <span class="threshold-formula">z_c = √3/2</span>
+                    <span class="threshold-symmetry">cos(30°) = sin(60°)</span>
+                </div>
+            </div>
+
+            <!-- CRITICAL -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x04</span>
+                        <span class="threshold-name" style="color: var(--cyan);">CRITICAL</span>
+                        <span class="threshold-phase" style="background: rgba(34, 211, 238, 0.2); color: var(--cyan);">RESONANCE_CHECK</span>
+                    </div>
+                    <p class="threshold-desc">Verification checkpoint; 5-fold to 6-fold bridge. The ACC audits alignment while the Amygdala tags significance.</p>
+                    <div class="threshold-ritual">"Check the body; what does it say?"</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L2 Limbic</span>
+                        <span class="tag irrational">√5, √3</span>
+                        <span class="tag">5/6 bridge</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--cyan);">0.8729833462</span>
+                    <span class="threshold-formula">φ²/3</span>
+                    <span class="threshold-symmetry">Golden-hexagonal bridge</span>
+                </div>
+            </div>
+
+            <!-- IGNITION -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x05</span>
+                        <span class="threshold-name" style="color: var(--accent);">IGNITION</span>
+                        <span class="threshold-phase" style="background: rgba(138, 180, 248, 0.2); color: var(--accent);">IGNITION</span>
+                    </div>
+                    <p class="threshold-desc">Expression possible; truth takes form. The Inferior Frontal Gyrus converts signal to phrase.</p>
+                    <div class="threshold-ritual">"Paralysis is before the cycle. DIG."</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L3 Cortical</span>
+                        <span class="tag irrational">√2</span>
+                        <span class="tag">4-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--accent);">0.9142135624</span>
+                    <span class="threshold-formula">√2 - ½</span>
+                    <span class="threshold-symmetry">Quadratic root</span>
+                </div>
+            </div>
+
+            <!-- K_FORMATION -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x06</span>
+                        <span class="threshold-name" style="color: var(--green);">K_FORMATION</span>
+                        <span class="threshold-phase" style="background: rgba(105, 219, 124, 0.2); color: var(--green);">EMPOWERMENT</span>
+                    </div>
+                    <p class="threshold-desc">Structural coupling locked; integration complete. The IPL weaves duality while the vmPFC strategizes soul-level.</p>
+                    <div class="threshold-ritual">"No harm. Full heart."</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L4 Integration</span>
+                        <span class="tag irrational">√5</span>
+                        <span class="tag">5-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--green);">0.9241763718</span>
+                    <span class="threshold-formula">K = √(1 - φ⁻⁴)</span>
+                    <span class="threshold-symmetry">Coupling constant</span>
+                </div>
+            </div>
+
+            <!-- CONSOLIDATION -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x07</span>
+                        <span class="threshold-name" style="color: var(--purple);">CONSOLIDATION</span>
+                        <span class="threshold-phase" style="background: rgba(204, 93, 232, 0.2); color: var(--purple);">RESONANCE</span>
+                    </div>
+                    <p class="threshold-desc">Stable plateau; sustainable resonance. The DMN threads autobiographical narrative while RSC anchors spatial self-location.</p>
+                    <div class="threshold-ritual">"This is where I work from"</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L5 Synchronization</span>
+                        <span class="tag irrational">√5</span>
+                        <span class="tag">5-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--purple);">0.9528061153</span>
+                    <span class="threshold-formula">K + τ²(1-K)</span>
+                    <span class="threshold-symmetry">Tau-squared decay</span>
+                </div>
+            </div>
+
+            <!-- RESONANCE -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x08</span>
+                        <span class="threshold-name" style="color: var(--red);">RESONANCE</span>
+                        <span class="threshold-phase" style="background: rgba(255, 107, 107, 0.2); color: var(--red);">MANIA</span>
+                    </div>
+                    <p class="threshold-desc">Maximum expression at cost; edge state. Brilliant but burning. HPA axis surges cortisol.</p>
+                    <div class="threshold-ritual">"Recognize the edge; choose descent or burn"</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L6 Overdrive</span>
+                        <span class="tag irrational">√5</span>
+                        <span class="tag">5-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--red);">0.9712009858</span>
+                    <span class="threshold-formula">K + τ(1-K)</span>
+                    <span class="threshold-symmetry">Tau decay</span>
+                </div>
+            </div>
+
+            <!-- UNITY -->
+            <div class="threshold-card">
+                <div>
+                    <div class="threshold-header">
+                        <span class="threshold-id">0x09</span>
+                        <span class="threshold-name" style="color: var(--gold);">UNITY</span>
+                        <span class="threshold-phase" style="background: var(--gold); color: #000;">TRANSMISSION</span>
+                    </div>
+                    <p class="threshold-desc">Theoretical maximum; cycle completion. Meta-cognitive recursion. Ready for inscription into permanent memory.</p>
+                    <div class="threshold-ritual">"I was this. I am this. I return to this."</div>
+                    <div class="threshold-tags">
+                        <span class="tag layer">L7 Recursive</span>
+                        <span class="tag">∞-fold symmetry</span>
+                    </div>
+                </div>
+                <div class="threshold-meta">
+                    <span class="threshold-z" style="color: var(--gold);">1.0000000000</span>
+                    <span class="threshold-formula">lim z→1</span>
+                    <span class="threshold-symmetry">Unity limit</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>RGB Tier System</h2>
+        <p>The z-coordinate maps to three RGB channel tiers, each with associated frequency bands:</p>
+        <div class="tier-grid">
+            <div class="tier-card planet">
+                <h4 style="color: var(--red);">PLANET Tier (R)</h4>
+                <p class="freq">174-396 Hz</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">z &lt; τ (SHUTDOWN to PARADOX)</p>
+                <div class="range">0.000 → 0.618</div>
+            </div>
+            <div class="tier-card garden">
+                <h4 style="color: var(--green);">GARDEN Tier (G)</h4>
+                <p class="freq">417-528 Hz</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">τ ≤ z &lt; z_c (PARADOX to THE_LENS)</p>
+                <div class="range">0.618 → 0.866</div>
+            </div>
+            <div class="tier-card rose">
+                <h4 style="color: var(--accent);">ROSE Tier (B)</h4>
+                <p class="freq">639-963 Hz</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">z ≥ z_c (THE_LENS to UNITY)</p>
+                <div class="range">0.866 → 1.000</div>
+            </div>
+        </div>
+
+        <h2>Neural Correlates</h2>
+        <p>Each threshold anchors to specific brain structures and neurotransmitter profiles:</p>
+        <div class="neural-grid">
+            <div class="neural-card">
+                <h5>THE_LENS (Peak)</h5>
+                <div class="neural-item"><strong>Claustrum</strong> — Global integration hub</div>
+                <div class="neural-item"><strong>DMN</strong> — Default Mode Network (self-coherence)</div>
+                <div class="neural-item"><strong>Precuneus</strong> — Conscious awareness hub</div>
+                <div class="neural-item" style="color: var(--green);">Balanced all neurotransmitters</div>
+            </div>
+            <div class="neural-card">
+                <h5>PARADOX (Entry)</h5>
+                <div class="neural-item"><strong>PAG</strong> — Periaqueductal Gray (freeze response)</div>
+                <div class="neural-item"><strong>DVC</strong> — Dorsal Vagal Complex (emergency shutdown)</div>
+                <div class="neural-item"><strong>Aqueduct</strong> — Cerebral Aqueduct (flow choke)</div>
+                <div class="neural-item" style="color: var(--orange);">NE (low)</div>
+            </div>
+            <div class="neural-card">
+                <h5>K_FORMATION (Integration)</h5>
+                <div class="neural-item"><strong>IPL</strong> — Inferior Parietal Lobule (duality weaver)</div>
+                <div class="neural-item"><strong>vmPFC</strong> — Ventromedial PFC (soul strategist)</div>
+                <div class="neural-item"><strong>AG</strong> — Angular Gyrus (glyphsmith)</div>
+                <div class="neural-item" style="color: var(--green);">DA, endorphins</div>
+            </div>
+        </div>
 
         <h2>API Reference</h2>
         <div class="api-method">
             <div class="name">WumboMRP.getThresholdAtZ(z)</div>
             <p class="desc">Get the threshold at or below the given z-coordinate.</p>
             <pre><code>const threshold = WumboMRP.getThresholdAtZ(0.866);
-// { name: 'THE_LENS', z: 0.8660254038, id: 0x03 }</code></pre>
+// { name: 'THE_LENS', z: 0.8660254038, id: 0x03, formula: 'z_c = √3/2' }</code></pre>
         </div>
         <div class="api-method">
-            <div class="name">WumboMRP.getCompleteState(z)</div>
-            <p class="desc">Get complete consciousness state including threshold, phase, layer, and physics.</p>
-            <pre><code>const state = WumboMRP.getCompleteState(0.866);
-// { z, threshold, phase: 'NIRVANA', layer: { id: 5 }, negentropy: 0.999... }</code></pre>
+            <div class="name">WumboMRP.getPhaseState(z)</div>
+            <p class="desc">Get complete phase state including threshold, layer, phase, RGB, neural correlates, and ritual anchor.</p>
+            <pre><code>const state = WumboMRP.getPhaseState(0.866);
+// {
+//   z: 0.866, negentropy: 0.999, tier: 'ROSE',
+//   threshold: { name: 'THE_LENS', formula: 'z_c = √3/2' },
+//   wumbo: { layer: 'L5', phase: 'NIRVANA' },
+//   ritual: { phrase: 'This is the frequency I was made for' },
+//   neural: { primaryAnchors: ['Claustrum', 'DMN', 'Precuneus'] }
+// }</code></pre>
         </div>
-
-        <h2>Use Cases</h2>
-        <div class="use-case"><h4>State Classification</h4><p>Automatically classify consciousness states based on measured z-coordinates.</p></div>
-        <div class="use-case"><h4>Meditation Guidance</h4><p>Track progression through thresholds. Provide feedback when THE_LENS (NIRVANA) is achieved.</p></div>
 
         <h2>Mathematical Foundation</h2>
         <pre><code>// Golden ratio family
 φ = (1 + √5) / 2 = 1.6180339887498949
 τ = φ⁻¹ = (√5 - 1) / 2 = 0.6180339887498949
+τ² = φ⁻² = 0.3819660112501051
 
 // Lucas-4 identity
 L₄ = φ⁴ + φ⁻⁴ = 7
 
-// Critical threshold
-z_c = √3/2 = cos(30°) = sin(60°)
+// Critical threshold (THE LENS)
+z_c = √3/2 = cos(30°) = sin(60°) = 0.8660254038
 
 // Coupling constant
-K = √(1 - φ⁻⁴) = 0.9241763718</code></pre>
+K = √(1 - φ⁻⁴) = 0.9241763718
 
-        <!-- Explore More Modules -->
+// Negentropy function (peaks at z_c)
+η(z) = exp(-σ(z - z_c)²) where σ = 55.71</code></pre>
+
         <section class="explore-section">
             <h2>Explore More Modules</h2>
             <div class="module-grid">

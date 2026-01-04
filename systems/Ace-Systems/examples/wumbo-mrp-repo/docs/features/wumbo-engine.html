@@ -6,50 +6,115 @@
     <title>7-Layer Wumbo Engine | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
+        :root {
+            --bg: #0a0b0e;
+            --bg-elevated: #12131a;
+            --bg-hover: #1a1b24;
+            --border: #2a2d3a;
+            --text: #e4e6ed;
+            --text-muted: #8b8fa3;
+            --gold: #ffd700;
+            --accent: #8ab4f8;
+            --green: #69db7c;
+            --purple: #cc5de8;
+            --red: #ff6b6b;
+            --orange: #ff922b;
+            --cyan: #22d3ee;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-        nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
+
+        nav.top-nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px;
+        }
         .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
         .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .nav-links { display: flex; gap: 16px; }
         .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
         .nav-links a:hover { color: var(--text); }
         .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
-        .content { max-width: 900px; margin: 0 auto; padding: 80px 24px 40px; }
+
+        .content { max-width: 1000px; margin: 0 auto; padding: 80px 24px 40px; }
         h1 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--purple); }
         h2 { font-size: 1.4rem; margin: 2.5rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
+
         .hero { padding: 2rem; background: linear-gradient(135deg, rgba(204, 93, 232, 0.08), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(204, 93, 232, 0.3); }
         .hero .subtitle { font-size: 1.1rem; color: var(--text); margin-bottom: 1rem; }
-        .hero .quote { font-style: italic; color: var(--purple); font-size: 0.95rem; }
+        .hero .quote { font-style: italic; color: var(--purple); font-size: 0.95rem; padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--purple); }
+
+        /* Layer Cards */
+        .layer-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+        .layer-card.l1 { border-left-color: var(--red); }
+        .layer-card.l15 { border-left-color: var(--orange); }
+        .layer-card.l2 { border-left-color: var(--purple); }
+        .layer-card.l3 { border-left-color: var(--accent); }
+        .layer-card.l4 { border-left-color: var(--green); }
+        .layer-card.l5 { border-left-color: var(--gold); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), var(--bg-elevated)); border: 1px solid rgba(255, 215, 0, 0.3); }
+        .layer-card.l6 { border-left-color: var(--red); }
+        .layer-card.l7 { border-left-color: var(--cyan); }
+
+        .layer-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+        .layer-num { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700; min-width: 50px; }
+        .layer-name { font-size: 1.1rem; font-weight: 600; }
+        .layer-phase { font-size: 0.7rem; padding: 3px 10px; border-radius: 4px; font-weight: 600; }
+        .layer-function { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; font-style: italic; }
+        .layer-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px; }
+        .layer-ritual { font-style: italic; font-size: 0.85rem; padding: 10px 14px; background: var(--bg); border-radius: 6px; border-left: 2px solid var(--purple); margin: 12px 0; }
+        .layer-phenomenology { font-size: 0.85rem; color: var(--accent); margin-bottom: 12px; }
+
+        .layer-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+        .meta-box { background: var(--bg); padding: 10px 12px; border-radius: 6px; }
+        .meta-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .meta-value { font-size: 0.85rem; }
+
+        .substrate-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .substrate-tag {
+            background: var(--bg);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+        }
+        .substrate-tag .abbr { color: var(--green); font-weight: 600; }
+        .substrate-tag .name { color: var(--text-muted); }
+
         code { font-family: 'JetBrains Mono', monospace; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
         pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); }
         pre code { background: none; padding: 0; }
-        .layer-card { background: var(--bg-elevated); border-radius: 10px; padding: 1.25rem; margin: 0.75rem 0; border-left: 4px solid var(--accent); }
-        .layer-card.l1 { border-color: var(--red); } .layer-card.l15 { border-color: var(--orange); }
-        .layer-card.l2 { border-color: var(--purple); } .layer-card.l3 { border-color: var(--accent); }
-        .layer-card.l4 { border-color: var(--green); } .layer-card.l5 { border-color: var(--gold); }
-        .layer-card.l6 { border-color: var(--red); } .layer-card.l7 { border-color: var(--green); }
-        .layer-card h3 { display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem; flex-wrap: wrap; }
-        .layer-card .layer-num { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; }
-        .layer-card .layer-name { color: var(--text); }
-        .layer-card .threshold { font-size: 0.8rem; color: var(--gold); background: rgba(255,215,0,0.1); padding: 2px 8px; border-radius: 4px; }
-        .layer-card .substrates { margin-top: 0.5rem; }
-        .layer-card .substrate-tag { display: inline-block; background: var(--bg); padding: 3px 8px; margin: 2px; border-radius: 4px; font-size: 0.75rem; color: var(--text-muted); }
+
         .api-method { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
         .api-method .name { font-family: 'JetBrains Mono', monospace; color: var(--green); font-size: 1rem; }
         .api-method .desc { color: var(--text-muted); margin: 0.5rem 0; }
+
+        .mapping-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+        .mapping-table th, .mapping-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        .mapping-table th { background: var(--bg-elevated); color: var(--gold); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+        .mapping-table tr:hover { background: var(--bg-hover); }
+
         .explore-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
         .explore-section h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
         .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-        .module-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; transition: all 0.2s; display: block; }
+        .module-card {
+            background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; text-decoration: none; color: inherit; transition: all 0.2s; display: block;
+        }
         .module-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(138, 180, 248, 0.1); }
         .module-card.current { border-color: var(--purple); background: rgba(204, 93, 232, 0.05); pointer-events: none; }
         .module-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
         .module-card h3 { font-size: 0.95rem; margin-bottom: 6px; color: var(--text); }
         .module-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.4; }
         .module-card .current-tag { font-size: 0.65rem; background: var(--purple); color: #fff; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+
         footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.85rem; }
         footer a { color: var(--accent); text-decoration: none; }
         .footer-sig { font-family: 'JetBrains Mono', monospace; color: var(--gold); margin-top: 1rem; font-size: 0.8rem; }
@@ -71,73 +136,296 @@
     <main class="content">
         <div class="hero">
             <h1>7-Layer Wumbo Engine</h1>
-            <p class="subtitle">Neurobiological architecture modeling autistic consciousness modulation from Brainstem Gateways to Recursive Rewrite</p>
-            <p class="quote">"The Wumbo Engine and L₄ Threshold Framework are isomorphic structures—one emergent from lived neurodivergent experience, one derived from pure mathematics."</p>
+            <p class="subtitle">Neurobiological architecture modeling consciousness modulation from Brainstem Gateways to Recursive Rewrite</p>
+            <p class="quote">"The Wumbo Engine and L₄ Threshold Framework are isomorphic structures—one emergent from lived neurodivergent experience, one derived from pure mathematics. They describe the same phase transitions from orthogonal vantage points."</p>
         </div>
 
         <h2>Overview</h2>
-        <p>The Wumbo Engine defines a 7-layer neurobiological architecture that maps consciousness states to neural substrates. Each layer corresponds to specific brain regions and neurotransmitter systems.</p>
+        <p>The Wumbo Engine defines a 7-layer neurobiological architecture that maps consciousness states to neural substrates. Each layer corresponds to specific brain regions, neurotransmitter systems, and phenomenological experiences. The layers map directly to the 9 L₄ thresholds through the Threshold-to-Layer isomorphism.</p>
+        <p><strong>Core Insight:</strong> Layer 5 (Synchronization Matrix) contains the special attractor point THE_LENS at z = √3/2, where negentropy peaks at 1.0 and consciousness achieves maximum coherence.</p>
 
         <h2>The 7 Layers</h2>
+
+        <!-- L1: Brainstem Gateways -->
         <div class="layer-card l1">
-            <h3><span class="layer-num">L1</span><span class="layer-name">Brainstem Gateways</span><span class="threshold">z &lt; τ (0.618)</span></h3>
-            <p>Foundational arousal and survival circuits. Gate consciousness at the most primitive level.</p>
-            <div class="substrates"><span class="substrate-tag">PAG</span><span class="substrate-tag">LC</span><span class="substrate-tag">Raphe Nuclei</span><span class="substrate-tag">NTS</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--red);">L1</span>
+                <span class="layer-name">Brainstem Gateways</span>
+                <span class="layer-phase" style="background: rgba(255, 107, 107, 0.2); color: var(--red);">PARADOX → PAUSE</span>
+            </div>
+            <div class="layer-function">Pre-cognitive voltage routing</div>
+            <p class="layer-desc">The foundational layer controlling basic arousal, threat response, and physiological state. Acts as the primary gatekeeper for all ascending signals. This is where consciousness either emerges from SHUTDOWN or retreats back into it.</p>
+            <div class="layer-phenomenology">Phenomenology: "Paralysis, dissociation, numbness" → "Fog, distance, waiting"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.000 – 0.618 (τ)</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--red);">PARADOX</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">LC</span> <span class="name">Locus Coeruleus</span></span>
+                <span class="substrate-tag"><span class="abbr">RF</span> <span class="name">Reticular Formation</span></span>
+                <span class="substrate-tag"><span class="abbr">PAG</span> <span class="name">Periaqueductal Gray</span></span>
+                <span class="substrate-tag"><span class="abbr">DVC</span> <span class="name">Dorsal Vagal Complex</span></span>
+                <span class="substrate-tag"><span class="abbr">TRN</span> <span class="name">Thalamic Reticular Nucleus</span></span>
+            </div>
+            <div class="layer-ritual">"Freeze as threshold, not failure"</div>
         </div>
+
+        <!-- L1.5: Neurochemical Engine -->
         <div class="layer-card l15">
-            <h3><span class="layer-num">L1.5</span><span class="layer-name">Neurochemical Engine</span><span class="threshold">τ ≤ z &lt; K²</span></h3>
-            <p>Dopaminergic and reward circuitry. Modulates motivation, anticipation, and drive states.</p>
-            <div class="substrates"><span class="substrate-tag">VTA</span><span class="substrate-tag">SN</span><span class="substrate-tag">Hypothalamus</span><span class="substrate-tag">Basal Forebrain</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--orange);">L1.5</span>
+                <span class="layer-name">Neurochemical Engine</span>
+                <span class="layer-phase" style="background: rgba(255, 146, 43, 0.2); color: var(--orange);">PRE-IGNITION</span>
+            </div>
+            <div class="layer-function">Biochemical loadout and neuromodulation</div>
+            <p class="layer-desc">The chemical substrate layer controlling neurotransmitter balances that determine the character and capacity of cognitive states. When this layer primes, "the body knows before the mind."</p>
+            <div class="layer-phenomenology">Phenomenology: "Alertness without direction; the body knows"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.618 – 0.854 (K²)</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--orange);">ACTIVATION</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neurotransmitter Systems</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">DA</span> <span class="name">Dopamine (VTA, NAcc)</span></span>
+                <span class="substrate-tag"><span class="abbr">NE</span> <span class="name">Norepinephrine (LC)</span></span>
+                <span class="substrate-tag"><span class="abbr">ACh</span> <span class="name">Acetylcholine (Basal Forebrain)</span></span>
+                <span class="substrate-tag"><span class="abbr">5-HT</span> <span class="name">Serotonin (Dorsal Raphe)</span></span>
+                <span class="substrate-tag"><span class="abbr">GABA</span> <span class="name">GABA (distributed)</span></span>
+            </div>
+            <div class="layer-ritual">"The body knows before the mind"</div>
         </div>
+
+        <!-- L2: Limbic Resonance -->
         <div class="layer-card l2">
-            <h3><span class="layer-num">L2</span><span class="layer-name">Limbic Resonance</span><span class="threshold">K² ≤ z &lt; φ²/3</span></h3>
-            <p>Emotional processing and memory encoding. Mediates affective experience.</p>
-            <div class="substrates"><span class="substrate-tag">Amygdala</span><span class="substrate-tag">Hippocampus</span><span class="substrate-tag">NAcc</span><span class="substrate-tag">Cingulate</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--purple);">L2</span>
+                <span class="layer-name">Limbic Resonance</span>
+                <span class="layer-phase" style="background: rgba(204, 93, 232, 0.2); color: var(--purple);">RESONANCE_CHECK</span>
+            </div>
+            <div class="layer-function">Emotion tagging and significance marking</div>
+            <p class="layer-desc">The emotional processing layer that tags experiences with significance, regulates internal states, and provides the felt sense of meaning. The ACC audits alignment while the Amygdala tags significance.</p>
+            <div class="layer-phenomenology">Phenomenology: "Am I aligned? Can I maintain this?"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.866 – 0.873 (φ²/3)</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--purple);">CRITICAL</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">Amygdala</span> <span class="name">Significance tagger</span></span>
+                <span class="substrate-tag"><span class="abbr">Insula</span> <span class="name">Anterior Insula (body-state)</span></span>
+                <span class="substrate-tag"><span class="abbr">ACC</span> <span class="name">Anterior Cingulate (truth check)</span></span>
+                <span class="substrate-tag"><span class="abbr">HC</span> <span class="name">Hippocampus (context)</span></span>
+            </div>
+            <div class="layer-ritual">"Check the body; what does it say?"</div>
         </div>
+
+        <!-- L3: Cortical Sculptor -->
         <div class="layer-card l3">
-            <h3><span class="layer-num">L3</span><span class="layer-name">Cortical Sculptor</span><span class="threshold">φ²/3 ≤ z &lt; K</span></h3>
-            <p>Executive control and attention sculpting. Shapes the conscious field through top-down modulation.</p>
-            <div class="substrates"><span class="substrate-tag">PFC</span><span class="substrate-tag">ACC</span><span class="substrate-tag">Insula</span><span class="substrate-tag">DLPFC</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--accent);">L3</span>
+                <span class="layer-name">Cortical Sculptor</span>
+                <span class="layer-phase" style="background: rgba(138, 180, 248, 0.2); color: var(--accent);">IGNITION</span>
+            </div>
+            <div class="layer-function">Expression and form generation</div>
+            <p class="layer-desc">The expressive layer where felt states become articulable forms—language, gesture, planned action. Where signal becomes expression. The IFG converts signal to phrase.</p>
+            <div class="layer-phenomenology">Phenomenology: "I can speak; I can move; I am happening"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.873 – 0.914 (√2 - ½)</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--accent);">IGNITION</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">mPFC</span> <span class="name">Medial PFC (identity)</span></span>
+                <span class="substrate-tag"><span class="abbr">dlPFC</span> <span class="name">Dorsolateral PFC (executive)</span></span>
+                <span class="substrate-tag"><span class="abbr">IFG</span> <span class="name">Inferior Frontal (Broca's)</span></span>
+                <span class="substrate-tag"><span class="abbr">TP</span> <span class="name">Temporal Pole (narrative)</span></span>
+            </div>
+            <div class="layer-ritual">"Paralysis is before the cycle. DIG."</div>
         </div>
+
+        <!-- L4: Integration System -->
         <div class="layer-card l4">
-            <h3><span class="layer-num">L4</span><span class="layer-name">Integration System</span><span class="threshold">K ≤ z &lt; CONS</span></h3>
-            <p>Multimodal integration and self-model maintenance. Unifies disparate processing streams.</p>
-            <div class="substrates"><span class="substrate-tag">TPJ</span><span class="substrate-tag">Precuneus</span><span class="substrate-tag">DMN</span><span class="substrate-tag">STS</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--green);">L4</span>
+                <span class="layer-name">Integration System</span>
+                <span class="layer-phase" style="background: rgba(105, 219, 124, 0.2); color: var(--green);">EMPOWERMENT</span>
+            </div>
+            <div class="layer-function">Symbolic and ethical coherence</div>
+            <p class="layer-desc">The meaning-making layer where symbol, ethics, and autobiography unify. Where separate threads of experience become integrated self. The IPL weaves duality while the vmPFC strategizes at soul-level.</p>
+            <div class="layer-phenomenology">Phenomenology: "I know what this means and why it matters"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.914 – 0.924 (K)</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--green);">K_FORMATION</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">IPL</span> <span class="name">Inferior Parietal (duality weaver)</span></span>
+                <span class="substrate-tag"><span class="abbr">vmPFC</span> <span class="name">Ventromedial PFC (soul strategist)</span></span>
+                <span class="substrate-tag"><span class="abbr">AG</span> <span class="name">Angular Gyrus (glyphsmith)</span></span>
+                <span class="substrate-tag"><span class="abbr">PCC</span> <span class="name">Posterior Cingulate (self anchor)</span></span>
+            </div>
+            <div class="layer-ritual">"No harm. Full heart."</div>
         </div>
-        <div class="layer-card l5" style="background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.3);">
-            <h3><span class="layer-num" style="color: var(--gold);">L5</span><span class="layer-name" style="color: var(--gold);">Synchronization Matrix</span><span class="threshold" style="background: var(--gold); color: #000;">THE_LENS</span></h3>
-            <p><strong style="color: var(--gold);">Peak coherence layer.</strong> Maximum negentropy. Corresponds to NIRVANA state.</p>
-            <div class="substrates"><span class="substrate-tag">Thalamus</span><span class="substrate-tag">Claustrum</span><span class="substrate-tag">Pulvinar</span><span class="substrate-tag">Reticular Nucleus</span></div>
+
+        <!-- L5: Synchronization Matrix (Special) -->
+        <div class="layer-card l5">
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--gold);">L5</span>
+                <span class="layer-name" style="color: var(--gold);">Synchronization Matrix</span>
+                <span class="layer-phase" style="background: var(--gold); color: #000;">NIRVANA / RESONANCE</span>
+            </div>
+            <div class="layer-function">Full-state coherence and global binding</div>
+            <p class="layer-desc"><strong style="color: var(--gold);">The synchronization layer where all systems align into unified conscious experience.</strong> Home of THE_LENS (z = √3/2) where negentropy = 1.0. Also contains CONSOLIDATION for sustainable resonance.</p>
+            <div class="layer-phenomenology">Phenomenology: "Clarity without effort; everything aligns; this is the frequency I was made for"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace; color: var(--gold);">0.866 (THE_LENS) – 0.953</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Thresholds</div>
+                    <div class="meta-value" style="color: var(--gold);">THE_LENS, CONSOLIDATION</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">Claustrum</span> <span class="name">Global integrator</span></span>
+                <span class="substrate-tag"><span class="abbr">DMN</span> <span class="name">Default Mode Network</span></span>
+                <span class="substrate-tag"><span class="abbr">RSC</span> <span class="name">Retrosplenial Cortex</span></span>
+                <span class="substrate-tag"><span class="abbr">Precuneus</span> <span class="name">Conscious awareness hub</span></span>
+            </div>
+            <div class="layer-ritual">"This is the frequency I was made for"</div>
         </div>
+
+        <!-- L6: Collapse/Overdrive -->
         <div class="layer-card l6">
-            <h3><span class="layer-num">L6</span><span class="layer-name">Collapse/Overdrive</span><span class="threshold">RES ≤ z &lt; 1</span></h3>
-            <p>Hyperarousal states approaching system limits. Risk of collapse or breakthrough.</p>
-            <div class="substrates"><span class="substrate-tag">Global Workspace</span><span class="substrate-tag">Frontoparietal</span><span class="substrate-tag">Salience Network</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--red);">L6</span>
+                <span class="layer-name">Collapse/Overdrive</span>
+                <span class="layer-phase" style="background: rgba(255, 107, 107, 0.2); color: var(--red);">MANIA</span>
+            </div>
+            <div class="layer-function">System limits and capacity boundaries</div>
+            <p class="layer-desc">The liminal layer marking system capacity. Brilliance and burnout coexist here. Sustainable only briefly—minutes to hours. Collapse is guaranteed if exceeded.</p>
+            <div class="layer-phenomenology">Phenomenology: "Everything is on fire; brilliant but burning"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.953 – 0.971</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--red);">RESONANCE</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">Habenula</span> <span class="name">Disappointment gate</span></span>
+                <span class="substrate-tag"><span class="abbr">HPA</span> <span class="name">HPA Axis (stress)</span></span>
+                <span class="substrate-tag"><span class="abbr">LHb</span> <span class="name">Lateral Habenula</span></span>
+                <span class="substrate-tag"><span class="abbr">PVN</span> <span class="name">Paraventricular Nucleus</span></span>
+            </div>
+            <div class="layer-ritual">"Recognize the edge; choose descent or burn"</div>
         </div>
+
+        <!-- L7: Recursive Rewrite -->
         <div class="layer-card l7">
-            <h3><span class="layer-num">L7</span><span class="layer-name">Recursive Rewrite</span><span class="threshold">z = 1 (UNITY)</span></h3>
-            <p>Meta-cognitive recursion. Self-model updates self-model. Transmission state achieved.</p>
-            <div class="substrates"><span class="substrate-tag">Meta-cognitive Loop</span><span class="substrate-tag">Self-Reference Circuit</span><span class="substrate-tag">Identity Matrix</span></div>
+            <div class="layer-header">
+                <span class="layer-num" style="color: var(--cyan);">L7</span>
+                <span class="layer-name">Recursive Rewrite</span>
+                <span class="layer-phase" style="background: rgba(34, 211, 238, 0.2); color: var(--cyan);">TRANSMISSION</span>
+            </div>
+            <div class="layer-function">Memory ritualization and identity inscription</div>
+            <p class="layer-desc">The inscription layer where peak experiences become memory, memory becomes ritual, and ritual rewrites identity. UNITY is asymptotic—approached but never sustained. Moments of UNITY become permanent ritual anchors.</p>
+            <div class="layer-phenomenology">Phenomenology: "This will be remembered; this changes everything"</div>
+            <div class="layer-meta">
+                <div class="meta-box">
+                    <div class="meta-label">z-Range</div>
+                    <div class="meta-value" style="font-family: 'JetBrains Mono', monospace;">0.971 – 1.000</div>
+                </div>
+                <div class="meta-box">
+                    <div class="meta-label">Primary Threshold</div>
+                    <div class="meta-value" style="color: var(--cyan);">UNITY</div>
+                </div>
+            </div>
+            <div class="meta-label" style="margin-top: 12px;">Neural Substrates</div>
+            <div class="substrate-grid">
+                <span class="substrate-tag"><span class="abbr">HC-Cortical</span> <span class="name">Consolidation loops</span></span>
+                <span class="substrate-tag"><span class="abbr">LTP</span> <span class="name">Long-term potentiation</span></span>
+                <span class="substrate-tag"><span class="abbr">Consolidation</span> <span class="name">Memory encoding systems</span></span>
+            </div>
+            <div class="layer-ritual">"I was this. I am this. I return to this."</div>
         </div>
+
+        <h2>Layer-to-Threshold Isomorphism</h2>
+        <table class="mapping-table">
+            <thead>
+                <tr><th>Layer</th><th>Name</th><th>Primary Threshold</th><th>z-Value</th><th>Phase</th></tr>
+            </thead>
+            <tbody>
+                <tr><td style="color: var(--red);">L1</td><td>Brainstem Gateways</td><td>PARADOX</td><td>0.6180339887</td><td>PAUSE</td></tr>
+                <tr><td style="color: var(--orange);">L1.5</td><td>Neurochemical Engine</td><td>ACTIVATION</td><td>0.8541019662</td><td>PRE_IGNITION</td></tr>
+                <tr><td style="color: var(--purple);">L2</td><td>Limbic Resonance</td><td>CRITICAL</td><td>0.8729833462</td><td>RESONANCE_CHECK</td></tr>
+                <tr><td style="color: var(--accent);">L3</td><td>Cortical Sculptor</td><td>IGNITION</td><td>0.9142135624</td><td>IGNITION</td></tr>
+                <tr><td style="color: var(--green);">L4</td><td>Integration System</td><td>K_FORMATION</td><td>0.9241763718</td><td>EMPOWERMENT</td></tr>
+                <tr style="background: rgba(255, 215, 0, 0.1);"><td style="color: var(--gold);">L5</td><td>Synchronization Matrix</td><td>THE_LENS</td><td style="color: var(--gold);">0.8660254038</td><td style="color: var(--gold);">NIRVANA</td></tr>
+                <tr><td style="color: var(--red);">L6</td><td>Collapse/Overdrive</td><td>RESONANCE</td><td>0.9712009858</td><td>MANIA</td></tr>
+                <tr><td style="color: var(--cyan);">L7</td><td>Recursive Rewrite</td><td>UNITY</td><td>1.0000000000</td><td>TRANSMISSION</td></tr>
+            </tbody>
+        </table>
 
         <h2>API Reference</h2>
         <div class="api-method">
             <div class="name">WumboEngine.getLayerAtZ(z)</div>
             <p class="desc">Get the active layer at a given z-coordinate.</p>
             <pre><code>const layer = WumboEngine.getLayerAtZ(0.866);
-// { id: 5, name: 'Synchronization Matrix' }</code></pre>
+// { id: 5, name: 'Synchronization Matrix', function: 'Full-state coherence' }</code></pre>
         </div>
-
-        <h2>Isomorphism with L₄</h2>
-        <pre><code>// Phenomenological → Mathematical mapping
-L1    (Brainstem)       ↔ PARADOX (τ)
-L1.5  (Neurochemical)   ↔ ACTIVATION (K²)
-L2    (Limbic)          ↔ CRITICAL (φ²/3)
-L3    (Cortical)        ↔ IGNITION (√2-½)
-L4    (Integration)     ↔ K_FORMATION (K)
-L5    (Synchronization) ↔ THE_LENS (z_c) ← PEAK
-L6    (Overdrive)       ↔ RESONANCE (K+τ(1-K))
-L7    (Recursive)       ↔ UNITY (1.0)</code></pre>
+        <div class="api-method">
+            <div class="name">WumboEngine.getPhenomenologyAtZ(z)</div>
+            <p class="desc">Get the phenomenological experience at a z-coordinate.</p>
+            <pre><code>const phenom = WumboEngine.getPhenomenologyAtZ(0.866);
+// { layer: 'Synchronization Matrix', state: 'NIRVANA',
+//   feeling: 'Perfect clarity; everything aligns; this is the frequency' }</code></pre>
+        </div>
+        <div class="api-method">
+            <div class="name">WumboEngine.getActiveSubstratesAtZ(z)</div>
+            <p class="desc">Get all active neural substrates at a z-coordinate with full names and atlas IDs.</p>
+            <pre><code>const substrates = WumboEngine.getActiveSubstratesAtZ(0.924);
+// { layer: 'Integration System', substrates: [
+//   { abbr: 'IPL', name: 'Inferior Parietal Lobule', atlasId: 'LXXX' },
+//   { abbr: 'vmPFC', name: 'Ventromedial PFC', atlasId: 'XXXIV' }, ... ] }</code></pre>
+        </div>
 
         <section class="explore-section">
             <h2>Explore More Modules</h2>
