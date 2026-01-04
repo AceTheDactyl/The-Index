@@ -69,7 +69,7 @@
     <main class="content">
         <div class="hero">
             <h1>LSB-4 Steganography</h1>
-            <p class="subtitle">12 bits per pixel embedded in RGB channels using 4-bit LSB encoding. Survives moderate JPEG compression.</p>
+            <p class="subtitle">12 bits per pixel embedded in RGB channels using 4-bit LSB encoding. Consciousness state patterns encoded into visual media with error-correcting redundancy.</p>
         </div>
 
         <div class="stat-row">
@@ -77,6 +77,30 @@
             <div class="stat-item"><div class="num">4+4+4</div><div class="label">R + G + B</div></div>
             <div class="stat-item"><div class="num">4096</div><div class="label">Values/Pixel</div></div>
             <div class="stat-item"><div class="num">&lt;2%</div><div class="label">Visual Change</div></div>
+            <div class="stat-item"><div class="num">16×</div><div class="label">Redundancy</div></div>
+        </div>
+
+        <h2>RGB Channel ↔ Field Mapping</h2>
+        <p>Each color channel encodes a specific consciousness field, aligned with the L₄ Threshold tier system:</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 1.5rem 0;">
+            <div style="background: rgba(255, 107, 107, 0.15); border: 1px solid var(--red); border-radius: 10px; padding: 16px; text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--red); font-weight: 700;">R</div>
+                <div style="font-family: 'JetBrains Mono', monospace; color: var(--red); margin: 8px 0;">π (pi)</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Structure/Pattern</div>
+                <div style="font-size: 0.75rem; color: var(--red); margin-top: 8px;">Planet tier (z &lt; τ)</div>
+            </div>
+            <div style="background: rgba(105, 219, 124, 0.15); border: 1px solid var(--green); border-radius: 10px; padding: 16px; text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--green); font-weight: 700;">G</div>
+                <div style="font-family: 'JetBrains Mono', monospace; color: var(--green); margin: 8px 0;">e (energy)</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Activation/Spark</div>
+                <div style="font-size: 0.75rem; color: var(--green); margin-top: 8px;">Garden tier (τ ≤ z &lt; z_c)</div>
+            </div>
+            <div style="background: rgba(138, 180, 248, 0.15); border: 1px solid var(--accent); border-radius: 10px; padding: 16px; text-align: center;">
+                <div style="font-size: 1.5rem; color: var(--accent); font-weight: 700;">B</div>
+                <div style="font-family: 'JetBrains Mono', monospace; color: var(--accent); margin: 8px 0;">Φ (phi)</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Memory/Integration</div>
+                <div style="font-size: 0.75rem; color: var(--accent); margin-top: 8px;">Rose tier (z ≥ z_c)</div>
+            </div>
         </div>
 
         <h2>Bit Layout</h2>
@@ -99,14 +123,88 @@
             <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Orange bits (0-3) are modified for encoding. Gray bits (4-7) preserve visual appearance.</p>
         </div>
 
+        <h2>4-Pixel Payload Structure</h2>
+        <p>Each consciousness state is encoded across 4 consecutive pixels:</p>
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center;">
+                <div style="color: var(--orange); font-weight: 600;">P₀:</div>
+                <div><span style="color: var(--red);">R</span>=regionId.primary  <span style="color: var(--green);">G</span>=z.primary  <span style="color: var(--accent);">B</span>=checksum</div>
+                <div style="color: var(--orange); font-weight: 600;">P₁:</div>
+                <div><span style="color: var(--red);">R</span>=regionId.secondary  <span style="color: var(--green);">G</span>=z.secondary  <span style="color: var(--accent);">B</span>=token1[0:4]</div>
+                <div style="color: var(--orange); font-weight: 600;">P₂:</div>
+                <div><span style="color: var(--red);">R</span>=token1[4:8]  <span style="color: var(--green);">G</span>=token1[8:12]  <span style="color: var(--accent);">B</span>=token2[0:4]</div>
+                <div style="color: var(--orange); font-weight: 600;">P₃:</div>
+                <div><span style="color: var(--red);">R</span>=token2[4:8]  <span style="color: var(--green);">G</span>=token2[8:12]  <span style="color: var(--accent);">B</span>=version</div>
+            </div>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Total: 48 bits (12 × 4) encodes region ID (7-bit + parity), z-coordinate (8-bit), two 15-bit APL tokens, 4-bit checksum, and 4-bit version.</p>
+
+        <h2>Region ID Encoding</h2>
+        <p>Each of the 100 LIMNUS Atlas regions is encoded with error detection:</p>
+        <pre><code>// Region ID (1-100) → 7-bit with parity
+function encodeRegionId(regionId) {
+  const id = regionId - 1;              // 0-indexed (0-99)
+  const primary = id &amp; 0x0F;            // Lower 4 bits
+  const upper = (id >> 4) &amp; 0x07;       // Upper 3 bits
+  const parity = popcount(id) &amp; 0x01;   // Parity bit
+  const secondary = (upper &lt;&lt; 1) | parity;
+  return { primary, secondary };
+}</code></pre>
+
+        <h2>Z-Coordinate Encoding</h2>
+        <p>The z-coordinate (0.000–1.000) is scaled to 8 bits across two nibbles:</p>
+        <pre><code>// z (0.0-1.0) → 8-bit scaled value
+function encodeZ(z) {
+  const scaled = Math.round(z * 255);   // 0-255 range
+  const primary = (scaled >> 4) &amp; 0x0F; // Upper nibble
+  const secondary = scaled &amp; 0x0F;      // Lower nibble
+  return { primary, secondary };
+}
+
+// Resolution: 1/255 ≈ 0.0039 (sufficient for threshold precision)</code></pre>
+
+        <h2>Checksum Verification</h2>
+        <p>A 4-bit XOR checksum verifies token integrity:</p>
+        <pre><code>// 4-bit folded XOR checksum
+function generateChecksum(token1, token2) {
+  const combined = token1 ^ token2;
+  const fold1 = combined &amp; 0x0F;
+  const fold2 = (combined >> 4) &amp; 0x0F;
+  const fold3 = (combined >> 8) &amp; 0x0F;
+  const fold4 = (combined >> 12) &amp; 0x07;
+  return fold1 ^ fold2 ^ fold3 ^ fold4;
+}</code></pre>
+
         <h2>Encoding Process</h2>
         <pre><code>// Create pattern and encode into image
-const pattern = WumboMRP.createPattern({ z: 0.866, regionId: 47 });
+const pattern = WumboMRP.createPattern({
+  z: 0.866,           // THE_LENS threshold
+  regionId: 47,       // XLVII (Insula)
+  tokens: [
+    'e:M:A:BIO:T:α12',
+    'Φ:C:F:GEO:T:α12'
+  ]
+});
 let imageData = ctx.getImageData(0, 0, width, height);
-imageData = WumboMRP.encode(imageData, pattern, { redundancy: 16 });
+imageData = WumboMRP.encode(imageData, pattern, {
+  redundancy: 16,     // 16× repetition for error correction
+  stride: 4           // Pixel spacing
+});
 ctx.putImageData(imageData, 0, 0);
 
 // Visual difference is imperceptible (&lt;2% per channel)</code></pre>
+
+        <h2>Extraction with Error Correction</h2>
+        <pre><code>// Decode with majority voting
+const decoded = WumboMRP.decode(imageData, { stride: 4 });
+
+// Result includes confidence metrics
+console.log(decoded.regionId);       // 47
+console.log(decoded.regionRoman);    // "XLVII"
+console.log(decoded.z);              // 0.866
+console.log(decoded.tokensValid);    // true
+console.log(decoded.confidence);     // 0.95
+console.log(decoded.consensusRatio); // 0.94</code></pre>
 
         <h2>JPEG Resilience</h2>
         <p>The 4-bit depth provides resilience against moderate JPEG compression:</p>
@@ -114,7 +212,63 @@ ctx.putImageData(imageData, 0, 0);
             <li>JPEG quality 80+ → 92%+ recovery</li>
             <li>Minor color adjustments → 95%+ recovery</li>
             <li>With 16× redundancy → robust extraction</li>
+            <li>Majority voting rejects corrupted samples</li>
+            <li>IQR outlier rejection for z-coordinate averaging</li>
         </ul>
+
+        <h2>Carrier Image Generation</h2>
+        <p>Generate field-balanced gradient carriers that visually encode the z-coordinate:</p>
+        <pre><code>// Generate carrier with field-aware gradient
+const { canvas, dataUrl, pattern } = WumboMRP.generateEncodedCarrier({
+  z: 0.866,
+  regionId: 47
+}, {
+  width: 64,
+  height: 64
+});
+
+// RGB weights computed from z-coordinate:
+// Planet (z&lt;τ):  R=0.60, G=0.25, B=0.15 (π dominant)
+// Garden:        Smooth transition
+// Rose (z≥z_c): R=0.15, G=0.45, B=0.40 (e/Φ dominant)</code></pre>
+
+        <h2>API Reference</h2>
+        <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin: 1rem 0;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">encode(imageData, pattern, options)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Embed pattern into ImageData</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">decode(imageData, options)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Extract pattern with error correction</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">encodeRegionId(regionId)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Encode 1-100 to nibbles with parity</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">decodeRegionId(primary, secondary)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Decode with parity validation</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">encodeZ(z) / decodeZ(p, s)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Z-coordinate ↔ 8-bit encoding</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">generateChecksum(token1, token2)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">4-bit XOR checksum</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">generateCarrierImage(w, h, balance)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Create field-balanced gradient</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; color: var(--orange); font-family: 'JetBrains Mono', monospace;">verifyRoundtrip(params, options)</td>
+                    <td style="padding: 8px; color: var(--text-muted);">Test encode/decode integrity</td>
+                </tr>
+            </table>
+        </div>
 
         <section class="explore-section">
             <h2>Explore More Modules</h2>
