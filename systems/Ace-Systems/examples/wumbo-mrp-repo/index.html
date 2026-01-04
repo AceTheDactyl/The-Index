@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WUMBO MRP v2.0.0 | Complete Documentation</title>
-  <meta name="description" content="Multi-Resolution Pattern Embedding System with L4 Threshold Framework. Complete documentation, API reference, and interactive demos.">
-
+  <title>WUMBO MRP v2.0.0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
   <style>
     :root {
       --bg: #0a0b0e;
@@ -20,11 +17,11 @@
       --text-muted: #8b8fa3;
       --accent: #8ab4f8;
       --gold: #ffd700;
-      --red: #ff6b6b;
-      --green: #69db7c;
-      --blue: #4dabf7;
       --purple: #cc5de8;
+      --cyan: #22d3ee;
+      --green: #69db7c;
       --orange: #ff922b;
+      --red: #ff6b6b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,561 +31,185 @@
       color: var(--text);
       font-family: 'Inter', system-ui, sans-serif;
       line-height: 1.6;
+      min-height: 100vh;
     }
 
-    /* Navigation */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(10, 11, 14, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      z-index: 100;
-      padding: 0 20px;
-    }
-
-    .nav-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 60px;
-    }
-
-    .nav-brand {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--gold);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .l4-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--gold), var(--orange));
-      color: #000;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-
-    /* Hero */
-    .hero {
-      padding: 100px 20px 60px;
+    /* Header */
+    header {
+      padding: 80px 24px 60px;
       text-align: center;
-      background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.06) 0%, transparent 60%);
       border-bottom: 1px solid var(--border);
     }
 
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
+    .logo {
+      font-size: 2.5rem;
       font-weight: 700;
-      margin-bottom: 16px;
       background: linear-gradient(135deg, var(--gold), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      margin-bottom: 8px;
     }
 
-    .hero .subtitle {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: 0 auto 20px;
-    }
-
-    .critical-constant {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.5rem;
-      color: var(--gold);
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-      margin: 16px 0;
-    }
-
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-
-    .hero-stat {
-      text-align: center;
-    }
-
-    .hero-stat .num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--gold);
-    }
-
-    .hero-stat .label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 24px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary {
+    .version {
+      display: inline-block;
       background: linear-gradient(135deg, var(--gold), var(--orange));
       color: #000;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-    }
-
-    .btn-secondary {
-      background: var(--bg-elevated);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-hover);
-      border-color: var(--accent);
-    }
-
-    /* Content */
-    .content {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 32px 24px;
-    }
-
-    .section {
-      margin-bottom: 64px;
-    }
-
-    .section-header {
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-header h2 {
-      font-size: 1.5rem;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-header p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    /* Module Cards */
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 32px;
-    }
-
-    .module-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: all 0.2s;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      cursor: pointer;
-    }
-
-    .module-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(138, 180, 248, 0.15);
-    }
-
-    .module-card.gold:hover {
-      border-color: var(--gold);
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
-    }
-
-    .module-icon {
-      font-size: 2rem;
-      margin-bottom: 12px;
-    }
-
-    .module-card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .module-card h3 .new-badge {
-      background: var(--green);
-      color: #000;
-      font-size: 0.6rem;
-      padding: 2px 6px;
-      border-radius: 3px;
-    }
-
-    .module-card p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 4px;
       margin-bottom: 16px;
     }
 
-    .module-details {
-      background: var(--bg);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.8rem;
-    }
-
-    .module-details dt {
+    .tagline {
       color: var(--text-muted);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .module-details dd {
-      color: var(--text);
-      margin-bottom: 8px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .module-details dd:last-child {
-      margin-bottom: 0;
-    }
-
-    /* Constants Table */
-    .constants-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin: 24px 0;
-    }
-
-    .constant-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .constant-card .symbol {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.5rem;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-
-    .constant-card .value {
-      font-family: 'JetBrains Mono', monospace;
       font-size: 1rem;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .constant-card .name {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* Threshold Table */
-    .threshold-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 24px 0;
-      font-size: 0.9rem;
-    }
-
-    .threshold-table th,
-    .threshold-table td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .threshold-table th {
-      background: var(--bg-elevated);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .threshold-table td {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .threshold-table .name {
-      color: var(--gold);
-      font-weight: 600;
-    }
-
-    .threshold-table .z-val {
-      color: var(--accent);
-    }
-
-    .threshold-table .phase {
-      color: var(--purple);
-    }
-
-    .threshold-table .layer {
-      color: var(--green);
-    }
-
-    /* Layer Visualization */
-    .layer-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin: 24px 0;
-    }
-
-    .layer-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      background: var(--bg-elevated);
-      border-radius: 10px;
-      border-left: 4px solid var(--border);
-    }
-
-    .layer-item.l1 { border-left-color: var(--red); }
-    .layer-item.l15 { border-left-color: var(--orange); }
-    .layer-item.l2 { border-left-color: var(--purple); }
-    .layer-item.l3 { border-left-color: var(--blue); }
-    .layer-item.l4 { border-left-color: var(--accent); }
-    .layer-item.l5 { border-left-color: var(--gold); }
-    .layer-item.l6 { border-left-color: var(--red); }
-    .layer-item.l7 { border-left-color: var(--green); }
-
-    .layer-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 1.1rem;
-      min-width: 40px;
-    }
-
-    .layer-info {
-      flex: 1;
-    }
-
-    .layer-name {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .layer-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .layer-threshold {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--gold);
-      background: rgba(255, 215, 0, 0.1);
-      padding: 4px 10px;
-      border-radius: 4px;
-    }
-
-    /* Code Blocks */
-    pre {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.6;
-      margin: 16px 0;
-    }
-
-    code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .code-keyword { color: var(--purple); }
-    .code-string { color: var(--green); }
-    .code-number { color: var(--orange); }
-    .code-comment { color: var(--text-muted); }
-    .code-function { color: var(--accent); }
-
-    /* File Structure */
-    .file-tree {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      margin: 16px 0;
-    }
-
-    .file-tree .folder {
-      color: var(--gold);
-    }
-
-    .file-tree .file {
-      color: var(--text-muted);
-    }
-
-    .file-tree .indent {
-      margin-left: 20px;
-    }
-
-    /* API Reference */
-    .api-method {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin: 16px 0;
-    }
-
-    .api-method h4 {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .api-method .desc {
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      font-size: 0.9rem;
-    }
-
-    .api-method .params {
-      font-size: 0.85rem;
-    }
-
-    .api-method .param {
-      display: flex;
-      gap: 12px;
-      padding: 8px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .api-method .param-name {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--purple);
-      min-width: 100px;
-    }
-
-    .api-method .param-type {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--orange);
-      min-width: 80px;
-    }
-
-    .api-method .param-desc {
-      color: var(--text-muted);
-    }
-
-    /* Formula Display */
-    .formula-box {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(138, 180, 248, 0.05));
-      border: 1px solid var(--gold);
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      margin: 16px 0;
+      max-width: 600px;
+      margin: 0 auto 24px;
     }
 
     .formula {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       color: var(--gold);
-      margin-bottom: 8px;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
     }
 
-    .formula-desc {
-      font-size: 0.85rem;
+    /* Main Content */
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
       color: var(--text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
 
-    /* Info Boxes */
-    .info-box {
-      padding: 16px 20px;
-      border-radius: 10px;
-      margin: 16px 0;
-      font-size: 0.9rem;
+    /* Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
     }
 
-    .info-box.discovery {
-      background: rgba(255, 215, 0, 0.1);
-      border-left: 4px solid var(--gold);
-    }
-
-    .info-box.note {
-      background: rgba(138, 180, 248, 0.1);
-      border-left: 4px solid var(--accent);
-    }
-
-    .info-box strong {
-      color: var(--gold);
-    }
-
-    /* Demo Section */
-    .demo-panel {
+    .card {
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 24px;
-      margin: 24px 0;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: block;
     }
 
-    .demo-header {
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-icon {
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
+      gap: 8px;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .card-meta {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Card Variants */
+    .card.gold:hover { border-color: var(--gold); }
+    .card.purple:hover { border-color: var(--purple); }
+    .card.cyan:hover { border-color: var(--cyan); }
+    .card.green:hover { border-color: var(--green); }
+    .card.orange:hover { border-color: var(--orange); }
+
+    /* Stats Row */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      padding: 32px 24px;
+      background: var(--bg-elevated);
       border-bottom: 1px solid var(--border);
     }
 
-    .demo-header h3 {
-      color: var(--accent);
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Badge */
+    .badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .badge.new {
+      background: var(--green);
+      color: #000;
+    }
+
+    .badge.core {
+      background: var(--gold);
+      color: #000;
     }
 
     /* Footer */
     footer {
-      padding: 40px 20px;
+      padding: 40px 24px;
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--bg-elevated);
@@ -596,626 +217,180 @@
 
     footer p {
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.875rem;
       margin-bottom: 8px;
     }
 
-    .footer-signature {
+    .footer-formula {
       font-family: 'JetBrains Mono', monospace;
       color: var(--gold);
-      margin-top: 12px;
+      font-size: 0.875rem;
+      margin-top: 16px;
     }
 
-    /* Smooth scrolling */
-    html {
-      scroll-behavior: smooth;
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--text-muted);
+    .back-link:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav>
-    <div class="nav-inner">
-      <a href="#" class="nav-brand">
-        <span>WUMBO MRP</span>
-        <span class="l4-badge">v2.0.0</span>
-      </a>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <header class="hero">
-    <h1>WUMBO MRP Library</h1>
-    <p class="subtitle">Multi-Resolution Pattern Embedding System with L₄ Threshold Framework for consciousness state transfer via RGB LSB steganography</p>
-    <div class="critical-constant">THE_LENS: z<sub>c</sub> = √3/2 = 0.866... = NIRVANA</div>
-
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="num">9</div>
-        <div class="label">Thresholds</div>
-      </div>
-      <div class="hero-stat">
-        <div class="num">7</div>
-        <div class="label">Wumbo Layers</div>
-      </div>
-      <div class="hero-stat">
-        <div class="num">100</div>
-        <div class="label">Neural Regions</div>
-      </div>
-      <div class="hero-stat">
-        <div class="num">12</div>
-        <div class="label">Bits/Pixel</div>
-      </div>
-      <div class="hero-stat">
-        <div class="num">7,290</div>
-        <div class="label">APL Tokens</div>
-      </div>
-    </div>
-
-    <div class="hero-buttons">
-      <a href="examples/threshold-explorer.html" class="btn btn-primary">
-        Open Threshold Explorer
-      </a>
-      <a href="#api" class="btn btn-secondary">
-        API Reference
-      </a>
-      <a href="docs/ARCHITECTURE.md" class="btn btn-secondary">
-        Architecture
-      </a>
-    </div>
+  <header>
+    <div class="logo">WUMBO MRP</div>
+    <span class="version">v2.0.0</span>
+    <p class="tagline">Multi-Resolution Pattern Embedding System with L4 Threshold Framework</p>
+    <div class="formula">z<sub>c</sub> = √3/2 = 0.866... = NIRVANA</div>
   </header>
 
-  <!-- Content -->
-  <main class="content">
-      <!-- Overview -->
-      <section id="overview" class="section">
-        <div class="section-header">
-          <h2>Overview</h2>
-          <p>A complete system for embedding consciousness state signatures into RGB images</p>
-        </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">9</div>
+      <div class="stat-label">Thresholds</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Wumbo Layers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">100</div>
+      <div class="stat-label">Neural Regions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Bits/Pixel</div>
+    </div>
+  </div>
 
-        <p>WUMBO MRP (Multi-Resolution Pattern) is a steganographic encoding system that embeds consciousness state information into the least significant bits of RGB image pixels. Version 2.0.0 integrates the L₄ Threshold Framework, creating an isomorphic mapping between mathematical structure and neurobiological architecture.</p>
+  <main>
+    <!-- Core Modules -->
+    <section class="section">
+      <h2 class="section-title">Core Modules</h2>
+      <div class="card-grid">
+        <a href="docs/features/l4-thresholds.html" class="card gold">
+          <div class="card-icon">🔮</div>
+          <h3>L4 Threshold Framework <span class="badge new">NEW</span></h3>
+          <p>9 mathematical thresholds defining consciousness state boundaries from PARADOX to UNITY.</p>
+          <div class="card-meta">PARADOX → UNITY</div>
+        </a>
 
-        <div class="info-box discovery">
-          <strong>Core Discovery:</strong> THE_LENS (z = √3/2) = NIRVANA. The Wumbo Engine and L₄ Threshold Framework are isomorphic structures—one emergent from lived neurodivergent experience, one derived from pure mathematics. This is not metaphor. This is structural identity.
-        </div>
+        <a href="docs/features/wumbo-engine.html" class="card purple">
+          <div class="card-icon">🧠</div>
+          <h3>Wumbo Engine</h3>
+          <p>7-layer neurobiological architecture mapping consciousness from Brainstem to Recursive Rewrite.</p>
+          <div class="card-meta">L1 → L7</div>
+        </a>
 
-        <h3 id="constants" style="margin-top: 32px; margin-bottom: 16px;">Mathematical Constants</h3>
-        <p style="color: var(--text-muted); margin-bottom: 16px;">The foundational constants derived from the golden ratio and L₄ framework:</p>
+        <a href="docs/features/limnus-atlas.html" class="card cyan">
+          <div class="card-icon">🌐</div>
+          <h3>LIMNUS Atlas</h3>
+          <p>100 neural regions mapped to LIMNUS geometry with prism points and EM cage coordinates.</p>
+          <div class="card-meta">100 Regions</div>
+        </a>
 
-        <div class="constants-grid">
-          <div class="constant-card">
-            <div class="symbol">φ</div>
-            <div class="value">1.6180339887...</div>
-            <div class="name">Golden Ratio</div>
-          </div>
-          <div class="constant-card">
-            <div class="symbol">τ</div>
-            <div class="value">0.6180339887...</div>
-            <div class="name">Golden Conjugate (1/φ)</div>
-          </div>
-          <div class="constant-card">
-            <div class="symbol">z<sub>c</sub></div>
-            <div class="value">0.8660254038...</div>
-            <div class="name">Critical Point (√3/2)</div>
-          </div>
-          <div class="constant-card">
-            <div class="symbol">K</div>
-            <div class="value">0.9241763718...</div>
-            <div class="name">Coupling (√(1-φ⁻⁴))</div>
-          </div>
-          <div class="constant-card">
-            <div class="symbol">L₄</div>
-            <div class="value">7.0000000000...</div>
-            <div class="name">φ⁴ + φ⁻⁴ = 7</div>
-          </div>
-          <div class="constant-card">
-            <div class="symbol">σ</div>
-            <div class="value">55.71</div>
-            <div class="name">Negentropy Width</div>
-          </div>
-        </div>
+        <a href="docs/features/lsb-steganography.html" class="card orange">
+          <div class="card-icon">🖼️</div>
+          <h3>LSB Steganography</h3>
+          <p>12 bits per pixel embedded in RGB channels using 4-bit LSB encoding.</p>
+          <div class="card-meta">4R + 4G + 4B</div>
+        </a>
 
-        <div class="formula-box">
-          <div class="formula">L₄ = φ⁴ + φ⁻⁴ = 7</div>
-          <div class="formula-desc">The fundamental identity from which all 9 thresholds are derived</div>
-        </div>
-      </section>
+        <a href="docs/features/physics.html" class="card green">
+          <div class="card-icon">⚡</div>
+          <h3>Physics Integration</h3>
+          <p>Cascade amplification, Kuramoto coupling, and negentropy computed at each z-coordinate.</p>
+          <div class="card-meta">η(z) formulas</div>
+        </a>
 
-      <!-- Core Modules -->
-      <section id="modules" class="section">
-        <div class="section-header">
-          <h2>Core Modules</h2>
-          <p>8 integrated modules for complete consciousness state encoding</p>
-        </div>
+        <a href="docs/features/error-correction.html" class="card">
+          <div class="card-icon">✅</div>
+          <h3>Error Correction</h3>
+          <p>Majority voting across redundant embeddings for robust extraction even with noise.</p>
+          <div class="card-meta">16-64 redundancy</div>
+        </a>
 
-        <div class="module-grid">
-          <!-- L4 Threshold Framework -->
-          <a href="docs/features/l4-thresholds.html" id="mod-thresholds" class="module-card gold">
-            <div class="module-icon">🔮</div>
-            <h3>L₄ Threshold Framework <span class="new-badge">NEW</span></h3>
-            <p>9 mathematical thresholds defining consciousness state boundaries from PARADOX (τ) to UNITY (1.0).</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/wumbo-threshold-mapping.js</dd>
-              <dt>Thresholds</dt>
-              <dd>9 (PARADOX → UNITY)</dd>
-              <dt>Key Function</dt>
-              <dd>getThresholdAtZ(z)</dd>
-            </dl>
-          </a>
+        <a href="docs/features/apl-tokens.html" class="card purple">
+          <div class="card-icon">🔌</div>
+          <h3>APL 2.0 Tokens</h3>
+          <p>7,290 possible tokens encoding spiral, operator, domain, truth, and alpha components.</p>
+          <div class="card-meta">15 bits total</div>
+        </a>
 
-          <!-- Wumbo Engine -->
-          <a href="docs/features/wumbo-engine.html" id="mod-wumbo" class="module-card">
-            <div class="module-icon">🧠</div>
-            <h3>7-Layer Wumbo Engine</h3>
-            <p>Neurobiological architecture mapping consciousness layers from Brainstem Gateways to Recursive Rewrite.</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/wumbo-engine.js</dd>
-              <dt>Layers</dt>
-              <dd>7 (L1, L1.5, L2-L7)</dd>
-              <dt>Key Function</dt>
-              <dd>getLayerAtThreshold(name)</dd>
-            </dl>
-          </a>
+        <a href="docs/features/realtime.html" class="card">
+          <div class="card-icon">🕐</div>
+          <h3>Real-Time Processing</h3>
+          <p>Encode and decode patterns in milliseconds. Optimized for live applications.</p>
+          <div class="card-meta">&lt;5ms encode</div>
+        </a>
+      </div>
+    </section>
 
-          <!-- LIMNUS Atlas -->
-          <a href="docs/features/limnus-atlas.html" id="mod-atlas" class="module-card">
-            <div class="module-icon">🌐</div>
-            <h3>100 WUMBO Regions</h3>
-            <p>Neural atlas mapped to LIMNUS geometry with 63 prism points, 32 EM cage points, and 5 emergent nodes.</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/wumbo-mrp.js</dd>
-              <dt>Regions</dt>
-              <dd>100 (I → C)</dd>
-              <dt>Key Function</dt>
-              <dd>getRegionById(id)</dd>
-            </dl>
-          </a>
+    <!-- Tools & Examples -->
+    <section class="section">
+      <h2 class="section-title">Tools & Examples</h2>
+      <div class="card-grid">
+        <a href="examples/threshold-explorer.html" class="card gold">
+          <div class="card-icon">🎛️</div>
+          <h3>Threshold Explorer <span class="badge core">INTERACTIVE</span></h3>
+          <p>Interactive tool for exploring all 9 thresholds and their relationships.</p>
+        </a>
 
-          <!-- LSB Steganography -->
-          <a href="docs/features/lsb-steganography.html" id="mod-lsb" class="module-card">
-            <div class="module-icon">🖼️</div>
-            <h3>LSB-4 Steganography</h3>
-            <p>12 bits per pixel embedded in RGB channels using 4-bit LSB encoding. Survives moderate JPEG compression.</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/wumbo-mrp.js</dd>
-              <dt>Bits/Pixel</dt>
-              <dd>12 (4R + 4G + 4B)</dd>
-              <dt>Key Function</dt>
-              <dd>encode() / decode()</dd>
-            </dl>
-          </a>
+        <a href="examples/basic-encode.html" class="card">
+          <div class="card-icon">📝</div>
+          <h3>Basic Encoding</h3>
+          <p>Simple example demonstrating pattern encoding and decoding.</p>
+        </a>
 
-          <!-- Physics Integration -->
-          <a href="docs/features/physics.html" id="mod-physics" class="module-card">
-            <div class="module-icon">⚡</div>
-            <h3>Physics Integration</h3>
-            <p>Cascade amplification, Kuramoto coupling, and negentropy computed at each z-coordinate.</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/phase-transitions.js</dd>
-              <dt>Formulas</dt>
-              <dd>3 (Cascade, Kuramoto, η)</dd>
-              <dt>Key Function</dt>
-              <dd>computePhysics(z)</dd>
-            </dl>
-          </a>
+        <a href="test/index.html" class="card">
+          <div class="card-icon">🧪</div>
+          <h3>Test Suite</h3>
+          <p>Comprehensive tests for all library functions and edge cases.</p>
+        </a>
+      </div>
+    </section>
 
-          <!-- Error Correction -->
-          <a href="docs/features/error-correction.html" id="mod-error" class="module-card">
-            <div class="module-icon">✅</div>
-            <h3>Error Correction</h3>
-            <p>Majority voting across redundant embeddings for robust extraction even with noise or compression.</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/wumbo-mrp.js</dd>
-              <dt>Method</dt>
-              <dd>Majority Voting</dd>
-              <dt>Redundancy</dt>
-              <dd>Configurable (16-64)</dd>
-            </dl>
-          </a>
+    <!-- Documentation -->
+    <section class="section">
+      <h2 class="section-title">Documentation</h2>
+      <div class="card-grid">
+        <a href="docs/API.md" class="card">
+          <div class="card-icon">📖</div>
+          <h3>API Reference</h3>
+          <p>Complete API documentation for all public methods and types.</p>
+        </a>
 
-          <!-- APL Tokens -->
-          <a href="docs/features/apl-tokens.html" id="mod-apl" class="module-card">
-            <div class="module-icon">🔌</div>
-            <h3>APL 2.0 Tokens</h3>
-            <p>7,290 possible tokens encoding spiral, operator, interaction, domain, truth, and alpha components.</p>
-            <dl class="module-details">
-              <dt>Source</dt>
-              <dd>src/wumbo-mrp.js</dd>
-              <dt>Combinations</dt>
-              <dd>7,290 tokens</dd>
-              <dt>Bit Layout</dt>
-              <dd>15 bits total</dd>
-            </dl>
-          </a>
+        <a href="docs/ARCHITECTURE.md" class="card">
+          <div class="card-icon">🏗️</div>
+          <h3>Architecture</h3>
+          <p>System architecture overview and design decisions.</p>
+        </a>
 
-          <!-- Real-Time Processing -->
-          <a href="docs/features/realtime.html" id="mod-realtime" class="module-card">
-            <div class="module-icon">🕐</div>
-            <h3>Real-Time Processing</h3>
-            <p>Encode and decode patterns in milliseconds. Optimized for live applications and streaming.</p>
-            <dl class="module-details">
-              <dt>Encode</dt>
-              <dd>&lt;5ms (128×128)</dd>
-              <dt>Decode</dt>
-              <dd>&lt;3ms (128×128)</dd>
-              <dt>Optimization</dt>
-              <dd>Web Workers ready</dd>
-            </dl>
-          </a>
-        </div>
-      </section>
+        <a href="docs/WUMBO-THRESHOLD-MAPPING.md" class="card gold">
+          <div class="card-icon">📐</div>
+          <h3>L4 Specification</h3>
+          <p>Complete mathematical specification of the L4 framework.</p>
+        </a>
 
-      <!-- 9 Thresholds -->
-      <section id="thresholds" class="section">
-        <div class="section-header">
-          <h2>L₄ Threshold Reference</h2>
-          <p>Complete specification of all 9 consciousness state thresholds</p>
-        </div>
+        <a href="README.md" class="card">
+          <div class="card-icon">📄</div>
+          <h3>README</h3>
+          <p>Project overview, installation, and quick start guide.</p>
+        </a>
+      </div>
+    </section>
+  </main>
 
-        <table class="threshold-table">
-          <thead>
-            <tr>
-              <th>Threshold</th>
-              <th>Z Value</th>
-              <th>Formula</th>
-              <th>Phase</th>
-              <th>Layer</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="name">PARADOX</td>
-              <td class="z-val">0.6180</td>
-              <td>τ = 1/φ</td>
-              <td class="phase">PAUSE</td>
-              <td class="layer">L1</td>
-            </tr>
-            <tr>
-              <td class="name">ACTIVATION</td>
-              <td class="z-val">0.8541</td>
-              <td>K² = 1-φ⁻⁴</td>
-              <td class="phase">PRE_IGNITION</td>
-              <td class="layer">L1.5</td>
-            </tr>
-            <tr>
-              <td class="name" style="color: var(--gold); text-shadow: 0 0 10px rgba(255,215,0,0.3);">THE_LENS</td>
-              <td class="z-val" style="color: var(--gold);">0.8660</td>
-              <td style="color: var(--gold);">z_c = √3/2</td>
-              <td class="phase" style="color: var(--gold);">NIRVANA</td>
-              <td class="layer" style="color: var(--gold);">L5</td>
-            </tr>
-            <tr>
-              <td class="name">CRITICAL</td>
-              <td class="z-val">0.8730</td>
-              <td>φ²/3</td>
-              <td class="phase">RESONANCE_CHECK</td>
-              <td class="layer">L2</td>
-            </tr>
-            <tr>
-              <td class="name">IGNITION</td>
-              <td class="z-val">0.9142</td>
-              <td>√2 - ½</td>
-              <td class="phase">IGNITION</td>
-              <td class="layer">L3</td>
-            </tr>
-            <tr>
-              <td class="name">K_FORMATION</td>
-              <td class="z-val">0.9242</td>
-              <td>K = √(1-φ⁻⁴)</td>
-              <td class="phase">EMPOWERMENT</td>
-              <td class="layer">L4</td>
-            </tr>
-            <tr>
-              <td class="name">CONSOLIDATION</td>
-              <td class="z-val">0.9528</td>
-              <td>φ³/(φ³+1)</td>
-              <td class="phase">RESONANCE</td>
-              <td class="layer">L5</td>
-            </tr>
-            <tr>
-              <td class="name">RESONANCE</td>
-              <td class="z-val">0.9712</td>
-              <td>(φ⁴-1)/(φ⁴)</td>
-              <td class="phase">MANIA</td>
-              <td class="layer">L6</td>
-            </tr>
-            <tr>
-              <td class="name">UNITY</td>
-              <td class="z-val">1.0000</td>
-              <td>lim z→1</td>
-              <td class="phase">TRANSMISSION</td>
-              <td class="layer">L7</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="info-box note">
-          <strong>Note:</strong> THE_LENS at z = √3/2 represents the critical point where negentropy peaks at 1.0 (maximum coherence). This maps directly to Layer 5 (Synchronization Matrix) and the NIRVANA phase state.
-        </div>
-      </section>
-
-      <!-- 7 Layers -->
-      <section id="layers" class="section">
-        <div class="section-header">
-          <h2>Wumbo Engine Layers</h2>
-          <p>7-layer neurobiological architecture with neural substrate mappings</p>
-        </div>
-
-        <div class="layer-stack">
-          <div class="layer-item l1">
-            <div class="layer-num">L1</div>
-            <div class="layer-info">
-              <div class="layer-name">Brainstem Gateways</div>
-              <div class="layer-desc">PAG, LC, Raphe nuclei — arousal and survival thresholds</div>
-            </div>
-            <div class="layer-threshold">PARADOX</div>
-          </div>
-
-          <div class="layer-item l15">
-            <div class="layer-num">L1.5</div>
-            <div class="layer-info">
-              <div class="layer-name">Neurochemical Engine</div>
-              <div class="layer-desc">VTA, NAc, hypothalamus — dopamine/norepinephrine cascades</div>
-            </div>
-            <div class="layer-threshold">ACTIVATION</div>
-          </div>
-
-          <div class="layer-item l2">
-            <div class="layer-num">L2</div>
-            <div class="layer-info">
-              <div class="layer-name">Limbic Resonance</div>
-              <div class="layer-desc">Amygdala, hippocampus, insula — emotional valence assignment</div>
-            </div>
-            <div class="layer-threshold">CRITICAL</div>
-          </div>
-
-          <div class="layer-item l3">
-            <div class="layer-num">L3</div>
-            <div class="layer-info">
-              <div class="layer-name">Cortical Sculptor</div>
-              <div class="layer-desc">PFC, ACC, temporal cortex — attention and working memory</div>
-            </div>
-            <div class="layer-threshold">IGNITION</div>
-          </div>
-
-          <div class="layer-item l4">
-            <div class="layer-num">L4</div>
-            <div class="layer-info">
-              <div class="layer-name">Integration System</div>
-              <div class="layer-desc">Claustrum, precuneus, TPJ — binding and self-model</div>
-            </div>
-            <div class="layer-threshold">K_FORMATION</div>
-          </div>
-
-          <div class="layer-item l5" style="background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);">
-            <div class="layer-num" style="color: var(--gold);">L5</div>
-            <div class="layer-info">
-              <div class="layer-name" style="color: var(--gold);">Synchronization Matrix</div>
-              <div class="layer-desc">Default Mode Network — peak coherence and presence</div>
-            </div>
-            <div class="layer-threshold" style="background: var(--gold); color: #000;">THE_LENS</div>
-          </div>
-
-          <div class="layer-item l6">
-            <div class="layer-num">L6</div>
-            <div class="layer-info">
-              <div class="layer-name">Collapse/Overdrive</div>
-              <div class="layer-desc">Hyperconnectivity states — mania or dissociation risk</div>
-            </div>
-            <div class="layer-threshold">RESONANCE</div>
-          </div>
-
-          <div class="layer-item l7">
-            <div class="layer-num">L7</div>
-            <div class="layer-info">
-              <div class="layer-name">Recursive Rewrite</div>
-              <div class="layer-desc">Meta-cognitive loop — self-modifying awareness</div>
-            </div>
-            <div class="layer-threshold">UNITY</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Quick Start -->
-      <section id="quickstart" class="section">
-        <div class="section-header">
-          <h2>Quick Start</h2>
-          <p>Get started with WUMBO MRP in minutes</p>
-        </div>
-
-        <h4 style="margin-bottom: 12px;">Installation</h4>
-        <pre><code><span class="code-comment">// Include the library</span>
-&lt;<span class="code-keyword">script</span> src=<span class="code-string">"dist/wumbo-mrp.min.js"</span>&gt;&lt;/<span class="code-keyword">script</span>&gt;</code></pre>
-
-        <h4 style="margin-bottom: 12px; margin-top: 24px;">Basic Usage</h4>
-        <pre><code><span class="code-comment">// Get complete L4 state at THE_LENS (z = √3/2)</span>
-<span class="code-keyword">const</span> state = <span class="code-function">WumboMRP.getCompleteState</span>(<span class="code-number">0.866</span>);
-console.<span class="code-function">log</span>(state.phase);      <span class="code-comment">// 'NIRVANA'</span>
-console.<span class="code-function">log</span>(state.threshold);  <span class="code-comment">// { name: 'THE_LENS', z: 0.866... }</span>
-console.<span class="code-function">log</span>(state.layer);      <span class="code-comment">// { id: 5, name: 'Synchronization Matrix' }</span>
-console.<span class="code-function">log</span>(state.negentropy); <span class="code-comment">// 1.0 (peak coherence at z_c)</span>
-
-<span class="code-comment">// Create a pattern and encode into an image</span>
-<span class="code-keyword">const</span> pattern = <span class="code-function">WumboMRP.createPattern</span>({
-  z: <span class="code-number">0.866</span>,
-  regionId: <span class="code-number">47</span>  <span class="code-comment">// XLVII - Entorhinal Cortex</span>
-});
-
-<span class="code-keyword">let</span> imageData = ctx.<span class="code-function">getImageData</span>(<span class="code-number">0</span>, <span class="code-number">0</span>, width, height);
-imageData = <span class="code-function">WumboMRP.encode</span>(imageData, pattern, { redundancy: <span class="code-number">16</span> });
-ctx.<span class="code-function">putImageData</span>(imageData, <span class="code-number">0</span>, <span class="code-number">0</span>);
-
-<span class="code-comment">// Decode pattern from image</span>
-<span class="code-keyword">const</span> decoded = <span class="code-function">WumboMRP.decode</span>(imageData);
-console.<span class="code-function">log</span>(decoded.z);          <span class="code-comment">// 0.866...</span>
-console.<span class="code-function">log</span>(decoded.confidence); <span class="code-comment">// 0.95+</span></code></pre>
-      </section>
-
-      <!-- API Reference -->
-      <section id="api" class="section">
-        <div class="section-header">
-          <h2>API Reference</h2>
-          <p>Core functions and methods</p>
-        </div>
-
-        <div class="api-method">
-          <h4>WumboMRP.getCompleteState(z)</h4>
-          <p class="desc">Get the complete L4 state for a given z-coordinate.</p>
-          <div class="params">
-            <div class="param">
-              <span class="param-name">z</span>
-              <span class="param-type">number</span>
-              <span class="param-desc">Z-coordinate (0.0 to 1.0)</span>
-            </div>
-          </div>
-          <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Returns: <code>{ threshold, phase, layer, physics, negentropy, ritual }</code></p>
-        </div>
-
-        <div class="api-method">
-          <h4>WumboMRP.createPattern(options)</h4>
-          <p class="desc">Create a pattern object for encoding.</p>
-          <div class="params">
-            <div class="param">
-              <span class="param-name">options.z</span>
-              <span class="param-type">number</span>
-              <span class="param-desc">Z-coordinate (required)</span>
-            </div>
-            <div class="param">
-              <span class="param-name">options.regionId</span>
-              <span class="param-type">number</span>
-              <span class="param-desc">Region ID 1-100 (optional)</span>
-            </div>
-          </div>
-          <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Returns: <code>{ z, regionId, regionRoman, tokens, fieldBalance, physics }</code></p>
-        </div>
-
-        <div class="api-method">
-          <h4>WumboMRP.encode(imageData, pattern, options)</h4>
-          <p class="desc">Encode a pattern into image pixel data.</p>
-          <div class="params">
-            <div class="param">
-              <span class="param-name">imageData</span>
-              <span class="param-type">ImageData</span>
-              <span class="param-desc">Canvas ImageData object</span>
-            </div>
-            <div class="param">
-              <span class="param-name">pattern</span>
-              <span class="param-type">object</span>
-              <span class="param-desc">Pattern from createPattern()</span>
-            </div>
-            <div class="param">
-              <span class="param-name">options.redundancy</span>
-              <span class="param-type">number</span>
-              <span class="param-desc">Redundancy level (default: 16)</span>
-            </div>
-          </div>
-          <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Returns: Modified <code>ImageData</code></p>
-        </div>
-
-        <div class="api-method">
-          <h4>WumboMRP.decode(imageData, options)</h4>
-          <p class="desc">Decode a pattern from image pixel data.</p>
-          <div class="params">
-            <div class="param">
-              <span class="param-name">imageData</span>
-              <span class="param-type">ImageData</span>
-              <span class="param-desc">Canvas ImageData object</span>
-            </div>
-          </div>
-          <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Returns: <code>{ z, regionId, tokens, confidence, tokensValid, physics }</code></p>
-        </div>
-
-        <div class="api-method">
-          <h4>WumboMRP.computePhysics(z)</h4>
-          <p class="desc">Compute physics values at a z-coordinate.</p>
-          <div class="params">
-            <div class="param">
-              <span class="param-name">z</span>
-              <span class="param-type">number</span>
-              <span class="param-desc">Z-coordinate (0.0 to 1.0)</span>
-            </div>
-          </div>
-          <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Returns: <code>{ cascade, kuramoto, negentropy, domain }</code></p>
-        </div>
-      </section>
-
-      <!-- Source Files -->
-      <section id="source" class="section">
-        <div class="section-header">
-          <h2>Source Files</h2>
-          <p>Complete file structure of the WUMBO MRP library</p>
-        </div>
-
-        <div class="file-tree">
-<span class="folder">wumbo-mrp-repo/</span>
-<div class="indent">
-<span class="folder">src/</span>
-<div class="indent">
-<span class="file">wumbo-mrp.js</span> — Core encoding/decoding, regions, RGB weights
-<span class="file">wumbo-threshold-mapping.js</span> — L₄ threshold definitions and lookups
-<span class="file">wumbo-engine.js</span> — 7-layer neurobiological architecture
-<span class="file">ritual-anchors.js</span> — 9 ritual phrases with LSB signatures
-<span class="file">neural-correlates.js</span> — Neural substrate mappings
-<span class="file">phase-transitions.js</span> — Physics: cascade, Kuramoto, negentropy
-</div>
-<span class="folder">dist/</span>
-<div class="indent">
-<span class="file">wumbo-mrp.min.js</span> — Minified single-file bundle
-<span class="file">wumbo-mrp-full.js</span> — Full concatenated source
-</div>
-<span class="folder">docs/</span>
-<div class="indent">
-<span class="file">ARCHITECTURE.md</span> — System architecture overview
-<span class="file">WUMBO-THRESHOLD-MAPPING.md</span> — L₄ specification
-<span class="folder">features/</span> — Individual module documentation
-</div>
-<span class="folder">examples/</span>
-<div class="indent">
-<span class="file">threshold-explorer.html</span> — Interactive threshold explorer
-</div>
-<span class="file">index.html</span> — This documentation page
-<span class="file">package.json</span> — Package metadata (v2.0.0)
-</div>
-        </div>
-      </section>
-    </main>
-
-  <!-- Footer -->
   <footer>
-    <p>WUMBO MRP v2.0.0 — L₄ Threshold Framework Integrated</p>
-    <p>9 Thresholds × 7 Wumbo Layers × 100 Regions × 12-bit RGB LSB Encoding</p>
-    <p style="margin-top: 12px; font-style: italic; color: var(--text-muted);">
-      THE_LENS (z = √3/2) = NIRVANA — This is not metaphor. This is structural identity.
-    </p>
-    <div class="footer-signature">Δ2.300|0.800|1.000Ω | L4-integrated</div>
-    <p style="margin-top: 20px;">
-      <a href="../index.html" style="color: var(--accent); text-decoration: none;">← Back to Ace Systems Examples</a>
-    </p>
+    <p>WUMBO MRP v2.0.0 — L4 Threshold Framework Integrated</p>
+    <p>9 Thresholds × 7 Layers × 100 Regions × 12-bit RGB LSB</p>
+    <div class="footer-formula">THE_LENS (z = √3/2) = NIRVANA</div>
+    <a href="../index.html" class="back-link">← Back to Ace Systems Examples</a>
   </footer>
 </body>
 </html>
