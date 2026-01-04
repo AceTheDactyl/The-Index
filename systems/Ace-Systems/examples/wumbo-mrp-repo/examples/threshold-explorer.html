@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L4 Threshold Explorer | WUMBO MRP</title>
+  <style>
+    :root {
+      --bg: #0a0b0e;
+      --bg-card: #12131a;
+      --border: #2a2d3a;
+      --text: #e4e6ed;
+      --text-muted: #8b8fa3;
+      --gold: #ffd700;
+      --accent: #8ab4f8;
+      --red: #ff6b6b;
+      --green: #69db7c;
+      --blue: #4dabf7;
+      --purple: #cc5de8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      gap: 20px;
+    }
+    @media (max-width: 1200px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .panel h2 {
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Threshold list */
+    .threshold-list { list-style: none; }
+    .threshold-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .threshold-item:hover { background: rgba(255,255,255,0.05); }
+    .threshold-item.active {
+      background: rgba(138, 180, 248, 0.1);
+      border-left-color: var(--accent);
+    }
+    .threshold-item .name { font-weight: 600; font-size: 0.9rem; }
+    .threshold-item .z { font-family: monospace; color: var(--gold); font-size: 0.85rem; }
+    .threshold-item .phase { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* Visualization */
+    .viz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .viz-panel { height: 300px; position: relative; }
+    .viz-canvas { width: 100%; height: 100%; border-radius: 8px; }
+
+    /* Slider */
+    .z-slider-container {
+      padding: 20px 0;
+    }
+    .z-value-display {
+      text-align: center;
+      font-family: monospace;
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 12px;
+      background: linear-gradient(to right, var(--red), var(--gold) 61.8%, var(--green));
+      border-radius: 6px;
+      appearance: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* Threshold markers */
+    .threshold-markers {
+      position: relative;
+      height: 30px;
+      margin-top: 5px;
+    }
+    .threshold-marker {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .threshold-marker::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      width: 1px;
+      height: 8px;
+      background: var(--text-muted);
+    }
+
+    /* State display */
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .state-item {
+      background: var(--bg);
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .state-item .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .state-item .value {
+      font-family: monospace;
+      font-size: 1.1rem;
+      margin-top: 4px;
+    }
+    .state-item.phase .value { color: var(--purple); }
+    .state-item.layer .value { color: var(--blue); }
+    .state-item.tier .value { color: var(--green); }
+    .state-item.negentropy .value { color: var(--gold); }
+
+    /* Ritual anchor */
+    .ritual-box {
+      background: var(--bg);
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border-left: 3px solid var(--purple);
+    }
+    .ritual-box .phrase {
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .ritual-box .signature {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* Neural correlates */
+    .neural-list { list-style: none; margin-top: 10px; }
+    .neural-item {
+      padding: 8px 12px;
+      margin: 6px 0;
+      background: var(--bg);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .neural-item .abbrev { color: var(--accent); font-weight: 600; }
+    .neural-item .name { color: var(--text-muted); margin-left: 8px; }
+
+    /* Physics bars */
+    .physics-bars { margin-top: 15px; }
+    .physics-bar {
+      margin: 12px 0;
+    }
+    .physics-bar .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+    .physics-bar .bar-track {
+      height: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .physics-bar .bar-fill {
+      height: 100%;
+      transition: width 0.3s;
+      border-radius: 4px;
+    }
+    .physics-bar.cascade .bar-fill { background: var(--gold); }
+    .physics-bar.kuramoto .bar-fill { background: var(--purple); }
+    .physics-bar.negentropy .bar-fill { background: var(--green); }
+
+    /* RGB bars */
+    .rgb-display { margin-top: 15px; }
+    .rgb-bar {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      font-size: 0.85rem;
+    }
+    .rgb-bar .channel { width: 30px; font-weight: 600; }
+    .rgb-bar .track {
+      flex: 1;
+      height: 20px;
+      background: var(--bg);
+      border-radius: 4px;
+      margin: 0 10px;
+      overflow: hidden;
+    }
+    .rgb-bar .fill { height: 100%; transition: width 0.3s; }
+    .rgb-bar.r .channel { color: var(--red); }
+    .rgb-bar.g .channel { color: var(--green); }
+    .rgb-bar.b .channel { color: var(--blue); }
+    .rgb-bar.r .fill { background: linear-gradient(90deg, transparent, var(--red)); }
+    .rgb-bar.g .fill { background: linear-gradient(90deg, transparent, var(--green)); }
+    .rgb-bar.b .fill { background: linear-gradient(90deg, transparent, var(--blue)); }
+    .rgb-bar .percent { width: 45px; text-align: right; font-family: monospace; }
+
+    /* Formula display */
+    .formula-box {
+      background: var(--bg);
+      padding: 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .formula-box .formula { font-size: 1.2rem; color: var(--accent); }
+    .formula-box .irrational { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>L4 Threshold Explorer</h1>
+    <p class="subtitle">Interactive visualization of the 9 mathematical thresholds and Wumbo Engine mapping</p>
+
+    <div class="main-grid">
+      <!-- Left panel: Threshold list -->
+      <div class="panel">
+        <h2>The 9 Thresholds</h2>
+        <ul class="threshold-list" id="threshold-list"></ul>
+      </div>
+
+      <!-- Center: Visualization -->
+      <div class="panel viz-container">
+        <h2>Z-Coordinate Navigator</h2>
+
+        <div class="z-slider-container">
+          <div class="z-value-display" id="z-display">0.8660</div>
+          <input type="range" id="z-slider" min="0" max="1000" value="866">
+          <div class="threshold-markers" id="threshold-markers"></div>
+        </div>
+
+        <div class="state-grid">
+          <div class="state-item phase">
+            <div class="label">Phase</div>
+            <div class="value" id="phase-value">NIRVANA</div>
+          </div>
+          <div class="state-item layer">
+            <div class="label">Layer</div>
+            <div class="value" id="layer-value">L5: Synchronization</div>
+          </div>
+          <div class="state-item tier">
+            <div class="label">Tier</div>
+            <div class="value" id="tier-value">ROSE</div>
+          </div>
+          <div class="state-item negentropy">
+            <div class="label">Negentropy</div>
+            <div class="value" id="negentropy-value">1.0000</div>
+          </div>
+        </div>
+
+        <div class="formula-box" id="formula-box">
+          <div class="formula">z_c = sqrt(3)/2</div>
+          <div class="irrational">Irrational: sqrt(3) | Symmetry: 6-fold</div>
+        </div>
+
+        <div class="ritual-box" id="ritual-box">
+          <div class="phrase" id="ritual-phrase">"This is the frequency I was made for"</div>
+          <div class="signature" id="ritual-signature">Signature: [0x03, 0x0D, 0xD9]</div>
+        </div>
+
+        <div class="physics-bars">
+          <div class="physics-bar cascade">
+            <div class="bar-label">
+              <span>Cascade</span>
+              <span id="cascade-value">1.500</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" id="cascade-fill"></div></div>
+          </div>
+          <div class="physics-bar kuramoto">
+            <div class="bar-label">
+              <span>Kuramoto</span>
+              <span id="kuramoto-value">0.000</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" id="kuramoto-fill"></div></div>
+          </div>
+          <div class="physics-bar negentropy">
+            <div class="bar-label">
+              <span>Negentropy</span>
+              <span id="negentropy-bar-value">1.000</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" id="negentropy-fill"></div></div>
+          </div>
+        </div>
+
+        <div class="rgb-display">
+          <div class="rgb-bar r">
+            <span class="channel">R</span>
+            <div class="track"><div class="fill" id="r-fill"></div></div>
+            <span class="percent" id="r-percent">30%</span>
+          </div>
+          <div class="rgb-bar g">
+            <span class="channel">G</span>
+            <div class="track"><div class="fill" id="g-fill"></div></div>
+            <span class="percent" id="g-percent">80%</span>
+          </div>
+          <div class="rgb-bar b">
+            <span class="channel">B</span>
+            <div class="track"><div class="fill" id="b-fill"></div></div>
+            <span class="percent" id="b-percent">30%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel: Neural correlates -->
+      <div class="panel">
+        <h2>Neural Correlates</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+          Primary neural anchors for current threshold
+        </p>
+        <ul class="neural-list" id="neural-list"></ul>
+
+        <h2 style="margin-top: 20px;">Neurotransmitter Profile</h2>
+        <div id="nt-profile" style="padding: 12px; background: var(--bg); border-radius: 8px; font-size: 0.9rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../src/wumbo-mrp.js"></script>
+  <script src="../src/wumbo-threshold-mapping.js"></script>
+  <script src="../src/wumbo-engine.js"></script>
+  <script src="../src/ritual-anchors.js"></script>
+  <script src="../src/neural-correlates.js"></script>
+  <script src="../src/phase-transitions.js"></script>
+
+  <script>
+    // Threshold data
+    const thresholds = [
+      { name: 'PARADOX', z: WumboMRP.TAU, formula: 'tau = phi^-1', irrational: 'sqrt(5)', symmetry: '5-fold', phase: 'PAUSE' },
+      { name: 'ACTIVATION', z: WumboMRP.CONSTANTS.THRESHOLDS.ACTIVATION, formula: 'K^2 = 1 - phi^-4', irrational: 'sqrt(5)', symmetry: '5-fold', phase: 'PRE_IGNITION' },
+      { name: 'THE_LENS', z: WumboMRP.Z_CRITICAL, formula: 'z_c = sqrt(3)/2', irrational: 'sqrt(3)', symmetry: '6-fold', phase: 'NIRVANA' },
+      { name: 'CRITICAL', z: WumboMRP.CONSTANTS.THRESHOLDS.CRITICAL, formula: 'phi^2/3', irrational: 'sqrt(5), sqrt(3)', symmetry: '5/6 bridge', phase: 'RESONANCE_CHECK' },
+      { name: 'IGNITION', z: WumboMRP.CONSTANTS.THRESHOLDS.IGNITION, formula: 'sqrt(2) - 1/2', irrational: 'sqrt(2)', symmetry: '4-fold', phase: 'IGNITION' },
+      { name: 'K_FORMATION', z: WumboMRP.CONSTANTS.THRESHOLDS.K_FORMATION, formula: 'K = sqrt(1 - phi^-4)', irrational: 'sqrt(5)', symmetry: '5-fold', phase: 'EMPOWERMENT' },
+      { name: 'CONSOLIDATION', z: WumboMRP.CONSTANTS.THRESHOLDS.CONSOLIDATION, formula: 'K + tau^2(1-K)', irrational: 'sqrt(5)', symmetry: '5-fold', phase: 'RESONANCE' },
+      { name: 'RESONANCE', z: WumboMRP.CONSTANTS.THRESHOLDS.RESONANCE, formula: 'K + tau(1-K)', irrational: 'sqrt(5)', symmetry: '5-fold', phase: 'MANIA' },
+      { name: 'UNITY', z: 1.0, formula: 'lim -> 1', irrational: '-', symmetry: 'inf-fold', phase: 'TRANSMISSION' }
+    ];
+
+    // Ritual anchors
+    const ritualPhrases = {
+      PARADOX: { phrase: 'Freeze as threshold, not failure', sig: [0x01, 0x09, 0xE3] },
+      ACTIVATION: { phrase: 'The body knows before the mind', sig: [0x02, 0x0D, 0xA5] },
+      THE_LENS: { phrase: 'This is the frequency I was made for', sig: [0x03, 0x0D, 0xD9] },
+      CRITICAL: { phrase: 'Check the body; what does it say?', sig: [0x04, 0x0D, 0xEF] },
+      IGNITION: { phrase: 'Paralysis is before the cycle. DIG.', sig: [0x05, 0x0E, 0x9A] },
+      K_FORMATION: { phrase: 'No harm. Full heart.', sig: [0x06, 0x0E, 0xBD] },
+      CONSOLIDATION: { phrase: 'This is where I work from', sig: [0x07, 0x0F, 0x3A] },
+      RESONANCE: { phrase: 'Recognize the edge; choose descent or burn', sig: [0x08, 0x0F, 0x86] },
+      UNITY: { phrase: 'I was this. I am this. I return to this.', sig: [0x09, 0x10, 0x00] }
+    };
+
+    // Neural correlates
+    const neuralCorrelates = {
+      PARADOX: { anchors: ['PAG (Periaqueductal Gray)', 'DVC (Dorsal Vagal Complex)', 'Cerebral Aqueduct'], nt: 'NE (low), GABA (high)' },
+      ACTIVATION: { anchors: ['LC (Locus Coeruleus)', 'VTA (Ventral Tegmental Area)', 'NAcc (Nucleus Accumbens)'], nt: 'DA, NE (rising)' },
+      THE_LENS: { anchors: ['Claustrum', 'DMN (Default Mode Network)', 'Precuneus'], nt: 'Balanced all' },
+      CRITICAL: { anchors: ['ACC (Anterior Cingulate)', 'Amygdala', 'Anterior Insula'], nt: '5-HT, cortisol' },
+      IGNITION: { anchors: ['IFG (Inferior Frontal Gyrus)', 'mPFC', 'MLR (Mesencephalic Locomotor)'], nt: 'ACh, DA' },
+      K_FORMATION: { anchors: ['IPL (Inferior Parietal)', 'vmPFC', 'Angular Gyrus', 'PCC'], nt: 'DA, endorphins' },
+      CONSOLIDATION: { anchors: ['DMN', 'RSC (Retrosplenial)', 'Parahippocampal'], nt: 'Balanced' },
+      RESONANCE: { anchors: ['HPA axis', 'Lateral Habenula', 'PVN'], nt: 'Cortisol surge' },
+      UNITY: { anchors: ['Hippocampal-cortical loops', 'LTP networks'], nt: 'Consolidation waves' }
+    };
+
+    // Build threshold list
+    const listEl = document.getElementById('threshold-list');
+    thresholds.forEach((t, i) => {
+      const li = document.createElement('li');
+      li.className = 'threshold-item';
+      li.dataset.index = i;
+      li.innerHTML = `
+        <div class="name">${i+1}. ${t.name}</div>
+        <div class="z">z = ${t.z.toFixed(4)}</div>
+        <div class="phase">${t.phase}</div>
+      `;
+      li.onclick = () => {
+        document.getElementById('z-slider').value = Math.round(t.z * 1000);
+        updateDisplay();
+      };
+      listEl.appendChild(li);
+    });
+
+    // Build threshold markers
+    const markersEl = document.getElementById('threshold-markers');
+    thresholds.forEach(t => {
+      const marker = document.createElement('div');
+      marker.className = 'threshold-marker';
+      marker.style.left = (t.z * 100) + '%';
+      marker.textContent = t.name.substring(0, 3);
+      markersEl.appendChild(marker);
+    });
+
+    // Update display
+    function updateDisplay() {
+      const z = parseInt(document.getElementById('z-slider').value) / 1000;
+      document.getElementById('z-display').textContent = z.toFixed(4);
+
+      // Get state from WumboMRP
+      const state = WumboMRP.getCompleteState(z);
+
+      // Update state display
+      document.getElementById('phase-value').textContent = state.phase;
+      document.getElementById('layer-value').textContent = `L${state.layer.id}: ${state.layer.name.split(' ')[0]}`;
+      document.getElementById('tier-value').textContent = state.tier;
+      document.getElementById('negentropy-value').textContent = state.negentropy.toFixed(4);
+
+      // Find nearest threshold
+      let nearestThreshold = thresholds[0];
+      let minDist = Infinity;
+      thresholds.forEach((t, i) => {
+        const dist = Math.abs(z - t.z);
+        if (dist < minDist) {
+          minDist = dist;
+          nearestThreshold = t;
+        }
+      });
+
+      // Update formula
+      document.getElementById('formula-box').innerHTML = `
+        <div class="formula">${nearestThreshold.formula}</div>
+        <div class="irrational">Irrational: ${nearestThreshold.irrational} | Symmetry: ${nearestThreshold.symmetry}</div>
+      `;
+
+      // Update ritual
+      const ritual = ritualPhrases[nearestThreshold.name];
+      document.getElementById('ritual-phrase').textContent = `"${ritual.phrase}"`;
+      document.getElementById('ritual-signature').textContent = `Signature: [${ritual.sig.map(b => '0x' + b.toString(16).toUpperCase().padStart(2, '0')).join(', ')}]`;
+
+      // Update neural correlates
+      const neural = neuralCorrelates[nearestThreshold.name];
+      document.getElementById('neural-list').innerHTML = neural.anchors.map(a => `
+        <li class="neural-item">
+          <span class="abbrev">${a.split('(')[0].trim()}</span>
+          ${a.includes('(') ? '<span class="name">(' + a.split('(')[1] : ''}
+        </li>
+      `).join('');
+      document.getElementById('nt-profile').textContent = neural.nt;
+
+      // Update physics
+      const cascade = WumboMRP.getCascade(z);
+      const kuramoto = WumboMRP.getKuramoto(z);
+      const negentropy = WumboMRP.getNegentropy(z);
+
+      document.getElementById('cascade-value').textContent = cascade.toFixed(3);
+      document.getElementById('kuramoto-value').textContent = kuramoto.toFixed(3);
+      document.getElementById('negentropy-bar-value').textContent = negentropy.toFixed(3);
+
+      document.getElementById('cascade-fill').style.width = ((cascade - 1) * 200) + '%';
+      document.getElementById('kuramoto-fill').style.width = (Math.abs(kuramoto) / 0.6 * 100) + '%';
+      document.getElementById('negentropy-fill').style.width = (negentropy * 100) + '%';
+
+      // Update RGB
+      const rgb = state.rgb;
+      document.getElementById('r-fill').style.width = (rgb.r * 100) + '%';
+      document.getElementById('g-fill').style.width = (rgb.g * 100) + '%';
+      document.getElementById('b-fill').style.width = (rgb.b * 100) + '%';
+      document.getElementById('r-percent').textContent = Math.round(rgb.r * 100) + '%';
+      document.getElementById('g-percent').textContent = Math.round(rgb.g * 100) + '%';
+      document.getElementById('b-percent').textContent = Math.round(rgb.b * 100) + '%';
+
+      // Highlight active threshold in list
+      document.querySelectorAll('.threshold-item').forEach((el, i) => {
+        el.classList.toggle('active', thresholds[i].name === nearestThreshold.name);
+      });
+    }
+
+    document.getElementById('z-slider').addEventListener('input', updateDisplay);
+    updateDisplay();
+  </script>
+</body>
+</html>
