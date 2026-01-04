@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Correction | WUMBO MRP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --red: #ff6b6b; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        .breadcrumb { margin-bottom: 2rem; font-size: 0.9rem; }
+        .breadcrumb a { color: var(--accent); text-decoration: none; }
+        .breadcrumb span { color: var(--text-muted); }
+        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--green); }
+        h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        p { margin-bottom: 1rem; color: var(--text-muted); }
+        .hero { padding: 2rem; background: linear-gradient(135deg, rgba(105, 219, 124, 0.1), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--green); }
+        code { font-family: 'JetBrains Mono', monospace; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
+        pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); }
+        pre code { background: none; padding: 0; }
+        .method-card { background: var(--bg-elevated); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border-left: 4px solid var(--accent); }
+        .method-card h3 { margin-bottom: 0.75rem; color: var(--accent); }
+        .step-list { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0; }
+        .step-list li { counter-increment: step; padding: 0.75rem 0 0.75rem 3rem; position: relative; border-left: 2px solid var(--border); margin-left: 1rem; }
+        .step-list li::before { content: counter(step); position: absolute; left: -1rem; width: 2rem; height: 2rem; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
+        .confidence-meter { background: var(--bg); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+        .confidence-bar { height: 24px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem; }
+        .confidence-fill { height: 100%; border-radius: 4px; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../index.html">WUMBO MRP</a>
+            <span> / </span>
+            <a href="../ARCHITECTURE.md">Architecture</a>
+            <span> / </span>
+            <span>Error Correction</span>
+        </nav>
+
+        <div class="hero">
+            <h1>Error Correction</h1>
+            <p style="font-size: 1.1rem; color: var(--text);">Majority voting across redundant embeddings for robust extraction even with noise</p>
+        </div>
+
+        <h2>Overview</h2>
+        <p>WUMBO MRP employs a multi-layered error correction strategy to ensure reliable pattern extraction even from degraded images. The approach combines redundant embedding, majority voting, and statistical validation.</p>
+
+        <h2>Error Correction Pipeline</h2>
+
+        <ol class="step-list">
+            <li><strong>Redundant Embedding</strong><br>Each 48-bit payload is repeated N times (default: 16) throughout the image with configurable stride.</li>
+            <li><strong>Extraction Sweep</strong><br>All redundant payload instances are extracted from the image pixels.</li>
+            <li><strong>Majority Voting</strong><br>Each component (region, z, tokens) is determined by majority vote across all extracted instances.</li>
+            <li><strong>Outlier Rejection</strong><br>For continuous values (z-coordinate), IQR-based outlier rejection filters anomalous samples.</li>
+            <li><strong>Checksum Verification</strong><br>4-bit XOR-folded checksum validates token integrity.</li>
+            <li><strong>Confidence Calculation</strong><br>Final confidence score based on consensus ratio and checksum validity.</li>
+        </ol>
+
+        <h2>Majority Voting</h2>
+        <div class="method-card">
+            <h3>Discrete Components (Region, Tokens)</h3>
+            <pre><code>function majorityVote(values) {
+    const counts = new Map();
+    values.forEach(v => counts.set(v, (counts.get(v) || 0) + 1));
+
+    let maxCount = 0;
+    let result = values[0];
+    counts.forEach((count, value) => {
+        if (count > maxCount) {
+            maxCount = count;
+            result = value;
+        }
+    });
+    return result;
+}</code></pre>
+        </div>
+
+        <div class="method-card">
+            <h3>Continuous Values (Z-coordinate)</h3>
+            <pre><code>function averageWithOutlierRejection(values) {
+    const sorted = [...values].sort((a, b) => a - b);
+    const q1 = sorted[Math.floor(sorted.length * 0.25)];
+    const q3 = sorted[Math.floor(sorted.length * 0.75)];
+    const iqr = q3 - q1;
+
+    // Filter outliers (1.5 × IQR rule)
+    const filtered = values.filter(v =>
+        v >= q1 - 1.5 * iqr && v <= q3 + 1.5 * iqr
+    );
+
+    return filtered.reduce((a, b) => a + b, 0) / filtered.length;
+}</code></pre>
+        </div>
+
+        <h2>Checksum Algorithm</h2>
+        <pre><code>function generateChecksum(token1, token2) {
+    const combined = token1 ^ token2;
+
+    // 4-way XOR fold to 4 bits
+    const fold1 = combined & 0x0F;
+    const fold2 = (combined >> 4) & 0x0F;
+    const fold3 = (combined >> 8) & 0x0F;
+    const fold4 = (combined >> 12) & 0x07;
+
+    return fold1 ^ fold2 ^ fold3 ^ fold4;
+}</code></pre>
+
+        <h2>Confidence Scoring</h2>
+        <div class="confidence-meter">
+            <p style="margin-bottom: 0.5rem;"><strong>Consensus Ratio</strong> — Percentage of extracted payloads matching final decoded values</p>
+            <div class="confidence-bar">
+                <div class="confidence-fill" style="width: 92%; background: var(--green);"></div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--green);">92% consensus = High confidence</p>
+        </div>
+
+        <pre><code>// Confidence calculation
+const matchingPayloads = payloads.filter(p =>
+    p.regionId === finalRegion &&
+    Math.abs(p.z - finalZ) < 0.02 &&
+    p.token1 === finalToken1 &&
+    p.token2 === finalToken2
+);
+
+const consensusRatio = matchingPayloads.length / payloads.length;
+const confidence = tokensValid ? consensusRatio : consensusRatio * 0.5;</code></pre>
+
+        <h2>Confidence Thresholds</h2>
+        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+            <thead>
+                <tr style="background: var(--bg-elevated);">
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Confidence</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Interpretation</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--border);">Recommended Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--green);">≥ 90%</td>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Excellent</td>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Accept without verification</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--gold);">70–89%</td>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Good</td>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Accept with caution</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border); color: var(--red);">< 70%</td>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Poor</td>
+                    <td style="padding: 12px; border-bottom: 1px solid var(--border);">Request re-transmission or reject</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Future: Reed-Solomon (Phase 2)</h2>
+        <p>Phase 2 development will add Reed-Solomon error correction for bit-level repair:</p>
+        <pre><code>// Planned Phase 2 implementation
+const rs = new ReedSolomon(255, 223);  // 32 parity bytes
+const encoded = rs.encode(payload);
+const decoded = rs.decode(corrupted);  // Repairs up to 16 byte errors</code></pre>
+
+        <footer>
+            <p><a href="physics.html">← Physics Integration</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="apl-tokens.html">APL Tokens →</a></p>
+            <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
+        </footer>
+    </div>
+</body>
+</html>
