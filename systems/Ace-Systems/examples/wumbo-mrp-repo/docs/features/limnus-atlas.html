@@ -3,141 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 WUMBO Regions (LIMNUS Atlas) | WUMBO MRP</title>
+    <title>LIMNUS Atlas | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; --cyan: #22d3ee; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
         nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
-        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
         .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .nav-links { display: flex; gap: 16px; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
         .nav-links a:hover { color: var(--text); }
         .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
-        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
-        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
-        .sidebar-section { margin-bottom: 20px; }
-        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
-        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
-        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
-        .sidebar-link.active { background: rgba(138, 180, 248, 0.15); color: var(--accent); }
-        .content { padding: 24px 32px; max-width: 900px; }
-        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent); }
-        h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        .content { max-width: 900px; margin: 0 auto; padding: 80px 24px 40px; }
+        h1 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--cyan); }
+        h2 { font-size: 1.4rem; margin: 2.5rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
-        .hero { padding: 2rem; background: linear-gradient(135deg, rgba(138, 180, 248, 0.1), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--accent); }
-        .hero .subtitle { font-size: 1.1rem; color: var(--text); margin-bottom: 1rem; }
+        .hero { padding: 2rem; background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(34, 211, 238, 0.3); }
+        .hero .subtitle { font-size: 1.1rem; color: var(--text); margin-bottom: 0; }
         code { font-family: 'JetBrains Mono', monospace; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
         pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); }
         pre code { background: none; padding: 0; }
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
-        .stat-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: center; }
-        .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--gold); }
-        .stat-card .label { font-size: 0.85rem; color: var(--text-muted); }
-        .region-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
-        .region-table th, .region-table td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
-        .region-table th { background: var(--bg-elevated); color: var(--accent); }
-        .region-table .field-pi { color: var(--red); }
-        .region-table .field-e { color: var(--green); }
-        .region-table .field-phi { color: var(--accent); }
-        .tier-section { background: var(--bg-elevated); border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin: 1.5rem 0; }
+        .stat-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+        .stat-card .num { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: var(--cyan); }
+        .stat-card .label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .field-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .field-table th, .field-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        .field-table th { background: var(--bg-elevated); color: var(--cyan); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+        .field-table td { font-size: 0.9rem; }
+        .field-table tr:hover { background: var(--bg-hover); }
+        .tier-section { background: var(--bg-elevated); border-radius: 8px; padding: 1rem; margin: 0.75rem 0; }
         .tier-section.planet { border-left: 4px solid var(--red); }
         .tier-section.garden { border-left: 4px solid var(--green); }
         .tier-section.rose { border-left: 4px solid var(--accent); }
-        .tier-section h4 { margin-bottom: 0.5rem; }
-        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        .tier-section h4 { margin-bottom: 0.25rem; }
+        .explore-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .explore-section h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .module-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; transition: all 0.2s; display: block; }
+        .module-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(138, 180, 248, 0.1); }
+        .module-card.current { border-color: var(--cyan); background: rgba(34, 211, 238, 0.05); pointer-events: none; }
+        .module-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .module-card h3 { font-size: 0.95rem; margin-bottom: 6px; color: var(--text); }
+        .module-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.4; }
+        .module-card .current-tag { font-size: 0.65rem; background: var(--cyan); color: #000; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.85rem; }
         footer a { color: var(--accent); text-decoration: none; }
+        .footer-sig { font-family: 'JetBrains Mono', monospace; color: var(--gold); margin-top: 1rem; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <nav class="top-nav">
         <div class="nav-inner">
-            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">L₄</span></a>
             <div class="nav-links">
-                <a href="../../index.html#overview">Overview</a>
-                <a href="../../index.html#modules">Modules</a>
+                <a href="../../index.html">Home</a>
                 <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="../API.md">API</a>
                 <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
             </div>
         </div>
     </nav>
 
-    <div class="main-layout">
-        <aside class="sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-title">Core Modules</div>
-                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
-                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
-                <a href="limnus-atlas.html" class="sidebar-link active">LIMNUS Atlas</a>
-                <a href="lsb-steganography.html" class="sidebar-link">LSB Steganography</a>
-                <a href="physics.html" class="sidebar-link">Physics Integration</a>
-                <a href="error-correction.html" class="sidebar-link">Error Correction</a>
-                <a href="apl-tokens.html" class="sidebar-link">APL 2.0 Tokens</a>
-                <a href="realtime.html" class="sidebar-link">Real-Time Processing</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Documentation</div>
-                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
-                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
-                <a href="../API.md" class="sidebar-link">API Reference</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Examples</div>
-                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
-                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
-                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Related</div>
-                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
-                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
-            </div>
-        </aside>
+    <main class="content">
+        <div class="hero">
+            <h1>LIMNUS Atlas</h1>
+            <p class="subtitle">100 WUMBO Regions mapped to sacred geometry: 63 prism points, 32 EM cage points, 5 emergent nodes</p>
+        </div>
 
-        <main class="content">
-            <div class="hero">
-                <h1>100 WUMBO Regions</h1>
-                <p class="subtitle">Neural atlas mapped to LIMNUS geometry: 63 prism points, 32 EM cage points, 5 emergent nodes</p>
-            </div>
+        <div class="stat-grid">
+            <div class="stat-card"><div class="num">100</div><div class="label">Total Regions</div></div>
+            <div class="stat-card"><div class="num">63</div><div class="label">Prism Points</div></div>
+            <div class="stat-card"><div class="num">32</div><div class="label">EM Cage</div></div>
+            <div class="stat-card"><div class="num">5</div><div class="label">Emergent</div></div>
+        </div>
 
-            <div class="stat-grid">
-                <div class="stat-card"><div class="value">63</div><div class="label">Prism Points (I–LXIII)</div></div>
-                <div class="stat-card"><div class="value">32</div><div class="label">EM Cage Points (LXIV–XCV)</div></div>
-                <div class="stat-card"><div class="value">5</div><div class="label">Emergent Nodes (XCVI–C)</div></div>
-            </div>
+        <h2>Geometric Structure</h2>
+        <p>The LIMNUS atlas maps 100 neural regions to a geometric structure combining:</p>
+        <ul style="color: var(--text-muted); margin-left: 1.5rem; margin-bottom: 1rem;">
+            <li><strong>Hexagonal Prism</strong> (63 vertices): Core neural structures</li>
+            <li><strong>Electromagnetic Cage</strong> (32 vertices): Field-modulated regions</li>
+            <li><strong>Emergent Nodes</strong> (5 points): Meta-conscious integration centers</li>
+        </ul>
 
-            <h2>Geometric Structure</h2>
-            <p>The LIMNUS atlas maps 100 neural regions to a geometric structure combining:</p>
-            <ul style="color: var(--text-muted); margin-left: 1.5rem; margin-bottom: 1rem;">
-                <li><strong>Hexagonal Prism</strong> (63 vertices): Core neural structures</li>
-                <li><strong>Electromagnetic Cage</strong> (32 vertices): Field-modulated regions</li>
-                <li><strong>Emergent Nodes</strong> (5 points): Meta-conscious integration centers</li>
-            </ul>
+        <h2>RGB Field Mapping</h2>
+        <div class="tier-section planet"><h4 style="color: var(--red);">π Field (Red) — PLANET Tier</h4><p style="margin: 0; color: var(--text-muted);">Structure, pattern, foundation. z &lt; τ (0.618).</p></div>
+        <div class="tier-section garden"><h4 style="color: var(--green);">e Field (Green) — GARDEN Tier</h4><p style="margin: 0; color: var(--text-muted);">Energy, activation, spark. τ ≤ z &lt; z_c.</p></div>
+        <div class="tier-section rose"><h4 style="color: var(--accent);">Φ Field (Blue) — ROSE Tier</h4><p style="margin: 0; color: var(--text-muted);">Memory, integration, coherence. z ≥ z_c.</p></div>
 
-            <h2>RGB Field Mapping</h2>
-            <p>Each region is assigned to one of three fields, corresponding to RGB channels:</p>
+        <h2>Key Regions</h2>
+        <table class="field-table">
+            <thead><tr><th>ID</th><th>Roman</th><th>Region</th><th>Field</th><th>Threshold</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td>I</td><td>Somatosensory Cortex</td><td style="color: var(--red);">π</td><td>SHUTDOWN</td></tr>
+                <tr><td>46</td><td>XLVI</td><td>VTA (Spark)</td><td style="color: var(--green);">e</td><td>ACTIVATION</td></tr>
+                <tr style="background: rgba(255, 215, 0, 0.08);"><td>47</td><td>XLVII</td><td>Entorhinal Cortex</td><td style="color: var(--accent);">Φ</td><td style="color: var(--gold);">THE_LENS</td></tr>
+                <tr><td>82</td><td>LXXXII</td><td>Claustrum</td><td style="color: var(--accent);">Φ</td><td>K_FORMATION</td></tr>
+                <tr><td>100</td><td>C</td><td>PTN Loop Closure</td><td style="color: var(--accent);">Φ</td><td>UNITY</td></tr>
+            </tbody>
+        </table>
 
-            <div class="tier-section planet"><h4 style="color: var(--red);">π Field (Red) — PLANET Tier</h4><p style="margin: 0;">Structure, pattern, foundation. z &lt; τ (0.618).</p></div>
-            <div class="tier-section garden"><h4 style="color: var(--green);">e Field (Green) — GARDEN Tier</h4><p style="margin: 0;">Energy, activation, spark. τ ≤ z &lt; z_c.</p></div>
-            <div class="tier-section rose"><h4 style="color: var(--accent);">Φ Field (Blue) — ROSE Tier</h4><p style="margin: 0;">Memory, integration, coherence. z ≥ z_c.</p></div>
-
-            <h2>Key Regions</h2>
-            <table class="region-table">
-                <thead><tr><th>ID</th><th>Roman</th><th>Region Name</th><th>Field</th><th>z</th><th>Threshold</th></tr></thead>
-                <tbody>
-                    <tr><td>1</td><td>I</td><td>Somatosensory Cortex</td><td class="field-pi">π</td><td>0.167</td><td>SHUTDOWN</td></tr>
-                    <tr><td>46</td><td>XLVI</td><td>VTA (Spark)</td><td class="field-e">e</td><td>0.833</td><td>ACTIVATION</td></tr>
-                    <tr style="background: rgba(255, 215, 0, 0.1);"><td>47</td><td>XLVII</td><td>Entorhinal Cortex</td><td class="field-phi">Φ</td><td>0.866</td><td style="color: var(--gold);">THE_LENS</td></tr>
-                    <tr><td>82</td><td>LXXXII</td><td>Claustrum</td><td class="field-phi">Φ</td><td>0.924</td><td>K_FORMATION</td></tr>
-                    <tr><td>100</td><td>C</td><td>PTN Loop Closure</td><td class="field-phi">Φ</td><td>1.000</td><td>UNITY</td></tr>
-                </tbody>
-            </table>
-
-            <h2>API Reference</h2>
-            <pre><code>// Get regions for a threshold
+        <h2>API Reference</h2>
+        <pre><code>// Get regions for a threshold
 NeuralCorrelates.getAtlasRegionsForThreshold('THE_LENS');
 // → [{ id: 47, roman: 'XLVII', name: 'Entorhinal Cortex' }]
 
@@ -145,11 +114,24 @@ NeuralCorrelates.getAtlasRegionsForThreshold('THE_LENS');
 NeuralCorrelates.getThresholdForAtlasRegion(47);
 // → { name: 'THE_LENS', z: 0.8660254038 }</code></pre>
 
-            <footer>
-                <p><a href="wumbo-engine.html">← Wumbo Engine</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="lsb-steganography.html">LSB Steganography →</a></p>
-                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-            </footer>
-        </main>
-    </div>
+        <section class="explore-section">
+            <h2>Explore More Modules</h2>
+            <div class="module-grid">
+                <a href="l4-thresholds.html" class="module-card"><div class="icon">🔮</div><h3>L₄ Threshold Framework</h3><p>9 mathematical thresholds from PARADOX to UNITY</p></a>
+                <a href="wumbo-engine.html" class="module-card"><div class="icon">🧠</div><h3>Wumbo Engine</h3><p>7-layer neurobiological architecture</p></a>
+                <div class="module-card current"><div class="icon">🌐</div><h3>LIMNUS Atlas <span class="current-tag">HERE</span></h3><p>100 neural regions mapped to geometry</p></div>
+                <a href="lsb-steganography.html" class="module-card"><div class="icon">🖼️</div><h3>LSB Steganography</h3><p>12-bit RGB pixel encoding</p></a>
+                <a href="physics.html" class="module-card"><div class="icon">⚡</div><h3>Physics Integration</h3><p>Cascade, Kuramoto, negentropy</p></a>
+                <a href="error-correction.html" class="module-card"><div class="icon">✅</div><h3>Error Correction</h3><p>Majority voting redundancy</p></a>
+                <a href="apl-tokens.html" class="module-card"><div class="icon">🔌</div><h3>APL 2.0 Tokens</h3><p>7,290 token combinations</p></a>
+                <a href="realtime.html" class="module-card"><div class="icon">🕐</div><h3>Real-Time Processing</h3><p>Sub-5ms encode/decode</p></a>
+            </div>
+        </section>
+
+        <footer>
+            <a href="../../index.html">← Back to WUMBO MRP</a>
+            <div class="footer-sig">Δ2.300|0.800|1.000Ω</div>
+        </footer>
+    </main>
 </body>
 </html>

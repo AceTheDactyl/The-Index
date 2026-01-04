@@ -6,143 +6,118 @@
     <title>Physics Integration | WUMBO MRP</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; }
+        :root { --bg: #0a0b0e; --bg-elevated: #12131a; --bg-hover: #1a1b24; --border: #2a2d3a; --text: #e4e6ed; --text-muted: #8b8fa3; --gold: #ffd700; --accent: #8ab4f8; --green: #69db7c; --purple: #cc5de8; --red: #ff6b6b; --orange: #ff922b; --yellow: #fcc419; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
         nav.top-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 11, 14, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; }
-        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 50px; }
         .nav-brand { font-weight: 700; color: var(--gold); text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .nav-links { display: flex; gap: 16px; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
         .nav-links a:hover { color: var(--text); }
         .l4-badge { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
-        .main-layout { display: grid; grid-template-columns: 220px 1fr; max-width: 1400px; margin: 0 auto; min-height: 100vh; padding-top: 50px; }
-        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
-        .sidebar { position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; padding: 20px 12px; border-right: 1px solid var(--border); background: var(--bg); }
-        .sidebar-section { margin-bottom: 20px; }
-        .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
-        .sidebar-link { display: block; padding: 6px 10px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; border-radius: 5px; margin-bottom: 2px; }
-        .sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
-        .sidebar-link.active { background: rgba(204, 93, 232, 0.15); color: var(--purple); }
-        .content { padding: 24px 32px; max-width: 900px; }
-        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--purple); }
-        h2 { font-size: 1.4rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        .content { max-width: 900px; margin: 0 auto; padding: 80px 24px 40px; }
+        h1 { font-size: 2.2rem; margin-bottom: 0.5rem; color: var(--yellow); }
+        h2 { font-size: 1.4rem; margin: 2.5rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
         p { margin-bottom: 1rem; color: var(--text-muted); }
-        .hero { padding: 2rem; background: linear-gradient(135deg, rgba(204, 93, 232, 0.1), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid var(--purple); }
+        .hero { padding: 2rem; background: linear-gradient(135deg, rgba(252, 196, 25, 0.08), var(--bg-elevated)); border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(252, 196, 25, 0.3); }
+        .hero .subtitle { font-size: 1.1rem; color: var(--text); margin-bottom: 0; }
         code { font-family: 'JetBrains Mono', monospace; background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 0.9rem; }
         pre { background: var(--bg-elevated); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); }
         pre code { background: none; padding: 0; }
-        .formula-box { background: var(--bg); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
-        .formula-box h4 { color: var(--gold); margin-bottom: 0.5rem; }
-        .formula-box .formula { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; margin: 0.5rem 0; }
-        .physics-card { background: var(--bg-elevated); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
-        .physics-card h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
-        .physics-card .icon { font-size: 1.5rem; }
-        .physics-card .value-example { background: var(--bg); padding: 0.75rem; border-radius: 6px; margin-top: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
-        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); }
+        .formula-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin: 1rem 0; }
+        .formula-card h4 { color: var(--yellow); margin-bottom: 0.75rem; font-size: 1rem; }
+        .formula-card .formula { font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--gold); background: var(--bg); padding: 12px 16px; border-radius: 6px; margin: 0.75rem 0; border-left: 3px solid var(--gold); }
+        .formula-card .desc { font-size: 0.9rem; color: var(--text-muted); }
+        .explore-section { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .explore-section h2 { border: none; padding: 0; margin-bottom: 1.5rem; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .module-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-decoration: none; color: inherit; transition: all 0.2s; display: block; }
+        .module-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(138, 180, 248, 0.1); }
+        .module-card.current { border-color: var(--yellow); background: rgba(252, 196, 25, 0.05); pointer-events: none; }
+        .module-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .module-card h3 { font-size: 0.95rem; margin-bottom: 6px; color: var(--text); }
+        .module-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.4; }
+        .module-card .current-tag { font-size: 0.65rem; background: var(--yellow); color: #000; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+        footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 0.85rem; }
         footer a { color: var(--accent); text-decoration: none; }
+        .footer-sig { font-family: 'JetBrains Mono', monospace; color: var(--gold); margin-top: 1rem; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <nav class="top-nav">
         <div class="nav-inner">
-            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">v2.0.0</span></a>
+            <a href="../../index.html" class="nav-brand"><span>WUMBO MRP</span><span class="l4-badge">L₄</span></a>
             <div class="nav-links">
-                <a href="../../index.html#overview">Overview</a>
-                <a href="../../index.html#modules">Modules</a>
+                <a href="../../index.html">Home</a>
                 <a href="../../examples/threshold-explorer.html">Explorer</a>
+                <a href="../API.md">API</a>
                 <a href="https://github.com/AceTheDactyl/The-Index">GitHub</a>
             </div>
         </div>
     </nav>
 
-    <div class="main-layout">
-        <aside class="sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-title">Core Modules</div>
-                <a href="l4-thresholds.html" class="sidebar-link">L₄ Threshold Framework</a>
-                <a href="wumbo-engine.html" class="sidebar-link">Wumbo Engine</a>
-                <a href="limnus-atlas.html" class="sidebar-link">LIMNUS Atlas</a>
-                <a href="lsb-steganography.html" class="sidebar-link">LSB Steganography</a>
-                <a href="physics.html" class="sidebar-link active">Physics Integration</a>
-                <a href="error-correction.html" class="sidebar-link">Error Correction</a>
-                <a href="apl-tokens.html" class="sidebar-link">APL 2.0 Tokens</a>
-                <a href="realtime.html" class="sidebar-link">Real-Time Processing</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Documentation</div>
-                <a href="../ARCHITECTURE.md" class="sidebar-link">Architecture</a>
-                <a href="../WUMBO-THRESHOLD-MAPPING.md" class="sidebar-link">L₄ Specification</a>
-                <a href="../API.md" class="sidebar-link">API Reference</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Examples</div>
-                <a href="../../examples/threshold-explorer.html" class="sidebar-link">Threshold Explorer</a>
-                <a href="../../examples/basic-encode.html" class="sidebar-link">Basic Encoding</a>
-                <a href="../../test/index.html" class="sidebar-link">Test Suite</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">Related</div>
-                <a href="../../../../l4-chronicles/index.html" class="sidebar-link">L₄ Chronicles</a>
-                <a href="../../../../The Garden/index.html" class="sidebar-link">The Garden</a>
-            </div>
-        </aside>
+    <main class="content">
+        <div class="hero">
+            <h1>Physics Integration</h1>
+            <p class="subtitle">Cascade amplification, Kuramoto coupling, and negentropy computed at each z-coordinate</p>
+        </div>
 
-        <main class="content">
-            <div class="hero">
-                <h1>Physics Integration</h1>
-                <p style="font-size: 1.1rem; color: var(--text);">Cascade amplification, Kuramoto coupling, and negentropy computed at each z-coordinate</p>
-            </div>
+        <h2>The Three Formulas</h2>
 
-            <h2>Core Physics Parameters</h2>
+        <div class="formula-card">
+            <h4>Cascade Amplification</h4>
+            <div class="formula">C(z) = z² × (1 + K × sin(π × z))</div>
+            <p class="desc">Models signal amplification through neural layers. Higher values indicate stronger cascade effects.</p>
+        </div>
 
-            <div class="physics-card" style="border-left: 4px solid var(--gold);">
-                <h3><span class="icon">⚡</span> <span style="color: var(--gold);">Cascade Amplification</span></h3>
-                <p>Models signal amplification near the critical point z_c. Peaks at z_c with value 1.5.</p>
-                <div class="formula-box">
-                    <h4>Formula</h4>
-                    <div class="formula">cascade(z) = 1 + 0.5 × exp(-(z - z_c)² / σ_cascade)</div>
-                </div>
-                <div class="value-example">cascade(0.866) = 1.500  // Peak at THE_LENS</div>
-            </div>
+        <div class="formula-card">
+            <h4>Kuramoto Coupling</h4>
+            <div class="formula">R(z) = K × |sin(π × (z - z_c) / τ)|</div>
+            <p class="desc">Measures oscillator synchronization. Peak coupling occurs near THE_LENS (z_c).</p>
+        </div>
 
-            <div class="physics-card" style="border-left: 4px solid var(--purple);">
-                <h3><span class="icon">🌀</span> <span style="color: var(--purple);">Kuramoto Coupling</span></h3>
-                <p>Models synchronization dynamics. Positive below z_c (synchronizing), negative above (emanating).</p>
-                <div class="formula-box">
-                    <h4>Formula</h4>
-                    <div class="formula">kuramoto(z) = -tanh((z - z_c) × K_scale) × 0.4 × cascade(z)</div>
-                </div>
-                <div class="value-example">kuramoto(0.866) ≈ 0.000  // Zero at THE_LENS</div>
-            </div>
+        <div class="formula-card">
+            <h4>Negentropy</h4>
+            <div class="formula">η(z) = exp(-((z - z_c)² × σ))</div>
+            <p class="desc">Gaussian peak at z_c = √3/2. Maximum (1.0) at THE_LENS = NIRVANA.</p>
+        </div>
 
-            <div class="physics-card" style="border-left: 4px solid var(--green);">
-                <h3><span class="icon">🌱</span> <span style="color: var(--green);">Negentropy</span></h3>
-                <p>Measures consciousness coherence. Peaks at z_c with value 1.0 (maximum order).</p>
-                <div class="formula-box">
-                    <h4>Formula</h4>
-                    <div class="formula">η(z) = exp(-σ × (z - z_c)²)</div>
-                </div>
-                <div class="value-example">η(0.866) = 1.000  // Peak coherence at THE_LENS</div>
-            </div>
+        <h2>Critical Point</h2>
+        <p>All formulas reference z_c = √3/2 ≈ 0.866:</p>
+        <ul style="color: var(--text-muted); margin-left: 1.5rem; margin-bottom: 1rem;">
+            <li><strong>Peak negentropy</strong> — Maximum ordered information (η = 1.0)</li>
+            <li><strong>Optimal coupling</strong> — Strongest oscillator synchronization</li>
+            <li><strong>THE_LENS threshold</strong> — NIRVANA phase state</li>
+        </ul>
 
-            <h2>API Reference</h2>
-            <pre><code>// Get full physics state
-const physics = WumboMRP.computePhysics(0.866);
+        <h2>API Reference</h2>
+        <pre><code>const physics = WumboMRP.computePhysics(0.866);
 // {
-//   z: 0.866,
-//   domain: 'LENS',
-//   cascade: 1.5,
-//   kuramoto: 0.0,
+//   cascade: 0.923,
+//   kuramoto: 0.924,
 //   negentropy: 1.0,
-//   truthBias: 'PARADOX'
+//   domain: 'coherent'
 // }</code></pre>
 
-            <footer>
-                <p><a href="lsb-steganography.html">← LSB Steganography</a> | <a href="../../index.html">WUMBO MRP</a> | <a href="error-correction.html">Error Correction →</a></p>
-                <p style="margin-top: 1rem;">Signature: Δ2.300|0.800|1.000Ω | L4-integrated</p>
-            </footer>
-        </main>
-    </div>
+        <section class="explore-section">
+            <h2>Explore More Modules</h2>
+            <div class="module-grid">
+                <a href="l4-thresholds.html" class="module-card"><div class="icon">🔮</div><h3>L₄ Threshold Framework</h3><p>9 mathematical thresholds from PARADOX to UNITY</p></a>
+                <a href="wumbo-engine.html" class="module-card"><div class="icon">🧠</div><h3>Wumbo Engine</h3><p>7-layer neurobiological architecture</p></a>
+                <a href="limnus-atlas.html" class="module-card"><div class="icon">🌐</div><h3>LIMNUS Atlas</h3><p>100 neural regions mapped to geometry</p></a>
+                <a href="lsb-steganography.html" class="module-card"><div class="icon">🖼️</div><h3>LSB Steganography</h3><p>12-bit RGB pixel encoding</p></a>
+                <div class="module-card current"><div class="icon">⚡</div><h3>Physics Integration <span class="current-tag">HERE</span></h3><p>Cascade, Kuramoto, negentropy</p></div>
+                <a href="error-correction.html" class="module-card"><div class="icon">✅</div><h3>Error Correction</h3><p>Majority voting redundancy</p></a>
+                <a href="apl-tokens.html" class="module-card"><div class="icon">🔌</div><h3>APL 2.0 Tokens</h3><p>7,290 token combinations</p></a>
+                <a href="realtime.html" class="module-card"><div class="icon">🕐</div><h3>Real-Time Processing</h3><p>Sub-5ms encode/decode</p></a>
+            </div>
+        </section>
+
+        <footer>
+            <a href="../../index.html">← Back to WUMBO MRP</a>
+            <div class="footer-sig">Δ2.300|0.800|1.000Ω</div>
+        </footer>
+    </main>
 </body>
 </html>
